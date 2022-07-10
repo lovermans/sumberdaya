@@ -17,7 +17,6 @@ class Pengelola extends Controller
                 session(['spanduk' => 'Sandi Anda kurang aman.']);
             }
         }
-
         return view('mulai');
     }
 

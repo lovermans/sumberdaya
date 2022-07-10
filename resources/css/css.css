@@ -555,6 +555,10 @@ form.kartu,
     z-index: 25;
 }
 
+:is(#spanduk,#pesan,#periksa):is(:empty){
+    display: none;
+}
+
 #spanduk a,
 #pesan .tutup {
     justify-self: end;

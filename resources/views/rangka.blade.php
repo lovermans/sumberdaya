@@ -41,7 +41,12 @@
         class="tcetak" type="checkbox" id="tema"><label for="nav" id="nav-kanvas"
         class="blok-kanvas"></label><label for="menu" id="menu-kanvas" class="blok-kanvas"></label>
     <main id="main">
-        <section>@yield('isi')</section>
+        <section>
+            <div id="spanduk" class="tcetak"></div>
+            <div id="pesan" class="tcetak"></div>
+            <div id="periksa" class="tcetak"></div>
+            <div id="isi">@yield('isi')</div>
+        </section>
     </main>
     <header class="tcetak">
         <section> <label for="nav" id="tbl-nav" title="Menu"><svg class="on" viewBox="0 0 24 24"

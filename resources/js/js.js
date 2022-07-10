@@ -39,7 +39,7 @@ document.addEventListener('submit', function (e) {
     if (e.target.closest('.form-xhr')) {
         e.preventDefault();
         var a = e.target.closest('.form-xhr');
-        var tujuan = a.dataset.tujuan ?? 'main section',
+        var tujuan = a.dataset.tujuan ?? 'main section #isi',
             metode = a.method,
             ke = a.action,
             data = new FormData(a);

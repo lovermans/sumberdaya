@@ -1,12 +1,17 @@
 @extends('rangka') @section('isi')
-    @include('pemberitahuan') @guest <form class="kartu" method="POST" action="{{ route('login') }}"> @csrf
+    @includeWhen(session()->has('spanduk') || session()->has('pesan') || $errors->any(), 'pemberitahuan')
+
+    @guest <form class="kartu" method="POST" action="{{ route('login') }}"> @csrf
             <div class="isian gspan-2"> <label for="idAbsen">Nomor Absen</label> <input id="idAbsen" type="text"
                     name="sdm_no_absen" value="{{ old('sdm_no_absen') }}" pattern="^[0-9]{8}$" inputmode="numeric" required>
                 <span class="t-bantu">8 digit nomor absen</span> </div>
             <div class="isian gspan-2"> <label for="password">Sandi</label> <input id="password" type="password" name="password"
                     required> <span class="t-bantu">Sandi akun</span> </div> <button class="utama gspan-4"
                 type="submit">MASUK</button>
-        </form> @endguest @auth <div class="isian"> <label for="sumber_daya">Akses</label> <select
+        </form>
+    @endguest
+    
+    @auth <div class="isian"> <label for="sumber_daya">Akses</label> <select
                 name="sumber_daya" id="sumber_daya" class="pil-cari"
                 onchange="if (this.value !== '') location = this.value;">
                 <option value=""></option> @can('sdm-akses')
