@@ -15,7 +15,7 @@ document.addEventListener('click', function (e) {
         e.preventDefault();
         var a = e.target.closest('a.nav-xhr'),
             b = e.target.closest('a.nav-xhr, a.menu-xhr, a.isi-xhr');
-        var tujuan = b.dataset.tujuan ?? 'main section';
+        var tujuan = b.dataset.tujuan ?? '#isi';
         if (a) {
             var navAktif = document.querySelectorAll("nav a.aktif");
             for (var z = 0; z < navAktif.length; z++) {
@@ -39,7 +39,7 @@ document.addEventListener('submit', function (e) {
     if (e.target.closest('.form-xhr')) {
         e.preventDefault();
         var a = e.target.closest('.form-xhr');
-        var tujuan = a.dataset.tujuan ?? 'main section #isi',
+        var tujuan = a.dataset.tujuan ?? '#isi',
             metode = a.method,
             ke = a.action,
             data = new FormData(a);

@@ -17,6 +17,7 @@ class Pengelola extends Controller
                 session(['spanduk' => 'Sandi Anda kurang aman.']);
             }
         }
+        session()->flash('spanduk', 'Sandi Anda kurang aman.');
         return view('mulai');
     }
 

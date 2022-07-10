@@ -1,6 +1,4 @@
 @extends('rangka') @section('isi')
-    @includeWhen(session()->has('spanduk') || session()->has('pesan') || $errors->any(), 'pemberitahuan')
-
     @guest <form class="kartu" method="POST" action="{{ route('login') }}"> @csrf
             <div class="isian gspan-2"> <label for="idAbsen">Nomor Absen</label> <input id="idAbsen" type="text"
                     name="sdm_no_absen" value="{{ old('sdm_no_absen') }}" pattern="^[0-9]{8}$" inputmode="numeric" required>
@@ -119,4 +117,5 @@
                     40164.</a></li>
         </ol>
     </div>
+    @includeWhen(session()->has('spanduk') || session()->has('pesan') || $errors->any(), 'pemberitahuan')
 @endsection

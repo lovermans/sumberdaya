@@ -1,11 +1,3 @@
-<script>
-    function isiPemberitahuan(el, is) {
-        var crange = document.createRange();
-        el.replaceChildren(crange.createContextualFragment(is));
-        el.scrollIntoView();
-    };
-</script>
-
 @if(session()->has('spanduk'))
 <script>
     var spanduk = document.querySelector('#spanduk');

@@ -32,6 +32,13 @@
     <link href="{{ asset('/favicon.ico') }}" rel="icon" type="image/x-icon">
     <link href="{{ asset(mix('/tampilan.css')) }}" rel="stylesheet">
     <script src="{{ asset(mix('/ss.js')) }}"></script>
+    <script>
+        function isiPemberitahuan(el, is) {
+            var crange = document.createRange();
+            el.replaceChildren(crange.createContextualFragment(is));
+            el.scrollIntoView();
+        };
+    </script>
 </head>
 
 <body data-tematerang=""> <a class="skip-navigation tcetak" href="#main" tabindex="0">Langsung Ke Konten Utama</a><input
@@ -113,7 +120,7 @@
     <footer class="tcetak">
         <section></section>
     </footer>
-    <script src="{{ asset(mix('interaksi.js')) }}" defer></script>
+    <script src="{{ asset(mix('/interaksi.js')) }}" defer></script>
 </body>
 
 </html>
