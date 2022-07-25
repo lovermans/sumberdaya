@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Fluent;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
@@ -34,7 +33,7 @@ return new class extends Migration
             $table->id();
             $table->addColumnRaw('uuid', 'sdm_uuid')->default(new Expression('(UUID())'))->unique();
             $table->string('sdm_no_permintaan',20)->nullable()->index();
-            $table->string('sdm_no_absen',10)->index();
+            $table->string('sdm_no_absen',10)->unique();
             $table->date('sdm_tgl_gabung')->nullable();
             $table->string('sdm_warganegara',40)->nullable();
             $table->string('sdm_no_ktp',20)->nullable()->index();

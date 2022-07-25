@@ -1,5 +1,6 @@
-@extends('rangka') @section('isi')
-    @include('pemberitahuan')
+@extends('rangka')
+
+@section('isi')
     <form class="form-xhr kartu tcetak" method="POST" action="{{ route('register') }}">
         @csrf
         <div style="grid-row:span 2;text-align:center">
@@ -309,4 +310,5 @@
         });
         var obj = {{ Js::from($data) }};
     </script>
+    @includeWhen(session()->has('spanduk') || session()->has('pesan') || $errors->any(), 'pemberitahuan')
 @endsection

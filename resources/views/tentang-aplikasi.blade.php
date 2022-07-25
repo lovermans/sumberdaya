@@ -1,6 +1,5 @@
 @extends('rangka')
 @section('isi')
-    @include('pemberitahuan')
     <h2>Aplikasi</h2>
     <div class="kartu">
         <p>Merupakan aplikasi web sumber terbuka sederhana yang dibangun bertujuan untuk memudahkan pengelolaan sumber daya
@@ -21,4 +20,5 @@
     <div class="kartu">
         <p><a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer">MIT</a>.</p>
     </div>
+    @includeWhen(session()->has('spanduk') || session()->has('pesan') || $errors->any(), 'pemberitahuan')
 @endsection

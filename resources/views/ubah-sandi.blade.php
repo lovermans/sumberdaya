@@ -1,6 +1,6 @@
 @extends('rangka')
+
 @section('isi')
-    @include('pemberitahuan')
     <form class="form-xhr kartu tcetak" method="POST" action="{{ route('ubah-sandi') }}">
         @csrf
         <div class="isian">
@@ -25,4 +25,5 @@
         </div>
         <button class="utama gspan-4" type="submit">SIMPAN</button>
     </form>
+    @includeWhen(session()->has('spanduk') || session()->has('pesan') || $errors->any(), 'pemberitahuan')
 @endsection

@@ -1,5 +1,7 @@
-@extends('rangka') @section('isi')
-    @include('pemberitahuan') <h2>Informasi Dasar</h2>
+@extends('rangka')
+
+@section('isi')
+    <h2>Informasi Dasar</h2>
     <div class="kartu t-data">
         <dl style="grid-row:span 2;text-align:center">
             <dd><img style="width:8em" @class([
@@ -154,4 +156,5 @@
             <dd>{{ auth()->user()->sdm_ket_kary }}</dd>
         </dl>
     </div>
+    @includeWhen(session()->has('spanduk') || session()->has('pesan') || $errors->any(), 'pemberitahuan')
 @endsection
