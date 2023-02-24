@@ -271,7 +271,7 @@ window.pilDasar = function (a) {
     ps.forEach(function (a) {
         new SlimSelect({
             select: a,
-            settings: {
+            // settings: {
                 placeholder: 'PILIH',
                 showSearch: false,
                 searchFocus: false,
@@ -281,7 +281,7 @@ window.pilDasar = function (a) {
                 hideSelectedOption: true,
                 selectByGroup: true,
                 closeOnSelect: true
-            }
+            // }
         });
     });
 };
@@ -291,7 +291,7 @@ window.pilSaja = function (a) {
     ps.forEach(function (a) {
         new SlimSelect({
             select: a,
-            settings: {
+            // settings: {
                 placeholder: 'PILIH',
                 showSearch: false,
                 searchFocus: false,
@@ -301,7 +301,7 @@ window.pilSaja = function (a) {
                 hideSelectedOption: true,
                 selectByGroup: true,
                 closeOnSelect: true
-            }
+            // }
         });
     });
 };
@@ -311,7 +311,7 @@ window.pilCari = function (a) {
     pc.forEach(function (a) {
         new SlimSelect({
             select: a,
-            settings: {
+            // settings: {
                 searchPlaceholder: 'CARI',
                 searchText: 'KOSONG',
                 searchingText: 'MENCARI...',
@@ -324,7 +324,7 @@ window.pilCari = function (a) {
                 hideSelectedOption: true,
                 selectByGroup: true,
                 closeOnSelect: true
-            }
+            // }
         });
     });
 };
