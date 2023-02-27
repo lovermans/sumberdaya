@@ -55,7 +55,7 @@ document.addEventListener('click', function (e) {
         return e.target.classList.toggle('aktif');
     }
     if (e.target.closest('button.tutup-i')) {
-        return e.target.closest('button.tutup-i').parentNode.replaceChildren();
+        return e.target.closest('button.tutup-i').parentNode.remove();
     }
 });
 
@@ -120,6 +120,19 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
             let responser = e.currentTarget.responseText;
             progressResponse = lastResponseLength ? responser.substring(lastResponseLength) : responser;
             lastResponseLength = responser.length;
+
+            // if (c !== xhr.responseURL) {
+            //     if (progressResponse.startsWith('<!DOCTYPE html>')) {
+            //         document.open();
+            //         document.write(progressResponse);
+            //         document.close();
+            //         return true;
+            //     };
+            //     document.querySelector('#isi').replaceChildren(range.createContextualFragment(progressResponse));
+            //     return true;
+            // };
+
+            isiPemberitahuan('pemberitahuan', '');
             // console.log(progressResponse);
             isi.append(range.createContextualFragment(progressResponse));
             return true;
@@ -128,24 +141,25 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
         xhr.onload = function () {
             // console.log(this.getAllResponseHeaders());
             // console.log(this.getResponseHeader('X-Kode-Javascript'));
+
+            var responXHR = xhr.responseText;
             
-                var responXHR = xhr.responseText;
-                if (c !== xhr.responseURL) {
-                    rekamTautan(b, xhr.responseURL, 'GET', null);
-                };
-                if (responXHR) {
-                    if (responXHR.startsWith('<!DOCTYPE html>')) {
-                        document.open();
-                        document.write(responXHR);
-                        document.close();
-                        return true;
-                    };
-                    isiPemberitahuan('pemberitahuan', '');
-                    isi.replaceChildren(range.createContextualFragment(responXHR));
-                    j ? scrollTo(0,0) : isi.scrollIntoView();
+            if (c !== xhr.responseURL) {
+                rekamTautan(b, xhr.responseURL, 'GET', null);
+            };
+
+            if (responXHR) {
+                if (responXHR.startsWith('<!DOCTYPE html>')) {
+                    document.open();
+                    document.write(responXHR);
+                    document.close();
                     return true;
                 };
-            
+                isiPemberitahuan('pemberitahuan', '');
+                isi.replaceChildren(range.createContextualFragment(responXHR));
+                j ? scrollTo(0,0) : isi.scrollIntoView();
+                return true;
+            };  
         };
     }
     xhr.open(metode, c, true);

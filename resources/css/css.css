@@ -150,8 +150,8 @@ main :is(h2, h4),
 }
 
 button,
-#pesan p,
-#periksa :is(summary,
+.pesan p,
+.periksa :is(summary,
     li) {
     color: var(--hitam);
 }
@@ -575,24 +575,24 @@ nav [class|="menu"]:not(:first-child) {
     z-index: 100;
 }
 
-#spanduk,
-#pesan,
-#periksa,
+.spanduk,
+.pesan,
+.periksa,
 .kartu {
     margin: 0 0 1em;
 }
 
-#spanduk,
-#pesan,
-#periksa,
+.spanduk,
+.pesan,
+.periksa,
 form.kartu,
 .kartu.form {
     display: grid;
 }
 
-#spanduk,
-#pesan,
-#periksa {
+.spanduk,
+.pesan,
+.periksa {
     padding: 0 1em;
     
     grid-template-columns: 1fr min-content;
@@ -601,31 +601,33 @@ form.kartu,
     
 }
 
-#spanduk {
+.spanduk {
     background: var(--bg-spanduk);
     
 }
 
-#pesan {
+.pesan {
     background: var(--taut-umum);
 }
 
-#pesan a {
-    color: var(--taut-fokus);
+.pesan a {
+    color: var(--hitam-1);
+    background-color: var(--putih-1);
+    text-transform: uppercase;
 }
 
-#periksa {
+.periksa {
     background: var(--taut-fokus);
 }
 
-#spanduk a,
-#pesan .tutup {
+.spanduk a,
+.pesan .tutup {
     justify-self: end;
     white-space: nowrap;
 }
 
-#pesan,
-#periksa {
+.pesan,
+.periksa {
     border-radius: .25em;
     box-shadow: var(--tk-6);
 }
@@ -758,7 +760,8 @@ form.kartu [required]~.t-bantu::after {
 button.utama,
 a.utama,
 button.sekunder,
-a.sekunder {
+a.sekunder,
+.pesan a {
     border-radius: 0.25em;
     line-height: 2.25em;
     min-width: 4em;
