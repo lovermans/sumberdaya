@@ -237,9 +237,11 @@ class Pengaturan
         $spreadsheet->disconnectWorksheets();
         unset($spreadsheet);
         
-        $reqs->session()->now('pesan', 'Selesai menyiapkan berkas excel. <a href="' . $storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)) . '">Unduh</a>.');
+        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
 
-        return $app->view->make('pemberitahuan');
+        // echo $app->view->make('pemberitahuan');
+
+        // exit();
     }
 
     public function dataDasar()
@@ -309,11 +311,8 @@ class Pengaturan
             
             $fungsiStatis->hapusCacheAtur();
             $pesan = $fungsiStatis->statusBerhasil();
-
-            $perujuk = $reqs->session()->get('tautan_perujuk');
-            $redirect = $app->redirect;
             
-            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('atur.data')->with('pesan', $pesan);
+            return $app->redirect->route('atur.data')->with('pesan', $pesan);
         }
 
         $HtmlPenuh = $app->view->make('pengaturan.tambah-ubah');
@@ -403,6 +402,8 @@ class Pengaturan
             header('X-Accel-Buffering: no');
 
             $validator = $app->validator;
+
+            echo '<p>Memeriksa berkas yang diunggah.</p>';
             
             $validasifile = $validator->make(
                 $reqs->all(),
@@ -414,11 +415,15 @@ class Pengaturan
                     'atur_unggah' => 'Berkas Yang Diunggah'
                 ]
             );
-            
-            if ($validasifile->fails()) {
-                return $app->view->make('pemberitahuan')->withErrors($validasifile->errors());
+        
+            if ($validasifile->fails() && $reqs->pjax()) {
+                echo $app->view->make('pemberitahuan')->withErrors($validasifile->errors());
+                    
+                exit();
             }
-            
+
+            $validasifile->validate();
+
             $file = $validasifile->safe()->only('atur_unggah')['atur_unggah'];
             $namafile = 'unggahpengaturan-' . date('YmdHis') . '.xlsx';
 
@@ -497,8 +502,12 @@ class Pengaturan
                 );
 
                 if ($validasi->fails()) {
-                    return $app->view->make('pemberitahuan')->withErrors($validasi->errors());
+                    echo $app->view->make('pemberitahuan')->withErrors($validasi);
+                    
+                    exit();
                 }
+
+                $validasi->validate();
                                 
                 $app->db->table('aturs')->upsert(
                     $validasi->validated(),
@@ -515,8 +524,10 @@ class Pengaturan
             $storage->delete($fileexcel);
             
             FungsiStatis::hapusCacheAtur();
-            
-            echo '<p>Selesai menyimpan data excel. Mohon <a class="isi-xhr" href="' . $app->url->route('atur.data') . '">periksa ulang data</a>.</p>';
+
+            $reqs->session()->now('pesan', 'Selesai menyimpan data excel. Mohon <a class="isi-xhr" href="' . $app->url->route('atur.data') . '">periksa ulang data</a>');
+
+            echo $app->view->make('pemberitahuan');
             
             exit();
         };
