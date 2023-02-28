@@ -1,26 +1,28 @@
 @extends('rangka') 
 @section('isi')
-<div id="spanduk" class="tcetak">
-    <p><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <use xlink:href="{{ asset(mix('/ikon.svg')) . '#informasi' }}" xmlns:xlink="http://www.w3.org/1999/xlink">
-            </use>
-        </svg> Sandi Anda kurang aman.</p><a class="isi-xhr sekunder" href="">AMANKAN</a>
-</div>
-<div id="pesan" class="tcetak">
-    <p>Selamat Anda mendapat pesan kilat.</p><button class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <use xlink:href="{{ asset(mix('/ikon.svg')) . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink">
-            </use>
-        </svg></button>
-</div>
-<div id="periksa" class="tcetak">
-    <details>
-        <summary>Periksa kesalahan :</summary>
-        <ul>
-            <li>Kesalahan 1.</li>
-            <li>Kesalahan 2.</li>
-        </ul>
-    </details>
-    <button class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="{{ asset(mix('/ikon.svg')) . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></button>
+<div id="pemberitahuan" class="tcetak">
+    <div class="spanduk tcetak">
+        <p><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <use xlink:href="{{ asset(mix('/ikon.svg')) . '#informasi' }}" xmlns:xlink="http://www.w3.org/1999/xlink">
+                </use>
+            </svg> Sandi Anda kurang aman.</p><a class="isi-xhr sekunder" href="">AMANKAN</a>
+    </div>
+    <div class="pesan tcetak">
+        <p>Selamat Anda mendapat pesan kilat. <a href="/">Tautan</a></p><button class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <use xlink:href="{{ asset(mix('/ikon.svg')) . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink">
+                </use>
+            </svg></button>
+    </div>
+    <div class="periksa tcetak">
+        <details>
+            <summary>Periksa kesalahan :</summary>
+            <ul>
+                <li>Kesalahan 1.</li>
+                <li>Kesalahan 2.</li>
+            </ul>
+        </details>
+        <button class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="{{ asset(mix('/ikon.svg')) . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></button>
+    </div>
 </div>
 <h2>Sejarah {{ str(1)->padLeft(5,'0') }}</h2>
 <div class="kartu">

@@ -165,13 +165,12 @@ class Pengaturan
             'indexStatus' => $indexStatus,
         ];
 
-        $sesi = $reqs->session();
-
-        $sesi->put(['tautan_perujuk' => $reqs->fullUrlWithQuery(['fragment' => ''])]);
+        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
 
         $HtmlPenuh = $app->view->make('pengaturan.data', $data);
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return ($reqs->pjax() && (empty($reqs->fragment) || $sesi->get('errors'))) ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh->fragmentIf($reqs->fragment && $reqs->pjax(), $reqs->fragment);
+        return $reqs->pjax() && !$reqs->filled('fragment') 
+        ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept']) 
+        : $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax(), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function atributInput()

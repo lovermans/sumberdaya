@@ -5,7 +5,8 @@
     <form id="form_atur_tambahUbah" class="form-xhr kartu" method="POST" action="{{ $urlRangka->current() }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
         <div class="gspan-4">
-            <h4>{{$rekRangka->routeIs('atur.tambah') ? 'Tambah' : 'Ubah'}} Data Pengaturan Umum</h4>
+            <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></a>
+            <h4 class="form">{{$rekRangka->routeIs('atur.tambah') ? 'Tambah' : 'Ubah'}} Data Pengaturan Umum</h4>
         </div>
         <div class="isian">
             <label for="atur_tambahUbahJenis">Jenis Pengaturan</label>
@@ -32,11 +33,6 @@
         </div>
         <div class="gspan-4"></div>
         <button class="utama pelengkap" type="submit">SIMPAN</button>
-        @if ($rekRangka->pjax())
-            <a class="sekunder" href="#" onclick="event.preventDefault();this.parentElement.parentElement.remove()">TUTUP</a>
-        @else
-            <a class="isi-xhr sekunder" href="{{$urlRangka->to($rekRangka->session()->get('tautan_perujuk') ?? '/')}}">TUTUP</a>
-        @endif
     </form>
 
     <script>

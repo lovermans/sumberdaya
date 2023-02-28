@@ -18,7 +18,7 @@
                     <input id="atur_data_cariKataKunci" type="text" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
                     <span class="t-bantu">Cari jenis, butir dan keterangan</span>
                 </div>
-                <details class="gspan-4" {{ $rekRangka->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : '' }}>
+                <details class="gspan-4" {{ $rekRangka->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : 'sembunyikan' }}>
                     <summary>Penyaringan :</summary>                    
                     <div class="kartu form">
                         <div class="isian">
@@ -51,7 +51,7 @@
                     </div>
                 </details>
                 <div class="gspan-4"></div>
-                <button id="tombol_cari_atur" class="utama pelengkap" type="submit">
+                <button id="tombol_cari_atur" class="utama pelengkap" type="submit" {{ $rekRangka->anyFilled(['kata_kunci', 'atur_jenis', 'atur_butir', 'atur_status']) ? '' : 'sembunyikan' }}>
                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                     </svg>
@@ -59,11 +59,10 @@
                 </button>
             </form>
         </div>
-
-        <div id="atur_sematan" style="scroll-margin:4em 0 0 0"></div>
         
         <div id="atur_tabels" class="kartu" style="scroll-margin:4em 0 0 0">
             @fragment('atur_tabels')
+            <div id="atur_sematan" style="scroll-margin:4em 0 0 0"></div>
             <div class="trek-data cari-data tcetak">
                 <span class="bph">
                     <label for="atur_data_cariPerHalaman">Baris per halaman : </label>

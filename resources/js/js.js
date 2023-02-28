@@ -57,6 +57,9 @@ document.addEventListener('click', function (e) {
     if (e.target.closest('button.tutup-i')) {
         return e.target.closest('button.tutup-i').parentNode.remove();
     }
+    if (e.target.closest('a.tutup-i')) {
+        return e.target.closest('a.tutup-i').parentNode.parentNode.parentNode.remove();
+    }
 });
 
 document.addEventListener('submit', function (e) {
@@ -116,21 +119,15 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
     if (g) {
         isi.replaceChildren('');
         xhr.onprogress = function (e) {
+            if (c !== xhr.responseURL) {
+                location = xhr.responseURL;
+                return true;
+            };
+            
             let progressResponse;
             let responser = e.currentTarget.responseText;
             progressResponse = lastResponseLength ? responser.substring(lastResponseLength) : responser;
             lastResponseLength = responser.length;
-
-            // if (c !== xhr.responseURL) {
-            //     if (progressResponse.startsWith('<!DOCTYPE html>')) {
-            //         document.open();
-            //         document.write(progressResponse);
-            //         document.close();
-            //         return true;
-            //     };
-            //     document.querySelector('#isi').replaceChildren(range.createContextualFragment(progressResponse));
-            //     return true;
-            // };
 
             isiPemberitahuan('pemberitahuan', '');
             // console.log(progressResponse);
@@ -145,7 +142,8 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
             var responXHR = xhr.responseText;
             
             if (c !== xhr.responseURL) {
-                rekamTautan(b, xhr.responseURL, 'GET', null);
+                location = xhr.responseURL;
+                return true;
             };
 
             if (responXHR) {

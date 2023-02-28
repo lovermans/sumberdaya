@@ -309,26 +309,34 @@ nav :is(a:hover,
     background: var(--bg-label)
 }
 
-:is(header, button.tutup-i, .trek, .data tbody th button) svg {
+:is(header, .tutup-i, .trek, .data tbody th button) svg {
     margin: .5em;
 }
 
-button.tutup-i {
+.tutup-i {
     padding: 0;
+    display: inline-block;
 }
 
-button.tutup-i svg {
+.tutup-i svg {
     fill: var(--hitam-1);
 }
 
-button.tutup-i:hover {
+a.tutup-i svg {
+    fill: var(--taut-fokus);
+}
+
+.tutup-i:hover {
     background: var(--putih-3)
+}
+
+a.tutup-i:hover {
+    background: var(--bg-label)
 }
 
 header .off,
 #nav:checked~header .on,
-.submenu,
-[sembunyikan] {
+.submenu {
     display: none
 }
 
@@ -355,7 +363,7 @@ img.akun {
 
 header :is(label,
     #logo, img#akun),
-button.tutup-i,
+.tutup-i,
 .trek a,
 .data tbody th button,
 img.akun {
@@ -364,7 +372,7 @@ img.akun {
 
 header :is(label,
     #logo),
-button.tutup-i,
+.tutup-i,
 img.akun {
     margin: .25em;
 }
@@ -611,8 +619,8 @@ form.kartu,
 }
 
 .pesan a {
-    color: var(--hitam-1);
-    background-color: var(--putih-1);
+    color: var(--hitam-1)!important;
+    background-color: var(--putih-2);
     text-transform: uppercase;
 }
 
@@ -677,6 +685,11 @@ form.kartu,
 form.kartu,
 .kartu.form {
     gap: 1em;
+}
+
+h4.form {
+    display: inline;
+    vertical-align: middle;
 }
 
 .isian {
@@ -1355,7 +1368,7 @@ a.sekunder svg {
     text-align: left
 }
 
-main h4, .ss-main.tombol .ss-content .ss-list {
+.ss-main.tombol .ss-content .ss-list {
     text-align: center
 }
 
@@ -1524,6 +1537,10 @@ screen and (min-width:672rem) {
 /* @media screen and (max-resolution:160dpi) and (max-width:119.9375rem) and (min-width:85.375rem),screen and (max-resolution:160dpi) and (max-width:159.9375rem) and (min-width:128.0625rem),screen and (max-resolution:160dpi) and (max-width:239.9375rem) and (min-width:170.75rem),screen and (max-resolution:160dpi) and (max-width:319.9375rem) and (min-width:256.125rem),screen and (min-width:341.5rem) {
     
 } */
+
+[sembunyikan] {
+    display: none!important
+}
 
 @media print {
     @page {
