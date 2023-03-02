@@ -11,52 +11,58 @@
 
     @isset($tabels)
         <div class="cari-data tcetak">
+            {{-- <div class="batang tcetak">
+                <button class="k-cari"><svg class="" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></button>
+                <h4 class="form">{{$rekRangka->routeIs('atur.tambah') ? 'Tambah' : 'Ubah'}} Data Pengaturan Umum</h4>
+            </div> --}}
             <form id="form_atur_data_cari" class="form-xhr kartu" data-tujuan="#atur_tabels" method="GET" action="{{ $urlRangka->current() }}">
                 <input type="hidden" name="fragment" value="atur_tabels">
-                <div class="isian gspan-4">
-                    <label for="atur_data_cariKataKunci">Cari Data Pengaturan</label>
-                    <input id="atur_data_cariKataKunci" type="text" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
-                    <span class="t-bantu">Cari jenis, butir dan keterangan</span>
-                </div>
-                <details class="gspan-4" {{ $rekRangka->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : 'sembunyikan' }}>
-                    <summary>Penyaringan :</summary>                    
-                    <div class="kartu form">
-                        <div class="isian">
-                            <label for="atur_data_cariStatus">Saring Status</label>
-                            <select id="atur_data_cariStatus" name="atur_status[]" class="pil-dasar" multiple onchange="getElementById('tombol_cari_atur').click()">
-                                @foreach ($statuses as $status)
-                                    <option @selected(in_array($status, (array) $rekRangka->atur_status))>{{ $status }}</option>                            
-                                @endforeach
-                            </select>
-                            <span class="t-bantu">Pilih satu atau lebih</span>
+                <details class="gspan-4">
+                    <summary class="cari">
+                        <div class="isian gspan-4">
+                            <input id="atur_data_cariKataKunci" type="text" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
                         </div>
-                        <div class="isian">
-                            <label for="atur_data_cariJenis">1 Saring Jenis</label>
-                            <select id="atur_data_cariJenis" name="atur_jenis[]" class="pil-cari" @disabled($jenises->count() < 1) multiple onchange="getElementById('tombol_cari_atur').click()">
-                                @foreach ($jenises as $jenis)
-                                    <option @selected(in_array($jenis, (array) $rekRangka->atur_jenis))>{{ $jenis }}</option>                            
-                                @endforeach
-                            </select>
-                            <span class="t-bantu">Pilih satu atau lebih</span>
+                    </summary>
+                    <details class="gspan-4" {{ $rekRangka->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : '' }}> 
+                        <summary>Penyaringan :</summary>                    
+                        <div class="kartu form gspan-4">
+                            <div class="isian">
+                                <label for="atur_data_cariStatus">Saring Status</label>
+                                <select id="atur_data_cariStatus" name="atur_status[]" class="pil-dasar" multiple onchange="getElementById('tombol_cari_atur').click()">
+                                    @foreach ($statuses as $status)
+                                        <option @selected(in_array($status, (array) $rekRangka->atur_status))>{{ $status }}</option>                            
+                                    @endforeach
+                                </select>
+                                <span class="t-bantu">Pilih satu atau lebih</span>
+                            </div>
+                            <div class="isian">
+                                <label for="atur_data_cariJenis">1 Saring Jenis</label>
+                                <select id="atur_data_cariJenis" name="atur_jenis[]" class="pil-cari" @disabled($jenises->count() < 1) multiple onchange="getElementById('tombol_cari_atur').click()">
+                                    @foreach ($jenises as $jenis)
+                                        <option @selected(in_array($jenis, (array) $rekRangka->atur_jenis))>{{ $jenis }}</option>                            
+                                    @endforeach
+                                </select>
+                                <span class="t-bantu">Pilih satu atau lebih</span>
+                            </div>
+                            <div class="isian gspan-2">
+                                <label for="atur_data_cariButir">2 Saring Butir</label>
+                                <select id="atur_data_cariButir" name="atur_butir[]" class="pil-cari" @disabled($butirs->count() < 1) multiple onchange="getElementById('tombol_cari_atur').click()">
+                                    @foreach ($butirs as $butir)
+                                        <option @selected(in_array($butir, (array) $rekRangka->atur_butir))>{{ $butir }}</option>                            
+                                    @endforeach
+                                </select>
+                                <span class="t-bantu">Pilih satu atau lebih</span>
+                            </div>
                         </div>
-                        <div class="isian gspan-2">
-                            <label for="atur_data_cariButir">2 Saring Butir</label>
-                            <select id="atur_data_cariButir" name="atur_butir[]" class="pil-cari" @disabled($butirs->count() < 1) multiple onchange="getElementById('tombol_cari_atur').click()">
-                                @foreach ($butirs as $butir)
-                                    <option @selected(in_array($butir, (array) $rekRangka->atur_butir))>{{ $butir }}</option>                            
-                                @endforeach
-                            </select>
-                            <span class="t-bantu">Pilih satu atau lebih</span>
-                        </div>
-                    </div>
-                </details>
-                <div class="gspan-4"></div>
-                <button id="tombol_cari_atur" class="utama pelengkap" type="submit" {{ $rekRangka->anyFilled(['kata_kunci', 'atur_jenis', 'atur_butir', 'atur_status']) ? '' : 'sembunyikan' }}>
-                    <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg>
-                    CARI
-                </button>
+                    </details>
+                    <div class="gspan-4"></div>
+                    <button id="tombol_cari_atur" class="utama pelengkap" type="submit">
+                        <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                        </svg>
+                        CARI
+                    </button>
+                </details<
             </form>
         </div>
         

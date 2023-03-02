@@ -764,7 +764,7 @@ h4.form {
     color: var(--putih-3);
 }
 
-form.kartu [required]~.t-bantu::after {
+form.kartu [required]~.t-bantu:after {
     color: var(--oranye);
     content: " - wajib";
     font-style: italic;
@@ -845,8 +845,19 @@ a.sekunder svg {
     background: var(--taut-fokus);
 }
 
-.cari-data summary::-webkit-details-marker {
+.cari-data summary::-webkit-details-marker,
+.cari-data details > summary.cari:before,
+.cari-data details[open] > summary.cari:before {
     display: none;
+}
+
+.cari-data details > summary.cari:after {
+    content: "Buka Pencarian Lanjutan";
+    padding: 1em 0;
+}
+
+.cari-data details[open] > summary.cari:after {
+    content: "Tutup Pencarian Lanjutan";
 }
 
 /* --tabel */
