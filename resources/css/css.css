@@ -816,7 +816,7 @@ a.sekunder svg {
 }
 
 .cari-data details {
-    padding: 0;
+    padding: 0 0 1em;
 }
 
 .cari-data summary {
@@ -845,19 +845,14 @@ a.sekunder svg {
     background: var(--taut-fokus);
 }
 
-.cari-data summary::-webkit-details-marker,
-.cari-data details > summary.cari:before,
-.cari-data details[open] > summary.cari:before {
-    display: none;
-}
-
 .cari-data details > summary.cari:after {
-    content: "Buka Pencarian Lanjutan";
-    padding: 1em 0;
+    content: "Pencarian Lanjutan \25BC";
+    padding: .5em 0;
+    display: block;
 }
 
 .cari-data details[open] > summary.cari:after {
-    content: "Tutup Pencarian Lanjutan";
+    content: "Pencarian Lanjutan \25B2";
 }
 
 /* --tabel */
@@ -1549,8 +1544,11 @@ screen and (min-width:672rem) {
     
 } */
 
+.cari-data summary::-webkit-details-marker,
+.cari-data details > summary.cari:before,
+.cari-data details[open] > summary.cari:before,
 [sembunyikan] {
-    display: none!important
+    display: none;
 }
 
 @media print {

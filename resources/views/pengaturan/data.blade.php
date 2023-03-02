@@ -11,20 +11,14 @@
 
     @isset($tabels)
         <div class="cari-data tcetak">
-            {{-- <div class="batang tcetak">
-                <button class="k-cari"><svg class="" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></button>
-                <h4 class="form">{{$rekRangka->routeIs('atur.tambah') ? 'Tambah' : 'Ubah'}} Data Pengaturan Umum</h4>
-            </div> --}}
             <form id="form_atur_data_cari" class="form-xhr kartu" data-tujuan="#atur_tabels" method="GET" action="{{ $urlRangka->current() }}">
                 <input type="hidden" name="fragment" value="atur_tabels">
-                <details class="gspan-4">
+                <details class="gspan-4" {{ $rekRangka->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : '' }}>
                     <summary class="cari">
                         <div class="isian gspan-4">
-                            <input id="atur_data_cariKataKunci" type="text" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
+                            <input id="atur_data_cariKataKunci" type="text" placeholder="Cari kata kunci" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
                         </div>
                     </summary>
-                    <details class="gspan-4" {{ $rekRangka->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : '' }}> 
-                        <summary>Penyaringan :</summary>                    
                         <div class="kartu form gspan-4">
                             <div class="isian">
                                 <label for="atur_data_cariStatus">Saring Status</label>
@@ -54,7 +48,6 @@
                                 <span class="t-bantu">Pilih satu atau lebih</span>
                             </div>
                         </div>
-                    </details>
                     <div class="gspan-4"></div>
                     <button id="tombol_cari_atur" class="utama pelengkap" type="submit">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -62,7 +55,7 @@
                         </svg>
                         CARI
                     </button>
-                </details<
+                </details>
             </form>
         </div>
         

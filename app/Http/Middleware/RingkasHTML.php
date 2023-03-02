@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class RingkasHTML
 {
@@ -19,10 +18,10 @@ class RingkasHTML
         {
             $html = $response->getContent();
 
-            $iniData  = [];
-            $iniData['pcre.recursion_limit'] = ini_get('pcre.recursion_limit');
-            $iniData['zlib.output_compression'] = ini_get('zlib.output_compression');
-            $iniData['zlib.output_compression_level'] = ini_get('zlib.output_compression_level');
+            // $iniData  = [];
+            // $iniData['pcre.recursion_limit'] = ini_get('pcre.recursion_limit');
+            // $iniData['zlib.output_compression'] = ini_get('zlib.output_compression');
+            // $iniData['zlib.output_compression_level'] = ini_get('zlib.output_compression_level');
 
             // ini_set('pcre.recursion_limit', '16777');
             // // Some browser cant get content type.
