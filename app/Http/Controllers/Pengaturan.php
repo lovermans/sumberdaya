@@ -107,6 +107,8 @@ class Pengaturan
             );
 
         if ($reqs->unduh == 'excel') {
+
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitan aplikasi');
             
             set_time_limit(0);
             ob_implicit_flush();
@@ -145,9 +147,7 @@ class Pengaturan
             $spreadsheet->disconnectWorksheets();
             unset($spreadsheet);
             
-            echo '<p>Selesai menyiapkan berkas excel. <a href="' . $app->filesystem->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
-            
-            exit();
+            return $app->redirect->to($app->filesystem->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
         }
 
         $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'atur_tabels']);
@@ -197,6 +197,8 @@ class Pengaturan
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi');
         
         abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan');
+
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitan aplikasi');
         
         set_time_limit(0);
         ob_implicit_flush();
@@ -237,10 +239,6 @@ class Pengaturan
         unset($spreadsheet);
         
         return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
-
-        // echo $app->view->make('pemberitahuan');
-
-        // exit();
     }
 
     public function dataDasar()
@@ -265,6 +263,8 @@ class Pengaturan
         $pengguna = $reqs->user();
         $str = str();
 
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitan aplikasi');
+
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi');
 
         $atur = $this->dataDasar()->clone()->addSelect('atur_uuid')->where('atur_uuid', $uuid)->first();
@@ -273,7 +273,7 @@ class Pengaturan
        
         $HtmlPenuh = $app->view->make('pengaturan.lihat', compact('atur'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']);
     }
 
     public function tambah(FungsiStatis $fungsiStatis)
@@ -282,6 +282,8 @@ class Pengaturan
         $reqs = $app->request;
         $pengguna = $reqs->user();
         $str = str();
+
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitan aplikasi');
 
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi');
         
@@ -300,7 +302,9 @@ class Pengaturan
                 $this->atributInput()
             );
             
-            $validasi->validate();
+            if ($validasi->fails()) {
+                return $app->view->make('pemberitahuan')->withErrors($validasi);
+            }
             
             $data = $validasi->safe()->all();
 
@@ -316,7 +320,7 @@ class Pengaturan
 
         $HtmlPenuh = $app->view->make('pengaturan.tambah-ubah');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']);
     }
 
     public function ubah(FungsiStatis $fungsiStatis, $uuid)
@@ -325,6 +329,8 @@ class Pengaturan
         $reqs = $app->request;
         $pengguna = $reqs->user();
         $str = str();
+
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitan aplikasi');
 
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi');
         
@@ -347,7 +353,9 @@ class Pengaturan
                 $this->atributInput()
             );
             
-            $validasi->validate();
+            if ($validasi->fails()) {
+                return $app->view->make('pemberitahuan')->withErrors($validasi);
+            }
             
             $data = $validasi->safe()->all();
             
@@ -381,15 +389,17 @@ class Pengaturan
 
         $HtmlPenuh = $app->view->make('pengaturan.tambah-ubah', $data);
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']);
     }
 
-    public function unggah()
+    public function unggah(FungsiStatis $fungsiStatis)
     {
         $app = app();
         $reqs = $app->request;
         $pengguna = $reqs->user();
         $str = str();
+
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitan aplikasi');
 
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi');
         
@@ -416,12 +426,8 @@ class Pengaturan
             );
         
             if ($validasifile->fails() && $reqs->pjax()) {
-                echo $app->view->make('pemberitahuan')->withErrors($validasifile->errors());
-                    
-                exit();
+                return $app->view->make('pemberitahuan')->withErrors($validasifile);
             }
-
-            $validasifile->validate();
 
             $file = $validasifile->safe()->only('atur_unggah')['atur_unggah'];
             $namafile = 'unggahpengaturan-' . date('YmdHis') . '.xlsx';
@@ -500,13 +506,9 @@ class Pengaturan
                     ]
                 );
 
-                if ($validasi->fails()) {
-                    echo $app->view->make('pemberitahuan')->withErrors($validasi);
-                    
-                    exit();
+                if ($validasifile->fails() && $reqs->pjax()) {
+                    return $app->view->make('pemberitahuan')->withErrors($validasifile);
                 }
-
-                $validasi->validate();
                                 
                 $app->db->table('aturs')->upsert(
                     $validasi->validated(),
@@ -522,17 +524,15 @@ class Pengaturan
             
             $storage->delete($fileexcel);
             
-            FungsiStatis::hapusCacheAtur();
+            $fungsiStatis->hapusCacheAtur();
 
-            $reqs->session()->now('pesan', 'Selesai menyimpan data excel. Mohon <a class="isi-xhr" href="' . $app->url->route('atur.data') . '">periksa ulang data</a>');
-
-            echo $app->view->make('pemberitahuan');
+            $pesan = $fungsiStatis->statusBerhasil();
             
-            exit();
+            return $app->redirect->route('atur.data')->with('pesan', $pesan);
         };
 
         $HtmlPenuh = $app->view->make('pengaturan.unggah');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']);
     }
 }

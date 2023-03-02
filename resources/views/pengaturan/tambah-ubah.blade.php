@@ -2,7 +2,7 @@
 
 @section('isi')
 <div id="atur_tambahUbah">
-    <form id="form_atur_tambahUbah" class="form-xhr kartu" method="POST" action="{{ $urlRangka->current() }}">
+    <form id="form_atur_tambahUbah" class="form-xhr kartu" data-tujuan="#atur_sematan" method="POST" action="{{ $urlRangka->current() }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
         <div class="gspan-4">
             <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></a>

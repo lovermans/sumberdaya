@@ -25,7 +25,7 @@
             <p>{!! nl2br($atur->atur_detail) !!}</p>
         </div>
         <div class="gspan-4"></div>
-        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#atur_lihat" href="{{ $urlRangka->route('atur.ubah', ['uuid' => $atur->atur_uuid]) }}">UBAH</a>
+        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.ubah', ['uuid' => $atur->atur_uuid]) }}">UBAH</a>
         @else
         <div class="isian gspan-4">
             <p>Periksa kembali data yang diminta.</p>
