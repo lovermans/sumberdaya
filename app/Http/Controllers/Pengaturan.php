@@ -170,7 +170,7 @@ class Pengaturan
         $HtmlPenuh = $app->view->make('pengaturan.data', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         return $reqs->pjax() && !$reqs->filled('fragment') 
-        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept']) 
+        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
         : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax(), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 

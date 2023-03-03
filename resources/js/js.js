@@ -144,7 +144,8 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
                 return true;
             };
 
-            var responXHR = xhr.responseText;
+            var responXHR = xhr.responseText,
+                responTujuan = xhr.getResponseHeader('X-Tujuan');
 
             if (responXHR) {
                 if (responXHR.startsWith('<!DOCTYPE html>')) {
@@ -154,7 +155,7 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
                     return true;
                 };
                 isiPemberitahuan('pemberitahuan', '');
-                if (xhr.getResponseHeader('X-Tujuan')) {
+                if (responTujuan) {
                     isi = document.getElementById(responTujuan);
                 }
                 isi.replaceChildren(range.createContextualFragment(responXHR));
