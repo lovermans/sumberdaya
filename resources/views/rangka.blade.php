@@ -4,10 +4,10 @@
 
 <head>
     <noscript>
-        <meta HTTP-EQUIV="refresh" content="0;url='{{ $urlRangka->route('perlu-javascript') }}'">
+        <meta HTTP-EQUIV="refresh" content="0;url='{{ $urlRangka->route('perlu-javascript', [], false) }}'">
     </noscript>
     @include('informasi-meta')
-    <script src="{{ $urlRangka->asset($mixRangka('/interaksi.js')) }}"></script>
+    <script src="{{ $mixRangka('/interaksi.js') }}"></script>
 </head>
 
 <body data-tematerang="">

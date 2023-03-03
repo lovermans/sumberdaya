@@ -20,10 +20,10 @@
 <link href="{{ $rekRangka->url() }}" rel="canonical">
 <link href="{{ $confRangka->get('app.author') }}" rel="author">
 <link href="{{ $confRangka->get('app.publisher') }}" rel="publisher">
-<link href="{{ $urlRangka->asset($mixRangka('images/Logo Perusahaan.webp')) }}" rel="shortcut icon">
-<link href="{{ $urlRangka->asset($mixRangka('images/Logo Perusahaan.webp')) }}" rel="icon" sizes="192x192">
-<link href="{{ $urlRangka->asset($mixRangka('images/Logo Perusahaan.webp')) }}" rel="apple-touch-icon">
-<meta content="{{ $urlRangka->asset($mixRangka('images/Logo Perusahaan.webp')) }}" name="msapplication-TileImage">
-<link href="{{ $urlRangka->asset($mixRangka('images/Logo Perusahaan.webp')) }}" rel="image_src">
-<link href="{{ $urlRangka->asset('/favicon.ico') }}" rel="icon" type="image/x-icon">
-<link href="{{ $urlRangka->asset($mixRangka('/tampilan.css')) }}" rel="stylesheet">
+<link href="{{ $mixRangka('images/Logo Perusahaan.webp') }}" rel="shortcut icon">
+<link href="{{ $mixRangka('images/Logo Perusahaan.webp') }}" rel="icon" sizes="192x192">
+<link href="{{ $mixRangka('images/Logo Perusahaan.webp') }}" rel="apple-touch-icon">
+<meta content="{{ $mixRangka('images/Logo Perusahaan.webp') }}" name="msapplication-TileImage">
+<link href="{{ $mixRangka('images/Logo Perusahaan.webp') }}" rel="image_src">
+<link href="/favicon.ico" rel="icon" type="image/x-icon">
+<link href="{{ $mixRangka('/tampilan.css') }}" rel="stylesheet">

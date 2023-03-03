@@ -139,12 +139,12 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
             // console.log(this.getAllResponseHeaders());
             // console.log(this.getResponseHeader('X-Kode-Javascript'));
 
-            var responXHR = xhr.responseText;
-            
-            if (c !== xhr.responseURL) {
+            if (c !== xhr.responseURL && !xhr.getResponseHeader('Content-Type').startsWith('text/html')) {
                 location = xhr.responseURL;
                 return true;
             };
+
+            var responXHR = xhr.responseText;
 
             if (responXHR) {
                 if (responXHR.startsWith('<!DOCTYPE html>')) {
@@ -154,6 +154,9 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
                     return true;
                 };
                 isiPemberitahuan('pemberitahuan', '');
+                if (xhr.getResponseHeader('X-Tujuan')) {
+                    isi = document.getElementById(responTujuan);
+                }
                 isi.replaceChildren(range.createContextualFragment(responXHR));
                 j ? scrollTo(0,0) : isi.scrollIntoView();
                 return true;

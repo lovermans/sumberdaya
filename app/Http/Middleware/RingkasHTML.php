@@ -18,31 +18,44 @@ class RingkasHTML
         {
             $html = $response->getContent();
 
-            // $iniData  = [];
-            // $iniData['pcre.recursion_limit'] = ini_get('pcre.recursion_limit');
-            // $iniData['zlib.output_compression'] = ini_get('zlib.output_compression');
-            // $iniData['zlib.output_compression_level'] = ini_get('zlib.output_compression_level');
-
-            // ini_set('pcre.recursion_limit', '16777');
-            // // Some browser cant get content type.
-            // ini_set('zlib.output_compression', '4096');
-            // // Let server decide.
-            // ini_set('zlib.output_compression_level', '-1');
-
-            $regexRemoveWhiteSpace = '%(?>[^\S ]\s*| \s{2,})(?=(?:(?:[^<]++| <(?!/?(?:textarea|pre)\b))*+)(?:<(?>textarea|pre)\b|\z))%ix';
-            $new_buffer = preg_replace($regexRemoveWhiteSpace, '', $html);
-
-            // $html = config('app.debug') ? $html : $this->compressJscript($html);
-
-            // $html = config('app.debug') ? $html : preg_replace(array_keys($allRules),array_values($allRules),$html);
-
-            // $html = $this->compress($html);
+            $html = trim(preg_replace([
+                // t = text
+                // o = tag open
+                // c = tag close
+                // Keep important white-space(s) after self-closing HTML tag(s)
+                '#<(img|input)(>| .*?>)#s',
+                // Remove a line break and two or more white-space(s) between tag(s)
+                '#(<!--.*?-->)|(>)(?:\n*|\s{2,})(<)|^\s*|\s*$#s',
+                '#(<!--.*?-->)|(?<!\>)\s+(<\/.*?>)|(<[^\/]*?>)\s+(?!\<)#s',
+                // t+c || o+t
+                '#(<!--.*?-->)|(<[^\/]*?>)\s+(<[^\/]*?>)|(<\/.*?>)\s+(<\/.*?>)#s',
+                // o+o || c+c
+                '#(<!--.*?-->)|(<\/.*?>)\s+(\s)(?!\<)|(?<!\>)\s+(\s)(<[^\/]*?\/?>)|(<[^\/]*?\/?>)\s+(\s)(?!\<)#s',
+                // c+t || t+o || o+t -- separated by long white-space(s)
+                '#(<!--.*?-->)|(<[^\/]*?>)\s+(<\/.*?>)#s',
+                // empty tag
+                '#<(img|input)(>| .*?>)<\/\1>#s',
+                // reset previous fix
+                '#(&nbsp;)&nbsp;(?![<\s])#',
+                // clean up ...
+                '#(?<=\>)(&nbsp;)(?=\<)#',
+                // --ibid
+                '/\s+/',
+            ],[
+                '<$1$2</$1>',
+                '$1$2$3',
+                '$1$2$3',
+                '$1$2$3$4$5',
+                '$1$2$3$4$5$6$7',
+                '$1$2$3',
+                '<$1$2',
+                '$1 ',
+                '$1',
+                " ",
+            ], $html));
     
-            $response->setContent($new_buffer);
+            $response->setContent($html);
             
-            // ini_set('pcre.recursion_limit', $iniData['pcre.recursion_limit']);
-            // ini_set('zlib.output_compression', $iniData['zlib.output_compression']);
-            // ini_set('zlib.output_compression_level', $iniData['zlib.output_compression_level']);
         }
         
         return $response;

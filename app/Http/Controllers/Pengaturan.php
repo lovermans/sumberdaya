@@ -168,9 +168,10 @@ class Pengaturan
         $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
 
         $HtmlPenuh = $app->view->make('pengaturan.data', $data);
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         return $reqs->pjax() && !$reqs->filled('fragment') 
-        ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept']) 
-        : $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax(), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
+        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept']) 
+        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax(), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function atributInput()
