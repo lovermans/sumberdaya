@@ -103,7 +103,7 @@ document.addEventListener('submit', function (e) {
 window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
     var xhr = new XMLHttpRequest(),
         sisi = b ?? '#isi',
-        pesan = e ?? 'Menunggu jawaban server...',
+        pesan = e ?? '<p>Menunggu jawaban server...</p>',
         metode = d ?? 'GET';
     var isi = document.querySelector(sisi) ?? document.querySelector('#isi') ?? document.querySelector('body');
     if (i) {
@@ -113,11 +113,21 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
     if (a) {
         rekamTautan(b, c, d, e, h);
     }
-    isi.replaceChildren(pesan);
+    g ? isi.prepend(range.createContextualFragment('')) : isi.prepend(range.createContextualFragment(pesan));
     j ? scrollTo(0,0) : isi.scrollIntoView();
-    let lastResponseLength = false;
     if (g) {
-        isi.replaceChildren('');
+        let lastResponseLength = false;
+        for(var IDacak = '', b = 36; IDacak.length < 9;) {
+            IDacak += (Math.random() * b | 0).toString(b);
+        };
+        let wadahPesan = '<div class="pesan tcetak">' +
+            '<div id="' + IDacak + '"></div>' +
+            '<button class="tutup-i"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="/ikon.svg?id=ec47ccd0fadc02f2d210d55d23c3c657#tutup" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></button></div>';
+        
+        isi.prepend(range.createContextualFragment(wadahPesan));
+
+        let isiPesan = document.getElementById(IDacak);
+
         xhr.onprogress = function (e) {
             if (c !== xhr.responseURL) {
                 location = xhr.responseURL;
@@ -129,9 +139,9 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
             progressResponse = lastResponseLength ? responser.substring(lastResponseLength) : responser;
             lastResponseLength = responser.length;
 
-            isiPemberitahuan('pemberitahuan', '');
+            isiPemberitahuan('sematan_javascript', '');
             // console.log(progressResponse);
-            isi.append(range.createContextualFragment(progressResponse));
+            isiPesan.prepend(range.createContextualFragment(progressResponse));
             return true;
         };
     } else {
@@ -154,7 +164,7 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
                     document.close();
                     return true;
                 };
-                isiPemberitahuan('pemberitahuan', '');
+                isiPemberitahuan('sematan_javascript', '');
                 if (responTujuan) {
                     isi = document.getElementById(responTujuan);
                 }

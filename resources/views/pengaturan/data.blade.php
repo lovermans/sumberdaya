@@ -4,7 +4,7 @@
 <div id="atur_data">
     <p class="tcetak kartu">
         <svg style="fill:var(--taut-umum)" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#informasi' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#informasi' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
         </svg>
         Data pengaturan ini digunakan hanya sebagai alat bantu validasi pengisian data lain dalam aplikasi. Segala bentuk perubahan dalam data pengaturan ini tidak akan berdampak pada data lainnya, Anda harus mengubah data lainnya secara manual.
     </p>
@@ -51,7 +51,7 @@
                     <div class="gspan-4"></div>
                     <button id="tombol_cari_atur" class="utama pelengkap" type="submit">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                         </svg>
                         CARI
                     </button>
@@ -78,26 +78,26 @@
                     @if($tabels->currentPage() > 1)
                         <a class="isi-xhr" href="{{ $tabels->url(1) }}" data-tujuan="#atur_tabels" title="Awal">
                             <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#awal' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#awal' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                             </svg>
                         </a>
                     @endif
                     @if($tabels->previousPageUrl() !== null)
                     <a class="isi-xhr" href="{{ $tabels->previousPageUrl() }}" data-tujuan="#atur_tabels" title="Sebelumnya">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#mundur' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#mundur' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                         </svg>
                     </a>
                     @endif
                     @if($tabels->nextPageUrl() !== null)
                     <a class="isi-xhr" href="{{ $tabels->nextPageUrl() }}" data-tujuan="#atur_tabels" title="Berikutnya">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#maju' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#maju' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                         </svg>
                     </a>
                     <a class="isi-xhr" href="{{ $tabels->url($tabels->lastPage()) }}" data-tujuan="#atur_tabels" title="Akhir">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#akhir' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#akhir' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                         </svg>
                     </a>
                     @endif
@@ -156,17 +156,17 @@
                                 <div class="pil-aksi">
                                     <button>
                                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#menuvert' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                         </svg>
                                     </button>
                                     <div class="aksi">
-                                        <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.lihat', ['uuid' => $tabel->atur_uuid]) }}" title="Lihat Data">
+                                        <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.lihat', ['uuid' => $tabel->atur_uuid], false) }}" title="Lihat Data">
                                             Lihat Data
                                         </a>
-                                        <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.ubah', ['uuid' => $tabel->atur_uuid]) }}" title="Ubah Data">
+                                        <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.ubah', ['uuid' => $tabel->atur_uuid], false) }}" title="Ubah Data">
                                             Ubah Data
                                         </a>
-                                        {{-- <a class="isi-xhr" data-rekam="false" data-metode="POST" data-enkode="true" data-kirim="{{ '_token='.csrf_token() }}" href="{{ $urlRangka->route('atur.nonaktifkan', ['uuid' => $atur->atur_uuid]) }}">Non-aktifkan</a> --}}
+                                        {{-- <a class="isi-xhr" data-rekam="false" data-metode="POST" data-enkode="true" data-kirim="{{ '_token='.csrf_token() }}" href="{{ $urlRangka->route('atur.nonaktifkan', ['uuid' => $atur->atur_uuid], false) }}">Non-aktifkan</a> --}}
                                     </div>
                                 </div>
                             </th>
@@ -192,7 +192,7 @@
                 urutData('#atur_data_cariUrut','#atur_data_cariUrut [data-indeks]');
                 formatTabel('#atur_tabel thead th', '#atur_tabel tbody tr');
             </script>
-            @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+            @includeWhen($sesiRangka->has('spanduk') || $sesiRangka->has('pesan') || $errors->any(), 'pemberitahuan')
             @endfragment
         </div>
     
@@ -203,22 +203,22 @@
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#panahatas' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#panahatas' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
-        <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.unggah') }}" title="Unggah Data">
+        <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.unggah', [], false) }}" title="Unggah Data">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unggah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unggah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
-        <a class="isi-xhr" href="{{ $urlRangka->current().'?'.http_build_query(array_merge($rekRangka->merge(['unduh' => 'excel'])->except(['page', 'bph']))) }}" data-rekam="false" data-laju="true" data-tujuan="#atur_sematan" title="Unduh Data">
+        <a class="isi-xhr" href="{{ $urlRangka->current().'?'.http_build_query(array_merge($rekRangka->merge(['unduh' => 'excel'])->except(['page', 'bph']))) }}" data-rekam="false" data-laju="true" data-tujuan="#atur_tabels" title="Unduh Data">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
-        <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.tambah') }}" title="Tambah Data">
+        <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.tambah', [], false) }}" title="Tambah Data">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tambah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tambah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
     </div>

@@ -622,6 +622,7 @@ form.kartu,
     color: var(--hitam-1)!important;
     background-color: var(--putih-2);
     text-transform: uppercase;
+    overflow-wrap: anywhere;
 }
 
 .periksa {
@@ -1547,6 +1548,7 @@ screen and (min-width:672rem) {
 .cari-data summary::-webkit-details-marker,
 .cari-data details > summary.cari:before,
 .cari-data details[open] > summary.cari:before,
+#sematan_javascript,
 [sembunyikan] {
     display: none;
 }

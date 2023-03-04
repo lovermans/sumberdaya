@@ -42,7 +42,7 @@
             Ubah Sandi
         </a>
         <form method="POST" action="{{ $urlRangka->route('logout', [], false) }}">
-            <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+            <input type="hidden" name="_token" value="{{ $sesiRangka->token() }}">
             <a href="{{ $urlRangka->route('logout', [], false) }}" onclick="event.preventDefault(); this.closest('form').submit()">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <use xlink:href="{{ $mixRangka('/ikon.svg') . '#keluar' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>

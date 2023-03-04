@@ -47,7 +47,7 @@ class Pengaturan
         );
 
         if ($validator->fails()) {
-            return $app->redirect->route('atur.data')->withErrors($validator)->withInput();
+            return $app->redirect->route('atur.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
 
         $urutArray = $reqs->urut;
@@ -108,7 +108,7 @@ class Pengaturan
 
         if ($reqs->unduh == 'excel') {
 
-            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitan aplikasi');
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
             
             set_time_limit(0);
             ob_implicit_flush();
@@ -199,7 +199,7 @@ class Pengaturan
         
         abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan');
 
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitan aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
         
         set_time_limit(0);
         ob_implicit_flush();
@@ -264,7 +264,7 @@ class Pengaturan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitan aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
 
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi');
 
@@ -284,9 +284,12 @@ class Pengaturan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitan aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
 
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi');
+
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        $halaman = $app->view;
         
         if ($reqs->isMethod('post')) {
             
@@ -304,7 +307,7 @@ class Pengaturan
             );
             
             if ($validasi->fails()) {
-                return $app->view->make('pemberitahuan')->withErrors($validasi);
+                return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
             }
             
             $data = $validasi->safe()->all();
@@ -319,9 +322,9 @@ class Pengaturan
             return $app->redirect->route('atur.data')->with('pesan', $pesan);
         }
 
-        $HtmlPenuh = $app->view->make('pengaturan.tambah-ubah');
+        $HtmlPenuh = $halaman->make('pengaturan.tambah-ubah');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']);
+        return $tanggapan->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']);
     }
 
     public function ubah(FungsiStatis $fungsiStatis, $uuid)
@@ -331,13 +334,16 @@ class Pengaturan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitan aplikasi');
-
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi');
+        
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
         
         $atur = $this->dataDasar()->clone()->addSelect('atur_uuid')->where('atur_uuid', $uuid)->first();
         
         abort_unless($atur, 404, 'Data Pengaturan tidak ditemukan');
+
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        $halaman = $app->view;
 
         if ($reqs->isMethod('post')) {
             
@@ -355,7 +361,7 @@ class Pengaturan
             );
             
             if ($validasi->fails()) {
-                return $app->view->make('pemberitahuan')->withErrors($validasi);
+                return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
             }
             
             $data = $validasi->safe()->all();
@@ -373,10 +379,10 @@ class Pengaturan
             if ($reqs->header('X-Minta-Javascript', false)) {
                 
                 $session->now('pesan', $pesan);
-                
-                header('X-Kode-Javascript :true');
-                
-                return view('pemberitahuan');
+                                
+                return $tanggapan->make($halaman->make('pemberitahuan'))->withHeaders(['Vary' => 'Accept',
+                    'X-Tujuan' => 'sematan_javascript',
+                    'X-Kode-Javascript' => true]);
             }
 
             $perujuk = $session->get('tautan_perujuk');
@@ -388,9 +394,9 @@ class Pengaturan
             'atur' => $atur,
         ];
 
-        $HtmlPenuh = $app->view->make('pengaturan.tambah-ubah', $data);
+        $HtmlPenuh = $halaman->make('pengaturan.tambah-ubah', $data);
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']);
+        return $tanggapan->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']);
     }
 
     public function unggah(FungsiStatis $fungsiStatis)
@@ -400,9 +406,12 @@ class Pengaturan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitan aplikasi');
-
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi');
+        
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        $halaman = $app->view;
         
         if ($reqs->isMethod('post')) {
             
@@ -426,8 +435,8 @@ class Pengaturan
                 ]
             );
         
-            if ($validasifile->fails() && $reqs->pjax()) {
-                return $app->view->make('pemberitahuan')->withErrors($validasifile);
+            if ($validasifile->fails()) {
+                return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasifile))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
             }
 
             $file = $validasifile->safe()->only('atur_unggah')['atur_unggah'];
@@ -507,8 +516,8 @@ class Pengaturan
                     ]
                 );
 
-                if ($validasifile->fails() && $reqs->pjax()) {
-                    return $app->view->make('pemberitahuan')->withErrors($validasifile);
+                if ($validasi->fails()) {
+                    return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
                 }
                                 
                 $app->db->table('aturs')->upsert(
@@ -532,7 +541,7 @@ class Pengaturan
             return $app->redirect->route('atur.data')->with('pesan', $pesan);
         };
 
-        $HtmlPenuh = $app->view->make('pengaturan.unggah');
+        $HtmlPenuh = $halaman->make('pengaturan.unggah');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']);
     }

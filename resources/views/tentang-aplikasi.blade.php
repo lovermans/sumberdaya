@@ -65,6 +65,6 @@
         <a href="{{ $urlRangka->route('mulai') }}"><span class="judul">@if($userRangka) PILIH SUMBER DAYA @else MASUK @endif</span></a>
     </div>
 
-    @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+    @includeWhen($sesiRangka->has('spanduk') || $sesiRangka->has('pesan') || $errors->any(), 'pemberitahuan')
 </div>
 @endsection

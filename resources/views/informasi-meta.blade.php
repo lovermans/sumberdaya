@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="Laravel 9" name="generator">
-<meta name="csrf-token" content="{{ $appRangka->session->token() }}">
+<meta name="csrf-token" content="{{ $sesiRangka->token() }}">
 <title>{{ $confRangka->get('app.name', 'Laravel') }}</title>
 <meta name="desciption" content="{{ $confRangka->get('app.description') }}">
 <link rel="preconnect" href="{{ $urlRangka->route('mulai') }}">

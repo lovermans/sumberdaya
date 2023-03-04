@@ -5,7 +5,7 @@
     <div class="kartu form">
         @isset($atur)
         <div class="gspan-4">
-            <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></a>
+            <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="{{ $mixRangka('/ikon.svg') . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></a>
             <h4 class="form">{{$rekRangka->routeIs('atur.tambah') ? 'Tambah' : 'Ubah'}} Data Pengaturan Umum</h4>
         </div>
         <div class="isian">
@@ -25,7 +25,7 @@
             <p>{!! nl2br($atur->atur_detail) !!}</p>
         </div>
         <div class="gspan-4"></div>
-        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.ubah', ['uuid' => $atur->atur_uuid]) }}">UBAH</a>
+        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.ubah', ['uuid' => $atur->atur_uuid], false) }}">UBAH</a>
         @else
         <div class="isian gspan-4">
             <p>Periksa kembali data yang diminta.</p>
@@ -33,6 +33,6 @@
         @endisset
     </div>
     
-    @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+    @includeWhen($sesiRangka->has('spanduk') || $sesiRangka->has('pesan') || $errors->any(), 'pemberitahuan')
 </div>
 @endsection

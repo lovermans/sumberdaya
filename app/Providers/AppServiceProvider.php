@@ -45,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
         $appRangka->view->composer('*', function ($view) use ($data, $rekRangka) {
             $view->with($data)
             ->with('userRangka', $rekRangka->user())
+            ->with('sesiRangka', $rekRangka->session())
             ;
         });
 
