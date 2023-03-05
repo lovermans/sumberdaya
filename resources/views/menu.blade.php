@@ -10,19 +10,19 @@
         </label>
         <a href="{{ $urlRangka->route('mulai', [], false) }}">
             <img id="logo" src="{{ $mixRangka('/images/Logo Perusahaan.webp') }}" title="{{ $confRangka->get('app.usaha') }}" alt="{{ $confRangka->get('app.usaha') }}" loading="lazy"></a>
-        <h1>{{ $confRangka->get('app.name', 'Laravel') }}</h1>
-        <label for="tema" id="tbl-tema" onclick=""title="Ubah Tema">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tema' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-            </svg>
-        </label>
-        @if($userRangka)
-        <label for="menu" id="tbl-menu" onclick="" title="Akun">
+            <label for="tema" id="tbl-tema" onclick=""title="Ubah Tema">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tema' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                </svg>
+            </label>
+            @if($userRangka)
+            <label for="menu" id="tbl-menu" onclick="" title="Akun">
                 <img id="akun" @class(['svg' => !$storageRangka->exists('sdm/foto-profil/' . $userRangka->sdm_no_absen . '.webp'),])
-                    src="{{ $storageRangka->exists('sdm/foto-profil/' . $userRangka->sdm_no_absen . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $userRangka?->sdm_no_absen . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $userRangka->sdm_no_absen . '.webp'))], false) : $mixRangka('/ikon.svg') . '#akun' }}"
-                    alt="{{ $userRangka->sdm_nama ?? 'foto akun' }}" title="{{ $userRangka->sdm_nama ?? 'foto akun' }}" loading="lazy">
-        </label>
-        @endif
+                src="{{ $storageRangka->exists('sdm/foto-profil/' . $userRangka->sdm_no_absen . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $userRangka?->sdm_no_absen . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $userRangka->sdm_no_absen . '.webp'))], false) : $mixRangka('/ikon.svg') . '#akun' }}"
+                alt="{{ $userRangka->sdm_nama ?? 'foto akun' }}" title="{{ $userRangka->sdm_nama ?? 'foto akun' }}" loading="lazy">
+            </label>
+            @endif
+        <h1>{{ $confRangka->get('app.name', 'Laravel') }}</h1>
         <div class="bersih"></div>
     </section>
 </header>

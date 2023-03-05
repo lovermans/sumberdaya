@@ -33,7 +33,7 @@ class SumberDaya
 
         $HtmlPenuh = $app->view->make('mulai');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlPenuh;
     }
 
     public function akun(FungsiStatis $fungsiStatis, $uuid = null)
@@ -113,6 +113,8 @@ class SumberDaya
         
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
 
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+
         $storage = $app->filesystem;
         
         abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan');
@@ -171,12 +173,9 @@ class SumberDaya
         $writer->setPreCalculateFormulas(false);
         $writer->save($app->storagePath("app/unduh/{$filename}"));
         $spreadsheet->disconnectWorksheets();
-        
         unset($spreadsheet);
         
-        echo '<p>Selesai menyiapkan berkas excel. <a href="' . $storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
-        
-        exit();
+        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
     }
 
     public function formulirSerahTerimaSDMBaru($uuid = null)
@@ -186,6 +185,8 @@ class SumberDaya
         $pengguna = $reqs->user();
         
         abort_unless($pengguna && $uuid, 401);
+        
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
         
         $database = $app->db;
 
@@ -236,9 +237,7 @@ class SumberDaya
 
         $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
         
-        echo '<p>Selesai menyiapkan berkas formulir. <a href="' . $storage->disk('local')->temporaryUrl("unduh/{$filename}", $date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
-        
-        exit();
+        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
     }
 
     public function formulirPelepasanSDM($uuid = null)
@@ -248,6 +247,7 @@ class SumberDaya
         $pengguna = $reqs->user();
         
         abort_unless($pengguna && $uuid, 401);
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
         
         $database = $app->db;
 
@@ -299,9 +299,7 @@ class SumberDaya
 
         $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
         
-        echo '<p>Selesai menyiapkan berkas formulir. <a href="' . $storage->disk('local')->temporaryUrl("unduh/{$filename}", $date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
-        
-        exit();
+        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
     }
 
     public function formulirTTDokumenTitipan($uuid = null)
@@ -309,7 +307,10 @@ class SumberDaya
         $app = app();
         $reqs = $app->request;
         $pengguna = $reqs->user();
+        
         abort_unless($pengguna && $uuid, 401);
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+
         $database = $app->db;
 
         $penem = $database->query()->select('penempatan_no_absen', 'penempatan_lokasi', 'penempatan_mulai')->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
@@ -367,9 +368,7 @@ class SumberDaya
 
         $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
         
-        echo '<p>Selesai menyiapkan berkas formulir. <a href="' . $storage->disk('local')->temporaryUrl("unduh/{$filename}", $date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
-        
-        exit();
+        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
     }
 
     public function formulirTTInventaris($uuid = null)
@@ -377,7 +376,10 @@ class SumberDaya
         $app = app();
         $reqs = $app->request;
         $pengguna = $reqs->user();
+        
         abort_unless($pengguna && $uuid, 401);
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        
         $database = $app->db;
 
         $penem = $database->query()->select('penempatan_no_absen', 'penempatan_lokasi', 'penempatan_mulai')->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
@@ -428,9 +430,7 @@ class SumberDaya
 
         $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
         
-        echo '<p>Selesai menyiapkan berkas formulir. <a href="' . $storage->disk('local')->temporaryUrl("unduh/{$filename}", $date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
-        
-        exit();
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
     }
 
     public function formulirPersetujuanGaji($uuid = null)
@@ -438,7 +438,10 @@ class SumberDaya
         $app = app();
         $reqs = $app->request;
         $pengguna = $reqs->user();
+
         abort_unless($pengguna && $uuid, 401);
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+
         $database = $app->db;
 
         $penem = $database->query()->select('penempatan_no_absen', 'penempatan_lokasi', 'penempatan_mulai')->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
@@ -491,9 +494,7 @@ class SumberDaya
 
         $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
         
-        echo '<p>Selesai menyiapkan berkas formulir. <a href="' . $storage->disk('local')->temporaryUrl("unduh/{$filename}", $date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
-        
-        exit();
+        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
     }
 
     public function suratKeteranganSDM($uuid = null)
@@ -501,7 +502,10 @@ class SumberDaya
         $app = app();
         $reqs = $app->request;
         $pengguna = $reqs->user();
+
         abort_unless($pengguna && $uuid, 401);
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+
         $database = $app->db;
 
         $penem = $database->query()->select('penempatan_no_absen', 'penempatan_lokasi', 'penempatan_mulai')->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
@@ -556,9 +560,7 @@ class SumberDaya
 
         $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
         
-        echo '<p>Selesai menyiapkan berkas formulir. <a href="' . $storage->disk('local')->temporaryUrl("unduh/{$filename}", $date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
-        
-        exit();
+        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
     }
 
     public function tentangAplikasi()
@@ -585,8 +587,12 @@ class SumberDaya
 
         $session = $reqs->session();
         $hash = $app->hash;
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        $halaman = $app->view;
         
         if ($reqs->isMethod('post')) {
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+
             $validasiSandi = $app->validator->make(
                 $reqs->all(),
                 [
@@ -600,7 +606,9 @@ class SumberDaya
                 ]
             );
             
-            $validasiSandi->validate();
+            if ($validasiSandi->fails()) {
+                return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasiSandi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
+            }
             
             $sandiBaru = $hash->make($validasiSandi->safe()->only('password')['password']);
             
@@ -611,9 +619,9 @@ class SumberDaya
             return $app->redirect->route('mulai')->with('pesan', 'Sandi berhasil diubah.');
         }
 
-        $HtmlPenuh = $app->view->make('ubah-sandi');
+        $HtmlPenuh = $halaman->make('ubah-sandi');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        return $reqs->pjax() ? $tanggapan->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlPenuh;
     }
 
     public function ubahAkun(FungsiStatis $fungsiStatis, $uuid = null)
@@ -645,7 +653,11 @@ class SumberDaya
 
         abort_unless(blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0) || ($no_absen_sdm == $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi');
 
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        $halaman = $app->view;
+
         if ($reqs->isMethod('post')) {
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
             
             $reqs->whenFilled('sdm_hak_akses', function ($input) use ($reqs) {
                 $reqs->except('sdm_hak_akses');
@@ -774,7 +786,10 @@ class SumberDaya
                     ]
                 );
                 
-            $validasi->validate();
+            if ($validasi->fails()) {
+                return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
+            }
+            
             $valid = $validasi->safe();
             $str = str();
             $pengurus = $str->contains($pengguna->sdm_hak_akses, 'SDM-PENGURUS');
@@ -803,11 +818,9 @@ class SumberDaya
             
             $fungsiStatis->hapusCacheSDMUmum();
             
-            $redirect = $app->redirect;
-            $perujuk = $reqs->session()->get('tautan_perujuk');
             $pesan = $fungsiStatis->statusBerhasil();
             
-            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('akun', ['uuid' => $uuid])->with('pesan', $pesan);
+            return $app->redirect->route('sdm.mulai')->with('pesan', $pesan);
         }
 
         $aturs = $fungsiStatis->ambilCacheAtur();
@@ -832,9 +845,9 @@ class SumberDaya
             'penempatans' => $aturs->where('atur_jenis', 'PENEMPATAN')->sortBy(['atur_butir', 'asc']),
         ];
 
-        $HtmlPenuh = $app->view->make('tambah-ubah-akun', $data);
+        $HtmlPenuh = $halaman->make('tambah-ubah-akun', $data);
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        return $reqs->pjax() ? $tanggapan->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
     }
 
     public function unduh($berkas = null)
@@ -987,7 +1000,7 @@ class SumberDaya
         ]);
     }
 
-    public function unggah(Rule $rule) {
+    public function unggah(Rule $rule, FungsiStatis $fungsiStatis) {
         $app = app();
         $reqs = $app->request;
         $pengguna = $reqs->user();
@@ -995,7 +1008,14 @@ class SumberDaya
         
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
 
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        $halaman = $app->view;
+
         if ($reqs->isMethod('post')) {
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+
             set_time_limit(0);
             ob_implicit_flush();
             ob_end_flush();
@@ -1014,7 +1034,10 @@ class SumberDaya
                 ]
             );
             
-            $validasifile->validate();
+            if ($validasifile->fails()) {
+                return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasifile))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
+            }
+
             $file = $validasifile->safe()->only('unggah_profil_sdm')['unggah_profil_sdm'];
             $namafile = 'unggahprofilsdm-' . date('YmdHis') . '.xlsx';
             
@@ -1187,7 +1210,7 @@ class SumberDaya
                 );
                 
                 if ($validasi->fails()) {
-                    return $app->redirect->back()->withErrors($validasi);
+                    return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
                 }
                                 
                 $app->db->table('sdms')->upsert(
@@ -1204,11 +1227,10 @@ class SumberDaya
             
             $storage->delete($fileexcel);
             
-            FungsiStatis::hapusCacheSDMUmum();
+            $fungsiStatis->hapusCacheSDMUmum();
+            $pesan = $fungsiStatis->statusBerhasil();
             
-            echo '<p>Selesai menyimpan data excel. Mohon <a class="isi-xhr" href="' . $app->url->route('sdm.penempatan.data-aktif') . '">periksa ulang data</a>.</p>';
-            
-            exit();
+            return $app->redirect->route('atur.data')->with('pesan', $pesan);
         }
 
         $HtmlPenuh = $app->view->make('unggah');

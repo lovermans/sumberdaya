@@ -210,7 +210,7 @@ main summary {
 }
 
 header h1 {
-    float: left;
+    float: right;
     font-weight: 500;
     color: var(--oranye)
 }
@@ -658,8 +658,16 @@ form.kartu,
     border: var(--batas);
 }
 
+.kesalahan-internal p {
+    color: var(--putih-1);
+}
+
 .kesalahan-internal a {
     float: right;
+}
+
+.kesalahan-internal a.sekunder {
+    background-color: transparent;
 }
 
 .kartu {

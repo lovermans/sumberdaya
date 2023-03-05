@@ -61,9 +61,12 @@ class RegisteredUserController
         $pengguna = $reqs->user();
 
         abort_unless($pengguna && str($pengguna?->sdm_hak_akses)->contains('SDM-PENGURUS'), 403);
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
 
         $hash = $app->hash;
         $database = $app->db;
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        $halaman = $app->view;
         
         $reqs->merge(['sdm_id_pembuat' => $pengguna->sdm_no_absen, 'password' => $hash->make($reqs->sdm_no_ktp) ?? null]);
         
@@ -186,7 +189,9 @@ class RegisteredUserController
             ]
         );
 
-        $validasi->validate();
+        if ($validasi->fails()) {
+            return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
+        }
         
         $valid = $validasi->safe();
         
@@ -208,10 +213,8 @@ class RegisteredUserController
         
         $fungsiStatis->hapusCacheSDMUmum();
         
-        $redirect = $app->redirect;
-        $perujuk = $reqs->session()->get('tautan_perujuk');
         $pesan = $fungsiStatis->statusBerhasil();
         
-        return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.mulai')->with('pesan', $pesan);
+        return $app->redirect->route('sdm.mulai')->with('pesan', $pesan);
     }
 }

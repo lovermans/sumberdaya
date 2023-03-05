@@ -12,12 +12,14 @@ class Umum
         $reqs = $app->request;
         $pengguna = $reqs->user();
         $str = str();
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        $halaman = $app->view;
         
         abort_unless($str->contains($pengguna?->sdm_hak_akses, 'SDM'), 403, 'Akses dibatasi hanya untuk Pengguna Aplikasi SDM');
 
         if($reqs->fragment == 'navigasi') {
             $navigasi = $app->view->make('sdm.navigasi');
-            return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($navigasi)->withHeaders(['Vary' => 'Accept']);
+            return $tanggapan->make($navigasi)->withHeaders(['Vary' => 'Accept']);
         }
 
         $linkupIjin = $pengguna->sdm_ijin_akses;
@@ -51,7 +53,7 @@ class Umum
             });
 
             $sdmIngatUltah = $app->view->make('sdm.pengingat.sdm-ultah', ['ulangTahuns' => $ulangTahuns ?? null]);
-            return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($sdmIngatUltah)->withHeaders(['Vary' => 'Accept']);
+            return $tanggapan->make($sdmIngatUltah)->withHeaders(['Vary' => 'Accept']);
 
         }
 
@@ -71,7 +73,7 @@ class Umum
                     });
                 
                 $sdmIngatPtsb = $app->view->make('sdm.pengingat.permintaan-tambah-sdm', ['perminSDMS' => $perminSDMS ?? null]);
-                return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($sdmIngatPtsb)->withHeaders(['Vary' => 'Accept']);
+                return $tanggapan->make($sdmIngatPtsb)->withHeaders(['Vary' => 'Accept']);
             
             }
 
@@ -97,7 +99,7 @@ class Umum
                 });
 
                 $sdmIngatPkpd = $app->view->make('sdm.pengingat.pkwt-perlu-ditinjau', ['kontraks' => $kontraks ?? null]);
-                return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($sdmIngatPkpd)->withHeaders(['Vary' => 'Accept']);
+                return $tanggapan->make($sdmIngatPkpd)->withHeaders(['Vary' => 'Accept']);
             
             }
 
@@ -122,7 +124,7 @@ class Umum
                 });
 
                 $sdmIngatPstatus = $app->view->make('sdm.pengingat.perubahan-status', ['statuses' => $statuses ?? null]);
-                return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($sdmIngatPstatus)->withHeaders(['Vary' => 'Accept']);
+                return $tanggapan->make($sdmIngatPstatus)->withHeaders(['Vary' => 'Accept']);
         
             }
 
@@ -147,7 +149,7 @@ class Umum
                 });
 
                 $sdmIngatBaru = $app->view->make('sdm.pengingat.sdm-baru', ['barus' => $barus ?? null]);
-                return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($sdmIngatBaru)->withHeaders(['Vary' => 'Accept']);
+                return $tanggapan->make($sdmIngatBaru)->withHeaders(['Vary' => 'Accept']);
         
             }
 
@@ -175,7 +177,7 @@ class Umum
                 });
 
                 $sdmIngatKeluar = $app->view->make('sdm.pengingat.sdm-keluar', ['berhentis' => $berhentis ?? null]);
-                return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($sdmIngatKeluar)->withHeaders(['Vary' => 'Accept']);
+                return $tanggapan->make($sdmIngatKeluar)->withHeaders(['Vary' => 'Accept']);
 
             }
             
@@ -185,6 +187,6 @@ class Umum
 
         $HtmlPenuh = $app->view->make('sdm.mulai');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        return $reqs->pjax() ? $tanggapan->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlPenuh;
     }
 }

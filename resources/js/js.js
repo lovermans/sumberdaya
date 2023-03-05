@@ -166,7 +166,7 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
                 };
                 isiPemberitahuan('sematan_javascript', '');
                 if (responTujuan) {
-                    isi = document.getElementById(responTujuan);
+                    isi = document.getElementById(responTujuan) ?? document.querySelector('#isi') ?? document.querySelector('body');
                 }
                 isi.replaceChildren(range.createContextualFragment(responXHR));
                 j ? scrollTo(0,0) : isi.scrollIntoView();

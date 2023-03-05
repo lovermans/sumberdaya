@@ -2,19 +2,12 @@
 
 @section('isi')
 <div id="tambah_ubah_akun">
-    <h4>{{$rekRangka->routeIs('register') ? 'Tambah' : 'Ubah'}} Data Profil SDM</h4>
     <form id="form_tambahUbahAkun" class="form-xhr kartu tcetak" method="POST" action="{{ $urlRangka->current() }}">
-        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+        <input type="hidden" name="_token" value="{{ $sesiRangka->token() }}">
         <div style="grid-row:span 2;text-align:center">
             <p>
-                <img id="foto" @class([
-                'svg' => !$storageRangka->exists(
-                    'sdm/foto-profil/' . $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp'
-                ),
-            ])
-                    src="{{ $storageRangka->exists('sdm/foto-profil/' . $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp'))]) : asset(mix('/ikon.svg')) . '#akun' }}"
-                    alt="{{ $rekRangka->old('sdm_no_absen', $sdm->sdm_nama ?? 'foto akun') }}" title="{{ $rekRangka->old('sdm_no_absen', $sdm->sdm_nama ?? 'foto akun') }}"
-                    loading="lazy">
+                <img id="foto" @class(['svg' => !$storageRangka->exists('sdm/foto-profil/' . $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp')])
+                src="{{ $storageRangka->exists('sdm/foto-profil/' . $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp'))], false) : $mixRangka('/ikon.svg') . '#akun' }}" alt="{{ $rekRangka->old('sdm_no_absen', $sdm->sdm_nama ?? 'foto akun') }}" title="{{ $rekRangka->old('sdm_no_absen', $sdm->sdm_nama ?? 'foto akun') }}" loading="lazy">
             </p>
         </div>
         <div class="isian gspan-2">
@@ -394,10 +387,10 @@
         <div class="isian gspan-4">
             <label>Berkas SDM</label>
             @if ($storageRangka->exists('sdm/berkas/'. $sdm->sdm_no_absen.'.pdf'))
-                <iframe class="tcetak" src="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $sdm->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' .  $sdm->sdm_no_absen . '.pdf'))]) }}" title="Berkas SDM" loading="lazy" style="width:100%;height:auto;aspect-ratio:4/3"></iframe>
-                <a class="utama tcetak" href="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $sdm->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' .  $sdm->sdm_no_absen . '.pdf'))]) }}" download>
+                <iframe class="tcetak" src="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $sdm->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' .  $sdm->sdm_no_absen . '.pdf'))], false) }}" title="Berkas SDM" loading="lazy" style="width:100%;height:auto;aspect-ratio:4/3"></iframe>
+                <a class="utama tcetak" href="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $sdm->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' .  $sdm->sdm_no_absen . '.pdf'))], false) }}" download>
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                        <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                     </svg>
                     BERKAS
                 </a>
@@ -417,9 +410,9 @@
         <div class="gspan-4"></div>
         <button class="utama pelengkap" type="submit">SIMPAN</button>
         @if ($sdm->sdm_uuid ?? null)
-            <a class="sekunder isi-xhr" href="{{ $urlRangka->route('akun', ['uuid' => $sdm->sdm_uuid]) }}">TUTUP</a>
+            <a class="sekunder isi-xhr" href="{{ $urlRangka->route('akun', ['uuid' => $sdm->sdm_uuid], false) }}">TUTUP</a>
         @else
-            <a class="sekunder isi-xhr" href="{{ $urlRangka->to($rekRangka->session()->get('tautan_perujuk') ?? '/') }}">TUTUP</a>
+            <a class="sekunder isi-xhr" href="{{ $urlRangka->to($sesiRangka->get('tautan_perujuk') ?? '/') }}">TUTUP</a>
         @endif
     </form>
     <script>
@@ -428,6 +421,6 @@
         pilDasar('#form_tambahUbahAkun .pil-dasar');
         formatIsian('#form_tambahUbahAkun .isian :is(textarea,input[type=text],input[type=search])');
     </script>
-    @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+    @includeWhen($sesiRangka->has('spanduk') || $sesiRangka->has('pesan') || $errors->any(), 'pemberitahuan')
 </div>
 @endsection

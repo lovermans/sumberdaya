@@ -2,9 +2,11 @@
 
 @section('isi')
 <div id="ubahSandi">
-    <h4>Ubah Sandi Keamanan</h4>
-    <form class="form-xhr kartu tcetak" method="POST" action="{{ $urlRangka->route('ubah-sandi') }}">
-        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+    <form class="form-xhr kartu tcetak" method="POST" action="{{ $urlRangka->route('ubah-sandi', [], false) }}">
+        <input type="hidden" name="_token" value="{{ $sesiRangka->token() }}">
+        <div class="isian gspan-4">
+            <h4 class="form">Ubah Sandi Keamanan</h4>
+        </div>
         <div class="isian">
             <label for="password_lama">Sandi Saat Ini</label>
             <input id="password_lama" type="password" name="password_lama" required>
@@ -28,6 +30,6 @@
         <div class="gspan-4"></div>
         <button class="utama pelengkap" type="submit">SIMPAN</button>
     </form>
-    @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+    @includeWhen($sesiRangka->has('spanduk') || $sesiRangka->has('pesan') || $errors->any(), 'pemberitahuan')
 </div>
 @endsection
