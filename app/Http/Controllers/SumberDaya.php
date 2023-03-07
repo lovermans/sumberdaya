@@ -606,9 +606,7 @@ class SumberDaya
                 ]
             );
             
-            if ($validasiSandi->fails()) {
-                return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasiSandi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
-            }
+            $validasiSandi->validate();
             
             $sandiBaru = $hash->make($validasiSandi->safe()->only('password')['password']);
             
@@ -786,9 +784,7 @@ class SumberDaya
                     ]
                 );
                 
-            if ($validasi->fails()) {
-                return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
-            }
+            $validasi->validate();
             
             $valid = $validasi->safe();
             $str = str();
@@ -1034,9 +1030,7 @@ class SumberDaya
                 ]
             );
             
-            if ($validasifile->fails()) {
-                return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasifile))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
-            }
+            $validasifile->validate();
 
             $file = $validasifile->safe()->only('unggah_profil_sdm')['unggah_profil_sdm'];
             $namafile = 'unggahprofilsdm-' . date('YmdHis') . '.xlsx';
@@ -1209,9 +1203,7 @@ class SumberDaya
                     ]
                 );
                 
-                if ($validasi->fails()) {
-                    return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
-                }
+                $validasi->validate();
                                 
                 $app->db->table('sdms')->upsert(
                     $validasi->validated(),

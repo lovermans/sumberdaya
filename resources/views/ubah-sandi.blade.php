@@ -3,7 +3,7 @@
 @section('isi')
 <div id="ubahSandi">
     <form class="form-xhr kartu tcetak" method="POST" action="{{ $urlRangka->route('ubah-sandi', [], false) }}">
-        <input type="hidden" name="_token" value="{{ $sesiRangka->token() }}">
+        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
         <div class="isian gspan-4">
             <h4 class="form">Ubah Sandi Keamanan</h4>
         </div>
@@ -30,6 +30,6 @@
         <div class="gspan-4"></div>
         <button class="utama pelengkap" type="submit">SIMPAN</button>
     </form>
-    @includeWhen($sesiRangka->has('spanduk') || $sesiRangka->has('pesan') || $errors->any(), 'pemberitahuan')
+    @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
 </div>
 @endsection

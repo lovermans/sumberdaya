@@ -306,9 +306,7 @@ class Pengaturan
                 $this->atributInput()
             );
             
-            if ($validasi->fails()) {
-                return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
-            }
+            $validasi->validate();
             
             $data = $validasi->safe()->all();
 
@@ -359,10 +357,8 @@ class Pengaturan
                 [],
                 $this->atributInput()
             );
-            
-            if ($validasi->fails()) {
-                return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
-            }
+
+            $validasi->validate();
             
             $data = $validasi->safe()->all();
             
@@ -435,9 +431,7 @@ class Pengaturan
                 ]
             );
         
-            if ($validasifile->fails()) {
-                return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasifile))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
-            }
+            $validasifile->validate();
 
             $file = $validasifile->safe()->only('atur_unggah')['atur_unggah'];
             $namafile = 'unggahpengaturan-' . date('YmdHis') . '.xlsx';
@@ -516,9 +510,7 @@ class Pengaturan
                     ]
                 );
 
-                if ($validasi->fails()) {
-                    return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
-                }
+                $validasi->validate();
                                 
                 $app->db->table('aturs')->upsert(
                     $validasi->validated(),

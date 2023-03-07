@@ -31,7 +31,21 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended('/');
+        $app = app();
+        $pengguna = $request->user();
+
+        if ($pengguna) {
+            $sandi = $pengguna->password;
+            $hash = $app->hash;
+            $sandiKtp = $hash->check($pengguna->sdm_no_ktp, $sandi);
+            $sandiBawaan = $hash->check('penggunaportalsdm', $sandi);
+            
+            if ($sandiKtp || $sandiBawaan) {
+                $request->session()->put(['spanduk' => 'Sandi Anda kurang aman.']);
+            }
+        }
+
+        return view('mulai');
     }
 
     /**
@@ -48,6 +62,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return view('mulai');
     }
 }

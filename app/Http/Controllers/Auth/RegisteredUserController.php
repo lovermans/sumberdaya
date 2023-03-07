@@ -189,9 +189,7 @@ class RegisteredUserController
             ]
         );
 
-        if ($validasi->fails()) {
-            return $tanggapan->make($halaman->make('pemberitahuan')->withErrors($validasi))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript']);
-        }
+        $validasi->validate();
         
         $valid = $validasi->safe();
         

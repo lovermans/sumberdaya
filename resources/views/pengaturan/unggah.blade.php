@@ -3,7 +3,7 @@
 @section('isi')
 <div id="atur_unggah">
     <form id="form_atur_unggah" class="form-xhr kartu" method="POST" data-laju="true" data-tujuan="#atur_tabels" action="{{ $urlRangka->route('atur.unggah') }}">
-        <input type="hidden" name="_token" value="{{ $sesiRangka->token() }}">
+        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
         <div class="gspan-4">
             <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></a>
             <h4 class="form">{{$rekRangka->routeIs('atur.tambah') ? 'Tambah' : 'Ubah'}} Data Pengaturan Umum</h4>
@@ -19,6 +19,6 @@
         <button class="utama pelengkap" type="submit">UNGGAH</button>
     </form>
 
-    @includeWhen($sesiRangka->has('spanduk') || $sesiRangka->has('pesan') || $errors->any(), 'pemberitahuan')
+    @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
 </div>
 @endsection

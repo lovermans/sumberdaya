@@ -192,7 +192,7 @@
                 urutData('#atur_data_cariUrut','#atur_data_cariUrut [data-indeks]');
                 formatTabel('#atur_tabel thead th', '#atur_tabel tbody tr');
             </script>
-            @includeWhen($sesiRangka->has('spanduk') || $sesiRangka->has('pesan') || $errors->any(), 'pemberitahuan')
+            @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
             @endfragment
         </div>
     

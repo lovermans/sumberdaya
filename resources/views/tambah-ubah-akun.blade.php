@@ -3,7 +3,7 @@
 @section('isi')
 <div id="tambah_ubah_akun">
     <form id="form_tambahUbahAkun" class="form-xhr kartu tcetak" method="POST" action="{{ $urlRangka->current() }}">
-        <input type="hidden" name="_token" value="{{ $sesiRangka->token() }}">
+        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
         <div style="grid-row:span 2;text-align:center">
             <p>
                 <img id="foto" @class(['svg' => !$storageRangka->exists('sdm/foto-profil/' . $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp')])
@@ -412,7 +412,7 @@
         @if ($sdm->sdm_uuid ?? null)
             <a class="sekunder isi-xhr" href="{{ $urlRangka->route('akun', ['uuid' => $sdm->sdm_uuid], false) }}">TUTUP</a>
         @else
-            <a class="sekunder isi-xhr" href="{{ $urlRangka->to($sesiRangka->get('tautan_perujuk') ?? '/') }}">TUTUP</a>
+            <a class="sekunder isi-xhr" href="{{ $urlRangka->to($rekRangka->session()->get('tautan_perujuk') ?? '/') }}">TUTUP</a>
         @endif
     </form>
     <script>
@@ -421,6 +421,6 @@
         pilDasar('#form_tambahUbahAkun .pil-dasar');
         formatIsian('#form_tambahUbahAkun .isian :is(textarea,input[type=text],input[type=search])');
     </script>
-    @includeWhen($sesiRangka->has('spanduk') || $sesiRangka->has('pesan') || $errors->any(), 'pemberitahuan')
+    @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
 </div>
 @endsection

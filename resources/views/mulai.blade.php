@@ -4,8 +4,8 @@
 <div id="mulai-aplikasi">
     
     @if(!$userRangka)
-    <form class="kartu" method="POST" action="{{ $urlRangka->route('login', [], false) }}">
-        <input type="hidden" name="_token" value="{{ $sesiRangka->token() }}">
+    <form class="form-xhr kartu" method="POST" action="{{ $urlRangka->route('login', [], false) }}">
+        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
         <div class="isian gspan-2">
             <label for="idAbsen">Nomor Absen</label>
             <input id="idAbsen" type="text" name="sdm_no_absen" value="{{ $rekRangka->old('sdm_no_absen') }}" pattern="^[0-9]{8}$"
@@ -131,6 +131,6 @@
             </svg>
         </a>
     </div>
-    @includeWhen($sesiRangka->has('spanduk') || $sesiRangka->has('pesan') || $errors->any(), 'pemberitahuan')
+    @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
 </div>
 @endsection

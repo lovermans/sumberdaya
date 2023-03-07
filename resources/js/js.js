@@ -103,7 +103,7 @@ document.addEventListener('submit', function (e) {
 window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
     var xhr = new XMLHttpRequest(),
         sisi = b ?? '#isi',
-        pesan = e ?? '<p>Menunggu jawaban server...</p>',
+        pesan = e ?? '<p class="memuat">Menunggu jawaban server...</p>',
         metode = d ?? 'GET';
     var isi = document.querySelector(sisi) ?? document.querySelector('#isi') ?? document.querySelector('body');
     if (i) {
@@ -113,7 +113,7 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
     if (a) {
         rekamTautan(b, c, d, e, h);
     }
-    g ? isi.prepend(range.createContextualFragment('')) : isi.prepend(range.createContextualFragment(pesan));
+    // g ? isi.prepend(range.createContextualFragment('')) : isi.prepend(range.createContextualFragment(pesan));
     j ? scrollTo(0,0) : isi.scrollIntoView();
     if (g) {
         let lastResponseLength = false;
@@ -139,7 +139,7 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
             progressResponse = lastResponseLength ? responser.substring(lastResponseLength) : responser;
             lastResponseLength = responser.length;
 
-            isiPemberitahuan('sematan_javascript', '');
+            isiPemberitahuan('pemberitahuan', '');
             // console.log(progressResponse);
             isiPesan.prepend(range.createContextualFragment(progressResponse));
             return true;
@@ -164,7 +164,7 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
                     document.close();
                     return true;
                 };
-                isiPemberitahuan('sematan_javascript', '');
+                isiPemberitahuan('pemberitahuan', '');
                 if (responTujuan) {
                     isi = document.getElementById(responTujuan) ?? document.querySelector('#isi') ?? document.querySelector('body');
                 }
