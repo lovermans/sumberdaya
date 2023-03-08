@@ -282,6 +282,12 @@ main :is(a:hover,
     color: var(--taut-fokus)
 }
 
+main h4 {
+    text-align: center;
+    font-weight: 500;
+    margin: 0 0 1em;
+}
+
 header {
     box-shadow: var(--tk-4);
     position: fixed;

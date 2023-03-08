@@ -19,7 +19,7 @@ class Pengaturan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi');
+        abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
         $cacheAturs = FungsiStatis::ambilCacheAtur();
 
@@ -107,8 +107,7 @@ class Pengaturan
             );
 
         if ($reqs->unduh == 'excel') {
-
-            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
             
             set_time_limit(0);
             ob_implicit_flush();
@@ -169,9 +168,9 @@ class Pengaturan
 
         $HtmlPenuh = $app->view->make('pengaturan.data', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
-        return $reqs->pjax() && !$reqs->filled('fragment') 
+        return $reqs->pjax() && !$reqs->filled('fragment') && $reqs->header('X-Frag', false)
         ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
-        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax(), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
+        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function atributInput()
@@ -195,11 +194,11 @@ class Pengaturan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi');
+        abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
         
-        abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan');
+        abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
 
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
         
         set_time_limit(0);
         ob_implicit_flush();
@@ -264,13 +263,13 @@ class Pengaturan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
-        abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi');
+        abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
         $atur = $this->dataDasar()->clone()->addSelect('atur_uuid')->where('atur_uuid', $uuid)->first();
         
-        abort_unless($atur, 404, 'Data Pengaturan tidak ditemukan');
+        abort_unless($atur, 404, 'Data Pengaturan tidak ditemukan.');
        
         $HtmlPenuh = $app->view->make('pengaturan.lihat', compact('atur'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
@@ -284,9 +283,9 @@ class Pengaturan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
-        abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi');
+        abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
 
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         $halaman = $app->view;
@@ -332,13 +331,13 @@ class Pengaturan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi');
+        abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
         
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
         
         $atur = $this->dataDasar()->clone()->addSelect('atur_uuid')->where('atur_uuid', $uuid)->first();
         
-        abort_unless($atur, 404, 'Data Pengaturan tidak ditemukan');
+        abort_unless($atur, 404, 'Data Pengaturan tidak ditemukan.');
 
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         $halaman = $app->view;
@@ -402,9 +401,9 @@ class Pengaturan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi');
+        abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
         
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         $halaman = $app->view;

@@ -3,7 +3,7 @@
 @section('isi')
     <div class="kesalahan-internal">
         {{-- <p>{{__('Not Found')}}.</p> --}}
-        <p>{{ $exception->getMessage() ?: 'Data/halaman/dokumen/tautan tidak ditemukan' }}.</p>
+        <p>{{ $exception->getMessage() ?: 'Data/halaman/dokumen/tautan tidak ditemukan.' }}</p>
         <a class="utama" href="{{ $urlRangka->route('mulai') }}" style="margin:0 0 1em 1em">OKE</a>
         <a class="sekunder" href="#" onclick="event.preventDefault();this.parentElement.remove()">TUTUP</a>
         <div class="bersih"></div>

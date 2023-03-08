@@ -58,7 +58,7 @@ class SumberDaya
         })
         ->where('a.sdm_uuid', $uuid)->first();
         
-        abort_unless($akun, 404, 'Profil yang dicari tidak ada');
+        abort_unless($akun, 404, 'Profil yang dicari tidak ada.');
 
         $penempatans = $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_tgl_gabung', 'sdm_tgl_lahir', 'sdm_no_ktp', 'sdm_nama', 'sdm_kelamin', 'sdm_tgl_berhenti', 'penempatan_uuid', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan', 'posisi_wlkp', $app->db->raw('IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, sdm_tgl_berhenti)) as masa_kerja, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, penempatan_mulai, NOW()),TIMESTAMPDIFF(YEAR, penempatan_mulai, sdm_tgl_berhenti)) as masa_aktif, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, sdm_tgl_berhenti)) as usia'))
             ->from('penempatans')->joinSub($dasar, 'dasar', function ($join) {
@@ -75,7 +75,7 @@ class SumberDaya
         $lingkup_akses = $lingkup_lokasi->unique()->intersect($lingkup)->count();
         $str = str();
 
-        abort_unless(($str->contains($pengguna->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) && (blank($ijin_akses) || $lingkup_lokasi->isEmpty() || ($lingkup_akses > 0))) || ($no_absen_sdm == $akun->sdm_no_absen) || ($akun->sdm_no_absen == $no_absen_atasan) || ($akun->sdm_id_atasan == $no_absen_sdm) || (!blank($no_absen_atasan) && ($akun->sdm_id_atasan == $no_absen_atasan)), 403, 'Ijin akses dibatasi');
+        abort_unless(($str->contains($pengguna->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) && (blank($ijin_akses) || $lingkup_lokasi->isEmpty() || ($lingkup_akses > 0))) || ($no_absen_sdm == $akun->sdm_no_absen) || ($akun->sdm_no_absen == $no_absen_atasan) || ($akun->sdm_id_atasan == $no_absen_sdm) || (!blank($no_absen_atasan) && ($akun->sdm_id_atasan == $no_absen_atasan)), 403, 'Ijin akses dibatasi.');
         
         $no_wa_ts = $str->replace('-', '', $akun->sdm_telepon);
         $no_wa_tst = $str->replace(' ', '', $no_wa_ts);
@@ -111,13 +111,13 @@ class SumberDaya
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         $storage = $app->filesystem;
         
-        abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan');
+        abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
         
         set_time_limit(0);
         ob_implicit_flush();
@@ -186,7 +186,7 @@ class SumberDaya
         
         abort_unless($pengguna && $uuid, 401);
         
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
         
         $database = $app->db;
 
@@ -209,7 +209,7 @@ class SumberDaya
         $lingkup_lokasi = $akun?->penempatan_lokasi;
         $lingkup_akses = collect($lingkup_lokasi)->intersect($lingkup)->count();
 
-        abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi');
+        abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi.');
 
         set_time_limit(0);
         ob_implicit_flush();
@@ -221,7 +221,7 @@ class SumberDaya
         $storage = $app->filesystem;
         $date = $app->date;
         
-        abort_unless($storage->exists("contoh/serah-terima-sdm-baru.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan');
+        abort_unless($storage->exists("contoh/serah-terima-sdm-baru.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
         
         $filename = 'serah-terima-sdm-baru-'.$akun->sdm_no_absen.'.docx';
         
@@ -247,7 +247,7 @@ class SumberDaya
         $pengguna = $reqs->user();
         
         abort_unless($pengguna && $uuid, 401);
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
         
         $database = $app->db;
 
@@ -270,7 +270,7 @@ class SumberDaya
         $lingkup_lokasi = $akun?->penempatan_lokasi;
         $lingkup_akses = collect($lingkup_lokasi)->intersect($lingkup)->count();
 
-        abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi');
+        abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi.');
 
         set_time_limit(0);
         ob_implicit_flush();
@@ -282,7 +282,7 @@ class SumberDaya
         $storage = $app->filesystem;
         $date = $app->date;
         
-        abort_unless($storage->exists("contoh/pelepasan-karyawan.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan');
+        abort_unless($storage->exists("contoh/pelepasan-karyawan.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
         
         $filename = 'pelepasan-karyawan-'.$akun->sdm_no_absen.'.docx';
         
@@ -309,7 +309,7 @@ class SumberDaya
         $pengguna = $reqs->user();
         
         abort_unless($pengguna && $uuid, 401);
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         $database = $app->db;
 
@@ -332,7 +332,7 @@ class SumberDaya
         $lingkup_lokasi = $akun?->penempatan_lokasi;
         $lingkup_akses = collect($lingkup_lokasi)->intersect($lingkup)->count();
 
-        abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi');
+        abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi.');
 
         set_time_limit(0);
         ob_implicit_flush();
@@ -344,7 +344,7 @@ class SumberDaya
         $storage = $app->filesystem;
         $date = $app->date;
         
-        abort_unless($storage->exists("contoh/tanda-terima-dokumen-titipan.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan');
+        abort_unless($storage->exists("contoh/tanda-terima-dokumen-titipan.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
         
         $filename = 'tanda-terima-dokumen-titipan-'.$akun->sdm_no_absen.'.docx';
         
@@ -378,7 +378,7 @@ class SumberDaya
         $pengguna = $reqs->user();
         
         abort_unless($pengguna && $uuid, 401);
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
         
         $database = $app->db;
 
@@ -401,7 +401,7 @@ class SumberDaya
         $lingkup_lokasi = $akun?->penempatan_lokasi;
         $lingkup_akses = collect($lingkup_lokasi)->intersect($lingkup)->count();
 
-        abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi');
+        abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi.');
 
         set_time_limit(0);
         ob_implicit_flush();
@@ -414,7 +414,7 @@ class SumberDaya
         echo '<p>Memeriksa formulir.</p>';
 
         
-        abort_unless($storage->exists("contoh/tanda-terima-inventaris.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan');
+        abort_unless($storage->exists("contoh/tanda-terima-inventaris.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
         
         $filename = 'tanda-terima-inventaris-'.$akun->sdm_no_absen.'.docx';
         
@@ -430,7 +430,7 @@ class SumberDaya
 
         $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
         
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
     }
 
     public function formulirPersetujuanGaji($uuid = null)
@@ -440,7 +440,7 @@ class SumberDaya
         $pengguna = $reqs->user();
 
         abort_unless($pengguna && $uuid, 401);
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         $database = $app->db;
 
@@ -463,7 +463,7 @@ class SumberDaya
         $lingkup_lokasi = $akun?->penempatan_lokasi;
         $lingkup_akses = collect($lingkup_lokasi)->intersect($lingkup)->count();
 
-        abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi');
+        abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi.');
 
         set_time_limit(0);
         ob_implicit_flush();
@@ -475,7 +475,7 @@ class SumberDaya
         $storage = $app->filesystem;
         $date = $app->date;
         
-        abort_unless($storage->exists("contoh/persetujuan-gaji.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan');
+        abort_unless($storage->exists("contoh/persetujuan-gaji.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
         
         $filename = 'persetujuan-gaji-'.$akun->sdm_no_absen.'.docx';
         
@@ -504,7 +504,7 @@ class SumberDaya
         $pengguna = $reqs->user();
 
         abort_unless($pengguna && $uuid, 401);
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         $database = $app->db;
 
@@ -527,7 +527,7 @@ class SumberDaya
         $lingkup_lokasi = $akun?->penempatan_lokasi;
         $lingkup_akses = collect($lingkup_lokasi)->intersect($lingkup)->count();
 
-        abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi');
+        abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi.');
 
         set_time_limit(0);
         ob_implicit_flush();
@@ -539,7 +539,7 @@ class SumberDaya
         $storage = $app->filesystem;
         $date = $app->date;
         
-        abort_unless($storage->exists("contoh/keterangan-kerja.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan');
+        abort_unless($storage->exists("contoh/keterangan-kerja.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
         
         $filename = 'keterangan-kerja-'.$akun->sdm_no_absen.'.docx';
         
@@ -583,7 +583,7 @@ class SumberDaya
         
         $akun = $database->query()->select('id')->from('sdms')->where('id', $idPenguna)->first();
         
-        abort_unless($idPenguna == $akun->id, 403, 'Identitas pengguna berbeda');
+        abort_unless($idPenguna == $akun->id, 403, 'Identitas pengguna berbeda.');
 
         $session = $reqs->session();
         $hash = $app->hash;
@@ -591,7 +591,7 @@ class SumberDaya
         $halaman = $app->view;
         
         if ($reqs->isMethod('post')) {
-            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
             $validasiSandi = $app->validator->make(
                 $reqs->all(),
@@ -649,13 +649,13 @@ class SumberDaya
         $lingkup_lokasi = $akun->penempatan_lokasi;
         $lingkup_akses = collect($lingkup_lokasi)->intersect($lingkup)->count();
 
-        abort_unless(blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0) || ($no_absen_sdm == $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi');
+        abort_unless(blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0) || ($no_absen_sdm == $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi.');
 
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         $halaman = $app->view;
 
         if ($reqs->isMethod('post')) {
-            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
             
             $reqs->whenFilled('sdm_hak_akses', function ($input) use ($reqs) {
                 $reqs->except('sdm_hak_akses');
@@ -849,7 +849,7 @@ class SumberDaya
     public function unduh($berkas = null)
     {
         $app = app();
-        abort_unless($berkas && $app->filesystem->exists("unduh/{$berkas}"), 404, 'Berkas Tidak Ditemukan');
+        abort_unless($berkas && $app->filesystem->exists("unduh/{$berkas}"), 404, 'Berkas Tidak Ditemukan.');
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->download($app->storagePath("app/unduh/{$berkas}"));
     }
 
@@ -882,7 +882,7 @@ class SumberDaya
         $lingkup_lokasi = $akun?->penempatan_lokasi;
         $lingkup_akses = collect($lingkup_lokasi)->intersect($lingkup)->count();
 
-        abort_unless(blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0) || ($no_absen_sdm == $no_absen), 403, 'Akses pengguna dibatasi');
+        abort_unless(blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0) || ($no_absen_sdm == $no_absen), 403, 'Akses pengguna dibatasi.');
         
         $namaSdm = $akun->sdm_nama;
         $str = str();
@@ -983,7 +983,7 @@ class SumberDaya
         
         $app = app();
 
-        abort_unless($berkas && $app->filesystem->exists("{$berkas}"), 404, 'Berkas Tidak Ditemukan');
+        abort_unless($berkas && $app->filesystem->exists("{$berkas}"), 404, 'Berkas Tidak Ditemukan.');
 
         $jalur = $app->storagePath("app/{$berkas}");
         
@@ -1002,15 +1002,13 @@ class SumberDaya
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
-
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         $halaman = $app->view;
 
         if ($reqs->isMethod('post')) {
-            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi');
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
             set_time_limit(0);
             ob_implicit_flush();

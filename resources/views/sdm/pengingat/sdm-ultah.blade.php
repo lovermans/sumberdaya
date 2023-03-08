@@ -18,12 +18,12 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td style="min-width:20ch;vertical-align:middle">
-                            <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('akun', ['uuid' => $ultah->sdm_uuid]) }}">
+                            <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('akun', ['uuid' => $ultah->sdm_uuid], false) }}">
                                 <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' . $ultah->sdm_no_absen .
                                 '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $ultah->sdm_no_absen . '.webp') ?
                                 $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $ultah->sdm_no_absen . '.webp' .
-                                '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $ultah->sdm_no_absen . '.webp'))]) :
-                                $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
+                                '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $ultah->sdm_no_absen . '.webp')), false]) :
+                                $mixRangka('/ikon.svg') . '#akun' }}" alt="{{
                                 $ultah->sdm_nama ?? 'foto akun' }}" title="{{ $ultah->sdm_nama ?? 'foto akun' }}"
                                 loading="lazy">
                             </a>

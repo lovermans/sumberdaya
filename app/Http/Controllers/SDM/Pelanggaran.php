@@ -20,7 +20,7 @@ class Pelanggaran
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
         
         $validator = $app->validator->make(
             $reqs->all(),
@@ -231,9 +231,9 @@ class Pelanggaran
         $reqs = $app->request;
         $pengguna = $reqs->user();
         
-        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        abort_unless($berkas && $app->filesystem->exists("sdm/pelanggaran/{$berkas}"), 404, 'Berkas tidak ditemukan');
+        abort_unless($berkas && $app->filesystem->exists("sdm/pelanggaran/{$berkas}"), 404, 'Berkas tidak ditemukan.');
 
         $jalur = $app->storagePath("app/sdm/pelanggaran/{$berkas}");
 
@@ -270,7 +270,7 @@ class Pelanggaran
         // $reqs = $app->request;
         // $pengguna = $reqs->user();
         
-        // abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        // abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
         
         // set_time_limit(0);
         // ob_implicit_flush();
@@ -286,11 +286,11 @@ class Pelanggaran
         //     $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
         // })->first();
         
-        // abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan');
+        // abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
 
         // $storage = $app->filesystem;
         
-        // abort_unless($storage->exists("contoh/permintaan-tambah-sdm.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan');
+        // abort_unless($storage->exists("contoh/permintaan-tambah-sdm.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
         
         // $filename = 'permintaan-tambah-sdm-'.$permin->tambahsdm_no.'.docx';
         
@@ -325,7 +325,7 @@ class Pelanggaran
         // $reqs = $app->request;
         // $pengguna = $reqs->user();
         
-        // abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        // abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         // $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
@@ -336,7 +336,7 @@ class Pelanggaran
         //     $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
         // })->first();
         
-        // abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan');
+        // abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
         
         // $HtmlPenuh = $app->view->make('sdm.permintaan-tambah-sdm.lihat', compact('permin'));
         // $HtmlIsi = implode('', $HtmlPenuh->renderSections());
@@ -349,7 +349,7 @@ class Pelanggaran
         $reqs = $app->request;
         $pengguna = $reqs->user();
         
-        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
         
         if ($reqs->isMethod('post')) {
             
@@ -453,7 +453,7 @@ class Pelanggaran
         $reqs = $app->request;
         $pengguna = $reqs->user();
         
-        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
         
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
@@ -479,7 +479,7 @@ class Pelanggaran
         })
         ->where('langgar_uuid', $uuid)->first();
         
-        abort_unless($langgar, 404, 'Data Laporan Pelanggaran tidak ditemukan');
+        abort_unless($langgar, 404, 'Data Laporan Pelanggaran tidak ditemukan.');
 
         if ($reqs->isMethod('post')) {
             

@@ -22,7 +22,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
         
         $validator = $app->validator->make(
             $reqs->all(),
@@ -209,7 +209,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
         
         $validator = $app->validator->make(
             $reqs->all(),
@@ -399,7 +399,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
         
         $validator = $app->validator->make(
             $reqs->all(),
@@ -580,7 +580,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
         
         $validator = $app->validator->make(
             $reqs->all(),
@@ -761,7 +761,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
         
         $validator = $app->validator->make(
             $reqs->all(),
@@ -948,7 +948,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
         
         $validator = $app->validator->make(
             $reqs->all(),
@@ -1132,7 +1132,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
         
         $validator = $app->validator->make(
             $reqs->all(),
@@ -1297,7 +1297,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $validator = $app->validator->make(
             $reqs->all(),
@@ -1501,9 +1501,9 @@ class Penempatan
         $reqs = $app->request;
         $pengguna = $reqs->user();
         
-        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        abort_unless($berkas && $app->filesystem->exists("sdm/penempatan/{$berkas}"), 404, 'Berkas tidak ditemukan');
+        abort_unless($berkas && $app->filesystem->exists("sdm/penempatan/{$berkas}"), 404, 'Berkas tidak ditemukan.');
 
         $jalur = $app->storagePath("app/sdm/penempatan/{$berkas}");
 
@@ -1623,7 +1623,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         set_time_limit(0);
         ob_implicit_flush();
@@ -1637,12 +1637,12 @@ class Penempatan
             $join->on('penempatan_no_absen', '=', 'sdm_no_absen');
         })->where('penempatan_uuid', $uuid)->first();
         
-        abort_unless($permin, 404, 'Data Penempatan SDM tidak ditemukan');
+        abort_unless($permin, 404, 'Data Penempatan SDM tidak ditemukan.');
 
         $storage = $app->filesystem;
         $no_absen = $permin->penempatan_no_absen;
         
-        abort_unless($storage->exists("contoh/penilaian-kinerja.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan');
+        abort_unless($storage->exists("contoh/penilaian-kinerja.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
         
         $filename = 'penilaian-kinerja-'.$no_absen.'.docx';
         
@@ -1670,7 +1670,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         set_time_limit(0);
         ob_implicit_flush();
@@ -1684,12 +1684,12 @@ class Penempatan
             $join->on('penempatan_no_absen', '=', 'sdm_no_absen');
         })->where('penempatan_uuid', $uuid)->first();
         
-        abort_unless($permin, 404, 'Data Penempatan SDM tidak ditemukan');
+        abort_unless($permin, 404, 'Data Penempatan SDM tidak ditemukan.');
 
         $storage = $app->filesystem;
         $no_absen = $permin->penempatan_no_absen;
         
-        abort_unless($storage->exists("contoh/perubahan-status-sdm.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan');
+        abort_unless($storage->exists("contoh/perubahan-status-sdm.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
         
         $filename = 'perubahan-status-sdm-'.$no_absen.'.docx';
         
@@ -1721,7 +1721,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         set_time_limit(0);
         ob_implicit_flush();
@@ -1735,12 +1735,12 @@ class Penempatan
             $join->on('penempatan_no_absen', '=', 'sdm_no_absen');
         })->where('penempatan_uuid', $uuid)->first();
         
-        abort_unless($permin, 404, 'Data Penempatan SDM tidak ditemukan');
+        abort_unless($permin, 404, 'Data Penempatan SDM tidak ditemukan.');
 
         $storage = $app->filesystem;
         $date = $app->date;
         
-        abort_unless($storage->exists("contoh/pkwt.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan');
+        abort_unless($storage->exists("contoh/pkwt.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
         
         $filename = 'pkwt-'.$permin->penempatan_no_absen.'.docx';
         
@@ -1772,7 +1772,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         set_time_limit(0);
         ob_implicit_flush();
@@ -1851,7 +1851,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
         
         $database = $app->db;
 
@@ -1871,7 +1871,7 @@ class Penempatan
         $lingkup_lokasi = collect($penem?->penempatan_lokasi);
         $lingkup_akses = $lingkup_lokasi->unique()->intersect($lingkupIjin)->count();
 
-        abort_unless($penem && (blank($ijin_akses) || $lingkup_lokasi->isEmpty() || ($lingkup_akses > 0) || ($pengguna->sdm_no_absen == $penem?->sdm_no_absen)), 403, 'Akses pengguna dibatasi');
+        abort_unless($penem && (blank($ijin_akses) || $lingkup_lokasi->isEmpty() || ($lingkup_akses > 0) || ($pengguna->sdm_no_absen == $penem?->sdm_no_absen)), 403, 'Akses pengguna dibatasi.');
 
         $HtmlPenuh = $app->view->make('sdm.penempatan.lihat', compact('penem'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
@@ -1885,7 +1885,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $database = $app->db;
 
@@ -1908,7 +1908,7 @@ class Penempatan
         $lingkup_lokasi = collect($penem?->penempatan_lokasi);
         $lingkup_akses = $lingkup_lokasi->unique()->intersect($lingkupIjin)->count();
 
-        abort_unless($penem && ($pengguna->sdm_no_absen !== $penem?->sdm_no_absen) && (blank($ijin_akses) || $lingkup_lokasi->isEmpty() || ($lingkup_akses > 0)), 403, 'Akses pengguna dibatasi');
+        abort_unless($penem && ($pengguna->sdm_no_absen !== $penem?->sdm_no_absen) && (blank($ijin_akses) || $lingkup_lokasi->isEmpty() || ($lingkup_akses > 0)), 403, 'Akses pengguna dibatasi.');
         
         if ($reqs->isMethod('post')) {
             $reqs->merge(['penempatan_id_pembuat' => $pengguna->sdm_no_absen]);
@@ -1972,7 +1972,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $database = $app->db;
 
@@ -1992,7 +1992,7 @@ class Penempatan
         $lingkup_lokasi = collect($penem?->penempatan_lokasi);
         $lingkup_akses = $lingkup_lokasi->unique()->intersect($lingkupIjin)->count();
 
-        abort_unless($penem && ($pengguna->sdm_no_absen !== $penem?->sdm_no_absen) && (blank($ijin_akses) || $lingkup_lokasi->isEmpty() || ($lingkup_akses > 0)), 403, 'Akses pengguna dibatasi');
+        abort_unless($penem && ($pengguna->sdm_no_absen !== $penem?->sdm_no_absen) && (blank($ijin_akses) || $lingkup_lokasi->isEmpty() || ($lingkup_akses > 0)), 403, 'Akses pengguna dibatasi.');
         
         if ($reqs->isMethod('post')) {
             $reqs->merge(['penempatan_id_pengubah' => $pengguna->sdm_no_absen]);
@@ -2055,7 +2055,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $database = $app->db;
 
@@ -2075,7 +2075,7 @@ class Penempatan
         $lingkup_lokasi = collect($penem?->penempatan_lokasi);
         $lingkup_akses = $lingkup_lokasi->unique()->intersect($lingkupIjin)->count();
 
-        abort_unless($penem && ($pengguna->sdm_no_absen !== $penem?->sdm_no_absen) && (blank($ijin_akses) || $lingkup_lokasi->isEmpty() || ($lingkup_akses > 0)), 403, 'Akses pengguna dibatasi');
+        abort_unless($penem && ($pengguna->sdm_no_absen !== $penem?->sdm_no_absen) && (blank($ijin_akses) || $lingkup_lokasi->isEmpty() || ($lingkup_akses > 0)), 403, 'Akses pengguna dibatasi.');
         
         if ($reqs->isMethod('post')) {
             $reqs->merge(['id_penghapus' => $pengguna->sdm_no_absen, 'waktu_dihapus' => $app->date->now()]);
@@ -2096,7 +2096,7 @@ class Penempatan
 
             $validasi->validate();
 
-            abort_unless($app->filesystem->exists('contoh/data-dihapus.xlsx'), 404, 'Berkas riwayat penghapusan tidak ditemukan');
+            abort_unless($app->filesystem->exists('contoh/data-dihapus.xlsx'), 404, 'Berkas riwayat penghapusan tidak ditemukan.');
             
             $dataValid = $validasi->validated();
             
@@ -2150,11 +2150,11 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $storage = $app->filesystem;
         
-        abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan');
+        abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
         
         set_time_limit(0);
         ob_implicit_flush();
@@ -2217,7 +2217,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         if ($reqs->isMethod('post')) {
             set_time_limit(0);

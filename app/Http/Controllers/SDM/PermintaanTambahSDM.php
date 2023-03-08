@@ -20,7 +20,7 @@ class PermintaanTambahSDM
         $pengguna = $reqs->user();
         $str = str();
         
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
         
         $validator = $app->validator->make(
             $reqs->all(),
@@ -50,7 +50,7 @@ class PermintaanTambahSDM
         );
         
         if ($validator->fails()) {
-            return $app->redirect->route('sdm.permintaan-tambah-sdm.data')->withErrors($validator)->withInput();
+            return $app->redirect->route('sdm.permintaan-tambah-sdm.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
 
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
@@ -119,6 +119,8 @@ class PermintaanTambahSDM
         );
 
         if ($reqs->unduh == 'excel') {
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+
             set_time_limit(0);
             ob_implicit_flush();
             ob_end_flush();
@@ -168,7 +170,7 @@ class PermintaanTambahSDM
         $terpenuhi = $cari->clone()->sum('tambahsdm_terpenuhi');
         $selisih = $terpenuhi - $kebutuhan;
         
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString();
+        $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'tambah_sdm_tabels']);
         
         $kunciUrut = array_filter((array) $urutArray);    
 
@@ -201,11 +203,13 @@ class PermintaanTambahSDM
             'selisih' => $selisih,
         ];
 
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
+        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
 
         $HtmlPenuh = $app->view->make('sdm.permintaan-tambah-sdm.data', $data);
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        return $reqs->pjax() && !$reqs->filled('fragment') && $reqs->header('X-Frag', false)
+        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
+        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function atributInput()
@@ -233,9 +237,9 @@ class PermintaanTambahSDM
         $reqs = $app->request;
         $pengguna = $reqs->user();
         
-        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        abort_unless($berkas && $app->filesystem->exists("sdm/permintaan-tambah-sdm/{$berkas}"), 404, 'Berkas tidak ditemukan');
+        abort_unless($berkas && $app->filesystem->exists("sdm/permintaan-tambah-sdm/{$berkas}"), 404, 'Berkas tidak ditemukan.');
 
         $jalur = $app->storagePath("app/sdm/permintaan-tambah-sdm/{$berkas}");
 
@@ -272,7 +276,7 @@ class PermintaanTambahSDM
         $reqs = $app->request;
         $pengguna = $reqs->user();
         
-        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
         
         set_time_limit(0);
         ob_implicit_flush();
@@ -288,11 +292,11 @@ class PermintaanTambahSDM
             $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
         })->first();
         
-        abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan');
+        abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
 
         $storage = $app->filesystem;
         
-        abort_unless($storage->exists("contoh/permintaan-tambah-sdm.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan');
+        abort_unless($storage->exists("contoh/permintaan-tambah-sdm.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
         
         $filename = 'permintaan-tambah-sdm-'.$permin->tambahsdm_no.'.docx';
         // \PhpOffice\PhpWord\Settings::setZipClass(\PhpOffice\PhpWord\Settings::PCLZIP);
@@ -328,7 +332,7 @@ class PermintaanTambahSDM
         $reqs = $app->request;
         $pengguna = $reqs->user();
         
-        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM');
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
@@ -339,7 +343,7 @@ class PermintaanTambahSDM
             $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
         })->first();
         
-        abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan');
+        abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
         
         $HtmlPenuh = $app->view->make('sdm.permintaan-tambah-sdm.lihat', compact('permin'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
@@ -352,7 +356,7 @@ class PermintaanTambahSDM
         $reqs = $app->request;
         $pengguna = $reqs->user();
         
-        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
         
         if ($reqs->isMethod('post')) {
             
@@ -422,7 +426,7 @@ class PermintaanTambahSDM
         $reqs = $app->request;
         $pengguna = $reqs->user();
         
-        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
@@ -430,7 +434,7 @@ class PermintaanTambahSDM
             $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
         })->first();
         
-        abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan');
+        abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
 
         if ($reqs->isMethod('post')) {
             

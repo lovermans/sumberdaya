@@ -15,10 +15,10 @@ class Umum
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         $halaman = $app->view;
         
-        abort_unless($str->contains($pengguna?->sdm_hak_akses, 'SDM'), 403, 'Akses dibatasi hanya untuk Pengguna Aplikasi SDM');
+        abort_unless($str->contains($pengguna?->sdm_hak_akses, 'SDM'), 403, 'Akses dibatasi hanya untuk Pengguna Aplikasi SDM.');
 
         if($reqs->fragment == 'navigasi') {
-            $navigasi = $app->view->make('sdm.navigasi');
+            $navigasi = $halaman->make('sdm.navigasi');
             return $tanggapan->make($navigasi)->withHeaders(['Vary' => 'Accept']);
         }
 
@@ -52,7 +52,7 @@ class Umum
                 return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
             });
 
-            $sdmIngatUltah = $app->view->make('sdm.pengingat.sdm-ultah', ['ulangTahuns' => $ulangTahuns ?? null]);
+            $sdmIngatUltah = $halaman->make('sdm.pengingat.sdm-ultah', ['ulangTahuns' => $ulangTahuns ?? null]);
             return $tanggapan->make($sdmIngatUltah)->withHeaders(['Vary' => 'Accept']);
 
         }
@@ -72,7 +72,7 @@ class Umum
                         return $c->whereIn('tambahsdm_penempatan', [...$lingkup]);
                     });
                 
-                $sdmIngatPtsb = $app->view->make('sdm.pengingat.permintaan-tambah-sdm', ['perminSDMS' => $perminSDMS ?? null]);
+                $sdmIngatPtsb = $halaman->make('sdm.pengingat.permintaan-tambah-sdm', ['perminSDMS' => $perminSDMS ?? null]);
                 return $tanggapan->make($sdmIngatPtsb)->withHeaders(['Vary' => 'Accept']);
             
             }
@@ -98,7 +98,7 @@ class Umum
                     return $c->whereIn('penempatan_lokasi', [...$lingkup]);
                 });
 
-                $sdmIngatPkpd = $app->view->make('sdm.pengingat.pkwt-perlu-ditinjau', ['kontraks' => $kontraks ?? null]);
+                $sdmIngatPkpd = $halaman->make('sdm.pengingat.pkwt-perlu-ditinjau', ['kontraks' => $kontraks ?? null]);
                 return $tanggapan->make($sdmIngatPkpd)->withHeaders(['Vary' => 'Accept']);
             
             }
@@ -123,7 +123,7 @@ class Umum
                     return $c->whereIn('penempatan_lokasi', [...$lingkup]);
                 });
 
-                $sdmIngatPstatus = $app->view->make('sdm.pengingat.perubahan-status', ['statuses' => $statuses ?? null]);
+                $sdmIngatPstatus = $halaman->make('sdm.pengingat.perubahan-status', ['statuses' => $statuses ?? null]);
                 return $tanggapan->make($sdmIngatPstatus)->withHeaders(['Vary' => 'Accept']);
         
             }
@@ -148,7 +148,7 @@ class Umum
                     return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
                 });
 
-                $sdmIngatBaru = $app->view->make('sdm.pengingat.sdm-baru', ['barus' => $barus ?? null]);
+                $sdmIngatBaru = $halaman->make('sdm.pengingat.sdm-baru', ['barus' => $barus ?? null]);
                 return $tanggapan->make($sdmIngatBaru)->withHeaders(['Vary' => 'Accept']);
         
             }
@@ -176,7 +176,7 @@ class Umum
                     return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
                 });
 
-                $sdmIngatKeluar = $app->view->make('sdm.pengingat.sdm-keluar', ['berhentis' => $berhentis ?? null]);
+                $sdmIngatKeluar = $halaman->make('sdm.pengingat.sdm-keluar', ['berhentis' => $berhentis ?? null]);
                 return $tanggapan->make($sdmIngatKeluar)->withHeaders(['Vary' => 'Accept']);
 
             }
@@ -185,7 +185,7 @@ class Umum
 
         $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
 
-        $HtmlPenuh = $app->view->make('sdm.mulai');
+        $HtmlPenuh = $halaman->make('sdm.mulai');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
         return $reqs->pjax() ? $tanggapan->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlPenuh;
     }

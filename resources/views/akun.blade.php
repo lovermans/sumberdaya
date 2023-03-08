@@ -258,7 +258,7 @@
             </div>
             @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS'))
             <div class="isian gspan-2 tcetak" id="akun-cetakFormulir">
-                <select class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR(false, '#akun-cetakFormulirStatus', location.origin + this.value, 'GET', null, null, true)">
+                <select class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR(false, '#akun-cetakFormulirStatus', this.value, 'GET', false, false, true)">
                     <option value="">CETAK FORMULIR</option>
                     <option value="{{$urlRangka->route('formulir-serah-terima-sdm-baru', ['uuid' => $akun->sdm_uuid], false)}}">SERAH TERIMA SDM BARU</option>
                     <option value="{{$urlRangka->route('formulir-persetujuan-gaji', ['uuid' => $akun->sdm_uuid], false)}}">PERSETUJUAN GAJI</option>

@@ -9,9 +9,9 @@ class Berkas
         $app = app();
         $pengguna = $app->request->user();
         
-        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pengurus SDM');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
         
-        abort_unless($berkas && $app->filesystem->exists("sdm/berkas/{$berkas}"), 404, 'Berkas tidak ditemukan');
+        abort_unless($berkas && $app->filesystem->exists("sdm/berkas/{$berkas}"), 404, 'Berkas tidak ditemukan.');
         
         $jalur = $app->storagePath("app/sdm/berkas/{$berkas}");
         
@@ -25,7 +25,7 @@ class Berkas
     {
         $app = app();
         
-        abort_unless($berkas_foto_profil && $app->filesystem->exists("sdm/foto-profil/{$berkas_foto_profil}"), 404, 'Foto Profil tidak ditemukan');
+        abort_unless($berkas_foto_profil && $app->filesystem->exists("sdm/foto-profil/{$berkas_foto_profil}"), 404, 'Foto Profil tidak ditemukan.');
         
         $jalur = $app->storagePath("app/sdm/foto-profil/{$berkas_foto_profil}");
         
@@ -42,7 +42,7 @@ class Berkas
         $reqs = $app->request;
         $pengguna = $reqs->user();
         
-        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM'), 403, 'Akses dibatasi hanya untuk Pengguna Aplikasi SDM');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM'), 403, 'Akses dibatasi hanya untuk Pengguna Aplikasi SDM.');
 
         $storage = $app->filesystem;
         

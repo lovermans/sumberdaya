@@ -30,6 +30,8 @@ document.addEventListener('click', function (e) {
             enkod = b.dataset.enkode,
             rekam = b.dataset.rekam,
             singkat = b.dataset.singkat,
+            frag = b.dataset.frag,
+            tn = b.dataset.tn,
             simpan = true;
         if (rekam == 'false') {
             simpan = false;
@@ -40,6 +42,12 @@ document.addEventListener('click', function (e) {
         if (enkod == 'true') {
             enkod = true;
         } else { enkod = false; }
+        if (frag == 'true') {
+            frag = true;
+        } else { frag = false; }
+        if (tn == 'true') {
+            tn = true;
+        } else { tn = false; }
         if (a) {
             var navAktif = document.querySelectorAll('nav a.aktif, aside a.aktif');
             for (let z = 0; z < navAktif.length; z++) {
@@ -49,7 +57,7 @@ document.addEventListener('click', function (e) {
         }
         navCb.checked = false;
         menuCb.checked = false;
-        return lemparXHR(simpan, tujuan, tautan, metode, pesan, data, strim, enkod, singkat);
+        return lemparXHR(simpan, tujuan, tautan, metode, pesan, data, strim, enkod, singkat, tn, frag);
     }
     if (e.target.matches('.menu-j')) {
         return e.target.classList.toggle('aktif');
@@ -72,6 +80,8 @@ document.addEventListener('submit', function (e) {
             ke = a.action,
             singkat = a.dataset.singkat,
             prog = a.dataset.laju,
+            frag = a.dataset.frag,
+            tn = a.dataset.tn,
             data = new FormData(a);
         if (singkat == 'true') {
             singkat = true;
@@ -79,6 +89,12 @@ document.addEventListener('submit', function (e) {
         if (prog == 'true') {
             prog = true;
         } else { prog = false; }
+        if (frag == 'true') {
+            frag = true;
+        } else { frag = false; }
+        if (tn == 'true') {
+            tn = true;
+        } else { tn = false; }
         if (metode == 'GET') {
             ke += '?' + new URLSearchParams(data).toString();
             var rekam = a.dataset.rekam,
@@ -86,7 +102,7 @@ document.addEventListener('submit', function (e) {
             if (rekam == 'false') {
                 simpan = false;
             }
-            return lemparXHR(simpan, tujuan, ke, metode, pesan, null, prog, false, singkat);
+            return lemparXHR(simpan, tujuan, ke, metode, pesan, null, prog, false, singkat, tn, frag);
         }
         if (metode == 'POST') {
             var rekam = a.dataset.rekam,
@@ -94,18 +110,21 @@ document.addEventListener('submit', function (e) {
             if (rekam == 'true') {
                 simpan = true;
             }
-            return lemparXHR(simpan, tujuan, ke, metode, pesan, data, prog, false, singkat);
+            return lemparXHR(simpan, tujuan, ke, metode, pesan, data, prog, false, singkat, tn, frag);
         }
         return alert('Periksa kembali formulir.');
     }
 });
 
-window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
+window.lemparXHR = function (a, b, c, d, e = null, f = null, g = false, h = false, i = false, j = false, k = false) {
     var xhr = new XMLHttpRequest(),
         sisi = b ?? '#isi',
         pesan = e ?? '<p class="memuat">Menunggu jawaban server...</p>',
         metode = d ?? 'GET';
     var isi = document.querySelector(sisi) ?? document.querySelector('#isi') ?? document.querySelector('body');
+    if (!c.startsWith(location.origin)) {
+        c = location.origin + c;
+    }
     if (i) {
         isi = document.querySelector('#sematan_javascript');
         pesan = '';
@@ -178,6 +197,9 @@ window.lemparXHR = function (a, b, c, d, e, f, g, h, i, j) {
     xhr.setRequestHeader('X-PJAX', true);
     if (h) {
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    }
+    if (k) {
+        xhr.setRequestHeader('X-Frag', true);
     }
     if (i) {
         xhr.setRequestHeader('X-Minta-Javascript', true);

@@ -1,17 +1,17 @@
 @if($userRangka && !in_array($rekRangka->url(), [$urlRangka->route('akun', ['uuid' => $userRangka->sdm_uuid]), $urlRangka->route('ubah-akun', ['uuid' => $userRangka->sdm_uuid])]))
 @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM'))
     <div @class(['menu-t', 'aktif' => $rekRangka->routeIs('sdm.mulai')])>
-        <a class="nav-xhr" href="{{ $urlRangka->route('sdm.mulai') }}" >
+        <a class="nav-xhr" href="{{ $urlRangka->route('sdm.mulai', [], false) }}" >
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#rumah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#rumah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
             Beranda
         </a>
     </div>
     <div @class(['menu-t', 'aktif' => $rekRangka->routeIs('sdm.panduan')])>
-        <a class="nav-xhr" href="{{ $urlRangka->route('sdm.panduan') }}" >
+        <a class="nav-xhr" href="{{ $urlRangka->route('sdm.panduan', [], false) }}" >
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#dokumen' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#dokumen' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
             Dokumen Resmi
         </a>
@@ -20,35 +20,35 @@
 
 @if($strRangka->contains($userRangka->sdm_hak_akses, ['SDM-MANAJEMEN', 'SDM-PENGURUS']))
     <div @class(['menu-t', 'aktif' => $rekRangka->routeIs('sdm.permintaan-tambah-sdm.data')])>
-        <a class="nav-xhr" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data') }}">
+        <a class="nav-xhr" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', [], false) }}">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tambahorang' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tambahorang' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
             Permintaan Tambah SDM
         </a>
     </div>
     <div @class(['menu-t', 'aktif' => $rekRangka->routeIs('sdm.penempatan*')])>
-        <a class="nav-xhr" href="{{ $urlRangka->route('sdm.penempatan.data-aktif') }}">
+        <a class="nav-xhr" href="{{ $urlRangka->route('sdm.penempatan.data-aktif', [], false) }}">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#personil' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#personil' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
             Penempatan SDM
         </a>
     </div>
     <div @class(['menu-j', 'aktif' => $rekRangka->routeIs('sdm.pelanggaran*')])>
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#pelanggaran' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#pelanggaran' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
         </svg>
         Pelanggaran SDM
     </div>
     <ul class="submenu">
-        <li><a @class(['nav-xhr', 'aktif' => $rekRangka->routeIs('sdm.pelanggaran.data')]) href="{{ $urlRangka->route('sdm.pelanggaran.data') }}">Laporkan Pelanggaran</a></li>
-        <li><a @class(['nav-xhr', 'aktif' => $rekRangka->routeIs('sdm.sanksi.data*')]) href="{{ $urlRangka->route('sdm.sanksi.data') }}">Riwayat Sanksi</a></li>
+        <li><a @class(['nav-xhr', 'aktif' => $rekRangka->routeIs('sdm.pelanggaran.data')]) href="{{ $urlRangka->route('sdm.pelanggaran.data', [], false) }}">Laporkan Pelanggaran</a></li>
+        <li><a @class(['nav-xhr', 'aktif' => $rekRangka->routeIs('sdm.sanksi.data*')]) href="{{ $urlRangka->route('sdm.sanksi.data', [], false) }}">Riwayat Sanksi</a></li>
     </ul>
     <div @class(['menu-t', 'aktif' => $rekRangka->routeIs('sdm.posisi.data')])>
-        <a class="nav-xhr" href="{{ $urlRangka->route('sdm.posisi.data') }}">
+        <a class="nav-xhr" href="{{ $urlRangka->route('sdm.posisi.data', [], false) }}">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#posisi' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#posisi' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
             Pengaturan Jabatan
         </a>

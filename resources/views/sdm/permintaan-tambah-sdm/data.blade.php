@@ -2,17 +2,17 @@
 
 @section('isi')
 <div id="sdm_permintaan_tambah">
-    <h4>Data Permintaan Tambah SDM</h4>
+    <h4>Kelola Permintaan Tambah SDM</h4>
     @isset($tabels)
         <div class="cari-data tcetak">
-            <form id="form_sdm_permintaan_tambah_cari" class="form-xhr kartu" method="GET" action="{{ $urlRangka->current() }}">
-                <div class="isian gspan-2">
-                    <label for="sdm_permintaan_tambah_cariKataKunci">Kata Kunci Pencarian</label>
-                    <input id="sdm_permintaan_tambah_cariKataKunci" type="text" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
-                    <span class="t-bantu">Cari nomor, pemohon, penempatan dan posisi</span>
-                </div>
+            <form id="form_sdm_permintaan_tambah_cari" class="form-xhr kartu" data-tujuan="#tambah_sdm_tabels" data-frag="true" method="GET" action="{{ $urlRangka->current() }}">
+                <input type="hidden" name="fragment" value="tambah_sdm_tabels">
                 <details class="gspan-4" {{ $rekRangka->anyFilled(['tgl_diusulkan_mulai', 'tambahsdm_status', 'tgl_diusulkan_sampai', 'tambahsdm_penempatan', 'tambahsdm_laju', 'posisi']) ? 'open' : '' }}>
-                    <summary>Penyaringan :</summary>                    
+                    <summary class="cari">
+                        <div class="isian gspan-4">
+                            <input type="text" placeholder="Cari kata kunci" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
+                        </div>
+                    </summary>
                     <div class="kartu form">
                         <div class="isian gspan-2">
                             <label for="sdm_permintaan_tambah_cariLokasi">Saring Penempatan</label>
@@ -62,64 +62,23 @@
                             <span class="t-bantu">Pilih satu atau lebih</span>
                         </div>
                     </div>
+                    <div class="gspan-4"></div>
+                    <button id="tombol_cari_permintaan_sdm" class="utama pelengkap" type="submit">
+                        <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                        </svg>
+                        CARI
+                    </button>
                 </details>
-                <details class="gspan-4" {{ $rekRangka->anyFilled('urut') ? 'open' : '' }}>
-                    <summary>Pengurutan :</summary>
-                    <div class="kartu form" id="sdm_permintaan_tambah_cariUrut">
-                        <div class="isian" data-indeks="{{ $urutNomor ? $indexNomor : 'X' }}">
-                            <label for="sdm_permintaan_tambah_cariUrutNomor">{{ $urutNomor ? $indexNomor.'. ' : '' }}Urut Nomor Permintaan</label>
-                            <select id="sdm_permintaan_tambah_cariUrutNomor" name="urut[]" class="pil-dasar" onchange="getElementById('tombol_cari_permintaan_sdm').click()">
-                                <option selected disabled></option>
-                                <option @selected(in_array('tambahsdm_no ASC', (array) $rekRangka->urut)) value="tambahsdm_no ASC">0 - 9</option>
-                                <option @selected(in_array('tambahsdm_no DESC', (array) $rekRangka->urut)) value="tambahsdm_no DESC">9 - 0</option>
-                            </select>
-                            <span class="t-bantu">Pilih satu</span>
-                        </div>
-                        <div class="isian" data-indeks="{{ $urutJumlah ? $indexJumlah : 'X' }}">
-                            <label for="sdm_permintaan_tambah_cariUrutJumlah">{{ $urutJumlah ? $indexJumlah.'. ' : '' }}Urut Jumlah Dibutuhkan</label>
-                            <select id="sdm_permintaan_tambah_cariUrutJumlah" name="urut[]" class="pil-dasar" onchange="getElementById('tombol_cari_permintaan_sdm').click()">
-                                <option selected disabled></option>
-                                <option @selected(in_array('tambahsdm_jumlah ASC', (array) $rekRangka->urut)) value="tambahsdm_jumlah ASC">0 - 9</option>
-                                <option @selected(in_array('tambahsdm_jumlah DESC', (array) $rekRangka->urut)) value="tambahsdm_jumlah DESC">9 - 0</option>
-                            </select>
-                            <span class="t-bantu">Pilih satu</span>
-                        </div>
-                        <div class="isian" data-indeks="{{ $urutPosisi ? $indexPosisi : 'X' }}">
-                            <label for="sdm_permintaan_tambah_cariUrutPosisi">{{ $urutPosisi ? $indexPosisi.'. ' : '' }}Urut Posisi Dibutuhkan</label>
-                            <select id="sdm_permintaan_tambah_cariUrutPosisi" name="urut[]" class="pil-dasar" onchange="getElementById('tombol_cari_permintaan_sdm').click()">
-                                <option selected disabled></option>
-                                <option @selected(in_array('tambahsdm_posisi ASC', (array) $rekRangka->urut)) value="tambahsdm_posisi ASC">A - Z</option>
-                                <option @selected(in_array('tambahsdm_posisi DESC', (array) $rekRangka->urut)) value="tambahsdm_posisi DESC">Z - A</option>
-                            </select>
-                            <span class="t-bantu">Pilih satu</span>
-                        </div>
-                        <div class="isian" data-indeks="{{ $urutPenempatan ? $indexPenempatan : 'X' }}">
-                            <label for="sdm_permintaan_tambah_cariUrutPenempatan">{{ $urutPenempatan ? $indexPenempatan.'. ' : '' }}Urut Penempatan SDM</label>
-                            <select id="sdm_permintaan_tambah_cariUrutPenempatan" name="urut[]" class="pil-dasar" onchange="getElementById('tombol_cari_permintaan_sdm').click()">
-                                <option selected disabled></option>
-                                <option @selected(in_array('tambahsdm_penempatan ASC', (array) $rekRangka->urut)) value="tambahsdm_penempatan ASC">A - Z</option>
-                                <option @selected(in_array('tambahsdm_penempatan DESC', (array) $rekRangka->urut)) value="tambahsdm_penempatan DESC">Z - A</option>
-                            </select>
-                            <span class="t-bantu">Pilih satu</span>
-                        </div>
-                    </div>
-                </details>
-                <div class="gspan-4"></div>
-                <button id="tombol_cari_permintaan_sdm" class="utama pelengkap" type="submit">
-                    <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg>
-                    CARI
-                </button>
             </form>
         </div>
-
-        <div id="permintaan-sdm_sematan" style="scroll-margin:4em 0 0 0"></div>
         
-        <div class="kartu">
+        <div id="tambah_sdm_tabels" class="kartu" style="scroll-margin:4em 0 0 0">
+            @fragment('tambah_sdm_tabels')
             <b><i>Total permintaan tambah SDM ({{ $rekRangka->anyFilled(['kata_kunci', 'tambahsdm_status', 'tgl_diusulkan_mulai', 'tgl_diusulkan_sampai', 'tambahsdm_penempatan', 'tambahsdm_laju', 'posisi']) ? 'sesuai data pencarian & penyaringan' : 'global' }}) : Kebutuhan = {{number_format($kebutuhan, 0, ',', '.')}} Personil -> Terpenuhi = {{number_format($terpenuhi, 0, ',', '.')}} Personil -> Selisih = {{number_format($selisih, 0, ',', '.')}} Personil.</i></b>
             <p><span class="merah">Merah</span> : Kelebihan. <span class="biru">Biru</span> : Sudah Terpenuhi.</p>
-            <div class="trek-data tcetak">
+            <div id="permintaan-sdm_sematan" style="scroll-margin:4em 0 0 0"></div>
+            <div class="trek-data cari-data tcetak">
                 <span class="bph">
                     <label for="sdm_permintaan_tambah_cariPerHalaman" class="ket">Baris per halaman : </label>
                     <select id="sdm_permintaan_tambah_cariPerHalaman" name="bph" class="pil-saja" form="form_sdm_permintaan_tambah_cari" onchange="getElementById('tombol_cari_permintaan_sdm').click()">
@@ -133,33 +92,74 @@
                 @if($tabels->hasPages())
                 <span class="trek">
                     @if($tabels->currentPage() > 1)
-                        <a class="isi-xhr" href="{{ $tabels->url(1) }}" title="Awal">
+                        <a class="isi-xhr" data-tujuan="#tambah_sdm_tabels" data-frag="true" href="{{ $tabels->url(1) }}" title="Awal">
                             <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#awal' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#awal' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                             </svg>
                         </a>
                     @endif
                     @if($tabels->previousPageUrl() !== null)
-                    <a class="isi-xhr" href="{{ $tabels->previousPageUrl() }}" title="Sebelumnya">
+                    <a class="isi-xhr" data-tujuan="#tambah_sdm_tabels" data-frag="true" href="{{ $tabels->previousPageUrl() }}" title="Sebelumnya">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#mundur' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#mundur' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                         </svg>
                     </a>
                     @endif
                     @if($tabels->nextPageUrl() !== null)
-                    <a class="isi-xhr" href="{{ $tabels->nextPageUrl() }}" title="Berikutnya">
+                    <a class="isi-xhr" data-tujuan="#tambah_sdm_tabels" data-frag="true" href="{{ $tabels->nextPageUrl() }}" title="Berikutnya">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#maju' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#maju' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                         </svg>
                     </a>
-                    <a class="isi-xhr" href="{{ $tabels->url($tabels->lastPage()) }}" title="Akhir">
+                    <a class="isi-xhr" data-tujuan="#tambah_sdm_tabels" data-frag="true" href="{{ $tabels->url($tabels->lastPage()) }}" title="Akhir">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#akhir' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#akhir' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                         </svg>
                     </a>
                     @endif
                 </span>
                 @endif
+                <details class="gspan-4" {{ $rekRangka->anyFilled('urut') ? 'open' : '' }} style="padding:1em 0">
+                    <summary>Pengurutan :</summary>
+                    <div class="kartu form" id="sdm_permintaan_tambah_cariUrut">
+                        <div class="isian" data-indeks="{{ $urutNomor ? $indexNomor : 'X' }}">
+                            <label for="sdm_permintaan_tambah_cariUrutNomor">{{ $urutNomor ? $indexNomor.'. ' : '' }}Urut Nomor Permintaan</label>
+                            <select id="sdm_permintaan_tambah_cariUrutNomor" name="urut[]" form="form_sdm_permintaan_tambah_cari" class="pil-dasar" onchange="getElementById('tombol_cari_permintaan_sdm').click()">
+                                <option selected disabled></option>
+                                <option @selected(in_array('tambahsdm_no ASC', (array) $rekRangka->urut)) value="tambahsdm_no ASC">0 - 9</option>
+                                <option @selected(in_array('tambahsdm_no DESC', (array) $rekRangka->urut)) value="tambahsdm_no DESC">9 - 0</option>
+                            </select>
+                            <span class="t-bantu">Pilih satu</span>
+                        </div>
+                        <div class="isian" data-indeks="{{ $urutJumlah ? $indexJumlah : 'X' }}">
+                            <label for="sdm_permintaan_tambah_cariUrutJumlah">{{ $urutJumlah ? $indexJumlah.'. ' : '' }}Urut Jumlah Dibutuhkan</label>
+                            <select id="sdm_permintaan_tambah_cariUrutJumlah" name="urut[]" form="form_sdm_permintaan_tambah_cari" class="pil-dasar" onchange="getElementById('tombol_cari_permintaan_sdm').click()">
+                                <option selected disabled></option>
+                                <option @selected(in_array('tambahsdm_jumlah ASC', (array) $rekRangka->urut)) value="tambahsdm_jumlah ASC">0 - 9</option>
+                                <option @selected(in_array('tambahsdm_jumlah DESC', (array) $rekRangka->urut)) value="tambahsdm_jumlah DESC">9 - 0</option>
+                            </select>
+                            <span class="t-bantu">Pilih satu</span>
+                        </div>
+                        <div class="isian" data-indeks="{{ $urutPosisi ? $indexPosisi : 'X' }}">
+                            <label for="sdm_permintaan_tambah_cariUrutPosisi">{{ $urutPosisi ? $indexPosisi.'. ' : '' }}Urut Posisi Dibutuhkan</label>
+                            <select id="sdm_permintaan_tambah_cariUrutPosisi" name="urut[]" form="form_sdm_permintaan_tambah_cari" class="pil-dasar" onchange="getElementById('tombol_cari_permintaan_sdm').click()">
+                                <option selected disabled></option>
+                                <option @selected(in_array('tambahsdm_posisi ASC', (array) $rekRangka->urut)) value="tambahsdm_posisi ASC">A - Z</option>
+                                <option @selected(in_array('tambahsdm_posisi DESC', (array) $rekRangka->urut)) value="tambahsdm_posisi DESC">Z - A</option>
+                            </select>
+                            <span class="t-bantu">Pilih satu</span>
+                        </div>
+                        <div class="isian" data-indeks="{{ $urutPenempatan ? $indexPenempatan : 'X' }}">
+                            <label for="sdm_permintaan_tambah_cariUrutPenempatan">{{ $urutPenempatan ? $indexPenempatan.'. ' : '' }}Urut Penempatan SDM</label>
+                            <select id="sdm_permintaan_tambah_cariUrutPenempatan" name="urut[]" form="form_sdm_permintaan_tambah_cari" class="pil-dasar" onchange="getElementById('tombol_cari_permintaan_sdm').click()">
+                                <option selected disabled></option>
+                                <option @selected(in_array('tambahsdm_penempatan ASC', (array) $rekRangka->urut)) value="tambahsdm_penempatan ASC">A - Z</option>
+                                <option @selected(in_array('tambahsdm_penempatan DESC', (array) $rekRangka->urut)) value="tambahsdm_penempatan DESC">Z - A</option>
+                            </select>
+                            <span class="t-bantu">Pilih satu</span>
+                        </div>
+                    </div>
+                </details>
             </div>
 
             <div class="data ringkas">
@@ -181,19 +181,19 @@
                                 <div class="pil-aksi">
                                     <button>
                                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#menuvert' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                         </svg>
                                     </button>
                                     <div class="aksi">
-                                        <a class="isi-xhr" data-rekam="false" data-tujuan="#permintaan-sdm_sematan" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.lihat', ['uuid' => $tabel->tambahsdm_uuid]) }}" title="Lihat Data">Lihat Data</a>
-                                        <a class="isi-xhr" data-rekam="false" data-tujuan="#permintaan-sdm_sematan" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $tabel->tambahsdm_uuid]) }}" title="Ubah Data">Ubah Data</a>
+                                        <a class="isi-xhr" data-rekam="false" data-tujuan="#permintaan-sdm_sematan" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.lihat', ['uuid' => $tabel->tambahsdm_uuid], false) }}" title="Lihat Data">Lihat Data</a>
+                                        <a class="isi-xhr" data-rekam="false" data-tujuan="#permintaan-sdm_sematan" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $tabel->tambahsdm_uuid], false) }}" title="Ubah Data">Ubah Data</a>
                                     </div>
                                 </div>
                             </th>
                             <td>{{$tabels->firstItem() + $nomor}}</td>
                             <td>
-                                <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('akun', ['uuid' => $tabel->sdm_uuid]) }}">
-                                    <img @class(['akun', 'svg' => !$storageRangka->exists('sdm/foto-profil/' . $tabel->tambahsdm_sdm_id . '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $tabel->tambahsdm_sdm_id . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $tabel->tambahsdm_sdm_id . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $tabel->tambahsdm_sdm_id . '.webp'))]) : $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{ $tabel->sdm_nama ?? 'foto akun' }}" title="{{ $tabel->sdm_nama ?? 'foto akun' }}" loading="lazy">
+                                <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('akun', ['uuid' => $tabel->sdm_uuid], false) }}">
+                                    <img @class(['akun', 'svg' => !$storageRangka->exists('sdm/foto-profil/' . $tabel->tambahsdm_sdm_id . '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $tabel->tambahsdm_sdm_id . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $tabel->tambahsdm_sdm_id . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $tabel->tambahsdm_sdm_id . '.webp'))], false) : $mixRangka('/ikon.svg') . '#akun' }}" alt="{{ $tabel->sdm_nama ?? 'foto akun' }}" title="{{ $tabel->sdm_nama ?? 'foto akun' }}" loading="lazy">
                                 </a>
                                 <b>Nomor</b> : {{$tabel->tambahsdm_no}}<br/>
                                 <b>Pemohon</b> : {{$tabel->tambahsdm_sdm_id}} - {{$tabel->sdm_nama}}<br/>
@@ -204,7 +204,7 @@
                                 <b>Penempatan</b> : {{$tabel->tambahsdm_penempatan}}<br/>
                                 <b>Posisi</b> : {{$tabel->tambahsdm_posisi}}<br/>
                                 <b>Jml Kebutuhan</b> : {{$tabel->tambahsdm_jumlah}}<br/>
-                                <b>Jml Terpenuhi</b> : <u><a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $tabel->tambahsdm_no]) }}">{{ $tabel->tambahsdm_terpenuhi }}</a></u><br/>
+                                <b>Jml Terpenuhi</b> : <u><a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $tabel->tambahsdm_no], false) }}">{{ $tabel->tambahsdm_terpenuhi }}</a></u><br/>
                                 <b>Pemenuhan Terbaru</b> : {{ strtoupper($dateRangka->make($tabel->pemenuhan_terkini)?->translatedFormat('d F Y')) }}
                             </td>
                             <td>
@@ -212,7 +212,7 @@
                                 <b>Keterangan</b> : {!! nl2br($tabel->tambahsdm_keterangan) !!}
                             </td>
                             <td style="min-width:23ch">
-                                <form class="form-xhr" method="POST" action="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', [ 'uuid' => $tabel->tambahsdm_uuid]) }}" data-singkat="true">
+                                <form class="form-xhr" method="POST" action="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', [ 'uuid' => $tabel->tambahsdm_uuid], false) }}" data-singkat="true">
                                 <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
                                 <div class="isian">
                                     <label for="permintambahsdmPenempatan" class="tcetak">Ubah Status</label>
@@ -229,18 +229,18 @@
                                 </div>
                                 </form>
                                 <p class="tcetak">
-                                    <a class="isi-xhr utama" data-rekam="false" data-laju="true" data-tujuan="#permintaan-sdm_sematan" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.formulir', ['uuid' => $tabel->tambahsdm_uuid]) }}" title="Cetak Formulir Permintaan Tambah SDM">
+                                    <a class="isi-xhr utama" data-rekam="false" data-laju="true" data-tujuan="#permintaan-sdm_sematan" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.formulir', ['uuid' => $tabel->tambahsdm_uuid], false) }}" title="Cetak Formulir Permintaan Tambah SDM">
                                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cetak' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#cetak' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                         </svg>
                                         FORMULIR
                                     </a>
                                 </p>
                                 @if ($storageRangka->exists('sdm/permintaan-tambah-sdm/'.$tabel->tambahsdm_no.'.pdf'))
                                 <p class="tcetak">
-                                    <a class="utama" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $tabel->tambahsdm_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/' . $tabel->tambahsdm_no . '.pdf'))]) }}" title="Unduh Berkas Yang Diunggah" download>
+                                    <a class="utama" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $tabel->tambahsdm_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/' . $tabel->tambahsdm_no . '.pdf'))], false) }}" title="Unduh Berkas Yang Diunggah" download>
                                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                         </svg>
                                         BERKAS
                                     </a>
@@ -258,6 +258,14 @@
                 </table>
             </div>
             <button class="sekunder tcetak" onclick="ringkasTabel(this)" style="margin:0.5em 0">Panjang/Pendekkan Tampilan Tabel</button>
+            <script>
+                pilDasar('#tambah_sdm_tabels .pil-dasar');
+                pilSaja('#tambah_sdm_tabels .pil-saja');
+                urutData('#sdm_permintaan_tambah_cariUrut','#sdm_permintaan_tambah_cariUrut [data-indeks]');
+                formatTabel('#permintaan-sdm_tabel thead th', '#permintaan-sdm_tabel tbody tr');
+            </script>
+            @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+            @endfragment
         </div>
     
     @else
@@ -267,17 +275,17 @@
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#panahatas' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#panahatas' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
         <a class="isi-xhr" href="{{ $urlRangka->current().'?'.http_build_query(array_merge($rekRangka->merge(['unduh' => 'excel'])->except(['page', 'bph']))) }}" data-rekam="false" data-laju="true" data-tujuan="#permintaan-sdm_sematan" title="Unduh Data">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
-        <a class="isi-xhr" data-rekam="false" data-tujuan="#permintaan-sdm_sematan" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.tambah') }}" title="Tambah Data">
+        <a class="isi-xhr" data-rekam="false" data-tujuan="#permintaan-sdm_sematan" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.tambah', [], false) }}" title="Tambah Data">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tambah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tambah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
     </div>
@@ -286,16 +294,10 @@
     <script>
         pilDasar('#form_sdm_permintaan_tambah_cari .pil-dasar');
         pilCari('#form_sdm_permintaan_tambah_cari .pil-cari');
-        pilSaja('.trek-data .pil-saja');
-        pilSaja('#permintaan-sdm_tabel .pil-saja');
         pilSaja('#form_sdm_permintaan_tambah_cari .pil-saja');
-        urutData('#sdm_permintaan_tambah_cariUrut','#sdm_permintaan_tambah_cariUrut [data-indeks]');
         formatIsian('#form_sdm_permintaan_tambah_cari .isian :is(textarea,input[type=text],input[type=search])');
-        formatTabel('#permintaan-sdm_tabel thead th', '#permintaan-sdm_tabel tbody tr');
     </script>
     @endisset
-
-    @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
 
 </div>
 @endsection

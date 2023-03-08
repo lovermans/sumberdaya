@@ -40,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
             'mixRangka' => $appRangka->make('Illuminate\Foundation\Mix'),
             'dateRangka' => $appRangka->date,
             'strRangka' => str(),
-            'sesiRangka' => $appRangka->session
+            // 'sesiRangka' => $appRangka->session
         ];
 
         $appRangka->view->composer('*', function ($view) use ($data, $rekRangka) {
