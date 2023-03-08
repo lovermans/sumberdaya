@@ -207,7 +207,7 @@ class PermintaanTambahSDM
 
         $HtmlPenuh = $app->view->make('sdm.permintaan-tambah-sdm.data', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
-        return $reqs->pjax() && !$reqs->filled('fragment') && $reqs->header('X-Frag', false)
+        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
         ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
         : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
