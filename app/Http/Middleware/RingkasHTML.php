@@ -18,43 +18,10 @@ class RingkasHTML
         {
             $html = $response->getContent();
 
-            $html = trim(preg_replace([
-                // t = text
-                // o = tag open
-                // c = tag close
-                // Keep important white-space(s) after self-closing HTML tag(s)
-                '#<(img|input)(>| .*?>)#s',
-                // Remove a line break and two or more white-space(s) between tag(s)
-                '#(<!--.*?-->)|(>)(?:\n*|\s{2,})(<)|^\s*|\s*$#s',
-                '#(<!--.*?-->)|(?<!\>)\s+(<\/.*?>)|(<[^\/]*?>)\s+(?!\<)#s',
-                // t+c || o+t
-                '#(<!--.*?-->)|(<[^\/]*?>)\s+(<[^\/]*?>)|(<\/.*?>)\s+(<\/.*?>)#s',
-                // o+o || c+c
-                '#(<!--.*?-->)|(<\/.*?>)\s+(\s)(?!\<)|(?<!\>)\s+(\s)(<[^\/]*?\/?>)|(<[^\/]*?\/?>)\s+(\s)(?!\<)#s',
-                // c+t || t+o || o+t -- separated by long white-space(s)
-                '#(<!--.*?-->)|(<[^\/]*?>)\s+(<\/.*?>)#s',
-                // empty tag
-                '#<(img|input)(>| .*?>)<\/\1>#s',
-                // reset previous fix
-                '#(&nbsp;)&nbsp;(?![<\s])#',
-                // clean up ...
-                '#(?<=\>)(&nbsp;)(?=\<)#',
-                // --ibid
-                '/\s+/',
-            ],[
-                '<$1$2</$1>',
-                '$1$2$3',
-                '$1$2$3',
-                '$1$2$3$4$5',
-                '$1$2$3$4$5$6$7',
-                '$1$2$3',
-                '<$1$2',
-                '$1 ',
-                '$1',
-                " ",
-            ], $html));
+            $regexRemoveWhiteSpace = '%(?>[^\S ]\s*| \s{2,})(?=(?:(?:[^<]++| <(?!/?(?:textarea|pre)\b))*+)(?:<(?>textarea|pre)\b|\z))%ix';
+            $new_buffer = preg_replace($regexRemoveWhiteSpace, '', $html);
     
-            $response->setContent($html);
+            $response->setContent($new_buffer);
             
         }
         
