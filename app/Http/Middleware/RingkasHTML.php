@@ -18,8 +18,41 @@ class RingkasHTML
         {
             $html = $response->getContent();
 
-            $regexRemoveWhiteSpace = '%(?>[^\S ]\s*| \s{2,})(?=(?:(?:[^<]++| <(?!/?(?:textarea|pre)\b))*+)(?:<(?>textarea|pre)\b|\z))%ix';
-            $new_buffer = preg_replace($regexRemoveWhiteSpace, '', $html);
+            $whiteSpaceRules = [
+                '/(\s)+/s' => '\\1',// shorten multiple whitespace sequences
+                "#>\s+<#" => ">\n<",  // Strip excess whitespace using new line
+                "#\n\s+<#" => "\n<",// strip excess whitespace using new line
+                '/\>[^\S ]+/s' => '>',
+                // Strip all whitespaces after tags, except space
+                '/[^\S ]+\</s' => '<',// strip whitespaces before tags, except space
+                /**
+                 * '/\s+     # Match one or more whitespace characters
+                 * (?!       # but only if it is impossible to match...
+                 * [^<>]*   # any characters except angle brackets
+                 * >        # followed by a closing bracket.
+                 * )         # End of lookahead
+                 * /x',
+                 */
+    
+                //Remove all whitespaces except content between html tags.
+                //MOST DANGEROUS
+                //            '/\s+(?![^<>]*>)/x' => '',
+            ];
+            $commentRules = [
+                "/<!--.*?-->/ms" => '',// Remove all html comment.,
+            ];
+            $replaceWords = [
+                //OldWord will be replaced by the NewWord
+                // OldWord <-> NewWord DO NOT REMOVE THIS LINE. {REFERENCE LINE}
+                //'/\bOldWord\b/i' =>'NewWord'
+            ];
+            $allRules = array_merge(
+                $replaceWords,
+                // $commentRules,
+                $whiteSpaceRules
+            );
+            
+            $new_buffer = preg_replace(array_keys($allRules),array_values($allRules),$html);
     
             $response->setContent($new_buffer);
             
