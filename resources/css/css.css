@@ -702,6 +702,11 @@ form.kartu,
     gap: 1em;
 }
 
+:is(form.kartu,
+.kartu.form) .tutup-i {
+    float: right;
+}
+
 h4.form {
     display: inline;
     vertical-align: middle;

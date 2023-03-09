@@ -2,10 +2,12 @@
 
 @section('isi')
 <div id="permintambahsdm">
-    <h4>{{$rekRangka->routeIs('sdm.permintaan-tambah-sdm.tambah') ? 'Tambah' : 'Ubah'}} Data Permintaan Tambah SDM</h4>
     <form id="form_permintambahsdm" class="form-xhr kartu" method="POST" action="{{ $urlRangka->current() }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
-
+        <div class="gspan-4">
+            <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="{{ $mixRangka('/ikon.svg') . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></a>
+            <h4 class="form">{{$rekRangka->routeIs('sdm.permintaan-tambah-sdm.tambah') ? 'Tambah' : 'Ubah'}} Data Permintaan Tambah SDM</h4>
+        </div>
         @if ($rekRangka->routeIs('sdm.permintaan-tambah-sdm.ubah'))
             <div class="isian">
                 <label for="permintambahsdmNomor">No Permintaan</label>
@@ -100,7 +102,7 @@
             <div class="isian gspan-4">
                 <label>Berkas Permohonan</label>
                 @if ($storageRangka->exists('sdm/permintaan-tambah-sdm/'.$rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null).'.pdf'))
-                    <iframe src="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null) . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/' . $rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null) . '.pdf'))]) }}" title="Berkas Permintaan SDM" loading="lazy" style="width:100%;height:70vh"></iframe>
+                    <iframe src="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null) . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/' . $rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null) . '.pdf'))], false) }}" title="Berkas Permintaan SDM" loading="lazy" style="width:100%;height:70vh"></iframe>
                 @else
                     <p class="merah">Tidak ada berkas terunggah.</p>
                 @endif
@@ -114,11 +116,6 @@
         </div>
         <div class="gspan-4"></div>
         <button class="utama pelengkap" type="submit">SIMPAN</button>
-        @if ($rekRangka->pjax())
-            <a class="sekunder" href="#" onclick="event.preventDefault();this.parentElement.parentElement.remove()">TUTUP</a>
-        @else
-            <a class="isi-xhr sekunder" href="{{$urlRangka->to($rekRangka->session()->get('tautan_perujuk') ?? '/')}}">TUTUP</a>
-        @endif
     </form>
 
     <script>

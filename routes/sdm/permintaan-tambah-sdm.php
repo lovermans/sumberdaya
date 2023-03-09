@@ -7,3 +7,4 @@ $route->match(['get', 'post'], '/tambah', 'PermintaanTambahSDM@tambah')->name('t
 $route->match(['get', 'post'], '/ubah/{uuid?}', 'PermintaanTambahSDM@ubah')->name('ubah');
 $route->get('/berkas/{berkas?}', 'PermintaanTambahSDM@berkas')->name('berkas');
 $route->get('/formulir/{uuid?}', 'PermintaanTambahSDM@formulir')->name('formulir');
+$route->match(['get', 'post'], '/hapus/{uuid?}', 'PermintaanTambahSDM@hapus')->name('hapus');

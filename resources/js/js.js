@@ -158,7 +158,7 @@ window.lemparXHR = function (a, b, c, d, e = null, f = null, g = false, h = fals
             progressResponse = lastResponseLength ? responser.substring(lastResponseLength) : responser;
             lastResponseLength = responser.length;
 
-            isiPemberitahuan('pemberitahuan', '');
+            // isiPemberitahuan('pemberitahuan', '');
             // console.log(progressResponse);
             isiPesan.prepend(range.createContextualFragment(progressResponse));
             return true;
@@ -183,7 +183,9 @@ window.lemparXHR = function (a, b, c, d, e = null, f = null, g = false, h = fals
                     document.close();
                     return true;
                 };
-                isiPemberitahuan('pemberitahuan', '');
+                if(!j){
+                    isiPemberitahuan('pemberitahuan', '');
+                }
                 if (responTujuan) {
                     isi = document.getElementById(responTujuan) ?? document.querySelector('#isi') ?? document.querySelector('body');
                 }

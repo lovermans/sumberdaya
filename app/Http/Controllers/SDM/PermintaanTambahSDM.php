@@ -506,4 +506,89 @@ class PermintaanTambahSDM
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
         return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
     }
+
+    public function hapus(FungsiStatis $fungsiStatis, $uuid = null)
+    {
+        $app = app();
+        $reqs = $app->request;
+        $pengguna = $reqs->user();
+        $str = str();
+
+        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        $database = $app->db;
+        
+        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+
+        $permin = $this->dataDasar()->clone()->addSelect('tambahsdm_uuid')->where('tambahsdm_uuid', $uuid)->when($lingkupIjin, function ($query, $lingkupIjin) {
+            $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
+        })->first();
+        
+        abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
+        
+        if ($reqs->isMethod('post')) {
+            $reqs->merge(['id_penghapus' => $pengguna->sdm_no_absen, 'waktu_dihapus' => $app->date->now()]);
+            $validasi = $app->validator->make(
+                $reqs->all(),
+                [
+                    'alasan' => ['required', 'string'],
+                    'id_penghapus' => ['required', 'string'],
+                    'waktu_dihapus' => ['required', 'date'],
+                ],
+                [],
+                [
+                    'alasan' => 'Alasan Penghapusan',
+                    'id_penghapus' => 'ID Penghapus',
+                    'waktu_dihapus' => 'Waktu Dihapus',
+                ]
+            );
+
+            $validasi->validate();
+
+            abort_unless($app->filesystem->exists('contoh/data-dihapus.xlsx'), 404, 'Berkas riwayat penghapusan tidak ditemukan.');
+            
+            $dataValid = $validasi->validated();
+            
+            $jenisHapus = 'Penempatan SDM';
+            $idHapus = $dataValid['id_penghapus'];
+            $alasanHapus = $dataValid['alasan'];
+            $waktuHapus = $dataValid['waktu_dihapus']->format('Y-m-d H:i:s');
+            $hapus = collect($permin)->toJson();
+            
+            $dataHapus = [
+                $jenisHapus, $hapus, $idHapus, $waktuHapus, $alasanHapus
+            ];
+            
+            $reader = IOFactory::createReader('Xlsx');
+            $spreadsheet = $reader->load($app->storagePath('app/contoh/data-dihapus.xlsx'));
+            Cell::setValueBinder(new CustomValueBinder());
+            $worksheet = $spreadsheet->getActiveSheet();
+            $barisAkhir = $worksheet->getHighestRow() + 1;
+            $worksheet->fromArray($dataHapus, NULL, 'A' . $barisAkhir);
+
+            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+            $writer->setPreCalculateFormulas(false);
+            $writer->save($app->storagePath('app/contoh/data-dihapus.xlsx'));
+            $spreadsheet->disconnectWorksheets();
+            unset($spreadsheet);
+
+            $database->table('tambahsdms')->where('tambahsdm_uuid', $uuid)->delete();
+
+            $fungsiStatis->hapusCacheSDMUmum();
+
+            $perujuk = $reqs->session()->get('tautan_perujuk');
+            $pesan = 'Data berhasil dihapus';
+            $redirect = $app->redirect;
+
+            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.permintaan-tambah-sdm.data')->with('pesan', $pesan);
+        }
+
+        $data = [
+            'permin' => $permin
+        ];
+
+        $HtmlPenuh = $app->view->make('sdm.permintaan-tambah-sdm.hapus', $data);
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+    }
 }
