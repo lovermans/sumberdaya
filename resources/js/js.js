@@ -183,9 +183,9 @@ window.lemparXHR = function (a, b, c, d, e = null, f = null, g = false, h = fals
                     document.close();
                     return true;
                 };
-                if(!j){
-                    isiPemberitahuan('pemberitahuan', '');
-                }
+                // if(!j){
+                //     isiPemberitahuan('pemberitahuan', '');
+                // }
                 if (responTujuan) {
                     isi = document.getElementById(responTujuan) ?? document.querySelector('#isi') ?? document.querySelector('body');
                 }

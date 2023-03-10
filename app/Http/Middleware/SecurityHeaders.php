@@ -18,9 +18,8 @@ class SecurityHeaders
         $response->headers->set('Content-Security-Policy', "default-src 'self' 'unsafe-inline';img-src 'self' * data:");
         $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         $response->headers->set('Access-Control-Allow-Origin', $request->host());
-        // header_remove('X-Powered-By');
-        // header_remove('Server');
-        // header_remove('server');
+        // $response->headers->remove('X-Powered-By');
+        // $response->headers->remove('Server');
         
         return $response;
     }
