@@ -120,7 +120,8 @@ window.lemparXHR = function (a, b, c, d, e = null, f = null, g = false, h = fals
     var xhr = new XMLHttpRequest(),
         sisi = b ?? '#isi',
         pesan = e ?? '<p class="memuat">Menunggu jawaban server...</p>',
-        metode = d ?? 'GET';
+        metode = d ?? 'GET',
+        muat = document.getElementById('memuat');
     var isi = document.querySelector(sisi) ?? document.querySelector('#isi') ?? document.querySelector('body');
     if (!c.startsWith(location.origin)) {
         c = location.origin + c;
@@ -140,7 +141,7 @@ window.lemparXHR = function (a, b, c, d, e = null, f = null, g = false, h = fals
             IDacak += (Math.random() * b | 0).toString(b);
         };
         let wadahPesan = '<div class="pesan tcetak">' +
-            '<div id="' + IDacak + '"></div>' +
+            '<div id="' + IDacak + '"><p>Menunggu jawaban server...</div>' +
             '<button class="tutup-i"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="/ikon.svg?id=ec47ccd0fadc02f2d210d55d23c3c657#tutup" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></button></div>';
         
         isi.prepend(range.createContextualFragment(wadahPesan));
@@ -164,6 +165,9 @@ window.lemparXHR = function (a, b, c, d, e = null, f = null, g = false, h = fals
             return true;
         };
     } else {
+
+        muat.classList.toggle('mati');
+
         xhr.onload = function () {
             // console.log(this.getAllResponseHeaders());
             // console.log(this.getResponseHeader('X-Kode-Javascript'));
@@ -174,7 +178,7 @@ window.lemparXHR = function (a, b, c, d, e = null, f = null, g = false, h = fals
             };
 
             var responXHR = xhr.responseText,
-                responTujuan = xhr.getResponseHeader('X-Tujuan');
+            responTujuan = xhr.getResponseHeader('X-Tujuan');
 
             if (responXHR) {
                 if (responXHR.startsWith('<!DOCTYPE html>')) {
@@ -191,6 +195,7 @@ window.lemparXHR = function (a, b, c, d, e = null, f = null, g = false, h = fals
                 }
                 isi.replaceChildren(range.createContextualFragment(responXHR));
                 j ? scrollTo(0,0) : isi.scrollIntoView();
+                muat.classList.toggle('mati');
                 return true;
             };  
         };

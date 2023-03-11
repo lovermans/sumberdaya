@@ -19,6 +19,12 @@
     <label for="nav" id="nav-kanvas" class="blok-kanvas"></label>
     <label for="menu" id="menu-kanvas" class="blok-kanvas"></label>
     
+    <div id="memuat" class="mati">
+        <div class="progress">
+            <div class="indeterminate"></div>
+        </div>
+    </div>
+    
     <main id="main">
         <section>
             @include('sematan')
@@ -41,5 +47,4 @@
     </footer>
 
 </body>
-
 </html>

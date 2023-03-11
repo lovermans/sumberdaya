@@ -411,6 +411,7 @@ img.svg,
 img.akun:hover {
     transform: scale(1.5);
 }
+
 .taut-akun {
     display: inline-block;
     vertical-align: middle;
@@ -608,16 +609,16 @@ form.kartu,
 .pesan,
 .periksa {
     padding: 0 1em;
-    
+
     grid-template-columns: 1fr min-content;
     align-items: center;
     column-gap: 1em;
-    
+
 }
 
 .spanduk {
     background: var(--bg-spanduk);
-    
+
 }
 
 .pesan {
@@ -625,7 +626,7 @@ form.kartu,
 }
 
 .pesan a {
-    color: var(--hitam-1)!important;
+    color: var(--hitam-1) !important;
     background-color: var(--putih-2);
     text-transform: uppercase;
     overflow-wrap: anywhere;
@@ -703,7 +704,7 @@ form.kartu,
 }
 
 :is(form.kartu,
-.kartu.form) .tutup-i {
+    .kartu.form) .tutup-i {
     float: right;
 }
 
@@ -844,7 +845,7 @@ a.sekunder svg {
     text-decoration: none;
 }
 
-.cari-data details > summary:before {
+.cari-data details>summary:before {
     background: var(--oranye);
     border-radius: 50%;
     content: "+";
@@ -859,19 +860,19 @@ a.sekunder svg {
     font-weight: 500;
 }
 
-.cari-data details[open] > summary:before {
+.cari-data details[open]>summary:before {
     content: "-";
     color: rgba(255, 255, 255, .87);
     background: var(--taut-fokus);
 }
 
-.cari-data details > summary.cari:after {
+.cari-data details>summary.cari:after {
     content: "Pencarian Lanjutan \25BC";
     padding: .5em 0;
     display: block;
 }
 
-.cari-data details[open] > summary.cari:after {
+.cari-data details[open]>summary.cari:after {
     content: "Pencarian Lanjutan \25B2";
 }
 
@@ -973,7 +974,7 @@ a.sekunder svg {
 }
 
 .trek-data .bph .pil-saja {
-    display: inline-block!important;
+    display: inline-block !important;
 }
 
 .trek-data .bph .ss-main {
@@ -1454,6 +1455,90 @@ a.sekunder svg {
     background-color: #fffb8c
 }
 
+/* --progress */
+#memuat {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+}
+
+.progress {
+    position: relative;
+    height: .25em;
+    display: block;
+    width: 100%;
+    background-color: var(--bg-label);
+    border-radius: .125em;
+    background-clip: padding-box;
+    margin: 0;
+    overflow: hidden;
+}
+
+.progress .indeterminate {
+    background-color: var(--putih-2);
+}
+
+.progress .indeterminate:before {
+    content: "";
+    position: absolute;
+    background-color: inherit;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    will-change: left, right;
+    -webkit-animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+    animation: indeterminate 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+
+.progress .indeterminate:after {
+    content: "";
+    position: absolute;
+    background-color: inherit;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    will-change: left, right;
+    -webkit-animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+    animation: indeterminate-short 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+    -webkit-animation-delay: 1.15s;
+    animation-delay: 1.15s;
+}
+
+@-webkit-keyframes indeterminate {
+    0% {
+        left: -35%;
+        right: 100%;
+    }
+
+    60% {
+        left: 100%;
+        right: -90%;
+    }
+
+    100% {
+        left: 100%;
+        right: -90%;
+    }
+}
+
+@keyframes indeterminate {
+    0% {
+        left: -35%;
+        right: 100%;
+    }
+
+    60% {
+        left: 100%;
+        right: -90%;
+    }
+
+    100% {
+        left: 100%;
+        right: -90%;
+    }
+}
 
 /* --media */
 
@@ -1565,9 +1650,10 @@ screen and (min-width:672rem) {
 } */
 
 .cari-data summary::-webkit-details-marker,
-.cari-data details > summary.cari:before,
-.cari-data details[open] > summary.cari:before,
+.cari-data details>summary.cari:before,
+.cari-data details[open]>summary.cari:before,
 #sematan_javascript,
+#memuat.mati,
 [sembunyikan] {
     display: none;
 }
