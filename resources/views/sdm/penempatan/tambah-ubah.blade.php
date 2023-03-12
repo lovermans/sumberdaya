@@ -2,10 +2,12 @@
 
 @section('isi')
 <div id="penempatan_sdm_tambahUbah">
-    <h4>{{$rekRangka->routeIs('sdm.penempatan.tambah') ? 'Tambah' : 'Ubah'}} Data Penempatan SDM</h4>
     <form id="form_penempatanSDMTambahUbah" class="form-xhr kartu" method="POST" action="{{ $urlRangka->current() }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
-        
+        <div class="gspan-4">
+            <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="{{ $mixRangka('/ikon.svg') . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></a>
+            <h4 class="form">{{$rekRangka->routeIs('sdm.penempatan.tambah') ? 'Tambah' : 'Ubah'}} Data Penempatan SDM</h4>
+        </div>
         <div class="isian">
             <label for="penempatan_no_absen">No Absen</label>
             <input id="penempatan_no_absen" type="text" name="penempatan_no_absen" value="{{ $rekRangka->old('penempatan_no_absen', $penem->sdm_no_absen ?? null) }}" readonly inputmode="numeric" required>
@@ -131,7 +133,7 @@
             <div class="isian gspan-4">
                 <label>Berkas Penempatan</label>
                 @if ($storageRangka->exists('sdm/penempatan/'.$rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))
-                    <iframe src="{{ $urlRangka->route('sdm.penempatan.berkas', ['berkas' => $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf' . '?' . filemtime($app->storagePath('app/sdm/penempatan/' . $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))]) }}" title="Berkas Penempatan SDM" loading="lazy" style="width:100%;height:auto;aspect-ratio:4/3"></iframe>
+                    <iframe src="{{ $urlRangka->route('sdm.penempatan.berkas', ['berkas' => $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf' . '?' . filemtime($app->storagePath('app/sdm/penempatan/' . $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))], false) }}" title="Berkas Penempatan SDM" loading="lazy" style="width:100%;height:auto;aspect-ratio:4/3"></iframe>
                 @else
                     <p class="merah">Tidak ada berkas terunggah.</p>
                 @endif
@@ -139,11 +141,6 @@
         @endif
         <div class="gspan-4"></div>
         <button class="utama pelengkap" type="submit">SIMPAN</button>
-        @if ($rekRangka->pjax())
-            <a class="sekunder" href="#" onclick="event.preventDefault();this.parentElement.parentElement.remove()">TUTUP</a>
-        @else
-            <a class="isi-xhr sekunder" href="{{$urlRangka->to($rekRangka->session()->get('tautan_perujuk') ?? '/')}}">TUTUP</a>
-        @endif
     </form>
     
     <script>

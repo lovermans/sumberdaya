@@ -110,14 +110,14 @@
                             </svg>
                         </a>
                     @endif
-                    @if($tabels->previousPageUrl() !== null)
+                    @if($tabels->previousPageUrl())
                     <a class="isi-xhr" href="{{ $tabels->previousPageUrl() }}" title="Sebelumnya">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#mundur' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                         </svg>
                     </a>
                     @endif
-                    @if($tabels->nextPageUrl() !== null)
+                    @if($tabels->nextPageUrl())
                     <a class="isi-xhr" href="{{ $tabels->nextPageUrl() }}" title="Berikutnya">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#maju' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>

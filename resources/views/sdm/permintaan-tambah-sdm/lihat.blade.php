@@ -69,8 +69,8 @@
                 <div id="permintaan-sdm_sematan_lihat"></div>
             </div>
             <div class="gspan-4"></div>
-            <a class="utama isi-xhr tcetak" data-rekam="false" data-tujuan="#permintambahsdm_lihat" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $permin->tambahsdm_uuid], false) }}">UBAH</a>
-            <a class="sekunder isi-xhr" data-rekam="false" data-tujuan="#permintambahsdm_lihat" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.hapus', ['uuid' => $permin->tambahsdm_uuid]) }}">HAPUS</a>
+            <a class="utama isi-xhr tcetak" data-rekam="false" data-tujuan="#permintaan-sdm_sematan" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $permin->tambahsdm_uuid], false) }}">UBAH</a>
+            <a class="sekunder isi-xhr" data-rekam="false" data-tujuan="#permintaan-sdm_sematan" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.hapus', ['uuid' => $permin->tambahsdm_uuid]) }}">HAPUS</a>
         @else
             <div class="isian gspan-4">
                 <p>Periksa kembali data yang diminta.</p>

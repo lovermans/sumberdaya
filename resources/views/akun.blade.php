@@ -297,7 +297,7 @@
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#panahatas' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
-        <a href="{{ $urlRangka->route('unduh.kartu-sdm', ['uuid' => $akun->sdm_uuid], false) }}">
+        <a href="{{ $urlRangka->route('unduh.kartu-sdm', ['uuid' => $akun->sdm_uuid], false) }}" title="Unduh Kartu Identitas">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#kartuID' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>

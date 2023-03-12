@@ -23,16 +23,16 @@
                     <div class="pil-aksi">
                         <button>
                             <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#menuvert' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                             </svg>
                         </button>
                         <div class="aksi">
                             @isset ($tabel->penempatan_uuid)
-                            <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan" href="{{ $urlRangka->route('sdm.penempatan.lihat', ['uuid' => $tabel->penempatan_uuid]) }}" title="Lihat Data">Lihat Penempatan</a>
-                            <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan" href="{{ $urlRangka->route('sdm.penempatan.ubah', ['uuid' => $tabel->penempatan_uuid]) }}" title="Ubah Data">Ubah Penempatan</a>
+                            <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan" href="{{ $urlRangka->route('sdm.penempatan.lihat', ['uuid' => $tabel->penempatan_uuid], false) }}" title="Lihat Data">Lihat Penempatan</a>
+                            <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan" href="{{ $urlRangka->route('sdm.penempatan.ubah', ['uuid' => $tabel->penempatan_uuid], false) }}" title="Ubah Data">Ubah Penempatan</a>
                             @endisset
                             @unless ($rekRangka->routeIs('akun'))
-                                <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan" href="{{ $urlRangka->route('sdm.penempatan.tambah', ['uuid' => $tabel->sdm_uuid]) }}" title="Tambah Data">Tambah Penempatan</a>
+                                <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan" href="{{ $urlRangka->route('sdm.penempatan.tambah', ['uuid' => $tabel->sdm_uuid], false) }}" title="Tambah Data">Tambah Penempatan</a>
                             @endunless
                         </div>
                     </div>
@@ -41,12 +41,12 @@
                     
                 @if (!$rekRangka->routeIs('akun'))
                 <td>
-                    <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('akun', ['uuid' => $tabel->sdm_uuid]) }}">
-                        <img @class(['akun', 'svg' => !$storageRangka->exists('sdm/foto-profil/' . $tabel->sdm_no_absen . '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $tabel->sdm_no_absen . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $tabel->sdm_no_absen . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $tabel->sdm_no_absen . '.webp'))]) : $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{ $tabel->sdm_nama ?? 'foto akun' }}" title="{{ $tabel->sdm_nama ?? 'foto akun' }}" loading="lazy">
+                    <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('akun', ['uuid' => $tabel->sdm_uuid], false) }}">
+                        <img @class(['akun', 'svg' => !$storageRangka->exists('sdm/foto-profil/' . $tabel->sdm_no_absen . '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $tabel->sdm_no_absen . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $tabel->sdm_no_absen . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $tabel->sdm_no_absen . '.webp'))], false) : $mixRangka('/ikon.svg') . '#akun' }}" alt="{{ $tabel->sdm_nama ?? 'foto akun' }}" title="{{ $tabel->sdm_nama ?? 'foto akun' }}" loading="lazy">
                     </a>
                     <b>No Absen</b> : {{$tabel->sdm_no_absen}}<br/>
                     <b>Nama</b> : {{$tabel->sdm_nama}}<br/>
-                    <b>No Permintaan</b> : <u><a class="isi-xhr" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $tabel->sdm_no_permintaan]) }}">{{ $tabel->sdm_no_permintaan }}</a></u><br/>
+                    <b>No Permintaan</b> : <u><a class="isi-xhr" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $tabel->sdm_no_permintaan], false) }}">{{ $tabel->sdm_no_permintaan }}</a></u><br/>
                     <b>Tgl Masuk</b> : {{ strtoupper($dateRangka->make($tabel->sdm_tgl_gabung)?->translatedFormat('d F Y')) }}<br/>
                     <b>Tgl Keluar</b> : {{ strtoupper($dateRangka->make($tabel->sdm_tgl_berhenti)?->translatedFormat('d F Y')) }}<br/>
                     <b>PHK</b> : {{$tabel->sdm_jenis_berhenti}}<br/>
@@ -75,7 +75,7 @@
 
                 @if (!$rekRangka->routeIs('akun'))
                 <td>
-                    <b>E-KTP/Passport</b> : <u><a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $tabel->sdm_no_ktp]) }}">{{ $tabel->sdm_no_ktp }}</a></u><br/>
+                    <b>E-KTP/Passport</b> : <u><a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $tabel->sdm_no_ktp], false) }}">{{ $tabel->sdm_no_ktp }}</a></u><br/>
                     <b>Warganegara</b> : {{$tabel->sdm_warganegara}}<br/>
                     <b>Lahir</b> : {{$tabel->sdm_tempat_lahir}}, {{ strtoupper($dateRangka->make($tabel->sdm_tgl_lahir)?->translatedFormat('d F Y')) }}<br/>
                     <b>Kelamin</b> : {{$tabel->sdm_kelamin}}<br/>
@@ -111,5 +111,10 @@
 <button class="sekunder tcetak" onclick="ringkasTabel(this)" style="margin:0.5em 0">Panjang/Pendekkan Tampilan Tabel</button>
     
 <script>
+    pilDasar('.trek-data .pil-dasar');
+    pilSaja('.trek-data .pil-saja');
+    urutData('#sdm_penempatan_status_urut','#sdm_penempatan_status_urut [data-indeks]');
     formatTabel('#riwa-penem-sdm_tabel thead th', '#riwa-penem-sdm_tabel tbody tr');
 </script>
+
+@includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')

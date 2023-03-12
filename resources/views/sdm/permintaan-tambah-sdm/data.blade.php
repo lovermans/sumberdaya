@@ -7,10 +7,11 @@
         <div class="cari-data tcetak">
             <form id="form_sdm_permintaan_tambah_cari" class="form-xhr kartu" data-tujuan="#tambah_sdm_tabels" data-frag="true" method="GET" action="{{ $urlRangka->current() }}">
                 <input type="hidden" name="fragment" value="tambah_sdm_tabels">
-                <details class="gspan-4" {{ $rekRangka->anyFilled(['tgl_diusulkan_mulai', 'tambahsdm_status', 'tgl_diusulkan_sampai', 'tambahsdm_penempatan', 'tambahsdm_laju', 'posisi']) ? 'open' : '' }}>
+                
+                <details class="gspan-4" {{ $rekRangka->anyFilled(['tgl_diusulkan_mulai', 'tambahsdm_status', 'tgl_diusulkan_sampai', 'tambahsdm_penempatan', 'tambahsdm_laju', 'posisi']) ? 'open' : '' }} style="padding:0">
                     <summary class="cari">
                         <div class="isian gspan-4">
-                            <input type="text" placeholder="Cari kata kunci" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
+                            <input type="text" placeholder="Isi kata kunci lalu Enter" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
                         </div>
                     </summary>
                     <div class="kartu form">
@@ -98,14 +99,14 @@
                             </svg>
                         </a>
                     @endif
-                    @if($tabels->previousPageUrl() !== null)
+                    @if($tabels->previousPageUrl())
                     <a class="isi-xhr" data-tujuan="#tambah_sdm_tabels" data-frag="true" href="{{ $tabels->previousPageUrl() }}" title="Sebelumnya">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <use xlink:href="{{ $mixRangka('/ikon.svg') . '#mundur' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                         </svg>
                     </a>
                     @endif
-                    @if($tabels->nextPageUrl() !== null)
+                    @if($tabels->nextPageUrl())
                     <a class="isi-xhr" data-tujuan="#tambah_sdm_tabels" data-frag="true" href="{{ $tabels->nextPageUrl() }}" title="Berikutnya">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <use xlink:href="{{ $mixRangka('/ikon.svg') . '#maju' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>

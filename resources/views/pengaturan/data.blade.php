@@ -13,10 +13,10 @@
         <div class="cari-data tcetak">
             <form id="form_atur_data_cari" class="form-xhr kartu" data-tujuan="#atur_tabels" data-frag="true" method="GET" action="{{ $urlRangka->current() }}">
                 <input type="hidden" name="fragment" value="atur_tabels">
-                <details class="gspan-4" {{ $rekRangka->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : '' }}>
+                <details class="gspan-4" {{ $rekRangka->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : '' }} style="padding:0">
                     <summary class="cari">
                         <div class="isian gspan-4">
-                            <input type="text" placeholder="Cari kata kunci" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
+                            <input type="text" placeholder="Isi kata kunci lalu Enter" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
                         </div>
                     </summary>
                         <div class="kartu form gspan-4">
@@ -82,14 +82,14 @@
                             </svg>
                         </a>
                     @endif
-                    @if($tabels->previousPageUrl() !== null)
+                    @if($tabels->previousPageUrl())
                     <a class="isi-xhr" href="{{ $tabels->previousPageUrl() }}" data-tujuan="#atur_tabels" data-frag="true" title="Sebelumnya">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <use xlink:href="{{ $mixRangka('/ikon.svg') . '#mundur' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                         </svg>
                     </a>
                     @endif
-                    @if($tabels->nextPageUrl() !== null)
+                    @if($tabels->nextPageUrl())
                     <a class="isi-xhr" href="{{ $tabels->nextPageUrl() }}" data-tujuan="#atur_tabels" data-frag="true" title="Berikutnya">
                         <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <use xlink:href="{{ $mixRangka('/ikon.svg') . '#maju' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>

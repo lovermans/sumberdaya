@@ -31,7 +31,7 @@ class Penempatan
         );
         
         if ($validator->fails()) {
-            return $app->redirect->route('sdm.penempatan.riwayat')->withErrors($validator)->withInput();
+            return $app->redirect->route('sdm.penempatan.riwayat')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
 
         $urutArray = $reqs->urut;
@@ -111,6 +111,7 @@ class Penempatan
         );
 
         if ($reqs->unduh == 'excel') {
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
             
             set_time_limit(0);
             ob_implicit_flush();
@@ -165,7 +166,7 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString();
+        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
         
         $aturs = $fungsiStatis->ambilCacheAtur();
         $posisis = $fungsiStatis->ambilCachePosisiSDM();
@@ -195,11 +196,13 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
 
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
+        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
 
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
+        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function indexMasaKerjaNyata(FungsiStatis $fungsiStatis)
@@ -218,7 +221,7 @@ class Penempatan
         );
         
         if ($validator->fails()) {
-            return $app->redirect->route('sdm.penempatan.riwayat-nyata')->withErrors($validator)->withInput();
+            return $app->redirect->route('sdm.penempatan.riwayat-nyata')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
 
         $urutArray = $reqs->urut;
@@ -301,7 +304,8 @@ class Penempatan
         );
 
         if ($reqs->unduh == 'excel') {
-            
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+
             set_time_limit(0);
             ob_implicit_flush();
             ob_end_flush();
@@ -355,7 +359,7 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString();
+        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
         
         $aturs = $fungsiStatis->ambilCacheAtur();
         $posisis = $fungsiStatis->ambilCachePosisiSDM();
@@ -385,11 +389,13 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
 
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
+        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
 
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
+        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function indexAktif(FungsiStatis $fungsiStatis)
@@ -408,7 +414,7 @@ class Penempatan
         );
         
         if ($validator->fails()) {
-            return $app->redirect->route('sdm.penempatan.data-aktif')->withErrors($validator)->withInput();
+            return $app->redirect->route('sdm.penempatan.data-aktif')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
         
         $urutArray = $reqs->urut;
@@ -482,6 +488,7 @@ class Penempatan
         );
 
         if ($reqs->unduh == 'excel') {
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
             
             set_time_limit(0);
             ob_implicit_flush();
@@ -536,7 +543,7 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString();
+        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
         
         $aturs = $fungsiStatis->ambilCacheAtur();
         $posisis = $fungsiStatis->ambilCachePosisiSDM();
@@ -566,11 +573,13 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
 
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
+        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
 
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
+        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function indexNonAktif(FungsiStatis $fungsiStatis)
@@ -589,7 +598,7 @@ class Penempatan
         );
         
         if ($validator->fails()) {
-            return $app->redirect->route('sdm.penempatan.data-nonaktif')->withErrors($validator)->withInput();
+            return $app->redirect->route('sdm.penempatan.data-nonaktif')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
         
         $urutArray = $reqs->urut;
@@ -663,7 +672,8 @@ class Penempatan
         );
 
         if ($reqs->unduh == 'excel') {
-            
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+
             set_time_limit(0);
             ob_implicit_flush();
             ob_end_flush();
@@ -717,7 +727,7 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString();
+        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
         
         $aturs = $fungsiStatis->ambilCacheAtur();
         $posisis = $fungsiStatis->ambilCachePosisiSDM();
@@ -747,11 +757,13 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
         
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
+        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
         
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
+        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function indexAkanHabis(FungsiStatis $fungsiStatis)
@@ -770,7 +782,7 @@ class Penempatan
         );
         
         if ($validator->fails()) {
-            return $app->redirect->route('sdm.penempatan.data-akanhabis')->withErrors($validator)->withInput();
+            return $app->redirect->route('sdm.penempatan.data-akanhabis')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
         
         $urutArray = $reqs->urut;
@@ -850,7 +862,8 @@ class Penempatan
         );
 
         if ($reqs->unduh == 'excel') {
-            
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+
             set_time_limit(0);
             ob_implicit_flush();
             ob_end_flush();
@@ -904,7 +917,7 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString();
+        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
         
         $aturs = $fungsiStatis->ambilCacheAtur();
         $posisis = $fungsiStatis->ambilCachePosisiSDM();
@@ -934,11 +947,13 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
         
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
+        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
         
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
+        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function indexKadaluarsa(FungsiStatis $fungsiStatis)
@@ -957,7 +972,7 @@ class Penempatan
         );
         
         if ($validator->fails()) {
-            return $app->redirect->route('sdm.penempatan.data-kadaluarsa')->withErrors($validator)->withInput();
+            return $app->redirect->route('sdm.penempatan.data-kadaluarsa')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
         
         $urutArray = $reqs->urut;
@@ -1034,7 +1049,8 @@ class Penempatan
         );
 
         if ($reqs->unduh == 'excel') {
-            
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+
             set_time_limit(0);
             ob_implicit_flush();
             ob_end_flush();
@@ -1088,7 +1104,7 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString();
+        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
         
         $aturs = $fungsiStatis->ambilCacheAtur();
         $posisis = $fungsiStatis->ambilCachePosisiSDM();
@@ -1118,11 +1134,13 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
         
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
+        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
         
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
+        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function indexBaru(FungsiStatis $fungsiStatis)
@@ -1141,7 +1159,7 @@ class Penempatan
         );
         
         if ($validator->fails()) {
-            return $app->redirect->route('sdm.penempatan.data-baru')->withErrors($validator)->withInput();
+            return $app->redirect->route('sdm.penempatan.data-baru')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
         
         $urutArray = $reqs->urut;
@@ -1198,7 +1216,8 @@ class Penempatan
         );
 
         if ($reqs->unduh == 'excel') {
-            
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+
             set_time_limit(0);
             ob_implicit_flush();
             ob_end_flush();
@@ -1253,7 +1272,7 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString();
+        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
         
         $aturs = $fungsiStatis->ambilCacheAtur();
         $posisis = $fungsiStatis->ambilCachePosisiSDM();
@@ -1283,11 +1302,13 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
         
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
+        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
         
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
+        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function indexBatal(FungsiStatis $fungsiStatis)
@@ -1306,7 +1327,7 @@ class Penempatan
         );
         
         if ($validator->fails()) {
-            return $app->redirect->route('sdm.penempatan.data-batal')->withErrors($validator)->withInput();
+            return $app->redirect->route('sdm.penempatan.data-batal')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
         
         $urutArray = $reqs->urut;
@@ -1363,7 +1384,8 @@ class Penempatan
         );
 
         if ($reqs->unduh == 'excel') {
-            
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+
             set_time_limit(0);
             ob_implicit_flush();
             ob_end_flush();
@@ -1418,7 +1440,7 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString();
+        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
         
         $aturs = $fungsiStatis->ambilCacheAtur();
         $posisis = $fungsiStatis->ambilCachePosisiSDM();
@@ -1448,11 +1470,13 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
         
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
+        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
         
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
+        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function atributInput()

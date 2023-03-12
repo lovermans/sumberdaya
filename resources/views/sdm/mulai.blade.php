@@ -38,13 +38,13 @@
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unggah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
-        <a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.riwayat', [], false) }}">
+        <a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.riwayat', [], false) }}" title="Cari Semua Riwayat Penempatan SDM">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#cari' }}"
                     xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
-        <a class="isi-xhr" href="{{ $urlRangka->route('register', [], false) }}" data-rekam="false" title="Tambah Data SDM">
+        <a class="isi-xhr" href="{{ $urlRangka->route('register', [], false) }}" title="Tambah Data SDM">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tambahorang' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
