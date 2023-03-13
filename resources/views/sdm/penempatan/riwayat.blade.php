@@ -133,15 +133,15 @@
             <div id="sdm_penem_riwa_sematan" style="scroll-margin:4em 0 0 0"></div>
             <div class="trek-data cari-data tcetak">
                 <div class="isian" style="margin:0 0 1em">
-                    <select id="sdm_penempatan_status_cariStatusAktifSDM" class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR(true, null, this.value)">
-                        <option value="{{ $urlRangka->route('sdm.penempatan.riwayat', $rekRangka->except('unduh'), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.riwayat'))>SEMUA RIWAYAT</option>
-                        <option value="{{ $urlRangka->route('sdm.penempatan.data-aktif', $rekRangka->except('unduh'), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-aktif'))>AKTIF</option>
-                        <option value="{{ $urlRangka->route('sdm.penempatan.data-nonaktif', $rekRangka->except('unduh'), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-nonaktif'))>NON-AKTIF</option>
-                        <option value="{{ $urlRangka->route('sdm.penempatan.data-akanhabis', $rekRangka->except('unduh'), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-akanhabis'))>AKAN HABIS</option>
-                        <option value="{{ $urlRangka->route('sdm.penempatan.data-kadaluarsa', $rekRangka->except('unduh'), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-kadaluarsa'))>KADALUARSA</option>
-                        <option value="{{ $urlRangka->route('sdm.penempatan.data-baru', $rekRangka->except('unduh'), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-baru'))>BELUM DITEMPATKAN</option>
-                        <option value="{{ $urlRangka->route('sdm.penempatan.data-batal', $rekRangka->except('unduh'), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-batal'))>BATAL DITEMPATKAN</option>
-                        <option value="{{ $urlRangka->route('sdm.penempatan.riwayat-nyata', $rekRangka->except('unduh'), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.riwayat-nyata'))>MASA KERJA NYATA</option>
+                    <select id="sdm_penempatan_status_cariStatusAktifSDM" class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR(true, '#riwa-penem-sdm_tabels', this.value, 'GET', null, null, false, false, false, false, true)">
+                        <option value="{{ $urlRangka->route('sdm.penempatan.riwayat', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph']), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.riwayat'))>SEMUA RIWAYAT</option>
+                        <option value="{{ $urlRangka->route('sdm.penempatan.data-aktif', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph']), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-aktif'))>AKTIF</option>
+                        <option value="{{ $urlRangka->route('sdm.penempatan.data-nonaktif', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph']), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-nonaktif'))>NON-AKTIF</option>
+                        <option value="{{ $urlRangka->route('sdm.penempatan.data-akanhabis', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph']), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-akanhabis'))>AKAN HABIS</option>
+                        <option value="{{ $urlRangka->route('sdm.penempatan.data-kadaluarsa', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph']), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-kadaluarsa'))>KADALUARSA</option>
+                        <option value="{{ $urlRangka->route('sdm.penempatan.data-baru', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph']), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-baru'))>BELUM DITEMPATKAN</option>
+                        <option value="{{ $urlRangka->route('sdm.penempatan.data-batal', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph']), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-batal'))>BATAL DITEMPATKAN</option>
+                        <option value="{{ $urlRangka->route('sdm.penempatan.riwayat-nyata', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph']), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.riwayat-nyata'))>MASA KERJA NYATA</option>
                     </select>
                 </div>
                 <span class="bph">
@@ -247,7 +247,7 @@
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unggah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
-        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR(false, '#atur_tabels', location.href + '&unduh=excel', 'GET', null, null, true)">
+        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR(false, '#riwa-penem-sdm_tabels', location.href + '&unduh=excel', 'GET', null, null, true)">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
