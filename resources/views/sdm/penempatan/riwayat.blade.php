@@ -247,7 +247,7 @@
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unggah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
-        <a class="isi-xhr" href="{{ $urlRangka->current().'?'.http_build_query(array_merge($rekRangka->merge(['unduh' => 'excel'])->except(['page', 'bph']))) }}" data-rekam="false" data-laju="true" data-tujuan="#sdm_penem_riwa_sematan" title="Unduh Data">
+        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR(false, '#atur_tabels', location.href + '&unduh=excel', 'GET', null, null, true)">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
@@ -269,7 +269,6 @@
         pilDasar('#form_sdm_penempatan_status_cari .pil-dasar');
         pilSaja('#form_sdm_penempatan_status_cari .pil-saja');
         pilCari('#form_sdm_penempatan_status_cari .pil-cari');
-        urutData('#sdm_penempatan_status_urut','#sdm_penempatan_status_urut [data-indeks]');
         formatIsian('#form_sdm_penempatan_status_cari .isian :is(textarea,input[type=text],input[type=search])');
     </script>
     @endisset

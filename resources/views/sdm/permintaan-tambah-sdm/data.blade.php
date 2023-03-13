@@ -279,7 +279,7 @@
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#panahatas' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
-        <a class="isi-xhr" href="{{ $urlRangka->current().'?'.http_build_query(array_merge($rekRangka->merge(['unduh' => 'excel'])->except(['page', 'bph']))) }}" data-rekam="false" data-laju="true" data-tujuan="#permintaan-sdm_sematan" title="Unduh Data">
+        <a href="#" data-tujuan="#atur_tabels" title="Unduh Data" onclick="event.preventDefault();lemparXHR(false, '#atur_tabels', location.href + '&unduh=excel', 'GET', null, null, true)">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
