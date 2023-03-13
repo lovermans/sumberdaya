@@ -5,7 +5,7 @@
     <h4>Kelola Penempatan SDM</h4>
     @isset($tabels)
         <div class="cari-data tcetak">
-            <form id="form_sdm_penempatan_status_cari" class="form-xhr kartu" data-tujuan="#riwa-penem-sdm_tabels" data-frag="true" method="GET" action="{{ $urlRangka->current() }}">
+            <form id="form_sdm_penempatan_status_cari" class="form-xhr kartu" data-tujuan="#riwa-penem-sdm_tabels" data-frag="true" method="GET" data-blank="true">
                 <input type="hidden" name="fragment" value="riwa-penem-sdm_tabels">
 
                 <details class="gspan-4" {{ $rekRangka->anyFilled(['lokasi', 'kontrak', 'kategori', 'pangkat', 'kelamin', 'posisi', 'agama', 'kawin', 'warganegara', 'pendidikan', 'disabilitas']) ? 'open' : '' }} style="padding:0">
@@ -247,7 +247,7 @@
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unggah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
-        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR(false, '#riwa-penem-sdm_tabels', location.href + '&unduh=excel', 'GET', null, null, true)">
+        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR(false, '#riwa-penem-sdm_tabels', window.location.search ? window.location.pathname + window.location.search + '&unduh=excel' : window.location.pathname + '?unduh=excel', 'GET', null, null, true)">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>

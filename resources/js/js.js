@@ -27,27 +27,15 @@ document.addEventListener('click', function (e) {
             tautan = b.href,
             data = b.dataset.kirim,
             strim = b.dataset.laju,
-            enkod = b.dataset.enkode,
+            enkod = b.dataset.enkode == 'true' ? true : false,
             rekam = b.dataset.rekam,
-            singkat = b.dataset.singkat,
-            frag = b.dataset.frag,
-            tn = b.dataset.tn,
+            singkat = b.dataset.singkat == 'true' ? true : false,
+            frag = b.dataset.frag == 'true' ? true : false,
+            tn = b.dataset.tn == 'true' ? true : false,
             simpan = true;
         if (rekam == 'false') {
             simpan = false;
         }
-        if (singkat == 'true') {
-            singkat = true;
-        } else { singkat = false; }
-        if (enkod == 'true') {
-            enkod = true;
-        } else { enkod = false; }
-        if (frag == 'true') {
-            frag = true;
-        } else { frag = false; }
-        if (tn == 'true') {
-            tn = true;
-        } else { tn = false; }
         if (a) {
             var navAktif = document.querySelectorAll('nav a.aktif, aside a.aktif');
             for (let z = 0; z < navAktif.length; z++) {
@@ -77,24 +65,13 @@ document.addEventListener('submit', function (e) {
         var tujuan = a.dataset.tujuan,
             metode = a.method?.toUpperCase(),
             pesan = a.dataset.pesan,
-            ke = a.action,
-            singkat = a.dataset.singkat,
-            prog = a.dataset.laju,
-            frag = a.dataset.frag,
-            tn = a.dataset.tn,
+            ke = a.dataset.blank == 'true' ? window.location.pathname : a.action,
+            singkat = a.dataset.singkat == 'true' ? true : false,
+            prog = a.dataset.laju == 'true' ? true : false,
+            frag = a.dataset.frag == 'true' ? true : false,
+            tn = a.dataset.tn == 'true' ? true : false,
             data = new FormData(a);
-        if (singkat == 'true') {
-            singkat = true;
-        } else { singkat = false; }
-        if (prog == 'true') {
-            prog = true;
-        } else { prog = false; }
-        if (frag == 'true') {
-            frag = true;
-        } else { frag = false; }
-        if (tn == 'true') {
-            tn = true;
-        } else { tn = false; }
+            console.log(a.action);
         if (metode == 'GET') {
             ke += '?' + new URLSearchParams(data).toString();
             var rekam = a.dataset.rekam,
@@ -116,26 +93,26 @@ document.addEventListener('submit', function (e) {
     }
 });
 
-window.lemparXHR = function (a, b, c, d, e = null, f = null, g = false, h = false, i = false, j = false, k = false) {
+window.lemparXHR = function (rekam, tujuan, tautan, method, pesanmuat = null, postdata = null, strim = false, enkod = false, mintajs = false, topview = false, fragmen = false) {
     var xhr = new XMLHttpRequest(),
-        sisi = b ?? '#isi',
-        pesan = e ?? '<p class="memuat">Menunggu jawaban server...</p>',
-        metode = d ?? 'GET',
+        sisi = tujuan ?? '#isi',
+        pesan = pesanmuat ?? '<p class="memuat">Menunggu jawaban server...</p>',
+        metode = method ?? 'GET',
         muat = document.getElementById('memuat');
     var isi = document.querySelector(sisi) ?? document.querySelector('#isi') ?? document.querySelector('body');
-    if (!c.startsWith(location.origin)) {
-        c = location.origin + c;
+    if (!tautan.startsWith(location.origin)) {
+        tautan = location.origin + tautan;
     }
-    if (i) {
+    if (mintajs) {
         isi = document.querySelector('#sematan_javascript');
         pesan = '';
     };
-    if (a) {
-        rekamTautan(b, c, d, e, h);
+    if (rekam) {
+        rekamTautan(tujuan, tautan, metode, pesan, enkod);
     }
     // g ? isi.prepend(range.createContextualFragment('')) : isi.prepend(range.createContextualFragment(pesan));
-    j ? scrollTo(0,0) : isi.scrollIntoView();
-    if (g) {
+    topview ? scrollTo(0,0) : isi.scrollIntoView();
+    if (strim) {
         let lastResponseLength = false;
         for(var IDacak = '', b = 36; IDacak.length < 9;) {
             IDacak += (Math.random() * b | 0).toString(b);
@@ -149,7 +126,7 @@ window.lemparXHR = function (a, b, c, d, e = null, f = null, g = false, h = fals
         let isiPesan = document.getElementById(IDacak);
 
         xhr.onprogress = function (e) {
-            if (c !== xhr.responseURL) {
+            if (tautan !== xhr.responseURL) {
                 location = xhr.responseURL;
                 return true;
             };
@@ -172,7 +149,7 @@ window.lemparXHR = function (a, b, c, d, e = null, f = null, g = false, h = fals
             // console.log(this.getAllResponseHeaders());
             // console.log(this.getResponseHeader('X-Kode-Javascript'));
 
-            if (c !== xhr.responseURL && !xhr.getResponseHeader('Content-Type').startsWith('text/html')) {
+            if (tautan !== xhr.responseURL && !xhr.getResponseHeader('Content-Type').startsWith('text/html')) {
                 location = xhr.responseURL;
                 return true;
             };
@@ -194,41 +171,41 @@ window.lemparXHR = function (a, b, c, d, e = null, f = null, g = false, h = fals
                     isi = document.getElementById(responTujuan) ?? document.querySelector('#isi') ?? document.querySelector('body');
                 }
                 isi.replaceChildren(range.createContextualFragment(responXHR));
-                j ? scrollTo(0,0) : isi.scrollIntoView();
+                topview ? scrollTo(0,0) : isi.scrollIntoView();
                 muat.classList.toggle('mati');
                 return true;
             };  
         };
     }
-    xhr.open(metode, c, true);
+    xhr.open(metode, tautan, true);
     xhr.setRequestHeader('X-PJAX', true);
-    if (h) {
+    if (enkod) {
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     }
-    if (k) {
+    if (fragmen) {
         xhr.setRequestHeader('X-Frag', true);
     }
-    if (i) {
+    if (mintajs) {
         xhr.setRequestHeader('X-Minta-Javascript', true);
     }
     if (metode == 'POST') {
-        xhr.send(f);
+        xhr.send(postdata);
     }
     if (metode == 'GET') {
         xhr.send();
     }
 };
 
-function rekamTautan(a, b, c, d, e) {
-    var segmen = b.split('/');
+function rekamTautan(tujuan, tautan, method, pesan, enkod) {
+    var segmen = tautan.split('/');
     var judul = document.title + ' - ' + segmen[1];
     history.pushState({
-        'tujuan': a,
-        'rute': b,
-        'metode': c,
-        'pesan': d,
-        'enkode': e
-    }, judul, b);
+        'tujuan': tujuan,
+        'rute': tautan,
+        'metode': method,
+        'pesan': pesan,
+        'enkode': enkod
+    }, judul, tautan);
 };
 
 window.onpopstate = function (p) {
