@@ -11,7 +11,8 @@
     });
 }();
 
-var range = document.createRange();
+var range = document.createRange(),
+    judulHal = document.title;
 
 document.addEventListener('click', function (e) {
     var navCb = document.getElementById('nav'),
@@ -197,8 +198,9 @@ window.lemparXHR = function (rekam, tujuan, tautan, method, pesanmuat = null, po
 };
 
 function rekamTautan(tujuan, tautan, method, pesan, enkod) {
-    var segmen = tautan.split('/');
-    var judul = document.title + ' - ' + segmen[1];
+    var segmen = new URL(tautan).pathname.split('/');
+    var judul = segmen[1] ? judulHal + ' - ' + segmen.join(' ') : judulHal;
+    document.title = judul;
     history.pushState({
         'tujuan': tujuan,
         'rute': tautan,
@@ -211,7 +213,7 @@ function rekamTautan(tujuan, tautan, method, pesan, enkod) {
 window.onpopstate = function (p) {
     if (p.state?.rute) {
         lemparXHR(false, p.state.tujuan, p.state.rute, p.state.metode, p.state.pesan, null, false, p.state.enkode, false);
-    } else { location = window.location.href };
+    } else { location.reload(); };
 };
 
 window.siapkanFoto = function (a) {
