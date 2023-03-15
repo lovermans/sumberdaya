@@ -817,6 +817,7 @@ a.utama svg {
 button.sekunder,
 a.sekunder {
     color: var(--taut-umum) !important;
+    border: .0625em solid var(--taut-umum);
 }
 
 button.sekunder svg,

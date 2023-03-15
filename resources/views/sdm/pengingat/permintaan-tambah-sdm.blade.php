@@ -81,7 +81,7 @@
                 </tbody>
             </table>
         </div>
-        <button class="sekunder tcetak" onclick="ringkasTabel(this)" style="margin:0.5em 0">Panjang/Pendekkan Tampilan
+        <button class="sekunder tcetak" onclick="ringkasTabel(this)" style="margin:0.5em 0.5em 0.5em 0">Panjang/Pendekkan Tampilan
             Tabel</button>
         <a class="isi-xhr utama" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', [], false) }}">SELENGKAPNYA</a>
     </div>
