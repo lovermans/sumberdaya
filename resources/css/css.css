@@ -479,8 +479,9 @@ aside {
     position: relative;
 }
 
-.data .pil-aksi:focus-within>.aksi {
-    display: inline-block;
+.data .pil-aksi:focus-within>.aksi,
+.data .pil-aksi > button {
+    display: block;
 }
 
 .submenu li {
@@ -988,9 +989,10 @@ a.sekunder svg {
 }
 
 .trek-data .bph label {
-    margin-right: 1em;
+    margin: 1em;
 }
 
+.trek-data :is(.saring-cepat, .bph label),
 .trek a {
     display: inline-block;
 }

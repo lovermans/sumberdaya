@@ -77,7 +77,6 @@
         <div id="tambah_sdm_tabels" class="kartu" style="scroll-margin:4em 0 0 0">
             @fragment('tambah_sdm_tabels')
             <b><i>Total permintaan tambah SDM ({{ $rekRangka->anyFilled(['kata_kunci', 'tambahsdm_status', 'tgl_diusulkan_mulai', 'tgl_diusulkan_sampai', 'tambahsdm_penempatan', 'tambahsdm_laju', 'posisi']) ? 'sesuai data pencarian & penyaringan' : 'global' }}) : Kebutuhan = {{number_format($kebutuhan, 0, ',', '.')}} Personil -> Terpenuhi = {{number_format($terpenuhi, 0, ',', '.')}} Personil -> Selisih = {{number_format($selisih, 0, ',', '.')}} Personil.</i></b>
-            <p><span class="merah">Merah</span> : Kelebihan. <span class="biru">Biru</span> : Sudah Terpenuhi.</p>
             <div id="permintaan-sdm_sematan" style="scroll-margin:4em 0 0 0"></div>
             <div class="trek-data cari-data tcetak">
                 <span class="bph">
@@ -162,6 +161,8 @@
                     </div>
                 </details>
             </div>
+
+            <span class="merah">Merah</span> : Kelebihan. <span class="biru">Biru</span> : Sudah Terpenuhi.
 
             <div class="data ringkas">
                 <table id="permintaan-sdm_tabel" class="tabel">

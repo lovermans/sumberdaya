@@ -281,16 +281,13 @@
             @endisset
         </div>
     </div>
-
+    
     <h2>Riwayat Penempatan</h2>
-    <p><a class="utama isi-xhr tcetak" data-tujuan="#sdm_penem_riwa_sematan" data-rekam="false" href="{{ $urlRangka->route('sdm.penempatan.tambah', ['uuid' => $akun->sdm_uuid], false) }}">+ PENEMPATAN</a></p>
-    <div id="sdm_penem_riwa_sematan" style="scroll-margin:4em 0 0 0"></div>
-    @isset($penempatans)
-    <div class="kartu">
-        <span class="merah">Merah</span> : Non-Aktif. <span class="oranye">Oranye</span> : Kontrak Kadaluarsa/Akan Habis. <span class="biru">Biru</span> : <i>Outsource</i>.
-        @include('sdm.penempatan.riwayat-data', ['tabels' => $penempatans])
-    </div>
-    @endisset
+    <div id="riwa-penem-sdm_tabels" class="kartu" style="scroll-margin:4em 0 0 0">Memuat Riwayat Penempatan...</div>
+    <script>
+        lemparXHR(false, "#riwa-penem-sdm_tabels", "{{ $urlRangka->route('sdm.penempatan.riwayat', ['uuid' => $akun->sdm_uuid, 'fragment' => 'riwa-penem-sdm_tabels']) }}", "GET", false, false, false, false, false, true, true);
+    </script>
+
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -303,6 +300,8 @@
             </svg>
         </a>
     </div>
+
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+    
 </div>
 @endsection

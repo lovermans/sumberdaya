@@ -47,6 +47,15 @@
             <p>Panduan SDM belum tersedia.</p>
         @endforelse
     @endisset
+
+    <div class="pintasan tcetak">
+        <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#panahatas' }}"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            </svg>
+        </a>
+    </div>
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
 </div>
 @endsection

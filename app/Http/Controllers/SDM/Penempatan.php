@@ -15,7 +15,7 @@ use PhpOffice\PhpSpreadsheet\Cell\StringValueBinder;
 
 class Penempatan
 {
-    public function index(FungsiStatis $fungsiStatis)
+    public function index(FungsiStatis $fungsiStatis, $uuid = null)
     {
         $app = app();
         $reqs = $app->request;
@@ -49,6 +49,9 @@ class Penempatan
         ->leftJoinSub($this->dataPermintaanTambahSDM(), 'tsdm', function ($join) {
             $join->on('sdm_no_permintaan', '=', 'tsdm.tambahsdm_no');
         })
+        ->when($reqs->kontrak, function ($query) use ($reqs) {
+            $query->whereIn('penempatan_kontrak', (array) $reqs->kontrak);
+        })
         ->when($kataKunci, function ($query, $kataKunci) {
             $query->where(function ($group) use ($kataKunci) {
                 $group->where('sdm_no_absen', 'like', '%'.$kataKunci.'%')
@@ -60,8 +63,8 @@ class Penempatan
                 ->orWhere('penempatan_keterangan', 'like', '%'.$kataKunci.'%');
             });
         })
-        ->when($reqs->kontrak, function ($query)  use ($reqs) {
-            $query->whereIn('penempatan_kontrak', (array) $reqs->kontrak);
+        ->when($uuid, function ($query) use ($uuid) {
+            $query->where('sdm_uuid', $uuid);
         })
         ->when($lingkupIjin, function ($query, $lingkupIjin) {
             $query->where(function ($group) use ($lingkupIjin)  {
@@ -194,6 +197,7 @@ class Penempatan
             'indexLahir' => $indexLahir,
             'urutKeluar' => $urutKeluar,
             'indexKeluar' => $indexKeluar,
+            'halamanAkun' => $uuid,
         ];
 
         $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
