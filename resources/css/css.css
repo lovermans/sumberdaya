@@ -1580,12 +1580,12 @@ a.sekunder svg {
 
 .normal {
     flex-basis: 20ch;
-    flex-grow: 2;
+    /* flex-grow: 2; */
 }
 
 .panjang {
     flex-basis: 40ch;
-    flex-grow: 4;
+    /* flex-grow: 4; */
 }
 
 /* .gspan-2{
