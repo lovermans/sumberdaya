@@ -127,7 +127,7 @@
             <span class="t-bantu">Pilih atau isi tanggal</span>
         </div>
 
-        <div class="isian kecil">
+        <div class="isian pendek">
             <label for="sdm_kelamin">Kelamin</label>
             
             <select id="sdm_kelamin" name="sdm_kelamin" class="pil-saja" required>
@@ -143,7 +143,7 @@
             <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
         </div>
 
-        <div class="isian kecil">
+        <div class="isian pendek">
             <label for="sdm_gol_darah">Gol Darah</label>
             
             <select id="sdm_gol_darah" name="sdm_gol_darah" class="pil-saja">
@@ -170,7 +170,7 @@
             <span class="t-bantu">Alamat KTP/Passport</span>
         </div>
 
-        <div class="isian pendek">
+        <div class="isian kecil">
             <label for="sdm_alamat_rt">RT</label>
             
             <input id="sdm_alamat_rt" type="number" name="sdm_alamat_rt" min="0" value="{{ $rekRangka->old('sdm_alamat_rt', $sdm->sdm_alamat_rt ?? null) }}">
@@ -178,7 +178,7 @@
             <span class="t-bantu">Angka</span>
         </div>
 
-        <div class="isian pendek">
+        <div class="isian kecil">
             <label for="sdm_alamat_rw">RW</label>
             
             <input id="sdm_alamat_rw" type="number" name="sdm_alamat_rw" min="0" value="{{ $rekRangka->old('sdm_alamat_rw', $sdm->sdm_alamat_rw ?? null) }}">

@@ -1571,11 +1571,11 @@ a.sekunder svg {
 }
 
 .kecil {
-    flex-basis: 5ch;
+    flex-basis: 8ch;
 }
 
 .pendek {
-    flex-basis: 10ch;
+    flex-basis: 12ch;
 }
 
 .normal {
