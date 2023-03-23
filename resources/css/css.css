@@ -600,10 +600,18 @@ nav [class|="menu"]:not(:first-child) {
 
 .spanduk,
 .pesan,
-.periksa,
-form.kartu,
-.kartu.form {
+.periksa
+/* form.kartu,
+.kartu.form  */
+{
     display: grid;
+}
+
+form.kartu,
+.kartu.form 
+{
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .spanduk,
@@ -716,6 +724,7 @@ h4.form {
 
 .isian {
     max-width: 100%;
+    flex-grow: 1;
 }
 
 .isian :is(input[type="text"],
@@ -733,6 +742,7 @@ h4.form {
     border-width: 0 0 .125em 0;
     width: 100%;
     background-color: var(--bg-label);
+    min-width: 0;
 }
 
 .isian :is(input[type="text"],
@@ -1543,6 +1553,39 @@ a.sekunder svg {
     }
 }
 
+.kecil {
+    flex-basis: 5ch;
+}
+
+.pendek {
+    flex-basis: 10ch;
+}
+
+.normal {
+    flex-basis: 20ch;
+    flex-grow: 2;
+}
+
+.panjang {
+    flex-basis: 40ch;
+    flex-grow: 4;
+}
+
+/* .gspan-2{
+    flex-basis: 50%;
+    flex-grow: 2;
+}
+
+.gspan-3{
+    flex-basis: 75%;
+    flex-grow: 3;
+} */
+
+.gspan-4{
+    flex-basis: 100%;
+    /* flex-grow: 4; */
+}
+
 /* --media */
 
 @media screen and (max-resolution:160dpi) and (min-width:35rem) and (max-width:119.9375rem),
@@ -1555,7 +1598,7 @@ screen and (min-width:367.5rem) {
         left: 50%
     }
 
-    form.kartu,
+    /* form.kartu,
     .kartu.form {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1564,7 +1607,7 @@ screen and (min-width:367.5rem) {
     .gspan-3,
     .gspan-4 {
         grid-column: span 2;
-    }
+    } */
 }
 
 @media screen and (max-resolution:160dpi) and (min-width:45rem) and (max-width:119.9375rem),
@@ -1581,7 +1624,7 @@ screen and (min-width:472.5) {
         left: 25%
     }
 
-    form.kartu,
+    /* form.kartu,
     .kartu.form {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -1589,7 +1632,7 @@ screen and (min-width:472.5) {
     .gspan-3,
     .gspan-4 {
         grid-column: span 3;
-    }
+    } */
 }
 
 @media screen and (max-resolution:160dpi) and (min-width:64rem) and (max-width:119.9375rem),
@@ -1634,14 +1677,14 @@ screen and (min-width:672rem) {
         top: 0;
     }
 
-    form.kartu,
+    /* form.kartu,
     .kartu.form {
         grid-template-columns: repeat(4, 1fr);
     }
 
     .gspan-4 {
         grid-column: span 4;
-    }
+    } */
 
     .pintasan :is(a, button):last-child {
         padding: .5em;
@@ -1750,7 +1793,7 @@ screen and (min-width:672rem) {
         font-style: italic;
     }
 
-    .gspan-2 {
+    /* .gspan-2 {
         grid-column: span 2;
     }
 
@@ -1760,5 +1803,5 @@ screen and (min-width:672rem) {
 
     .gspan-4 {
         grid-column: span 4;
-    }
+    } */
 }

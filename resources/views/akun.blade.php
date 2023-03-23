@@ -6,15 +6,13 @@
     <div id="profil-akun" style="scroll-margin:4em 0 0 0">
         <div class="kartu form">
             @isset($akun)
-            <div class="isian">
+            <div class="isian pendek">
                 <h3>Foto Profil</h3>
-                <p>
                     <img @class(['svg' => !$storageRangka->exists('sdm/foto-profil/' . $akun->sdm_no_absen . '.webp')])
                     src="{{ $storageRangka->exists('sdm/foto-profil/' . $akun->sdm_no_absen . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $akun->sdm_no_absen . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $akun->sdm_no_absen . '.webp'))], false) : $mixRangka('/ikon.svg') . '#akun' }}" alt="{{ $akun->sdm_nama ?? 'foto akun' }}" title="{{ $akun->sdm_nama ?? 'foto akun' }}" loading="lazy">
-                </p>
             </div>
-            <div class="isian">
-                <h3>Identitas</h3>
+            <div class="isian panjang">
+                <h3>Identitas SDM</h3>
                 <p>{{ $akun->sdm_no_absen }} - {{ $akun->sdm_nama }}</p>
                 <h3>Identitas Atasan</h3>
                 <p @class(['merah' => $akun->tgl_berhenti_atasan])>
@@ -257,7 +255,7 @@
                 @endif
             </div>
             @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS'))
-            <div class="isian gspan-2 tcetak" id="akun-cetakFormulir">
+            <div class="isian tcetak" id="akun-cetakFormulir">
                 <select class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR(false, '#akun-cetakFormulirStatus', this.value, 'GET', false, false, true)">
                     <option value="">CETAK FORMULIR</option>
                     <option value="{{$urlRangka->route('formulir-serah-terima-sdm-baru', ['uuid' => $akun->sdm_uuid], false)}}">SERAH TERIMA SDM BARU</option>
@@ -270,15 +268,17 @@
             </div>
             @endif
             <div class="isian gspan-4" id="akun-cetakFormulirStatus" style="scroll-margin:4em 0 0 0"></div>
+            
             <script>
                 pilSaja('#akun-cetakFormulir .pil-saja');
             </script>
-            <div class="gspan-4">
-                <a class="utama isi-xhr tcetak" data-tujuan="#profil-akun" data-rekam="false" href="{{ $urlRangka->route('ubah-akun', ['uuid' => $akun->sdm_uuid], false) }}">UBAH</a>
-            </div>
+
+            <a class="utama isi-xhr tcetak" data-tujuan="#profil-akun" data-rekam="false" href="{{ $urlRangka->route('ubah-akun', ['uuid' => $akun->sdm_uuid], false) }}">UBAH</a>
+
             @else
             <p>Periksa data yang dikirim.</p>
             @endisset
+            
         </div>
     </div>
     

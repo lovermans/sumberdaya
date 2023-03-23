@@ -6,13 +6,13 @@
     @if(!$userRangka)
     <form class="form-xhr kartu" method="POST" action="{{ $urlRangka->route('login', [], false) }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
-        <div class="isian gspan-2">
+        <div class="isian normal">
             <label for="idAbsen">Nomor Absen</label>
             <input id="idAbsen" type="text" name="sdm_no_absen" value="{{ $rekRangka->old('sdm_no_absen') }}" pattern="^[0-9]{8}$"
                 inputmode="numeric" required>
             <span class="t-bantu">8 digit nomor absen</span>
         </div>
-        <div class="isian gspan-2">
+        <div class="isian normal">
             <label for="password">Sandi</label>
             <input id="password" type="password" name="password" required>
             <span class="t-bantu">Sandi akun</span>
