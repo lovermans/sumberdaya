@@ -722,6 +722,23 @@ h4.form {
     vertical-align: middle;
 }
 
+button.cari-cepat{
+    border-radius: 50%;
+    right: 0.5em;
+    padding: 0.5em;
+    position: absolute;
+    top: 0.25em;
+    z-index: 20;
+}
+
+button.cari-cepat:hover{
+    scale: 1.5;
+}
+
+button.cari-cepat svg{
+    fill: var(--taut-umum);
+}
+
 .isian {
     max-width: 100%;
     flex-grow: 1;
@@ -849,7 +866,7 @@ a.sekunder svg {
 }
 
 .cari-data details {
-    padding: 0 0 1em;
+    position: relative;
 }
 
 .cari-data summary {

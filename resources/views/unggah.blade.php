@@ -8,7 +8,7 @@
             <h4 class="form">Unggah Data Profil SDM</h4>
             <p>Unduh <a class="isi-xhr" href="{{ $urlRangka->route('contoh-unggah', [], false) }}" data-rekam="false" data-tujuan="#unggah_profil_sdm" data-laju="true">contoh</a> excel, isi sesuai petunjuk dalam excel lalu unggah kembali.</p>
         </div>
-        <div class="isian gspan-2">
+        <div class="isian">
             <label for="unggah_profil_sdmBerkas">Berkas</label>
             <input id="unggah_profil_sdmBerkas" type="file" name="unggah_profil_sdm" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required>
             <span class="t-bantu">Berkas excel</span>

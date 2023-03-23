@@ -16,7 +16,12 @@
                 <details class="gspan-4" {{ $rekRangka->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : '' }} style="padding:0">
                     <summary class="cari">
                         <div class="isian gspan-4">
-                            <input type="text" placeholder="Isi kata kunci lalu Enter" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
+                            <input type="text" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
+                            <button id="tombol_cari_atur" class="cari-cepat" type="submit">
+                                <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                                </svg>
+                            </button>
                         </div>
                     </summary>
                         <div class="kartu form gspan-4">
@@ -38,7 +43,7 @@
                                 </select>
                                 <span class="t-bantu">Pilih satu atau lebih</span>
                             </div>
-                            <div class="isian gspan-2">
+                            <div class="isian">
                                 <label for="atur_data_cariButir">2 Saring Butir</label>
                                 <select id="atur_data_cariButir" name="atur_butir[]" class="pil-cari" @disabled($butirs->count() < 1) multiple onchange="getElementById('tombol_cari_atur').click()">
                                     @foreach ($butirs as $butir)
@@ -48,13 +53,6 @@
                                 <span class="t-bantu">Pilih satu atau lebih</span>
                             </div>
                         </div>
-                    <div class="gspan-4"></div>
-                    <button id="tombol_cari_atur" class="utama pelengkap" type="submit">
-                        <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                        </svg>
-                        CARI
-                    </button>
                 </details>
             </form>
         </div>
@@ -224,6 +222,7 @@
     </div>
     
     @isset($tabels)
+    
     <script>
         pilDasar('#form_atur_data_cari .pil-dasar');
         pilCari('#form_atur_data_cari .pil-cari');

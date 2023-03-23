@@ -72,19 +72,17 @@
                             <p>{{ $akun->sdm_gol_darah }}</p>
                         </div>
                     </div>
-                    <div class="isian gspan-2">
+                    <div class="isian">
                         <h3>Alamat</h3>
                         <p>{{ $akun->sdm_alamat }}</p>
                     </div>
                     <div class="isian">
-                        <div class="belah">
-                            <h3>RT</h3>
-                            <p>{{ $akun->sdm_alamat_rt }}</p>
-                        </div>
-                        <div class="belah">
-                            <h3>RW</h3>
-                            <p>{{ $akun->sdm_alamat_rw }}</p>
-                        </div>
+                        <h3>RT</h3>
+                        <p>{{ $akun->sdm_alamat_rt }}</p>
+                    </div>
+                    <div class="isian">
+                        <h3>RW</h3>
+                        <p>{{ $akun->sdm_alamat_rw }}</p>
                     </div>
                     <div class="isian">
                         <h3>Kelurahan</h3>
@@ -222,7 +220,7 @@
             </details>
             @endif
             
-            <details class="gspan-4" style="padding:0">
+            <details class="isian gspan-4" style="padding:0">
                 <summary>Tampilkan SDM Yang Dipimpin ({{number_format($personils->count(), 0, ',','.')}} Personil) :</summary>
                 @isset($personils)
                 <ol>
