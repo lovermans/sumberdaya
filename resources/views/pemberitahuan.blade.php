@@ -1,6 +1,7 @@
 <script>
     !function(){isiPemberitahuan('pemberitahuan', '');}();
 </script>
+
 @if($rekRangka->session()->has('spanduk'))
 <script>
     !function(){

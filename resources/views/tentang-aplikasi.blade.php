@@ -2,24 +2,30 @@
 
 @section('isi')
 <div id="tentangAplikasi">
-    
     <h2>Aplikasi</h2>
+
     <div class="kartu">
         <p>Merupakan aplikasi web sumber terbuka sederhana yang dibangun bertujuan untuk memudahkan pengelolaan sumber daya
             usaha secara umum di Indonesia.</p>
     </div>
+
     <h2>Fitur</h2>
+
     <div class="kartu">
         <ol>
             <li>Kelola Sumber Daya Manusia.</li>
             <li>Kelola Sumber Daya Lainnya (dalam tahap pengembangan dan dukungan).</li>
         </ol>
     </div>
+
     <h2>Kontribusi Sumber Kode</h2>
+
     <div class="kartu">
         <p><a href="https://github.com/lovermans/sumberdaya" target="_blank" rel="noopener noreferrer">lovermans/sumberdaya</a>.</p>
     </div>
+
     <h2>Perangkat Uji Pengembangan Lokal</h2>
+
     <div class="kartu">
         <ul>
             <li>Sistem Operasi : Windows 10 64 bit Intel Core i3 8 GB RAM.</li>
@@ -44,9 +50,12 @@
                 </ul>
             </li>
         </ul>
+
         <p>Penggunaan terbaik aplikasi di <i><a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome Browser</a></i> oleh Google.</p>
     </div>
+
     <h2>Status Aplikasi</h2>
+
     <div class="kartu">
         <p>
             Uji Coba Versi 0.<br/>
@@ -62,6 +71,7 @@
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#panahatas' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
+        
         <a href="{{ $urlRangka->route('mulai') }}"><span class="judul">@if($userRangka) PILIH SUMBER DAYA @else MASUK @endif</span></a>
     </div>
 

@@ -2,22 +2,29 @@
 
 @section('isi')
 <div id="mulai-aplikasi">
-    
     @if(!$userRangka)
     <form class="form-xhr kartu" method="POST" action="{{ $urlRangka->route('login', [], false) }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+        
         <div class="isian normal">
             <label for="idAbsen">Nomor Absen</label>
+            
             <input id="idAbsen" type="text" name="sdm_no_absen" value="{{ $rekRangka->old('sdm_no_absen') }}" pattern="^[0-9]{8}$"
                 inputmode="numeric" required>
+            
             <span class="t-bantu">8 digit nomor absen</span>
         </div>
+        
         <div class="isian normal">
             <label for="password">Sandi</label>
+            
             <input id="password" type="password" name="password" required>
+            
             <span class="t-bantu">Sandi akun</span>
         </div>
+        
         <div class="gspan-4"></div>
+        
         <button class="utama pelengkap" type="submit">MASUK</button>
     </form>
     @endif
@@ -31,12 +38,14 @@
             @endif
         </select>
     </div>
+    
     <script>
         pilSaja('#pilih_sumber_daya .pil-saja');
     </script>
     @endif
     
     <h2>Sejarah</h2>
+
     <div class="kartu">
         <p>PT. Kepuh Kencana Arum didirikan pada tahun 1991 di Mojokerto, Jawa Timur. <b>"KENCANA"</b> adalah merk yang
             diperkenalkan kepada masyarakat oleh PT. Kepuh Kencana Arum.</p>
@@ -56,11 +65,13 @@
     </div>
 
     <h2>Visi</h2>
+
     <div class="kartu">
         <p><b>"Menjadi produsen bahan bangunan terbesar di Indonesia dan Asia Tenggara"</b></p>
     </div>
 
     <h2>Misi</h2>
+
     <div class="kartu">
         <ol>
             <li>Menanam budaya kejujuran kepada karyawan, pelanggan dan pemasok.</li>
@@ -72,6 +83,7 @@
     </div>
 
     <h2>Nilai Budaya</h2>
+
     <div class="kartu">
         <ol>
             <li><b>Kejujuran</b> : <q>Jujur baik secara pribadi maupun dalam bekerja</q></li>
@@ -82,6 +94,7 @@
     </div>
 
     <h2>Kebijakan Mutu</h2>
+
     <div class="kartu">
         <ol>
             <li>Melaksanakan proses yang efektif dan efisien dan berpedoman pada Sistem Manajemen Mutu ISO 9001 dan terus
@@ -98,6 +111,7 @@
     </div>
 
     <h2>Wilayah Operasional</h2>
+
     <div class="kartu">
         <ol>
             <li><b>Pusat Pemasaran</b> : <a href="https://goo.gl/maps/A2gJWm7A7byQLWCd6" target="_blank"
@@ -131,6 +145,7 @@
             </svg>
         </a>
     </div>
+    
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
 </div>
 @endsection
