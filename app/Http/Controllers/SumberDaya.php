@@ -430,7 +430,7 @@ class SumberDaya
 
         $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
         
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
     }
 
     public function formulirPersetujuanGaji($uuid = null)

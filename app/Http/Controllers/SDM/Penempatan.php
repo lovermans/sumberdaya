@@ -169,7 +169,7 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
+        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels', 'uuid' => $uuid ?? '']);
         
         $aturs = $fungsiStatis->ambilCacheAtur();
         $posisis = $fungsiStatis->ambilCachePosisiSDM();
@@ -197,7 +197,7 @@ class Penempatan
             'indexLahir' => $indexLahir,
             'urutKeluar' => $urutKeluar,
             'indexKeluar' => $indexKeluar,
-            'halamanAkun' => $uuid,
+            'halamanAkun' => $uuid ?? '',
         ];
 
         $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
