@@ -1793,19 +1793,35 @@ screen and (min-width:672rem) {
         thead,
         tbody,
         tbody tr) {
-        display: block;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+        width: 100%;
     }
 
     .data .tabel tbody tr {
-        padding: .5em 0;
+        /* padding: .5em 0; */
+        page-break-inside: avoid;
+    }
+
+    .data .tabel tbody tr:after {
+        content: "";
+        flex-grow: 1;
+        flex-basis: 100%;
+        border: 0.0625em solid #121212;
     }
 
     .data .tabel td {
+        flex-grow: 1;
+        flex-basis: 20ch;
         border: .0625em solid var(--oranye);
-        display: inline-block;
+        display: block;
         padding: .25em .5em;
-        margin: .25em .25em;
+        /* margin: .25em .25em; */
         border-radius: .25em;
+    }
+    .data .tabel td[data-th='No'] {
+        flex-basis: min-content;
     }
 
     .data .tabel td::before {
