@@ -4,7 +4,7 @@
 <div id="atur_data">
     
     <p class="tcetak kartu">
-        <svg style="fill:var(--taut-umum)" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg fill="var(--taut-umum)" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <use xlink:href="{{ $mixRangka('/ikon.svg') . '#informasi' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
         </svg>
         Data pengaturan ini digunakan hanya sebagai alat bantu validasi pengisian data lain dalam aplikasi. Segala bentuk perubahan dalam data pengaturan ini tidak akan berdampak pada data lainnya, Anda harus mengubah data lainnya secara manual.
@@ -16,13 +16,13 @@
             
             <input type="hidden" name="fragment" value="atur_tabels">
             
-            <details class="gspan-4" {{ $rekRangka->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : '' }} style="padding:0">
+            <details class="gspan-4" {{ $rekRangka->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : '' }}>
                 
                 <summary class="cari">
                     <div class="isian gspan-4">
                         <input type="text" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
                         
-                        <button id="tombol_cari_atur" class="cari-cepat" type="submit">   
+                        <button id="tombol_cari_atur" class="cari-cepat" type="submit" title="Cari Data">   
                             <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                             </svg>
@@ -72,9 +72,9 @@
         </form>
     </div>
     
-    <div id="atur_tabels" class="kartu" style="scroll-margin:4em 0 0 0">
+    <div id="atur_tabels" class="kartu margin-scroll">
         @fragment('atur_tabels')
-        <div id="atur_sematan" style="scroll-margin:4em 0 0 0"></div>
+        <div id="atur_sematan"></div>
         
         <div class="trek-data cari-data tcetak">
             <span class="bph">
@@ -221,7 +221,7 @@
             </table>
         </div>
         
-        <button class="sekunder tcetak" onclick="ringkasTabel(this)" style="margin:0.5em 0">Panjang/Pendekkan Tampilan Tabel</button>
+        <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
         
         <script>
             pilDasar('.trek-data .pil-dasar');

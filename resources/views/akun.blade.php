@@ -4,7 +4,7 @@
 <div id="akun">
     <h2>Informasi Dasar</h2>
 
-    <div id="profil-akun" style="scroll-margin:4em 0 0 0">
+    <div id="profil-akun scroll-margin">
         <div class="kartu form">
             @isset($akun)
             <div class="isian pendek">
@@ -72,7 +72,7 @@
             </div>
 
             @if ($batasi)
-            <details class="gspan-4" style="padding:0">
+            <details class="gspan-4">
                 <summary>Tampilkan Profil Lengkap :</summary>
                 <div class="kartu form">
                     <div class="isian">
@@ -312,7 +312,7 @@
             </details>
             @endif
             
-            <details class="isian gspan-4" style="padding:0">
+            <details class="isian gspan-4">
                 <summary>Tampilkan SDM Yang Dipimpin ({{number_format($personils->count(), 0, ',','.')}} Personil) :</summary>
                 
                 @isset($personils)
@@ -345,7 +345,7 @@
                 <h3>Berkas SDM</h3>
                 
                 @if ($storageRangka->exists('sdm/berkas/'.$akun->sdm_no_absen.'.pdf'))
-                <iframe class="tcetak" src="{{ $urlRangka->route('sdm.berkas', ['berkas' => $akun->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' . $akun->sdm_no_absen . '.pdf'))], false) }}" title="Berkas SDM" loading="lazy" style="width:100%;height:auto;aspect-ratio:4/3"></iframe>
+                <iframe class="tcetak berkas" src="{{ $urlRangka->route('sdm.berkas', ['berkas' => $akun->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' . $akun->sdm_no_absen . '.pdf'))], false) }}" title="Berkas SDM" loading="lazy"></iframe>
                 @else
                 <p class="merah">Tidak ada berkas terunggah.</p>
                 @endif
@@ -365,7 +365,7 @@
             </div>
             @endif
 
-            <div class="isian gspan-4" id="akun-cetakFormulirStatus" style="scroll-margin:4em 0 0 0"></div>
+            <div class="isian gspan-4 scroll-margin" id="akun-cetakFormulirStatus"></div>
             
             <script>
                 pilSaja('#akun-cetakFormulir .pil-saja');
@@ -382,7 +382,7 @@
     
     <h2>Riwayat Penempatan</h2>
     
-    <div id="riwa-penem-sdm_tabels" class="kartu" style="scroll-margin:4em 0 0 0">Memuat Riwayat Penempatan...</div>
+    <div id="riwa-penem-sdm_tabels" class="kartu scroll-margin">Memuat Riwayat Penempatan...</div>
     
     <script>
         lemparXHR(false, "#riwa-penem-sdm_tabels", "{{ $urlRangka->route('sdm.penempatan.riwayat', ['uuid' => $akun->sdm_uuid, 'fragment' => 'riwa-penem-sdm_tabels']) }}", "GET", false, false, false, false, false, true, true);

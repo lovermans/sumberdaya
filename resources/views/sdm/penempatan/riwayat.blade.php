@@ -8,13 +8,13 @@
             <form id="form_sdm_penempatan_status_cari" class="form-xhr kartu" data-tujuan="#riwa-penem-sdm_tabels" data-frag="true" method="GET" data-blank="true">
                 <input type="hidden" name="fragment" value="riwa-penem-sdm_tabels">
 
-                <details class="gspan-4" {{ $rekRangka->anyFilled(['lokasi', 'kontrak', 'kategori', 'pangkat', 'kelamin', 'posisi', 'agama', 'kawin', 'warganegara', 'pendidikan', 'disabilitas']) ? 'open' : '' }} style="padding:0">
+                <details class="gspan-4" {{ $rekRangka->anyFilled(['lokasi', 'kontrak', 'kategori', 'pangkat', 'kelamin', 'posisi', 'agama', 'kawin', 'warganegara', 'pendidikan', 'disabilitas']) ? 'open' : '' }}>
 
                     <summary class="cari">
                         <div class="isian gspan-4">
                             <input type="text" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
 
-                            <button id="tombol_cari_status_penempatan" class="cari-cepat" type="submit">
+                            <button id="tombol_cari_status_penempatan" class="cari-cepat" type="submit" title="Cari Data">
                                 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <use xlink:href="{{ $mixRangka('/ikon.svg') . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                 </svg>
@@ -160,9 +160,9 @@
         </div>
 
         
-        <div id="riwa-penem-sdm_tabels" class="kartu" style="scroll-margin:4em 0 0 0">
+        <div id="riwa-penem-sdm_tabels" class="kartu scroll-margin">
             @fragment('riwa-penem-sdm_tabels')
-            <div id="sdm_penem_riwa_sematan" style="scroll-margin:4em 0 0 0"></div>
+            <div id="sdm_penem_riwa_sematan"></div>
             
             <div class="trek-data cari-data tcetak">
                 @unless ($halamanAkun ?? null)
@@ -239,7 +239,7 @@
                 @endif
                 
                 @unless ($halamanAkun ?? null)
-                <details class="gspan-4" {{ $rekRangka->anyFilled('urut') ? 'open' : '' }} style="padding:1em 0">
+                <details class="gspan-4" {{ $rekRangka->anyFilled('urut') ? 'open' : '' }}>
                     <summary>Pengurutan :</summary>
                     <div class="kartu form" id="sdm_penempatan_status_urut">
                         <div class="isian" data-indeks="{{ $urutAbsen ? $indexAbsen : 'X' }}">
@@ -418,7 +418,7 @@
                 </table>
             </div>
             
-            <button class="sekunder tcetak" onclick="ringkasTabel(this)" style="margin:0.5em 0">Panjang/Pendekkan Tampilan Tabel</button>
+            <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
                 
             <script>
                 pilDasar('.trek-data .pil-dasar');

@@ -145,7 +145,8 @@ main :is(h2, h4),
 .data :is(.merah, .biru, .oranye) td,
 .merah,
 .biru,
-.oranye {
+.oranye,
+summary {
     font-weight: 500;
 }
 
@@ -160,14 +161,6 @@ button {
     background: none;
     border: none;
     padding: 0;
-}
-
-details {
-    padding: 1em 0;
-}
-
-details.sempit {
-    padding: 0 0 1em;
 }
 
 address,
@@ -197,12 +190,46 @@ button {
     text-decoration: none
 }
 
-main summary {
-    text-decoration: underline;
+/* details {
+    padding: 1em 0;
 }
 
-#isi {
+details.sempit {
+    padding: 0 0 1em;
+} */
+
+summary {
+    list-style: none;
+}
+
+details>summary:before {
+    background: var(--taut-umum);
+    border-radius: 50%;
+    content: "+";
+    margin: 0 .5em 0 0;
+    padding: 0;
+    text-align: center;
+    height: 1em;
+    display: inline-block;
+    color: var(--hitam-1);
+    width: 1em;
+    line-height: 1;
+    font-weight: 500;
+}
+
+details[open]>summary:before {
+    content: "-";
+}
+
+#isi,
+.scroll-margin {
     scroll-margin: 4em 0 0 0;
+}
+
+.berkas {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4/3;
 }
 
 .dokumen-resmi li {
@@ -682,6 +709,10 @@ form.kartu,
     float: right;
 }
 
+.kesalahan-internal a.utama {
+    margin:0 0 1em 1em;
+}
+
 .kesalahan-internal a.sekunder {
     background-color: transparent;
 }
@@ -869,32 +900,6 @@ a.sekunder svg {
     position: relative;
 }
 
-.cari-data summary {
-    list-style: none;
-    text-decoration: none;
-}
-
-.cari-data details>summary:before {
-    background: var(--oranye);
-    border-radius: 50%;
-    content: "+";
-    margin: 0 .5em 0 0;
-    padding: 0;
-    text-align: center;
-    height: 1em;
-    display: inline-block;
-    color: var(--hitam-1);
-    width: 1em;
-    line-height: 1;
-    font-weight: 500;
-}
-
-.cari-data details[open]>summary:before {
-    content: "-";
-    color: rgba(255, 255, 255, .87);
-    background: var(--taut-fokus);
-}
-
 .cari-data details>summary.cari:after {
     content: "Pencarian Lanjutan \25BC";
     padding: .5em 0;
@@ -917,6 +922,10 @@ a.sekunder svg {
 
 .data.ringkas {
     max-height: 75vh;
+}
+
+.data + button.sekunder {
+    margin: 0.5em 0.5em 0.5em 0;
 }
 
 .data .tabel {

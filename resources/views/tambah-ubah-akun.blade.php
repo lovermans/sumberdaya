@@ -545,7 +545,7 @@
                 <label>Berkas SDM</label>
             
                 @if ($storageRangka->exists('sdm/berkas/'. $sdm->sdm_no_absen.'.pdf'))
-                <iframe class="tcetak" src="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $sdm->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' .  $sdm->sdm_no_absen . '.pdf'))], false) }}" title="Berkas SDM" loading="lazy" style="width:100%;height:auto;aspect-ratio:4/3"></iframe>
+                <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $sdm->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' .  $sdm->sdm_no_absen . '.pdf'))], false) }}" title="Berkas SDM" loading="lazy"></iframe>
                 <a class="utama tcetak" href="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $sdm->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' .  $sdm->sdm_no_absen . '.pdf'))], false) }}" download>
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
