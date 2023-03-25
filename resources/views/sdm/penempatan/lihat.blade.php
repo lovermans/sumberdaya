@@ -98,7 +98,7 @@
             <h3>Berkas Permohonan</h3>
             
             @if ($storageRangka->exists('sdm/penempatan/'.$rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))
-            <iframe class="berkas tcetak"src="{{ $urlRangka->route('sdm.penempatan.berkas', ['berkas' => $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf' . '?' . filemtime(storage_path('app/sdm/penempatan/' . $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))], false) }}" title="Berkas Penempatan SDM" loading="lazy"></iframe>
+            <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.penempatan.berkas', ['berkas' => $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf' . '?' . filemtime(storage_path('app/sdm/penempatan/' . $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))], false) }}" title="Berkas Penempatan SDM" loading="lazy"></iframe>
             
             @else
             <p class="merah">Tidak ada berkas terunggah.</p>
@@ -128,9 +128,9 @@
         
         <div class="isian gspan-4"></div>
         
-        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan" href="{{ $urlRangka->route('sdm.penempatan.ubah', ['uuid' => $penem->penempatan_uuid], false) }}">UBAH</a>
+        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#penempatan_sdm_lihat" href="{{ $urlRangka->route('sdm.penempatan.ubah', ['uuid' => $penem->penempatan_uuid], false) }}">UBAH</a>
         
-        <a class="sekunder isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan" href="{{ $urlRangka->route('sdm.penempatan.hapus', ['uuid' => $penem->penempatan_uuid], false) }}">HAPUS</a>
+        <a class="sekunder isi-xhr" data-rekam="false" data-tujuan="#penempatan_sdm_lihat" href="{{ $urlRangka->route('sdm.penempatan.hapus', ['uuid' => $penem->penempatan_uuid], false) }}">HAPUS</a>
         
         @else
         <div class="isian gspan-4">

@@ -76,7 +76,7 @@
         @fragment('atur_tabels')
         <div id="atur_sematan"></div>
         
-        <div class="trek-data cari-data tcetak">
+        <div class="trek-data tcetak">
             <span class="bph">
                 <label for="atur_data_cariPerHalaman">Baris per halaman : </label>
                 
@@ -124,7 +124,7 @@
             </span>
             @endif
             
-            <details class="gspan-4" {{ $rekRangka->anyFilled('urut') ? 'open' : '' }} style="padding:1em 0">
+            <details class="gspan-4" {{ $rekRangka->anyFilled('urut') ? 'open' : '' }}>
                 <summary>Pengurutan :</summary>
                 
                 <div class="kartu form" id="atur_data_cariUrut">

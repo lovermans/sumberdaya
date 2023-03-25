@@ -1033,6 +1033,10 @@ a.sekunder svg {
     display: inline-block;
 }
 
+.trek-data details {
+    margin: 1em 0 0;
+}
+
 .pintasan {
     display: grid;
     grid-template-columns: 1fr;
