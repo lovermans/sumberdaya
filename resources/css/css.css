@@ -281,6 +281,23 @@ svg {
     overflow: hidden
 }
 
+#sambutan,
+#sambutan p {
+    position: fixed;
+    z-index: 9999;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#sambutan {
+    top: 0;
+    background: url("gambar/Lambang Perusahaan.webp") center/95% no-repeat,
+    url("gambar/Background Kepala.webp") left top repeat,
+    #121212;
+    background-blend-mode: var(--bg-blend);
+}
+
 #nav,
 #menu,
 #tema {
@@ -1438,7 +1455,8 @@ a.sekunder svg {
     text-align: left
 }
 
-.ss-main.tombol .ss-content .ss-list {
+.ss-main.tombol .ss-content .ss-list,
+#sambutan p {
     text-align: center
 }
 

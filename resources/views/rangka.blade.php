@@ -13,7 +13,12 @@
 </head>
 
 <body data-tematerang="">
+    <div id="sambutan">
+        <p>Penggunaan Terbaik di <u><b><a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome</a></b></u> Browser</p>
+    </div>
+
     <a class="skip-navigation tcetak" href="#main" tabindex="0">Langsung Ke Konten Utama</a>
+
     
     <input class="tcetak" type="checkbox" id="nav">
     
@@ -54,5 +59,11 @@
     <footer class="tcetak">
         <section></section>
     </footer>
+
+    <script>
+        window.onload = function() {
+            setTimeout(function () {document.getElementById('sambutan')?.remove();},1800);
+        }
+    </script>
 </body>
 </html>
