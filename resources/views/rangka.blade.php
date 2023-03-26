@@ -8,18 +8,18 @@
     </noscript>
 
     @include('informasi-meta')
-
-    <script src="{{ $mixRangka('/interaksi.js') }}"></script>
 </head>
 
 <body data-tematerang="">
     <div id="sambutan">
-        <p>Penggunaan Terbaik di <u><b><a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome</a></b></u> Browser</p>
+        <p>
+            Memulai Aplikasi <br>
+            Penggunaan Terbaik di <u><b><a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome</a></b></u> Browser
+        </p>
     </div>
 
     <a class="skip-navigation tcetak" href="#main" tabindex="0">Langsung Ke Konten Utama</a>
 
-    
     <input class="tcetak" type="checkbox" id="nav">
     
     <input class="tcetak" type="checkbox" id="menu">
@@ -29,6 +29,8 @@
     <label for="nav" id="nav-kanvas" class="blok-kanvas"></label>
     
     <label for="menu" id="menu-kanvas" class="blok-kanvas"></label>
+
+    <script src="{{ $mixRangka('/interaksi.js') }}"></script>
     
     <div id="memuat" class="mati">
         <div class="progress">
