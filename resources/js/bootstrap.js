@@ -36,6 +36,7 @@
 //      enabledTransports: ['ws', 'wss'],
 //  });
 
-import SlimSelect from './slimselect';
-window.SlimSelect = SlimSelect;
+// import SlimSelect from './slimselect';
 import './js';
+import './slimselect';
+// window.SlimSelect = SlimSelect;
