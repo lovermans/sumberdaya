@@ -12,8 +12,9 @@
 
 <body data-tematerang="">
     <div id="sambutan">
+        <img src="{{ $mixRangka('/images/Lambang Perusahaan.webp') }}" alt="{{ $confRangka->get('app.usaha') }}" title="{{ $confRangka->get('app.usaha') }}">
         <p>
-            Memulai Aplikasi <br>
+            <b>Memulai Aplikasi</b> <br>
             Penggunaan Terbaik di <u><b><a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome</a></b></u> Browser
         </p>
     </div>

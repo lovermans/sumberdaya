@@ -282,9 +282,12 @@ svg {
 }
 
 #sambutan,
-#sambutan p {
+#sambutan :is(p, img) {
     position: fixed;
     z-index: 9999;
+}
+
+#sambutan, #sambutan p {
     bottom: 0;
     left: 0;
     right: 0;
@@ -292,10 +295,16 @@ svg {
 
 #sambutan {
     top: 0;
-    background: url("gambar/Lambang Perusahaan.webp") center/95% no-repeat,
-    url("gambar/Background Kepala.webp") left top repeat,
+    background: url("gambar/Background Kepala.webp") left top repeat,
     #121212;
     background-blend-mode: var(--bg-blend);
+}
+
+#sambutan img {
+    padding: 0 1em;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #nav,

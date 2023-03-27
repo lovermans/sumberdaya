@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
-        return view('mulai');
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('mulai')->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
     }
 
     /**

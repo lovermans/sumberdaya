@@ -15,7 +15,6 @@
 <meta content="#d32f2f" name="theme-color">
 <meta content="#d32f2f" name="msapplication-TileColor">
 <meta content="#d32f2f" name="msapplication-navbutton-color">
-<meta content="{{ $confRangka->get('app.name', 'Laravel') }}" name="description">
 <meta content="{{ $urlRangka->route('mulai') }}" name="msapplication-starturl">
 <link href="{{ $rekRangka->url() }}" rel="canonical">
 <link href="{{ $confRangka->get('app.author') }}" rel="author">
