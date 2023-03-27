@@ -97,9 +97,16 @@
         <div class="isian gspan-4">
             <h3>Berkas Permohonan</h3>
             
-            @if ($storageRangka->exists('sdm/penempatan/'.$rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))
-            <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.penempatan.berkas', ['berkas' => $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf' . '?' . filemtime(storage_path('app/sdm/penempatan/' . $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))], false) }}" title="Berkas Penempatan SDM" loading="lazy"></iframe>
+            @if ($storageRangka->exists('sdm/penempatan/' . $penem->sdm_no_absen . ' - ' . $penem->penempatan_mulai . '.pdf'))
+            <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.penempatan.berkas', ['berkas' => $penem->sdm_no_absen . ' - ' . $penem->penempatan_mulai . '.pdf' . '?' . filemtime(storage_path('app/sdm/penempatan/' . $penem->sdm_no_absen . ' - ' . $penem->penempatan_mulai . '.pdf'))], false) }}" title="Berkas Penempatan SDM" loading="lazy"></iframe>
             
+            <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $urlRangka->route('sdm.penempatan.berkas', ['berkas' => $penem->sdm_no_absen . ' - ' . $penem->penempatan_mulai . '.pdf' . '?' . filemtime(storage_path('app/sdm/penempatan/' . $penem->sdm_no_absen . ' - ' . $penem->penempatan_mulai . '.pdf'))], false) }}">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                </svg>
+                BERKAS
+            </a>
+
             @else
             <p class="merah">Tidak ada berkas terunggah.</p>
             
