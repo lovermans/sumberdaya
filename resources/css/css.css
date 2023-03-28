@@ -85,7 +85,6 @@
     color: var(--putih-1);
     overflow-wrap: break-word;
     line-height: 1.5;
-    word-break: break-word;
 }
 
 *,
@@ -661,13 +660,6 @@ nav [class|="menu"]:not(:first-child) {
     display: grid;
 }
 
-form.kartu,
-.kartu.form 
-{
-    display: flex;
-    flex-wrap: wrap;
-}
-
 .spanduk,
 .pesan,
 .periksa {
@@ -768,6 +760,8 @@ form.kartu,
 form.kartu,
 .kartu.form {
     gap: 1em;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 :is(form.kartu,
@@ -802,6 +796,7 @@ button.cari-cepat svg{
     flex-grow: 1;
     position: relative;
     top: 0;
+    word-break: break-word;
 }
 
 .isian :is(input[type="text"],
