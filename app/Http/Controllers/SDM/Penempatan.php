@@ -200,7 +200,9 @@ class Penempatan
             'halamanAkun' => $uuid ?? '',
         ];
 
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        if (is_null($uuid)) {
+            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        }
 
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');

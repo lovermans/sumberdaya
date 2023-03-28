@@ -213,6 +213,10 @@ class RegisteredUserController
         
         $pesan = $fungsiStatis->statusBerhasil();
         
-        return $app->redirect->route('sdm.mulai')->with('pesan', $pesan);
+        $perujuk = $reqs->session()->get('tautan_perujuk');
+
+        $redirect = $app->redirect;
+
+        return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.mulai')->with('pesan', $pesan);
     }
 }
