@@ -84,7 +84,8 @@
     letter-spacing: .03125em;
     color: var(--putih-1);
     overflow-wrap: break-word;
-    line-height: 1.5
+    line-height: 1.5;
+    word-break: break-word;
 }
 
 *,
@@ -799,6 +800,8 @@ button.cari-cepat svg{
 .isian {
     max-width: 100%;
     flex-grow: 1;
+    position: relative;
+    top: 0;
 }
 
 .isian :is(input[type="text"],
@@ -864,6 +867,11 @@ button.cari-cepat svg{
     width: 50%;
     float: left;
     padding: 0 .5em 0 0;
+}
+
+.isian select {
+    position: absolute;
+    top: 50%;
 }
 
 ::placeholder {
