@@ -2,7 +2,7 @@
 <details class="kartu">
     <summary>Hari Lahir SDM Dalam Waktu Dekat : {{number_format($ulangTahuns->count(), 0, ',','.')}} Personil</summary>
 
-    <div id="tabel_ultah_sematan"></div>
+    <div id="tabel_ultah_sematan" class="scroll-margin"></div>
 
     <div id="tabel_ultah" class="kartu">
         <div class="data ringkas">

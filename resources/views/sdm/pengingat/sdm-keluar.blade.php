@@ -2,7 +2,7 @@
 <details class="kartu">
     <summary>SDM Keluar Selama 40 Hari Terakhir : {{number_format($berhentis->count(), 0, ',','.')}} Personil</summary>
 
-    <div id="tabel_berhenti_sematan"></div>
+    <div id="tabel_berhenti_sematan" class="scroll-margin"></div>
 
     <div id="tabel_berhenti" class="kartu">
         <div class="data ringkas">

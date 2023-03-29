@@ -2,7 +2,7 @@
 <details class="kartu">
     <summary>SDM Baru Selama 40 Hari Terakhir : {{number_format($barus->count(), 0, ',','.')}} Personil</summary>
     
-    <div id="tabel_sdm_baru_sematan"></div>
+    <div id="tabel_sdm_baru_sematan" class="scroll-margin"></div>
     
     <div id="tabel_sdm_baru" class="kartu">
         <div class="data ringkas">

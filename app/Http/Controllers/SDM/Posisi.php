@@ -42,7 +42,7 @@ class Posisi
         );
         
         if ($validator->fails()) {
-            return $app->redirect->route('sdm.posisi.data')->withErrors($validator)->withInput();
+            return $app->redirect->route('sdm.posisi.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
 
         $urutArray = $reqs->urut;
@@ -102,6 +102,7 @@ class Posisi
 
 
         if ($reqs->unduh == 'excel') {
+            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
             set_time_limit(0);
             ob_implicit_flush();
@@ -149,7 +150,7 @@ class Posisi
         $nonAktif = $cari->clone()->sum('jml_nonaktif');
         $total = $aktif + $nonAktif;
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString();
+        $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'sdm_posisi_tabels']);
 
         $kunciUrut = array_filter((array) $urutArray);
 
@@ -183,11 +184,13 @@ class Posisi
             'total' => $total
         ];
 
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
+        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
 
         $HtmlPenuh = $app->view->make('sdm.posisi.data', $data);
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
+        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function atributInput()

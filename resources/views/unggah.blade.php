@@ -1,7 +1,7 @@
 @extends('rangka')
 
 @section('isi')
-<div id="unggah_profil_sdm">
+<div id="unggah_profil_sdm" class="scroll-margin">
     <form id="form_unggah_profil_sdm" class="form-xhr kartu" method="POST" data-laju="true" data-tujuan="#unggah_profil_sdm" action="{{ $urlRangka->route('unggah', [], false) }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
         

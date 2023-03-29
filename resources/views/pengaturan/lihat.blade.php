@@ -1,7 +1,7 @@
 @extends('rangka')
 
 @section('isi')
-<div id="atur_lihat">
+<div id="atur_lihat" class="scroll-margin">
     <div class="kartu form">
         @isset($atur)
         <div class="gspan-4">
@@ -40,7 +40,7 @@
 
         <div class="gspan-4"></div>
         
-        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.ubah', ['uuid' => $atur->atur_uuid], false) }}">UBAH</a>
+        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#atur_lihat" href="{{ $urlRangka->route('atur.ubah', ['uuid' => $atur->atur_uuid], false) }}">UBAH</a>
         
         @else
         <div class="isian">

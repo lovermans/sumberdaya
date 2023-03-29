@@ -4,7 +4,7 @@
         {{number_format($perminSDMS->sum('tambahsdm_jumlah') - $perminSDMS->sum('tambahsdm_terpenuhi'), 0, ',', '.')}}
         Personil</summary>
 
-    <div id="tabel_perminSDM_sematan"></div>
+    <div id="tabel_perminSDM_sematan" class="scroll-margin"></div>
     
     <div id="tabel_perminSDM" class="kartu">
         <div class="data ringkas">

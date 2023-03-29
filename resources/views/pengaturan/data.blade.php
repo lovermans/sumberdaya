@@ -72,9 +72,9 @@
         </form>
     </div>
     
-    <div id="atur_tabels" class="kartu margin-scroll">
+    <div id="atur_tabels" class="kartu scroll-margin">
         @fragment('atur_tabels')
-        <div id="atur_sematan"></div>
+        <div id="atur_sematan" class="scroll-margin"></div>
         
         <div class="trek-data tcetak">
             <span class="bph">
@@ -251,7 +251,7 @@
             </svg>
         </a>
         
-        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR(false, '#atur_tabels', window.location.search ? window.location.pathname + window.location.search + '&unduh=excel' : window.location.pathname + '?unduh=excel', 'GET', null, null, true)">
+        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR(false, '#atur_sematan', window.location.search ? window.location.pathname + window.location.search + '&unduh=excel' : window.location.pathname + '?unduh=excel', 'GET', null, null, true)">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>

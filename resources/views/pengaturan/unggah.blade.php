@@ -16,7 +16,7 @@
             
             <p>Data <b><i>Jenis Aturan</i></b> dan <b><i>Butir Aturan</i></b> dilindungi dari perubahan data. Jika terdapat data identik dari <b><i>Jenis Aturan</i></b> dan <b><i>Butir Aturan</i></b>, maka hanya akan mengubah data isian lainnya selain kedua data tersebut.</p>
             
-            <p>Unduh <a class="isi-xhr" href="{{ $urlRangka->route('atur.contoh-unggah', [], false) }}" data-rekam="false" data-tujuan="#atur_tabels" data-laju="true">contoh</a> excel, isi sesuai petunjuk dalam excel lalu unggah kembali.</p>
+            <p>Unduh <a class="isi-xhr" href="{{ $urlRangka->route('atur.contoh-unggah', [], false) }}" data-rekam="false" data-tujuan="#atur_sematan" data-laju="true">contoh</a> excel, isi sesuai petunjuk dalam excel lalu unggah kembali.</p>
         </div>
 
         <div class="isian">

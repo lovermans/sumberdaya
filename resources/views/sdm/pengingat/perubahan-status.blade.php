@@ -2,7 +2,7 @@
 <details class="kartu">
     <summary>Perubahan Status SDM 40 Hari Terakhir : {{number_format($statuses->count(), 0, ',','.')}} Personil</summary>
     
-    <div id="tabel_status_sematan"></div>
+    <div id="tabel_status_sematan" class="scroll-margin"></div>
     
     <div id="tabel_status" class="kartu">
         <span class="biru">Biru</span> : Outsource.

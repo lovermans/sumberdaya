@@ -43,7 +43,7 @@
         <section>
             @include('sematan')
             
-            <div id="isi">
+            <div id="isi" class="scroll-margin">
                 @yield('isi')
             </div>
         </section>

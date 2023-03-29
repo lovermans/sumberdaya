@@ -2,7 +2,7 @@
 <details class="kartu">
     <summary>Perjanjian Kerja Perlu Ditinjau : {{number_format($kontraks->count(), 0, ',','.')}} Personil</summary>
     
-    <div id="tabel_kontrak_sematan"></div>
+    <div id="tabel_kontrak_sematan" class="scroll-margin"></div>
     
     <div id="tabel_kontrak" class="kartu">
         <span class="biru">Biru</span> : Akan Habis. <span class="oranye">Oranye</span> : Kadaluarsa.

@@ -1,7 +1,7 @@
 @extends('rangka')
 
 @section('isi')
-<div id="permintambahsdm_lihat">
+<div id="permintambahsdm_lihat" class="scroll-margin">
     <div class="kartu form">
         @isset($permin)
         <div class="gspan-4">

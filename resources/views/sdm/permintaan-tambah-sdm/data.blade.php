@@ -96,7 +96,7 @@
         @fragment('tambah_sdm_tabels')
         <b><i>Total permintaan tambah SDM ({{ $rekRangka->anyFilled(['kata_kunci', 'tambahsdm_status', 'tgl_diusulkan_mulai', 'tgl_diusulkan_sampai', 'tambahsdm_penempatan', 'tambahsdm_laju', 'posisi']) ? 'sesuai data pencarian & penyaringan' : 'global' }}) : Kebutuhan = {{number_format($kebutuhan, 0, ',', '.')}} Personil -> Terpenuhi = {{number_format($terpenuhi, 0, ',', '.')}} Personil -> Selisih = {{number_format($selisih, 0, ',', '.')}} Personil.</i></b>
         
-        <div id="permintaan-sdm_sematan"></div>
+        <div id="permintaan-sdm_sematan" class="scroll-margin"></div>
 
         <div class="trek-data tcetak">
             <span class="bph">
@@ -337,7 +337,7 @@
             </svg>
         </a>
 
-        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR(false, '#tambah_sdm_tabels', window.location.search ? window.location.pathname + window.location.search + '&unduh=excel' : window.location.pathname + '?unduh=excel', 'GET', null, null, true)">
+        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR(false, '#permintaan-sdm_sematan', window.location.search ? window.location.pathname + window.location.search + '&unduh=excel' : window.location.pathname + '?unduh=excel', 'GET', null, null, true)">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
