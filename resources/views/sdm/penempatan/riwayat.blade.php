@@ -161,12 +161,12 @@
     
     <div id="riwa-penem-sdm_tabels" class="kartu scroll-margin">
         @fragment('riwa-penem-sdm_tabels')
-        <div id="sdm_penem_riwa_sematan"></div>
+        <div id="sdm_penem_riwa_sematan" class="scroll-margin"></div>
         
         <div class="trek-data tcetak">
             @unless ($halamanAkun ?? null)
             <div class="saring-cepat">
-                <select id="sdm_penempatan_status_cariStatusAktifSDM" class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR(true, '#riwa-penem-sdm_tabels', this.value, 'GET', null, null, false, false, false, false, true)">
+                <select id="sdm_penempatan_status_cariStatusAktifSDM" class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR({rekam : true, tujuan : '#riwa-penem-sdm_tabels', tautan : this.value, strim : true})">
                     <option value="{{ $urlRangka->route('sdm.penempatan.riwayat', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph']), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.riwayat'))>SEMUA RIWAYAT</option>
                     
                     <option value="{{ $urlRangka->route('sdm.penempatan.data-aktif', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph']), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-aktif'))>AKTIF</option>
@@ -446,7 +446,7 @@
             </svg>
         </a>
         
-        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR(false, '#riwa-penem-sdm_tabels', window.location.search ? window.location.pathname + window.location.search + '&unduh=excel' : window.location.pathname + '?unduh=excel', 'GET', null, null, true)">
+        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR({tujuan : '#sdm_penem_riwa_sematan', tautan : window.location.search ? window.location.pathname + window.location.search + '&unduh=excel' : window.location.pathname + '?unduh=excel', strim : true})">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>

@@ -260,7 +260,7 @@
             </svg>
         </a>
         
-        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR(false, '#posisi-sdm_sematan', window.location.search ? window.location.pathname + window.location.search + '&unduh=excel' : window.location.pathname + '?unduh=excel', 'GET', null, null, true)">
+        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR({tujuan : '#posisi-sdm_sematan', tautan : window.location.search ? window.location.pathname + window.location.search + '&unduh=excel' : window.location.pathname + '?unduh=excel', strim : true})">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>

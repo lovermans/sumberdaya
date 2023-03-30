@@ -12,7 +12,7 @@
 @if($rekRangka->routeIs('sdm.*', 'register', 'akun', 'ubah-akun'))
 <div id="navigasi-sdm"></div>
 <script>
-    lemparXHR(false, "#navigasi-sdm", "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'navigasi'], false) }}", "GET", "Menunggu Server mengirim menu...", false, false, false, false, true);
+    lemparXHR({tujuan : "#navigasi-sdm", tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'navigasi'], false) }}", topview : true, fragmen : true});
 </script>
 @endif
 

@@ -12,18 +12,47 @@
     <div id="sdmIngatKeluar"><p class="kartu">Mengambil data pengurangan SDM...</p></div>
 
     <script>
-        lemparXHR(false, "#sdmIngatKeluar", "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatKeluar'], false) }}", "GET", false, false, false, false, false, true);
-        lemparXHR(false, "#sdmIngatBaru", "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatBaru'], false) }}", "GET", false, false, false, false, false, true);
-        lemparXHR(false, "#sdmIngatPstatus", "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPstatus'], false) }}", "GET", false, false, false, false, false, true);
-        lemparXHR(false, "#sdmIngatPkpd", "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPkpd'], false) }}", "GET", false, false, false, false, false, true);
-        lemparXHR(false, "#sdmIngatPtsb", "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPtsb'], false) }}", "GET", false, false, false, false, false, true);
+        lemparXHR({
+            tujuan : "#sdmIngatKeluar",
+            tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatKeluar'], false) }}",
+            topview : true,
+            fragmen : true
+        });
+        lemparXHR({
+            tujuan : "#sdmIngatBaru",
+            tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatBaru'], false) }}",
+            topview : true,
+            fragmen : true
+        });
+        lemparXHR({
+            tujuan : "#sdmIngatPstatus",
+            tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPstatus'], false) }}",
+            topview : true,
+            fragmen : true
+        });
+        lemparXHR({
+            tujuan : "#sdmIngatPkpd",
+            tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPkpd'], false) }}",
+            topview : true,
+            fragmen : true
+        });
+        lemparXHR({
+            tujuan : "#sdmIngatPtsb",
+            tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPtsb'], false) }}",
+            topview : true,
+            fragmen : true
+        });
     </script>
     @endif
 
     <div id="sdmIngatUltah"><p class="kartu">Mengambil data hari lahir SDM...</p></div>
     
     <script>
-        lemparXHR(false, "#sdmIngatUltah", "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatUltah'], false) }}", "GET", false, false, false, false, false, true);
+        lemparXHR({
+            tujuan : "#sdmIngatUltah",
+            tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatUltah'], false) }}",
+            fragmen : true
+        });
     </script>
 
     <div class="pintasan tcetak">

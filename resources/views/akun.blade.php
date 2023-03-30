@@ -361,7 +361,7 @@
 
             @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS'))
             <div class="isian tcetak" id="akun-cetakFormulir">
-                <select class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR(false, '#akun-cetakFormulirStatus', this.value, 'GET', false, false, true)">
+                <select class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR({tujuan : '#akun-cetakFormulirStatus', tautan : this.value, strim : true})">
                     <option value="">CETAK FORMULIR</option>
                     <option value="{{$urlRangka->route('formulir-serah-terima-sdm-baru', ['uuid' => $akun->sdm_uuid], false)}}">SERAH TERIMA SDM BARU</option>
                     <option value="{{$urlRangka->route('formulir-persetujuan-gaji', ['uuid' => $akun->sdm_uuid], false)}}">PERSETUJUAN GAJI</option>
@@ -393,7 +393,7 @@
     <div id="riwa-penem-sdm_tabels" class="kartu scroll-margin">Memuat Riwayat Penempatan...</div>
     
     <script>
-        lemparXHR(false, "#riwa-penem-sdm_tabels", "{{ $urlRangka->route('sdm.penempatan.riwayat', ['uuid' => $akun->sdm_uuid, 'fragment' => 'riwa-penem-sdm_tabels']) }}", "GET", false, false, false, false, false, true, true);
+        lemparXHR({tujuan : "#riwa-penem-sdm_tabels", tautan : "{{ $urlRangka->route('sdm.penempatan.riwayat', ['uuid' => $akun->sdm_uuid, 'fragment' => 'riwa-penem-sdm_tabels']) }}", topview :true, fragmen : true});
     </script>
 
     <div class="pintasan tcetak">

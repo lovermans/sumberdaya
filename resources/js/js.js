@@ -22,21 +22,18 @@ document.addEventListener('click', function (e) {
         e.preventDefault();
         var a = e.target.closest('a.nav-xhr, a.menu-xhr'),
             b = e.target.closest('a.nav-xhr, a.menu-xhr, a.isi-xhr');
-        var tujuan = b.dataset.tujuan,
+        var ke = b.dataset.tujuan,
             pesan = b.dataset.pesan,
             metode = b.dataset.metode?.toUpperCase(),
-            tautan = b.href,
+            alamat = b.href,
             data = b.dataset.kirim,
-            strim = b.dataset.laju,
-            enkod = b.dataset.enkode == 'true' ? true : false,
+            laju = b.dataset.laju,
+            enkode = b.dataset.enkode == 'true' ? true : false,
             rekam = b.dataset.rekam,
             singkat = b.dataset.singkat == 'true' ? true : false,
             frag = b.dataset.frag == 'true' ? true : false,
             tn = b.dataset.tn == 'true' ? true : false,
-            simpan = true;
-        if (rekam == 'false') {
-            simpan = false;
-        }
+            simpan = rekam == 'false' ? false : true;
         if (a) {
             var navAktif = document.querySelectorAll('nav a.aktif, aside a.aktif');
             for (let z = 0; z < navAktif.length; z++) {
@@ -46,7 +43,19 @@ document.addEventListener('click', function (e) {
         }
         navCb.checked = false;
         menuCb.checked = false;
-        return lemparXHR(simpan, tujuan, tautan, metode, pesan, data, strim, enkod, singkat, tn, frag);
+        return lemparXHR({
+            rekam : simpan,
+            tujuan : ke,
+            tautan : alamat,
+            method : metode,
+            pesanmuat : pesan,
+            postdata : data,
+            strim : laju,
+            enkod : enkode,
+            mintajs : singkat,
+            topview : tn,
+            fragmen : frag
+        });
     }
     if (e.target.matches('.menu-j')) {
         return e.target.classList.toggle('aktif');
@@ -63,7 +72,7 @@ document.addEventListener('submit', function (e) {
     if (e.target.closest('.form-xhr')) {
         e.preventDefault();
         var a = e.target.closest('.form-xhr');
-        var tujuan = a.dataset.tujuan,
+        var alamat = a.dataset.tujuan,
             metode = a.method?.toUpperCase(),
             pesan = a.dataset.pesan,
             ke = a.dataset.blank == 'true' ? window.location.pathname : a.action,
@@ -76,30 +85,53 @@ document.addEventListener('submit', function (e) {
         if (metode == 'GET') {
             ke += '?' + new URLSearchParams(data).toString();
             var rekam = a.dataset.rekam,
-                simpan = true;
-            if (rekam == 'false') {
-                simpan = false;
-            }
-            return lemparXHR(simpan, tujuan, ke, metode, pesan, null, prog, false, singkat, tn, frag);
+                simpan = rekam == 'false' ? false : true;
+            return lemparXHR({
+                rekam : simpan,
+                tujuan : alamat,
+                tautan : ke,
+                method : metode,
+                pesanmuat : pesan,
+                strim : prog, 
+                mintajs : singkat,
+                topview : tn,
+                fragmen : frag
+            });
         }
         if (metode == 'POST') {
             var rekam = a.dataset.rekam,
-                simpan = false;
-            if (rekam == 'true') {
-                simpan = true;
-            }
-            return lemparXHR(simpan, tujuan, ke, metode, pesan, data, prog, false, singkat, tn, frag);
+                simpan = rekam == 'true' ? true : false;
+            return lemparXHR({
+                rekam : simpan,
+                tujuan : alamat,
+                tautan : ke,
+                method : metode,
+                pesanmuat : pesan,
+                postdata : data,
+                strim : prog,
+                mintajs : singkat,
+                topview : tn,
+                fragmen : frag
+            });
         }
         return alert('Periksa kembali formulir.');
     }
 });
 
-window.lemparXHR = function (rekam, tujuan, tautan, method, pesanmuat = null, postdata = null, strim = false, enkod = false, mintajs = false, topview = false, fragmen = false) {
+window.lemparXHR = function (data) {
     var xhr = new XMLHttpRequest(),
-        sisi = tujuan ?? '#isi',
-        pesan = pesanmuat ?? '<p class="memuat">Menunggu jawaban server...</p>',
-        metode = method ?? 'GET',
-        muat = document.getElementById('memuat');
+        sisi = data.tujuan ?? '#isi',
+        pesan = data.pesanmuat ?? '',
+        metode = data.method ?? 'GET',
+        muat = document.getElementById('memuat'),
+        rekam = data.rekam ?? false,
+        tautan = data.tautan ?? null,
+        postdata = data.postdata ?? null,
+        strim = data.strim ?? false,
+        enkod = data.enkod ?? false,
+        mintajs = data.mintajs ?? false,
+        topview = data.topview ?? false,
+        fragmen = data.fragmen ?? false;
     var isi = document.querySelector(sisi) ?? document.querySelector('#isi') ?? document.querySelector('body');
     if (!tautan.startsWith(location.origin)) {
         tautan = location.origin + tautan;
@@ -109,38 +141,41 @@ window.lemparXHR = function (rekam, tujuan, tautan, method, pesanmuat = null, po
         pesan = '';
     };
     if (rekam) {
-        rekamTautan(tujuan, tautan, metode, pesan, enkod);
+        rekamTautan(sisi, tautan, metode, pesan, enkod);
     }
     // g ? isi.prepend(range.createContextualFragment('')) : isi.prepend(range.createContextualFragment(pesan));
     topview ? scrollTo(0,0) : isi.scrollIntoView();
     if (strim) {
-        let lastResponseLength = false;
+        let lastResponseLength;
+        let progressResponse;
+        let responser;
+        let isiRespon;
+        let responseLength;
+
         for(var IDacak = '', b = 36; IDacak.length < 9;) {
             IDacak += (Math.random() * b | 0).toString(b);
         };
-        let wadahPesan = '<div class="pesan tcetak">' +
+        var wadahPesan = '<div class="pesan tcetak">' +
             '<div id="' + IDacak + '"><p>Menunggu jawaban server...</div>' +
             '<button class="tutup-i"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="/ikon.svg?id=ec47ccd0fadc02f2d210d55d23c3c657#tutup" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></button></div>';
         
         isi.prepend(range.createContextualFragment(wadahPesan));
 
-        let isiPesan = document.getElementById(IDacak);
+        var isiPesan = document.getElementById(IDacak);
 
         xhr.onprogress = function (e) {
-            if (tautan !== xhr.responseURL) {
-                location = xhr.responseURL;
-                return true;
-            };
             
-            let progressResponse;
-            let responser = e.currentTarget.responseText;
+            responser = e.currentTarget.responseText;
+            responseLength = responser.length;
             progressResponse = lastResponseLength ? responser.substring(lastResponseLength) : responser;
-            lastResponseLength = responser.length;
-
+            isiRespon = range.createContextualFragment(progressResponse);
+            
             // isiPemberitahuan('pemberitahuan', '');
             // console.log(progressResponse);
-            isiPesan.prepend(range.createContextualFragment(progressResponse));
-            return true;
+            isiPesan.prepend(isiRespon);
+            lastResponseLength = responseLength;
+            // return true;
+         
         };
     } else {
 
@@ -212,8 +247,16 @@ function rekamTautan(tujuan, tautan, method, pesan, enkod) {
 
 window.onpopstate = function (p) {
     if (p.state?.rute) {
-        lemparXHR(false, p.state.tujuan, p.state.rute, p.state.metode, p.state.pesan, null, false, p.state.enkode, false);
-    } else { location.reload(); };
+        lemparXHR({
+            tujuan : p.state.tujuan,
+            tautan : p.state.rute,
+            method : p.state.metode,
+            pesanmuat : p.state.pesan,
+            enkod : p.state.enkode
+        });
+    } else { 
+        location.reload(); 
+    };
 };
 
 window.siapkanFoto = function (a) {

@@ -115,7 +115,7 @@
 
         @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS'))
         <div class="isian" id="penempatan-cetakFormulir">
-            <select class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR(false, '#penempatan-cetakFormulirStatus', this.value, 'GET', null, null, 'true')">
+            <select class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR({tujuan : '#penempatan-cetakFormulirStatus', tautan : this.value, strim : true})">
                 <option value="">CETAK FORMULIR</option>
         
                 <option value="{{$urlRangka->route('sdm.penempatan.pkwt-sdm', ['uuid' => $penem->penempatan_uuid], false)}}">PKWT</option>
