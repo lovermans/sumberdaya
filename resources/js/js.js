@@ -141,7 +141,7 @@ window.lemparXHR = function (data) {
         pesan = '';
     };
     if (rekam) {
-        rekamTautan(sisi, tautan, metode, pesan, enkod);
+        rekamTautan({tujuan : sisi, tautan : tautan, method : metode, pesan : pesan, enkod : enkod});
     }
     // g ? isi.prepend(range.createContextualFragment('')) : isi.prepend(range.createContextualFragment(pesan));
     topview ? scrollTo(0,0) : isi.scrollIntoView();
@@ -185,9 +185,13 @@ window.lemparXHR = function (data) {
             // console.log(this.getAllResponseHeaders());
             // console.log(this.getResponseHeader('X-Kode-Javascript'));
 
-            if (tautan !== xhr.responseURL && !xhr.getResponseHeader('Content-Type').startsWith('text/html')) {
-                location = xhr.responseURL;
-                return true;
+            if (tautan !== xhr.responseURL) {
+                if (xhr.getResponseHeader('Content-Type').startsWith('text/html')) {
+                    rekamTautan({tautan : xhr.responseURL});
+                } else {
+                    location = xhr.responseURL;
+                    return true;
+                }
             };
 
             var responXHR = xhr.responseText,
@@ -232,17 +236,17 @@ window.lemparXHR = function (data) {
     }
 };
 
-function rekamTautan(tujuan, tautan, method, pesan, enkod) {
-    var segmen = new URL(tautan).pathname.split('/');
+function rekamTautan(data) {
+    var segmen = new URL(data.tautan).pathname.split('/');
     var judul = segmen[1] ? judulHal + ' - ' + segmen.join(' ') : judulHal;
     document.title = judul;
     history.pushState({
-        'tujuan': tujuan,
-        'rute': tautan,
-        'metode': method,
-        'pesan': pesan,
-        'enkode': enkod
-    }, judul, tautan);
+        'tujuan': data.tujuan ?? null,
+        'rute': data.tautan,
+        'metode': data.method ?? 'GET',
+        'pesan': data.pesan ?? null,
+        'enkode': data.enkod ?? null
+    }, judul, data.tautan);
 };
 
 window.onpopstate = function (p) {
