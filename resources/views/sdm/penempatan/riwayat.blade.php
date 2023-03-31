@@ -166,7 +166,7 @@
         <div class="trek-data tcetak">
             @unless ($halamanAkun ?? null)
             <div class="saring-cepat">
-                <select id="sdm_penempatan_status_cariStatusAktifSDM" class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR({rekam : true, tujuan : '#riwa-penem-sdm_tabels', tautan : this.value, strim : true})">
+                <select id="sdm_penempatan_status_cariStatusAktifSDM" class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR({rekam : true, tujuan : '#riwa-penem-sdm_tabels', tautan : this.value, fragmen : true})">
                     <option value="{{ $urlRangka->route('sdm.penempatan.riwayat', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph']), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.riwayat'))>SEMUA RIWAYAT</option>
                     
                     <option value="{{ $urlRangka->route('sdm.penempatan.data-aktif', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph']), false) }}" @selected($rekRangka->routeIs('sdm.penempatan.data-aktif'))>AKTIF</option>

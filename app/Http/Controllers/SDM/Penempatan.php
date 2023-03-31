@@ -200,7 +200,7 @@ class Penempatan
             'halamanAkun' => $uuid ?? '',
         ];
 
-        if (is_null($uuid)) {
+        if (!isset($uuid)) {
             $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
         }
 
@@ -395,7 +395,9 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
 
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        if (!isset($uuid)) {
+            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        }
 
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
@@ -579,7 +581,9 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
 
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        if (!isset($uuid)) {
+            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        }
 
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
@@ -763,7 +767,9 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
         
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        if (!isset($uuid)) {
+            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        }
         
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
@@ -953,7 +959,9 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
         
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        if (!isset($uuid)) {
+            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        }
         
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
@@ -1140,7 +1148,9 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
         
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        if (!isset($uuid)) {
+            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        }
         
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
@@ -1308,7 +1318,9 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
         
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        if (!isset($uuid)) {
+            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        }
         
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
@@ -1476,7 +1488,9 @@ class Penempatan
             'indexKeluar' => $indexKeluar,
         ];
         
-        $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        if (!isset($uuid)) {
+            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        }
         
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
