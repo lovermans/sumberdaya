@@ -21,11 +21,11 @@
 
     <a class="skip-navigation tcetak" href="#main" tabindex="0">Langsung Ke Konten Utama</a>
 
-    <input class="tcetak" type="checkbox" id="nav">
+    <input class="tcetak" type="checkbox" id="nav" aria-label="Navigasi">
     
-    <input class="tcetak" type="checkbox" id="menu">
+    <input class="tcetak" type="checkbox" id="menu" aria-label="Menu">
     
-    <input class="tcetak" type="checkbox" id="tema">
+    <input class="tcetak" type="checkbox" id="tema" aria-label="Tema">
     
     <label for="nav" id="nav-kanvas" class="blok-kanvas"></label>
     

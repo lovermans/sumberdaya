@@ -1165,8 +1165,10 @@ window.SlimSelect = (function () {
         };
         Slim.prototype.listDiv = function () {
             var list = document.createElement('div');
+            list.id = this.main.config.id;
             list.classList.add(this.main.config.list);
             list.setAttribute('role', 'listbox');
+            list.setAttribute('aria-label', 'Pilihan ' + this.main.config.id);
             return list;
         };
         Slim.prototype.options = function (content) {

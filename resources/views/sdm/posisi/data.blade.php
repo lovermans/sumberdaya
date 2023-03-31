@@ -11,7 +11,7 @@
             <details class="gspan-4" {{ $rekRangka->anyFilled(['lokasi', 'kontrak', 'posisi_status']) ? 'open' : '' }}>
                 <summary class="cari">
                     <div class="isian gspan-4">
-                        <input id="sdm_posisi_cariKataKunci" type="text" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
+                        <input id="sdm_posisi_cariKataKunci" type="text" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
 
                         <button id="tombol_cari_posisi_sdm"class="cari-cepat" type="submit" title="Cari Data">
                             <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -192,7 +192,7 @@
                     <tr @class(['merah' => $tabel->posisi_status == 'NON-AKTIF'])>
                         <th>
                             <div class="pil-aksi">
-                                <button>
+                                <button id="{{'aksi_posisi_baris_' . $tabels->firstItem() + $nomor}}" title="Pilih Tindakan">
                                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                     </svg>

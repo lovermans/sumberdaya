@@ -24,7 +24,7 @@
                     <tr @class(['oranye'=> $kontrak->penempatan_selesai <= $dateRangka->today(), 'biru'=> ($kontrak->penempatan_selesai <= $dateRangka->today()->addDay(40))])>
                         <th>
                             <div class="pil-aksi">
-                                <button>
+                                <button id="{{'aksi_pkwt_baris_' . $loop->iteration}}" title="Pilih Tindakan">
                                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}"
                                             xmlns:xlink="http://www.w3.org/1999/xlink"></use>

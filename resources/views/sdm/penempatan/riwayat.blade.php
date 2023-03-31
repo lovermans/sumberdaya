@@ -12,7 +12,7 @@
 
                 <summary class="cari">
                     <div class="isian gspan-4">
-                        <input type="text" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
+                        <input type="text" id="kata_kunci_penempatan_sdm" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
 
                         <button id="tombol_cari_status_penempatan" class="cari-cepat" type="submit" title="Cari Data">
                             <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -321,7 +321,7 @@
                     <tr @class(['merah' => $tabel->sdm_tgl_berhenti, 'oranye' => ($tabel->penempatan_selesai && $tabel->penempatan_selesai <= $dateRangka->today()->addDay(40)),'biru' => $strRangka->startsWith($tabel->penempatan_kontrak, 'OS-')])>
                         <th>
                             <div class="pil-aksi">
-                                <button>
+                                <button id="{{'aksi_penempatan_baris_' . rescue(function () use ($tabels, $nomor) { return ($tabels->firstItem() + $nomor);}, $loop->iteration, false) }}" title="Pilih Tindakan">
                                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                     </svg>
@@ -349,7 +349,7 @@
                             </a>
                             <b>No Absen</b> : {{$tabel->sdm_no_absen}}<br/>
                             <b>Nama</b> : {{$tabel->sdm_nama}}<br/>
-                            <b>No Permintaan</b> : <u><a class="isi-xhr" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $tabel->sdm_no_permintaan], false) }}">{{ $tabel->sdm_no_permintaan }}</a></u><br/>
+                            <b>No Permintaan</b> : <u><a class="isi-xhr" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $tabel->sdm_no_permintaan], false) }}" aria-label="Permintaan Tambah SDM No {{ $tabel->sdm_no_permintaan }}">{{ $tabel->sdm_no_permintaan }}</a></u><br/>
                             <b>Tgl Masuk</b> : {{ strtoupper($dateRangka->make($tabel->sdm_tgl_gabung)?->translatedFormat('d F Y')) }}<br/>
                             <b>Tgl Keluar</b> : {{ strtoupper($dateRangka->make($tabel->sdm_tgl_berhenti)?->translatedFormat('d F Y')) }}<br/>
                             <b>PHK</b> : {{$tabel->sdm_jenis_berhenti}}<br/>

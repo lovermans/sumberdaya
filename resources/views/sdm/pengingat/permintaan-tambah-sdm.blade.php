@@ -24,7 +24,7 @@
                     <tr>
                         <th>
                             <div class="pil-aksi">
-                                <button>
+                                <button id="{{'aksi_tsdm_baris_' . $loop->iteration}}" title="Pilih Tindakan">
                                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}"
                                             xmlns:xlink="http://www.w3.org/1999/xlink"></use>

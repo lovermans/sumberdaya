@@ -4,7 +4,7 @@
 <meta content="Laravel 9" name="generator">
 <meta name="csrf-token" content="{{ $appRangka->session->token() }}">
 <title>{{ $confRangka->get('app.name', 'Laravel') }}</title>
-<meta name="desciption" content="{{ $confRangka->get('app.description') }}">
+<meta name="description" content="{{ $confRangka->get('app.description') }}">
 <link rel="preconnect" href="{{ $urlRangka->route('mulai') }}">
 <link rel="dns-prefetch" href="{{ $urlRangka->route('mulai') }}">
 <meta content="{{ $confRangka->get('app.name', 'Laravel') }}" name="application-name">

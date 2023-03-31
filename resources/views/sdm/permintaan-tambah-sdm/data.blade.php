@@ -12,7 +12,7 @@
                 
                 <summary class="cari">
                     <div class="isian gspan-4">
-                        <input type="text" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}">
+                        <input type="text" id="kata_kunci_permintaan_tambah_sdm" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
 
                         <button id="tombol_cari_permintaan_sdm" class="cari-cepat" type="submit" title="Cari Data">
                             <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -220,7 +220,7 @@
                     <tr @class(['merah' => $tabel->tambahsdm_jumlah < $tabel->tambahsdm_terpenuhi, 'biru' => $tabel->tambahsdm_jumlah == $tabel->tambahsdm_terpenuhi])>
                         <th>
                             <div class="pil-aksi">
-                                <button>
+                                <button id="{{'aksi_tsdm_baris_' . $tabels->firstItem() + $nomor}}" title="Pilih Tindakan">
                                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                     </svg>
@@ -263,9 +263,9 @@
                             <form class="form-xhr" method="POST" action="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', [ 'uuid' => $tabel->tambahsdm_uuid], false) }}" data-singkat="true">
                                 <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
                                 <div class="isian pendek">
-                                    <label for="permintambahsdmPenempatan" class="tcetak">Ubah Status</label>
+                                    <label for="{{'ubah_cepat_status_tsdm_' . $tabels->firstItem() + $nomor}}" class="tcetak">Ubah Status</label>
                                     
-                                    <select id="permintambahsdmPenempatan" name="tambahsdm_status" class="pil-saja" required onchange="getElementById('kirim-{{$tabel->tambahsdm_uuid}}').click()">
+                                    <select id="{{'ubah_cepat_status_tsdm_' . $tabels->firstItem() + $nomor}}" name="tambahsdm_status" class="pil-saja" required onchange="getElementById('kirim-{{$tabel->tambahsdm_uuid}}').click()">
                                         <option selected disabled></option>
                                         @if (!in_array($rekRangka->old('tambahsdm_status', $tabel->tambahsdm_status ?? null), (array) $statuses->pluck('atur_butir')->toArray()))
                                             <option value="{{ $rekRangka->old('tambahsdm_status', $tabel->tambahsdm_status ?? null) }}" class="merah" selected>{{ $rekRangka->old('tambahsdm_status', $permin->tambahsdm_status ?? null) }}</option>

@@ -45,7 +45,7 @@
                 @if ($batasi)
                 <h3>No Permintaan SDM</h3>
 
-                <p><u><a class="isi-xhr" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $akun->sdm_no_permintaan], false) }}">{{ $akun->sdm_no_permintaan }}</a></u></p>
+                <p><u><a class="isi-xhr" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $akun->sdm_no_permintaan], false) }}"  aria-label="Permintaan Tambah SDM No {{ $akun->sdm_no_permintaan }}">{{ $akun->sdm_no_permintaan }}</a></u></p>
                 
                 <h3>Nomor E-KTP/Passport</h3>
                 
