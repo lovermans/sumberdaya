@@ -96,6 +96,13 @@
 </details>
 
 <script>
-    formatTabel('#tabel_kontrak thead th', '#tabel_kontrak tbody tr');
+    (async() => {
+        while(!window.aplikasiSiap) {
+            await new Promise((resolve,reject) =>
+            setTimeout(resolve, 1000));
+        }
+        
+        formatTabel('#tabel_kontrak thead th', '#tabel_kontrak tbody tr');
+    })();
 </script>
 @endisset

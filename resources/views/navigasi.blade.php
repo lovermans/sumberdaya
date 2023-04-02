@@ -12,7 +12,14 @@
 @if($rekRangka->routeIs('sdm.*', 'register', 'akun', 'ubah-akun'))
 <div id="navigasi-sdm"></div>
 <script>
-    lemparXHR({tujuan : "#navigasi-sdm", tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'navigasi'], false) }}", topview : true, fragmen : true});
+    (async() => {
+        while(!window.aplikasiSiap) {
+            await new Promise((resolve,reject) =>
+            setTimeout(resolve, 1000));
+        }
+        
+        lemparXHR({tujuan : "#navigasi-sdm", tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'navigasi'], false) }}", topview : true, fragmen : true});
+    })();
 </script>
 @endif
 

@@ -166,9 +166,16 @@
     </form>
 
     <script>
-        pilSaja('#form_permintambahsdm .pil-saja');
-        pilCari('#form_permintambahsdm .pil-cari');
-        formatIsian('#form_permintambahsdm .isian :is(textarea,input[type=text],input[type=search])');
+        (async() => {
+            while(!window.aplikasiSiap) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+            
+            pilSaja('#form_permintambahsdm .pil-saja');
+            pilCari('#form_permintambahsdm .pil-cari');
+            formatIsian('#form_permintambahsdm .isian :is(textarea,input[type=text],input[type=search])');
+        })();
     </script>
 
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')

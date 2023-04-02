@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
 <html lang="{{ str_replace('_', '-', $appRangka->getLocale()) }}" dir="ltr">
-
+    
 <head>
     <noscript>
         <meta HTTP-EQUIV="refresh" content="0;url='{{ $urlRangka->route('perlu-javascript', [], false) }}'">
     </noscript>
-
+    
     @include('informasi-meta')
 </head>
 
@@ -18,9 +18,9 @@
             Penggunaan Terbaik di <u><b><a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome</a></b></u> Browser
         </p>
     </div>
-
+    
     <a class="skip-navigation tcetak" href="#main" tabindex="0">Langsung Ke Konten Utama</a>
-
+    
     <input class="tcetak" type="checkbox" id="nav" aria-label="Navigasi">
     
     <input class="tcetak" type="checkbox" id="menu" aria-label="Menu">
@@ -30,8 +30,6 @@
     <label for="nav" id="nav-kanvas" class="blok-kanvas"></label>
     
     <label for="menu" id="menu-kanvas" class="blok-kanvas"></label>
-
-    <script src="{{ $mixRangka('/interaksi.js') }}"></script>
     
     <div id="memuat" class="mati">
         <div class="progress">
@@ -54,7 +52,7 @@
     <nav class="tcetak">
         @include('navigasi')
     </nav>
-
+    
     <div id="brand" class="tcetak"></div>
     
     <div id="hiasan" class="tcetak"></div>
@@ -63,10 +61,26 @@
         <section></section>
     </footer>
 
+    <script defer src="{{ $mixRangka('/interaksi.js') }}"></script>
+    
     <script>
-        window.onload = function() {
-            setTimeout(function () {document.getElementById('sambutan')?.remove();},1800);
-        }
+        !function(){
+            window.addEventListener('DOMContentLoaded', function () {
+                var tema = document.getElementById('tema'),
+                    halaman = document.body;
+                tema.checked = 'true' === localStorage.getItem('tematerang');
+                halaman.setAttribute('data-tematerang', 'true' === localStorage.getItem('tematerang'));
+                tema.addEventListener('change', (function (e) {
+                    localStorage.setItem('tematerang', e.currentTarget.checked);
+                    halaman.setAttribute('data-tematerang', e.currentTarget.checked);
+                }));
+            });
+            window.onload = function() {
+                setTimeout(function () {
+                    document.getElementById('sambutan')?.remove();
+                }, 1800);
+            };
+        }();
     </script>
 </body>
 </html>

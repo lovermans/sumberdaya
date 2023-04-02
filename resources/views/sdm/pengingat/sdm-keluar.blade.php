@@ -93,6 +93,13 @@
 </details>
 
 <script>
-    formatTabel('#tabel_berhenti thead th', '#tabel_berhenti tbody tr');
+    (async() => {
+        while(!window.aplikasiSiap) {
+            await new Promise((resolve,reject) =>
+            setTimeout(resolve, 1000));
+        }
+        
+        formatTabel('#tabel_berhenti thead th', '#tabel_berhenti tbody tr');
+    })();
 </script>
 @endisset

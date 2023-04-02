@@ -102,7 +102,7 @@
         <div class="isian kecil">
             <label for="penempatan_ke">Kontrak Ke</label>
 
-            <input id="penempatan_ke" type="number" name="penempatan_ke" min="0" value="{{ $rekRangka->old('penempatan_ke', $penem->penempatan_ke ?? null) }}">
+            <input id="penempatan_ke" type="number" name="penempatan_ke" min="0" value="{{ $rekRangka->old('penempatan_ke', $penem->penempatan_ke ?? null) }}" @required($rekRangka->old('penempatan_kontrak', $penem->penempatan_kontrak ?? null))>
 
             <span class="t-bantu">Angka</span>
         </div>
@@ -212,25 +212,32 @@
     </form>
     
     <script>
-        pilSaja('#form_penempatanSDMTambahUbah .pil-saja');
-        pilCari('#form_penempatanSDMTambahUbah .pil-cari');
-        formatIsian('#form_penempatanSDMTambahUbah .isian :is(textarea,input[type=text],input[type=search])');
-        
-        !function(){
-            var kontrak = document.getElementById('penempatan_kontrak');
-            kontrak.onchange = function () {
-                var sampai = document.getElementById('penempatan_selesai'),
-                    kontrakke = document.getElementById('penempatan_ke');
-                
-                if (this.selectedOptions[0].text.match(/^(PKWT|PERCOBAAN)$/)) {
-                    sampai.required = true;
-                    kontrakke.required = true;
-                } else {
-                    sampai.required = false;
-                    kontrakke.required = false;
+        (async() => {
+            while(!window.aplikasiSiap) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+            
+            pilSaja('#form_penempatanSDMTambahUbah .pil-saja');
+            pilCari('#form_penempatanSDMTambahUbah .pil-cari');
+            formatIsian('#form_penempatanSDMTambahUbah .isian :is(textarea,input[type=text],input[type=search])');
+            
+            !function(){
+                var kontrak = document.getElementById('penempatan_kontrak');
+                kontrak.onchange = function () {
+                    var sampai = document.getElementById('penempatan_selesai'),
+                        kontrakke = document.getElementById('penempatan_ke');
+                    
+                    if (this.selectedOptions[0].text.match(/^(PKWT|PERCOBAAN)$/)) {
+                        sampai.required = true;
+                        kontrakke.required = true;
+                    } else {
+                        sampai.required = false;
+                        kontrakke.required = false;
+                    };
                 };
-            };
-        }();
+            }();
+        })();
     </script>
     
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')

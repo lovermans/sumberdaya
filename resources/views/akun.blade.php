@@ -374,10 +374,6 @@
             @endif
 
             <div class="isian gspan-4 scroll-margin" id="akun-cetakFormulirStatus"></div>
-            
-            <script>
-                pilSaja('#akun-cetakFormulir .pil-saja');
-            </script>
 
             <a class="utama isi-xhr tcetak" data-tujuan="#profil-akun" data-rekam="false" href="{{ $urlRangka->route('ubah-akun', ['uuid' => $akun->sdm_uuid], false) }}">UBAH</a>
 
@@ -392,9 +388,6 @@
     
     <div id="riwa-penem-sdm_tabels" class="kartu scroll-margin">Memuat Riwayat Penempatan...</div>
     
-    <script>
-        lemparXHR({tujuan : "#riwa-penem-sdm_tabels", tautan : "{{ $urlRangka->route('sdm.penempatan.riwayat', ['uuid' => $akun->sdm_uuid, 'fragment' => 'riwa-penem-sdm_tabels']) }}", topview :true, fragmen : true});
-    </script>
 
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
@@ -410,6 +403,18 @@
         </a>
     </div>
 
+    <script>
+        (async() => {
+            while(!window.aplikasiSiap) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+            
+            pilSaja('#akun-cetakFormulir .pil-saja');
+            lemparXHR({tujuan : "#riwa-penem-sdm_tabels", tautan : "{{ $urlRangka->route('sdm.penempatan.riwayat', ['uuid' => $akun->sdm_uuid, 'fragment' => 'riwa-penem-sdm_tabels']) }}", topview :true, fragmen : true});
+        })();
+    </script>
+    
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
 </div>
 @endsection

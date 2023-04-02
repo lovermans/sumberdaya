@@ -87,6 +87,13 @@
 </details>
 
 <script>
-    formatTabel('#tabel_status thead th', '#tabel_status tbody tr');
+    (async() => {
+        while(!window.aplikasiSiap) {
+            await new Promise((resolve,reject) =>
+            setTimeout(resolve, 1000));
+        }
+        
+        formatTabel('#tabel_status thead th', '#tabel_status tbody tr');
+    })();
 </script>
 @endisset

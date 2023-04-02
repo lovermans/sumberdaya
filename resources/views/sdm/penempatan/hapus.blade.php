@@ -27,7 +27,14 @@
     </form>
     
     <script>
-        formatIsian('#form_penempatanSDMHapus .isian textarea');
+        (async() => {
+            while(!window.aplikasiSiap) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+            
+            formatIsian('#form_penempatanSDMHapus .isian textarea');
+        })();
     </script>
     
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')

@@ -12,47 +12,61 @@
     <div id="sdmIngatKeluar"><p class="kartu">Mengambil data pengurangan SDM...</p></div>
 
     <script>
-        lemparXHR({
-            tujuan : "#sdmIngatKeluar",
-            tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatKeluar'], false) }}",
-            topview : true,
-            fragmen : true
-        });
-        lemparXHR({
-            tujuan : "#sdmIngatBaru",
-            tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatBaru'], false) }}",
-            topview : true,
-            fragmen : true
-        });
-        lemparXHR({
-            tujuan : "#sdmIngatPstatus",
-            tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPstatus'], false) }}",
-            topview : true,
-            fragmen : true
-        });
-        lemparXHR({
-            tujuan : "#sdmIngatPkpd",
-            tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPkpd'], false) }}",
-            topview : true,
-            fragmen : true
-        });
-        lemparXHR({
-            tujuan : "#sdmIngatPtsb",
-            tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPtsb'], false) }}",
-            topview : true,
-            fragmen : true
-        });
+        (async() => {
+            while(!window.aplikasiSiap) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+            
+            lemparXHR({
+                tujuan : "#sdmIngatKeluar",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatKeluar'], false) }}",
+                topview : true,
+                fragmen : true
+            });
+            lemparXHR({
+                tujuan : "#sdmIngatBaru",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatBaru'], false) }}",
+                topview : true,
+                fragmen : true
+            });
+            lemparXHR({
+                tujuan : "#sdmIngatPstatus",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPstatus'], false) }}",
+                topview : true,
+                fragmen : true
+            });
+            lemparXHR({
+                tujuan : "#sdmIngatPkpd",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPkpd'], false) }}",
+                topview : true,
+                fragmen : true
+            });
+            lemparXHR({
+                tujuan : "#sdmIngatPtsb",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPtsb'], false) }}",
+                topview : true,
+                fragmen : true
+            });
+        })();
     </script>
     @endif
 
     <div id="sdmIngatUltah"><p class="kartu">Mengambil data hari lahir SDM...</p></div>
     
     <script>
-        lemparXHR({
-            tujuan : "#sdmIngatUltah",
-            tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatUltah'], false) }}",
-            fragmen : true
-        });
+        (async() => {
+            while(!window.aplikasiSiap) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+            
+            lemparXHR({
+                tujuan : "#sdmIngatUltah",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatUltah'], false) }}",
+                fragmen : true
+            });
+        })();
     </script>
 
     <div class="pintasan tcetak">

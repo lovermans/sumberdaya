@@ -100,6 +100,13 @@
 </details>
 
 <script>
-    formatTabel('#tabel_perminSDM thead th', '#tabel_perminSDM tbody tr');
+    (async() => {
+        while(!window.aplikasiSiap) {
+            await new Promise((resolve,reject) =>
+            setTimeout(resolve, 1000));
+        }
+        
+        formatTabel('#tabel_perminSDM thead th', '#tabel_perminSDM tbody tr');
+    })();
 </script>
 @endisset

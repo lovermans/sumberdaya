@@ -62,6 +62,13 @@
 </details>
 
 <script>
-    formatTabel('#tabel_ultah thead th', '#tabel_ultah tbody tr');
+    (async() => {
+        while(!window.aplikasiSiap) {
+            await new Promise((resolve,reject) =>
+            setTimeout(resolve, 1000));
+        }
+        
+        formatTabel('#tabel_ultah thead th', '#tabel_ultah tbody tr');
+    })();
 </script>
 @endisset

@@ -419,10 +419,17 @@
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
             
         <script>
-            pilDasar('.trek-data .pil-dasar');
-            pilSaja('.trek-data .pil-saja');
-            urutData('#sdm_penempatan_status_urut','#sdm_penempatan_status_urut [data-indeks]');
-            formatTabel('#riwa-penem-sdm_tabel thead th', '#riwa-penem-sdm_tabel tbody tr');
+            (async() => {
+                while(!window.aplikasiSiap) {
+                    await new Promise((resolve,reject) =>
+                    setTimeout(resolve, 1000));
+                }
+                
+                pilDasar('.trek-data .pil-dasar');
+                pilSaja('.trek-data .pil-saja');
+                urutData('#sdm_penempatan_status_urut','#sdm_penempatan_status_urut [data-indeks]');
+                formatTabel('#riwa-penem-sdm_tabel thead th', '#riwa-penem-sdm_tabel tbody tr');
+            })();
         </script>
         
         @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')            
@@ -467,10 +474,17 @@
     
     @isset($tabels)
     <script>
-        pilDasar('#form_sdm_penempatan_status_cari .pil-dasar');
-        pilSaja('#form_sdm_penempatan_status_cari .pil-saja');
-        pilCari('#form_sdm_penempatan_status_cari .pil-cari');
-        formatIsian('#form_sdm_penempatan_status_cari .isian :is(textarea,input[type=text],input[type=search])');
+        (async() => {
+            while(!window.aplikasiSiap) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+            
+            pilDasar('#form_sdm_penempatan_status_cari .pil-dasar');
+            pilSaja('#form_sdm_penempatan_status_cari .pil-saja');
+            pilCari('#form_sdm_penempatan_status_cari .pil-cari');
+            formatIsian('#form_sdm_penempatan_status_cari .isian :is(textarea,input[type=text],input[type=search])');
+        })();
     </script>
     @endisset
 

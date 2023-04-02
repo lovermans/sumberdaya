@@ -40,7 +40,14 @@
     </div>
     
     <script>
-        pilSaja('#pilih_sumber_daya .pil-saja');
+        (async() => {
+            while(!window.aplikasiSiap) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+            
+            pilSaja('#pilih_sumber_daya .pil-saja');
+        })();
     </script>
     @endif
     

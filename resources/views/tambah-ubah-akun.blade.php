@@ -585,10 +585,17 @@
     </form>
     
     <script>
-        pilSaja('#form_tambahUbahAkun .pil-saja');
-        pilCari('#form_tambahUbahAkun .pil-cari');
-        pilDasar('#form_tambahUbahAkun .pil-dasar');
-        formatIsian('#form_tambahUbahAkun .isian :is(textarea,input[type=text],input[type=search])');
+        (async() => {
+            while(!window.aplikasiSiap) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+            
+            pilSaja('#form_tambahUbahAkun .pil-saja');
+            pilCari('#form_tambahUbahAkun .pil-cari');
+            pilDasar('#form_tambahUbahAkun .pil-dasar');
+            formatIsian('#form_tambahUbahAkun .isian :is(textarea,input[type=text],input[type=search])');
+        })();
     </script>
 
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')

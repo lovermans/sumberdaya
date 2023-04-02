@@ -315,10 +315,17 @@
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
         
         <script>
-            pilDasar('#tambah_sdm_tabels .pil-dasar');
-            pilSaja('#tambah_sdm_tabels .pil-saja');
-            urutData('#sdm_permintaan_tambah_cariUrut','#sdm_permintaan_tambah_cariUrut [data-indeks]');
-            formatTabel('#permintaan-sdm_tabel thead th', '#permintaan-sdm_tabel tbody tr');
+            (async() => {
+                while(!window.aplikasiSiap) {
+                    await new Promise((resolve,reject) =>
+                    setTimeout(resolve, 1000));
+                }
+                
+                pilDasar('#tambah_sdm_tabels .pil-dasar');
+                pilSaja('#tambah_sdm_tabels .pil-saja');
+                urutData('#sdm_permintaan_tambah_cariUrut','#sdm_permintaan_tambah_cariUrut [data-indeks]');
+                formatTabel('#permintaan-sdm_tabel thead th', '#permintaan-sdm_tabel tbody tr');
+            })();
         </script>
 
         @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
@@ -352,10 +359,17 @@
     
     @isset($tabels)
     <script>
-        pilDasar('#form_sdm_permintaan_tambah_cari .pil-dasar');
-        pilCari('#form_sdm_permintaan_tambah_cari .pil-cari');
-        pilSaja('#form_sdm_permintaan_tambah_cari .pil-saja');
-        formatIsian('#form_sdm_permintaan_tambah_cari .isian :is(textarea,input[type=text],input[type=search])');
+        (async() => {
+            while(!window.aplikasiSiap) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+            
+            pilDasar('#form_sdm_permintaan_tambah_cari .pil-dasar');
+            pilCari('#form_sdm_permintaan_tambah_cari .pil-cari');
+            pilSaja('#form_sdm_permintaan_tambah_cari .pil-saja');
+            formatIsian('#form_sdm_permintaan_tambah_cari .isian :is(textarea,input[type=text],input[type=search])');
+        })();
     </script>
     @endisset
 

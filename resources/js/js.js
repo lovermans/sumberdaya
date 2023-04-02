@@ -1,15 +1,6 @@
-! function () {
-    window.addEventListener('DOMContentLoaded', function () {
-        var e = document.getElementById('tema'),
-            t = document.body;
-        e.checked = 'true' === localStorage.getItem('tematerang'),
-            t.setAttribute('data-tematerang', 'true' === localStorage.getItem('tematerang')),
-            e.addEventListener('change', (function (e) {
-                localStorage.setItem('tematerang', e.currentTarget.checked),
-                    t.setAttribute('data-tematerang', e.currentTarget.checked)
-            }));
-    });
-}();
+window.aplikasiSiap = function () {
+    return true;
+};
 
 var range = document.createRange(),
     judulHal = document.title;

@@ -98,6 +98,13 @@
 </details>
 
 <script>
-    formatTabel('#tabel_sdm_baru thead th', '#tabel_sdm_baru tbody tr');
+    (async() => {
+        while(!window.aplikasiSiap) {
+            await new Promise((resolve,reject) =>
+            setTimeout(resolve, 1000));
+        }
+        
+        formatTabel('#tabel_sdm_baru thead th', '#tabel_sdm_baru tbody tr');
+    })();
 </script>
 @endisset

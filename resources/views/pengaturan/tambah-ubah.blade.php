@@ -56,8 +56,15 @@
     </form>
 
     <script>
-        pilSaja('#form_atur_tambahUbah .pil-saja');
-        formatIsian('#form_atur_tambahUbah .isian :is(textarea,input[type=text],input[type=search])');
+        (async() => {
+            while(!window.aplikasiSiap) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+            
+            pilSaja('#form_atur_tambahUbah .pil-saja');
+            formatIsian('#form_atur_tambahUbah .isian :is(textarea,input[type=text],input[type=search])');
+        })();
     </script>
 
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')

@@ -129,7 +129,14 @@
         <div class="isian gspan-4 scroll-margin" id="penempatan-cetakFormulirStatus"></div>
         
         <script>
-            pilSaja('#penempatan-cetakFormulir .pil-saja');
+            (async() => {
+                while(!window.aplikasiSiap) {
+                    await new Promise((resolve,reject) =>
+                    setTimeout(resolve, 1000));
+                }
+                
+                pilSaja('#penempatan-cetakFormulir .pil-saja');
+            })();
         </script>
         @endif
         

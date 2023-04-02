@@ -232,10 +232,17 @@
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
 
         <script>
-            pilDasar('#sdm_posisi_tabels .pil-dasar');
-            pilSaja('#sdm_posisi_tabels .pil-saja');
-            urutData('#sdm_posisi_cariUrut','#sdm_posisi_cariUrut [data-indeks]');
-            formatTabel('#posisi-sdm_tabel thead th', '#posisi-sdm_tabel tbody tr');
+            (async() => {
+                while(!window.aplikasiSiap) {
+                    await new Promise((resolve,reject) =>
+                    setTimeout(resolve, 1000));
+                }
+                
+                pilDasar('#sdm_posisi_tabels .pil-dasar');
+                pilSaja('#sdm_posisi_tabels .pil-saja');
+                urutData('#sdm_posisi_cariUrut','#sdm_posisi_cariUrut [data-indeks]');
+                formatTabel('#posisi-sdm_tabel thead th', '#posisi-sdm_tabel tbody tr');
+            })();
         </script>
 
         @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
@@ -275,10 +282,17 @@
     
     @isset($tabels)
     <script>
-        pilDasar('#form_sdm_posisi_cari .pil-dasar');
-        pilCari('#form_sdm_posisi_cari .pil-cari');
-        pilSaja('#form_sdm_posisi_cari .pil-saja');
-        formatIsian('#form_sdm_posisi_cari .isian :is(textarea,input[type=text],input[type=search])');
+        (async() => {
+            while(!window.aplikasiSiap) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+            
+            pilDasar('#form_sdm_posisi_cari .pil-dasar');
+            pilCari('#form_sdm_posisi_cari .pil-cari');
+            pilSaja('#form_sdm_posisi_cari .pil-saja');
+            formatIsian('#form_sdm_posisi_cari .isian :is(textarea,input[type=text],input[type=search])');
+        })();
     </script>
     @endisset
 </div>
