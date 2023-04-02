@@ -6,8 +6,24 @@
     <noscript>
         <meta HTTP-EQUIV="refresh" content="0;url='{{ $urlRangka->route('perlu-javascript', [], false) }}'">
     </noscript>
-    
+
     @include('informasi-meta')
+    
+    <link href="{{ $mixRangka('/tampilan.css') }}" rel="stylesheet">
+    
+    {{-- <script>
+        !function(){
+            var muatCSS = document.createElement('link');
+            muatCSS.href = '{{ $mixRangka('/tampilan.css') }}';
+            muatCSS.rel = 'stylesheet';
+            document.head.append(muatCSS);
+        }();
+    </script> --}}
+
+    {{-- <script type="module" defer>
+        import styles from '{{ $mixRangka('/tampilan.css') }}' assert { type: "css" };
+        document.adoptedStyleSheets = [styles];
+    </script> --}}
 </head>
 
 <body data-tematerang="">
@@ -61,7 +77,7 @@
         <section></section>
     </footer>
 
-    {{-- <script defer src="{{ $mixRangka('/interaksi.js') }}"></script> --}}
+    {{-- <script defer type="module" src="{{ $mixRangka('/interaksi.js') }}"></script> --}}
     
     <script>
         !function(){
@@ -69,21 +85,28 @@
                 var tema = document.getElementById('tema'),
                     halaman = document.body,
                     muatJS = document.createElement('script');
+
                 tema.checked = 'true' === localStorage.getItem('tematerang');
                 halaman.setAttribute('data-tematerang', 'true' === localStorage.getItem('tematerang'));
                 tema.addEventListener('change', (function (e) {
                     localStorage.setItem('tematerang', e.currentTarget.checked);
                     halaman.setAttribute('data-tematerang', e.currentTarget.checked);
                 }));
+                
                 muatJS.src = '{{ $mixRangka('/interaksi.js') }}';
+                muatJS.type = 'module';
                 muatJS.defer = true;
                 document.head.append(muatJS);
-            });
-            window.onload = function() {
-                setTimeout(function () {
+
+                (async() => {
+                    while(!window.aplikasiSiap) {
+                        await new Promise((resolve,reject) =>
+                        setTimeout(resolve, 1000));
+                    }
+                
                     document.getElementById('sambutan')?.remove();
-                }, 1800);
-            };
+                })();
+            });
         }();
     </script>
 </body>

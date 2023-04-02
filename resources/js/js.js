@@ -1,6 +1,30 @@
-window.aplikasiSiap = function () {
-    return true;
-};
+// Cara 1 impor CSS
+// import styles from './tampilan.css' assert { type: 'css' };
+// document.adoptedStyleSheets = [styles];
+
+// Cara 1 impor CSS dinamis
+// const cssModule = await import('./style.css', {
+//     assert: { type: 'css' }
+// });
+// document.adoptedStyleSheets = [cssModule.default];
+
+// Cara 2 impor CSS dinamis
+// setTimeout(() => {
+//     import('./tampilan.css', {assert: { type: 'css' }
+//     }).then(({default : tampilan}) => {
+//         document.adoptedStyleSheets = [tampilan];
+//     });
+// }, 1000);
+
+setTimeout(() => {
+    import('./slimselect-es.js').then(({default : SlimSelect}) => {
+        window.SlimSelect = SlimSelect;
+
+        window.aplikasiSiap = function () {
+            return true;
+        };
+    });
+}, 1000);
 
 var range = document.createRange(),
     judulHal = document.title;

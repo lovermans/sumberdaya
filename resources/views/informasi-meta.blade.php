@@ -25,4 +25,3 @@
 <meta content="{{ $mixRangka('images/Logo Perusahaan.webp') }}" name="msapplication-TileImage">
 <link href="{{ $mixRangka('images/Logo Perusahaan.webp') }}" rel="image_src">
 <link href="/favicon.ico" rel="icon" type="image/x-icon">
-<link href="{{ $mixRangka('/tampilan.css') }}" rel="stylesheet">

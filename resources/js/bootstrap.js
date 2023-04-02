@@ -37,6 +37,6 @@
 //  });
 
 // import SlimSelect from './slimselect';
+// window.SlimSelect = SlimSelect;
 import './js';
 import './slimselect';
-// window.SlimSelect = SlimSelect;
