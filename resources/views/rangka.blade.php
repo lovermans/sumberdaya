@@ -61,19 +61,23 @@
         <section></section>
     </footer>
 
-    <script defer src="{{ $mixRangka('/interaksi.js') }}"></script>
+    {{-- <script defer src="{{ $mixRangka('/interaksi.js') }}"></script> --}}
     
     <script>
         !function(){
             window.addEventListener('DOMContentLoaded', function () {
                 var tema = document.getElementById('tema'),
-                    halaman = document.body;
+                    halaman = document.body,
+                    muatJS = document.createElement('script');
                 tema.checked = 'true' === localStorage.getItem('tematerang');
                 halaman.setAttribute('data-tematerang', 'true' === localStorage.getItem('tematerang'));
                 tema.addEventListener('change', (function (e) {
                     localStorage.setItem('tematerang', e.currentTarget.checked);
                     halaman.setAttribute('data-tematerang', e.currentTarget.checked);
                 }));
+                muatJS.src = '{{ $mixRangka('/interaksi.js') }}';
+                muatJS.defer = true;
+                document.head.append(muatJS);
             });
             window.onload = function() {
                 setTimeout(function () {
