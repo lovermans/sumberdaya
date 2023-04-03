@@ -9,21 +9,6 @@
 
     @include('informasi-meta')
     
-    <link href="{{ $mixRangka('/tampilan.css') }}" rel="stylesheet">
-    
-    {{-- <script>
-        !function(){
-            var muatCSS = document.createElement('link');
-            muatCSS.href = '{{ $mixRangka('/tampilan.css') }}';
-            muatCSS.rel = 'stylesheet';
-            document.head.append(muatCSS);
-        }();
-    </script> --}}
-
-    {{-- <script type="module" defer>
-        import styles from '{{ $mixRangka('/tampilan.css') }}' assert { type: "css" };
-        document.adoptedStyleSheets = [styles];
-    </script> --}}
 </head>
 
 <body data-tematerang="">
