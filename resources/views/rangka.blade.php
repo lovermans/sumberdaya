@@ -79,7 +79,6 @@
                 }));
                 
                 muatJS.src = '{{ $mixRangka('/interaksi.js') }}';
-                muatJS.type = 'module';
                 muatJS.defer = true;
                 document.head.append(muatJS);
 

@@ -15,23 +15,14 @@
 //         document.adoptedStyleSheets = [tampilan];
 //     });
 // }, 1000);
-
-setTimeout(() => {
-    import('./slimselect-es.js?id=202304030930').then(({default : SlimSelect}) => {
-        window.SlimSelect = SlimSelect;
-    });
-}, 1000);
-
-(async() => {
-    while(!window.SlimSelect) {
-        await new Promise((resolve,reject) =>
-        setTimeout(resolve, 1000));
-    }
-    
-    window.aplikasiSiap = function () {
-        return true;
-    };
-})();
+async function muatSlimSelect () {
+    let {default : r} = await import('./slimselect-es.js?id=202304030930');
+    window.SlimSelect = r;
+};
+  
+window.aplikasiSiap = function () {
+    return true;
+};
 
 var range = document.createRange(),
     judulHal = document.title;
@@ -370,66 +361,99 @@ window.formatIsian = function (a) {
 };
 
 window.pilDasar = function (a) {
-    var ps = document.querySelectorAll(a);
-    ps.forEach(function (a) {
-        new SlimSelect({
-            select: a,
-            // settings: {
-                placeholder: 'PILIH',
-                showSearch: false,
-                searchFocus: false,
-                allowDeselect: true,
-                showContent: 'down',
-                addToBody: false,
-                hideSelectedOption: true,
-                selectByGroup: true,
-                closeOnSelect: true
-            // }
+    if (!window.SlimSelect) {
+        muatSlimSelect();
+    };
+    
+    (async() => {
+        while(!window.SlimSelect) {
+            await new Promise((resolve,reject) =>
+            setTimeout(resolve, 1000));
+        }
+            
+        var ps = document.querySelectorAll(a);
+        ps.forEach(function (a) {
+            new SlimSelect({
+                select: a,
+                // settings: {
+                    placeholder: 'PILIH',
+                    showSearch: false,
+                    searchFocus: false,
+                    allowDeselect: true,
+                    showContent: 'down',
+                    addToBody: false,
+                    hideSelectedOption: true,
+                    selectByGroup: true,
+                    closeOnSelect: true
+                // }
+            });
         });
-    });
+    })();
 };
 
 window.pilSaja = function (a) {
-    var ps = document.querySelectorAll(a);
-    ps.forEach(function (a) {
-        new SlimSelect({
-            select: a,
-            // settings: {
-                placeholder: 'PILIH',
-                showSearch: false,
-                searchFocus: false,
-                allowDeselect: false,
-                showContent: 'down',
-                addToBody: false,
-                hideSelectedOption: true,
-                selectByGroup: true,
-                closeOnSelect: true
-            // }
+    if (!window.SlimSelect) {
+        muatSlimSelect();
+    };
+
+    (async() => {
+        while(!window.SlimSelect) {
+            await new Promise((resolve,reject) =>
+            setTimeout(resolve, 1000));
+        }
+
+        var ps = document.querySelectorAll(a);
+        ps.forEach(function (a) {
+            new SlimSelect({
+                select: a,
+                // settings: {
+                    placeholder: 'PILIH',
+                    showSearch: false,
+                    searchFocus: false,
+                    allowDeselect: false,
+                    showContent: 'down',
+                    addToBody: false,
+                    hideSelectedOption: true,
+                    selectByGroup: true,
+                    closeOnSelect: true
+                // }
+            });
         });
-    });
+    })();
 };
 
 window.pilCari = function (a) {
-    var pc = document.querySelectorAll(a);
-    pc.forEach(function (a) {
-        new SlimSelect({
-            select: a,
-            // settings: {
-                searchPlaceholder: 'CARI',
-                searchText: 'KOSONG',
-                searchingText: 'MENCARI...',
-                showContent: 'down',
-                placeholder: 'PILIH',
-                showSearch: true,
-                searchFocus: true,
-                allowDeselect: true,
-                addToBody: false,
-                hideSelectedOption: true,
-                selectByGroup: true,
-                closeOnSelect: true
-            // }
+    if (!window.SlimSelect) {
+        muatSlimSelect();
+    };
+    
+    (async() => {
+        while(!window.SlimSelect) {
+            await new Promise((resolve,reject) =>
+            setTimeout(resolve, 1000));
+        }
+
+        var pc = document.querySelectorAll(a);
+        pc.forEach(function (a) {
+            new SlimSelect({
+                select: a,
+                // settings: {
+                    searchPlaceholder: 'CARI',
+                    searchText: 'KOSONG',
+                    searchingText: 'MENCARI...',
+                    showContent: 'down',
+                    placeholder: 'PILIH',
+                    showSearch: true,
+                    searchFocus: true,
+                    allowDeselect: true,
+                    addToBody: false,
+                    hideSelectedOption: true,
+                    selectByGroup: true,
+                    closeOnSelect: true
+                // }
+            });
         });
-    });
+    })();
 };
 
 function urutIsi(a, b) {
