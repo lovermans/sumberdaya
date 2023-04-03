@@ -2,7 +2,7 @@
 
 @section('isi')
 <div id="unggah_penempatan_sdm">    
-    <form id="form_unggah_penempatan_sdm" class="form-xhr kartu" method="POST" data-laju="true" data-tujuan="#riwa-penem-sdm_tabels" action="{{ $urlRangka->route('sdm.penempatan.unggah', [], false) }}">
+    <form id="form_unggah_penempatan_sdm" class="form-xhr kartu" method="POST" data-laju="true" data-tujuan="#unggah_penempatan_sdm" action="{{ $urlRangka->route('sdm.penempatan.unggah', [], false) }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
         
         <div class="gspan-4">
@@ -14,7 +14,7 @@
             
             <h4 class="form">Unggah Data Penempatan SDM</h4>
             
-            <p>Unduh <a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.contoh-unggah', [], false) }}" data-rekam="false" data-tujuan="#riwa-penem-riwa-penem-sdm_tabels" data-laju="true">contoh</a> excel, isi sesuai petunjuk dalam excel lalu unggah kembali.</p>
+            <p>Unduh <a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.contoh-unggah', [], false) }}" data-rekam="false" data-tujuan="#unggah_penempatan_sdm" data-laju="true">contoh</a> excel, isi sesuai petunjuk dalam excel lalu unggah kembali.</p>
         </div>
 
         <div class="isian">

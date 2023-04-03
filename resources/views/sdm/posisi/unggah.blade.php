@@ -2,7 +2,7 @@
 
 @section('isi')
 <div id="posisi_unggah">
-    <form id="form_posisi_unggah" class="form-xhr kartu" method="POST" data-laju="true" data-tujuan="#sdm_posisi_tabels" action="{{ $urlRangka->route('sdm.posisi.unggah', [], false) }}">
+    <form id="form_posisi_unggah" class="form-xhr kartu" method="POST" data-laju="true" data-tujuan="#posisi_unggah" action="{{ $urlRangka->route('sdm.posisi.unggah', [], false) }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
         
         <div class="gspan-4">
@@ -14,7 +14,7 @@
 
             <h4>Unggah Data Pengaturan Jabatan</h4>
 
-            <p>Unduh <a class="isi-xhr" href="{{ $urlRangka->route('sdm.posisi.contoh-unggah', [], false) }}" data-rekam="false" data-tujuan="#sdm_posisi_tabels" data-laju="true">contoh</a> excel, isi sesuai petunjuk dalam excel lalu unggah kembali.</p>
+            <p>Unduh <a class="isi-xhr" href="{{ $urlRangka->route('sdm.posisi.contoh-unggah', [], false) }}" data-rekam="false" data-tujuan="#posisi_unggah" data-laju="true">contoh</a> excel, isi sesuai petunjuk dalam excel lalu unggah kembali.</p>
         </div>
 
         <div class="isian">
