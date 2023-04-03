@@ -17,14 +17,21 @@
 // }, 1000);
 
 setTimeout(() => {
-    import('./slimselect-es.js').then(({default : SlimSelect}) => {
+    import('./slimselect-es.js?id=202304030930').then(({default : SlimSelect}) => {
         window.SlimSelect = SlimSelect;
-
-        window.aplikasiSiap = function () {
-            return true;
-        };
     });
 }, 1000);
+
+(async() => {
+    while(!window.SlimSelect) {
+        await new Promise((resolve,reject) =>
+        setTimeout(resolve, 1000));
+    }
+    
+    window.aplikasiSiap = function () {
+        return true;
+    };
+})();
 
 var range = document.createRange(),
     judulHal = document.title;
