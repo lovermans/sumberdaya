@@ -12,7 +12,7 @@ const mix = require('laravel-mix');
 */
 
 mix.disableNotifications();
-mix.setPublicPath('');
+// mix.setPublicPath('');
 // mix.js('resources/js/app.js', 'public/interaksi.js').version();
 mix.scripts(['resources/js/js.js', 'resources/js/slimselect.js'], 'public/interaksi.js').version();
 mix.scripts('resources/js/slimselect-es.js', 'public/slimselect-es.js').version();
@@ -21,4 +21,4 @@ mix.scripts('resources/js/slimselect.js', 'public/slimselect.js').version();
 mix.css('resources/css/app.css', 'public/tampilan.css').version();
 mix.copy('resources/css/gambar/*.webp', 'public/images').version();
 mix.copy('resources/css/svg/*.svg', 'public').version();
-mix.copy('public/tampilan.css', 'resources/views/css.blade.php');
+// mix.copy('public/tampilan.css', 'resources/views/css.blade.php');
