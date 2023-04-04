@@ -70,7 +70,7 @@
                             <u>
                                 <a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $baru->sdm_no_ktp], false) }}">{{ $baru->sdm_no_ktp }}</a></u><br />
                             No Permintaan : <u><a class="isi-xhr"
-                                    href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $baru->sdm_no_permintaan], false) }}">{{
+                                    href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $baru->sdm_no_permintaan], false) }}" title="No Permintaan SDM">{{
                                     $baru->sdm_no_permintaan }}</a>
                             </u>
                         </td>
