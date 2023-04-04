@@ -1,25 +1,3 @@
-// Cara 1 impor CSS
-// import styles from './tampilan.css' assert { type: 'css' };
-// document.adoptedStyleSheets = [styles];
-
-// Cara 1 impor CSS dinamis
-// const cssModule = await import('./style.css', {
-//     assert: { type: 'css' }
-// });
-// document.adoptedStyleSheets = [cssModule.default];
-
-// Cara 2 impor CSS dinamis
-// setTimeout(() => {
-//     import('./tampilan.css', {assert: { type: 'css' }
-//     }).then(({default : tampilan}) => {
-//         document.adoptedStyleSheets = [tampilan];
-//     });
-// }, 1000);
-async function muatSlimSelect () {
-    let {default : r} = await import('./slimselect-es.js?id=202304030930');
-    window.SlimSelect = r;
-};
-  
 window.aplikasiSiap = function () {
     return true;
 };
@@ -361,99 +339,66 @@ window.formatIsian = function (a) {
 };
 
 window.pilDasar = function (a) {
-    if (!window.SlimSelect) {
-        muatSlimSelect();
-    };
-    
-    (async() => {
-        while(!window.SlimSelect) {
-            await new Promise((resolve,reject) =>
-            setTimeout(resolve, 1000));
-        }
-            
-        var ps = document.querySelectorAll(a);
-        ps.forEach(function (a) {
-            new SlimSelect({
-                select: a,
-                // settings: {
-                    placeholder: 'PILIH',
-                    showSearch: false,
-                    searchFocus: false,
-                    allowDeselect: true,
-                    showContent: 'down',
-                    addToBody: false,
-                    hideSelectedOption: true,
-                    selectByGroup: true,
-                    closeOnSelect: true
-                // }
-            });
+    var ps = document.querySelectorAll(a);
+    ps.forEach(function (a) {
+        new SlimSelect({
+            select: a,
+            // settings: {
+                placeholder: 'PILIH',
+                showSearch: false,
+                searchFocus: false,
+                allowDeselect: true,
+                showContent: 'down',
+                addToBody: false,
+                hideSelectedOption: true,
+                selectByGroup: true,
+                closeOnSelect: true
+            // }
         });
-    })();
+    });
 };
 
 window.pilSaja = function (a) {
-    if (!window.SlimSelect) {
-        muatSlimSelect();
-    };
-
-    (async() => {
-        while(!window.SlimSelect) {
-            await new Promise((resolve,reject) =>
-            setTimeout(resolve, 1000));
-        }
-
-        var ps = document.querySelectorAll(a);
-        ps.forEach(function (a) {
-            new SlimSelect({
-                select: a,
-                // settings: {
-                    placeholder: 'PILIH',
-                    showSearch: false,
-                    searchFocus: false,
-                    allowDeselect: false,
-                    showContent: 'down',
-                    addToBody: false,
-                    hideSelectedOption: true,
-                    selectByGroup: true,
-                    closeOnSelect: true
-                // }
-            });
+    var ps = document.querySelectorAll(a);
+    ps.forEach(function (a) {
+        new SlimSelect({
+            select: a,
+            // settings: {
+                placeholder: 'PILIH',
+                showSearch: false,
+                searchFocus: false,
+                allowDeselect: false,
+                showContent: 'down',
+                addToBody: false,
+                hideSelectedOption: true,
+                selectByGroup: true,
+                closeOnSelect: true
+            // }
         });
-    })();
+    });
 };
 
 window.pilCari = function (a) {
-    if (!window.SlimSelect) {
-        muatSlimSelect();
-    };
-    
-    (async() => {
-        while(!window.SlimSelect) {
-            await new Promise((resolve,reject) =>
-            setTimeout(resolve, 1000));
-        }
-
-        var pc = document.querySelectorAll(a);
-        pc.forEach(function (a) {
-            new SlimSelect({
-                select: a,
-                // settings: {
-                    searchPlaceholder: 'CARI',
-                    searchText: 'KOSONG',
-                    searchingText: 'MENCARI...',
-                    showContent: 'down',
-                    placeholder: 'PILIH',
-                    showSearch: true,
-                    searchFocus: true,
-                    allowDeselect: true,
-                    addToBody: false,
-                    hideSelectedOption: true,
-                    selectByGroup: true,
-                    closeOnSelect: true
-                // }
-            });
+    var pc = document.querySelectorAll(a);
+    pc.forEach(function (a) {
+        new SlimSelect({
+            select: a,
+            // settings: {
+                searchPlaceholder: 'CARI',
+                searchText: 'KOSONG',
+                searchingText: 'MENCARI...',
+                showContent: 'down',
+                placeholder: 'PILIH',
+                showSearch: true,
+                searchFocus: true,
+                allowDeselect: true,
+                addToBody: false,
+                hideSelectedOption: true,
+                selectByGroup: true,
+                closeOnSelect: true
+            // }
         });
-    })();
+    });
 };
 
 function urutIsi(a, b) {
@@ -469,5 +414,6 @@ window.urutData = function (a, b) {
     var indexesArray = Array.from(indexes);
     let sorted = indexesArray.sort(urutIsi);
     sorted.forEach(e =>
-        document.querySelector(a).appendChild(e));
+        document.querySelector(a).appendChild(e)
+    );
 }
