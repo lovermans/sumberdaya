@@ -341,64 +341,126 @@ window.formatIsian = function (a) {
 window.pilDasar = function (a) {
     var ps = document.querySelectorAll(a);
     ps.forEach(function (a) {
-        new SlimSelect({
+        muatSlimSelect({
             select: a,
-            // settings: {
-                placeholder: 'PILIH',
-                showSearch: false,
-                searchFocus: false,
-                allowDeselect: true,
-                showContent: 'down',
-                addToBody: false,
-                hideSelectedOption: true,
-                selectByGroup: true,
-                closeOnSelect: true
-            // }
+            placeholder: 'PILIH',
+            showSearch: false,
+            searchFocus: false,
+            allowDeselect: true,
+            showContent: 'down',
+            addToBody: false,
+            hideSelectedOption: true,
+            selectByGroup: true,
+            closeOnSelect: true
         });
     });
+    
+    // var ps = document.querySelectorAll(a);
+    // ps.forEach(function (a) {
+    //     new SlimSelect({
+    //         select: a,
+    //         // settings: {
+    //             placeholder: 'PILIH',
+    //             showSearch: false,
+    //             searchFocus: false,
+    //             allowDeselect: true,
+    //             showContent: 'down',
+    //             addToBody: false,
+    //             hideSelectedOption: true,
+    //             selectByGroup: true,
+    //             closeOnSelect: true
+    //         // }
+    //     });
+    // });
 };
 
 window.pilSaja = function (a) {
+
     var ps = document.querySelectorAll(a);
     ps.forEach(function (a) {
-        new SlimSelect({
+        muatSlimSelect({
             select: a,
-            // settings: {
-                placeholder: 'PILIH',
-                showSearch: false,
-                searchFocus: false,
-                allowDeselect: false,
-                showContent: 'down',
-                addToBody: false,
-                hideSelectedOption: true,
-                selectByGroup: true,
-                closeOnSelect: true
-            // }
+            placeholder: 'PILIH',
+            showSearch: false,
+            searchFocus: false,
+            allowDeselect: false,
+            showContent: 'down',
+            addToBody: false,
+            hideSelectedOption: true,
+            selectByGroup: true,
+            closeOnSelect: true
         });
     });
+    // var ps = document.querySelectorAll(a);
+    // ps.forEach(function (a) {
+    //     new SlimSelect({
+    //         select: a,
+    //         // settings: {
+    //             placeholder: 'PILIH',
+    //             showSearch: false,
+    //             searchFocus: false,
+    //             allowDeselect: false,
+    //             showContent: 'down',
+    //             addToBody: false,
+    //             hideSelectedOption: true,
+    //             selectByGroup: true,
+    //             closeOnSelect: true
+    //         // }
+    //     });
+    // });
 };
 
 window.pilCari = function (a) {
-    var pc = document.querySelectorAll(a);
-    pc.forEach(function (a) {
-        new SlimSelect({
+    var ps = document.querySelectorAll(a);
+    ps.forEach(function (a) {
+        muatSlimSelect({
             select: a,
-            // settings: {
-                searchPlaceholder: 'CARI',
-                searchText: 'KOSONG',
-                searchingText: 'MENCARI...',
-                showContent: 'down',
-                placeholder: 'PILIH',
-                showSearch: true,
-                searchFocus: true,
-                allowDeselect: true,
-                addToBody: false,
-                hideSelectedOption: true,
-                selectByGroup: true,
-                closeOnSelect: true
-            // }
+            searchPlaceholder: 'CARI',
+            searchText: 'KOSONG',
+            searchingText: 'MENCARI...',
+            showContent: 'down',
+            placeholder: 'PILIH',
+            showSearch: true,
+            searchFocus: true,
+            allowDeselect: true,
+            addToBody: false,
+            hideSelectedOption: true,
+            selectByGroup: true,
+            closeOnSelect: true
         });
     });
+    
+    // var pc = document.querySelectorAll(a);
+    // pc.forEach(function (a) {
+    //     new SlimSelect({
+    //         select: a,
+    //         // settings: {
+    //             searchPlaceholder: 'CARI',
+    //             searchText: 'KOSONG',
+    //             searchingText: 'MENCARI...',
+    //             showContent: 'down',
+    //             placeholder: 'PILIH',
+    //             showSearch: true,
+    //             searchFocus: true,
+    //             allowDeselect: true,
+    //             addToBody: false,
+    //             hideSelectedOption: true,
+    //             selectByGroup: true,
+    //             closeOnSelect: true
+    //         // }
+    //     });
+    // });
+};
+
+window.muatSlimSelect = function (data) {
+    if (!window.SlimSelect) {
+        import('./slimselect-es.js?id=202304042113').then(({default : SS}) => {
+            window.SlimSelect = SS; 
+            new SlimSelect(data);
+        });
+    } else {
+        new SlimSelect(data);
+    };
 };
 
 function urutIsi(a, b) {
@@ -407,7 +469,7 @@ function urutIsi(a, b) {
     if (a.dataset.indeks > b.dataset.indeks)
         return 1;
     return 0;
-}
+};
 
 window.urutData = function (a, b) {
     var indexes = document.querySelectorAll(b);
