@@ -31,7 +31,10 @@
 
     @if($userRangka)
     <div class="isian" id="pilih_sumber_daya">
-        <select class="pil-saja tombol" onchange="if (this.value !== '') location = this.value">
+        <select class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR({
+            rekam : true,
+            tautan : this.value
+            });">
             <option value="">PILIH SUMBER DAYA</option>
             @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM'))
                 <option value="{{ $urlRangka->route('sdm.mulai', [], false) }}">SUMBER DAYA MANUSIA</option>
@@ -154,5 +157,6 @@
     </div>
     
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+    @include('komponen')
 </div>
 @endsection

@@ -10,7 +10,7 @@
             </svg>
         </label>
 
-        <a href="{{ $urlRangka->route('mulai', [], false) }}">
+        <a class="menu-xhr" href="{{ $urlRangka->route('mulai', [], false) }}">
             <img id="logo" src="{{ $mixRangka('/images/Logo Perusahaan.webp') }}" title="{{ $confRangka->get('app.usaha') }}" alt="{{ $confRangka->get('app.usaha') }}" loading="lazy"></a>
             
             <label for="tema" id="tbl-tema" onclick=""title="Ubah Tema">
@@ -19,13 +19,16 @@
                 </svg>
             </label>
             
-            @if($userRangka)
+            
             <label for="menu" id="tbl-menu" onclick="" title="Akun">
+                @fragment('avatar')
+                @if($userRangka)
                 <img id="akun" @class(['svg' => !$storageRangka->exists('sdm/foto-profil/' . $userRangka->sdm_no_absen . '.webp'),])
                 src="{{ $storageRangka->exists('sdm/foto-profil/' . $userRangka->sdm_no_absen . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $userRangka?->sdm_no_absen . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $userRangka->sdm_no_absen . '.webp'))], false) : $mixRangka('/ikon.svg') . '#akun' }}"
                 alt="{{ $userRangka->sdm_nama ?? 'foto akun' }}" title="{{ $userRangka->sdm_nama ?? 'foto akun' }}" loading="lazy">
+                @endif
+                @endfragment
             </label>
-            @endif
         
         <h1>{{ $confRangka->get('app.name', 'Laravel') }}</h1>
 
@@ -33,10 +36,11 @@
     </section>
 </header>
 
-<aside class="tcetak">
+<aside id="menu-avatar" class="tcetak">
+    @fragment('menu-avatar')
+    @if($userRangka)
     <div id="menu-akun">
-        @if($userRangka)
-        <a @class(['menu-xhr' => !$rekRangka->routeIs('mulai'), 'aktif' => $rekRangka->routeIs('akun')]) href="{{ $urlRangka->route('akun', ['uuid' => $userRangka->sdm_uuid], false) }}">
+        <a @class(['menu-xhr', 'aktif' => $rekRangka->routeIs('akun')]) href="{{ $urlRangka->route('akun', ['uuid' => $userRangka->sdm_uuid], false) }}">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#akun' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
@@ -60,6 +64,7 @@
                 Keluar
             </a>
         </form>
-        @endif
     </div>
+    @endif
+    @endfragment
 </aside>

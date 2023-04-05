@@ -35,6 +35,24 @@ $route->match(['get', 'post'], '/unggah', 'App\Http\Controllers\SumberDaya@ungga
 
 require __DIR__.'/auth.php';
 
+$route->group(['prefix' => 'komponen', 'as' => 'komponen.'], function () use ($route) {
+    $route->get('/avatar', function () {
+        return response(view('menu')->fragment('avatar'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'tbl-menu']);
+    })->name('avatar');
+    $route->get('/menu-avatar', function () {
+        return response(view('menu')->fragment('menu-avatar'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'menu-avatar']);
+    })->name('menu-avatar');
+    $route->get('/menu-pengaturan', function () {
+        return response(view('pengaturan.navigasi'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'menu-pengaturan']);
+    })->name('menu-pengaturan');
+    $route->get('/pilih-sumberdaya', function () {
+        return response(view('navigasi')->fragment('pilih-sumber_daya'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'pilih-sumber_daya']);
+    })->name('pilih-sumberdaya');
+    $route->get('/menu-sdm', function () {
+        return response(view('sdm.navigasi'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'navigasi-sdm']);
+    })->name('menu-sdm');
+})->middleware('auth');
+
 $route->group(['prefix' => 'atur', 'as' => 'atur.', 'namespace' => 'App\Http\Controllers'], function () use ($route){
     $route->get('/', 'Pengaturan@index')->name('data');
     $route->get('/lihat/{uuid?}', 'Pengaturan@lihat')->name('lihat');

@@ -411,10 +411,11 @@
             }
             
             pilSaja('#akun-cetakFormulir .pil-saja');
-            lemparXHR({tujuan : "#riwa-penem-sdm_tabels", tautan : "{{ $urlRangka->route('sdm.penempatan.riwayat', ['uuid' => $akun->sdm_uuid, 'fragment' => 'riwa-penem-sdm_tabels']) }}", topview :true, fragmen : true});
+            lemparXHR({tujuan : "#riwa-penem-sdm_tabels", tautan : "{{ $urlRangka->route('sdm.penempatan.riwayat', ['uuid' => $akun->sdm_uuid, 'fragment' => 'riwa-penem-sdm_tabels']) }}", normalview : true, fragmen : true});
         })();
     </script>
     
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+    @include('komponen')
 </div>
 @endsection

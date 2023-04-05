@@ -38,6 +38,12 @@
         </div>
     </div>
     
+    @include('menu')
+    
+    <nav class="tcetak">
+        @include('navigasi')
+    </nav>
+
     <main id="main">
         <section>
             @include('sematan')
@@ -47,12 +53,6 @@
             </div>
         </section>
     </main>
-    
-    @include('menu')
-    
-    <nav class="tcetak">
-        @include('navigasi')
-    </nav>
     
     <div id="brand" class="tcetak"></div>
     

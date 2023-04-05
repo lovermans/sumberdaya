@@ -24,6 +24,7 @@ document.addEventListener('click', function (e) {
             singkat = b.dataset.singkat == 'true' ? true : false,
             frag = b.dataset.frag == 'true' ? true : false,
             tn = b.dataset.tn == 'true' ? true : false,
+            nn = b.dataset.nn == 'true' ? true : false,
             simpan = rekam == 'false' ? false : true;
         if (a) {
             var navAktif = document.querySelectorAll('nav a.aktif, aside a.aktif');
@@ -45,6 +46,7 @@ document.addEventListener('click', function (e) {
             enkod : enkode,
             mintajs : singkat,
             topview : tn,
+            normalview : nn,
             fragmen : frag
         });
     }
@@ -71,6 +73,7 @@ document.addEventListener('submit', function (e) {
             prog = a.dataset.laju == 'true' ? true : false,
             frag = a.dataset.frag == 'true' ? true : false,
             tn = a.dataset.tn == 'true' ? true : false,
+            nn = a.dataset.nn == 'true' ? true : false,
             data = new FormData(a);
             console.log(a.action);
         if (metode == 'GET') {
@@ -86,6 +89,7 @@ document.addEventListener('submit', function (e) {
                 strim : prog, 
                 mintajs : singkat,
                 topview : tn,
+                normalview : nn,
                 fragmen : frag
             });
         }
@@ -102,6 +106,7 @@ document.addEventListener('submit', function (e) {
                 strim : prog,
                 mintajs : singkat,
                 topview : tn,
+                normalview : nn,
                 fragmen : frag
             });
         }
@@ -122,6 +127,7 @@ window.lemparXHR = function (data) {
         enkod = data.enkod ?? false,
         mintajs = data.mintajs ?? false,
         topview = data.topview ?? false,
+        normalview = data.normalview ?? false; 
         fragmen = data.fragmen ?? false;
     var isi = document.querySelector(sisi) ?? document.querySelector('#isi') ?? document.querySelector('body');
     if (!tautan.startsWith(location.origin)) {
@@ -132,10 +138,12 @@ window.lemparXHR = function (data) {
         pesan = '';
     };
     if (rekam) {
-        rekamTautan({tujuan : sisi, tautan : tautan, method : metode, pesan : pesan, enkod : enkod});
+        rekamTautan({tujuan : sisi, tautan : tautan, method : metode, pesan : pesan, enkod : enkod, topview : topview, normalview : normalview});
     }
     // g ? isi.prepend(range.createContextualFragment('')) : isi.prepend(range.createContextualFragment(pesan));
-    topview ? scrollTo(0,0) : isi.scrollIntoView();
+    topview ? scrollTo(0,0) :
+    normalview ? scrollBy(0,0) :
+    isi.scrollIntoView();
     if (strim) {
         let lastResponseLength;
         let progressResponse;
@@ -202,7 +210,9 @@ window.lemparXHR = function (data) {
                     isi = document.getElementById(responTujuan) ?? document.querySelector('#isi') ?? document.querySelector('body');
                 }
                 isi.replaceChildren(range.createContextualFragment(responXHR));
-                topview ? scrollTo(0,0) : isi.scrollIntoView();
+                topview ? scrollTo(0,0) :
+                normalview ? scrollBy(0,0) :
+                isi.scrollIntoView();
                 muat.classList.toggle('mati');
                 return true;
             };  
@@ -236,7 +246,9 @@ function rekamTautan(data) {
         'rute': data.tautan,
         'metode': data.method ?? 'GET',
         'pesan': data.pesan ?? null,
-        'enkode': data.enkod ?? null
+        'enkode': data.enkod ?? null,
+        'topview': data.topview ?? false,
+        'normalview' : data.normalview ?? false
     }, judul, data.tautan);
 };
 
@@ -247,7 +259,9 @@ window.onpopstate = function (p) {
             tautan : p.state.rute,
             method : p.state.metode,
             pesanmuat : p.state.pesan,
-            enkod : p.state.enkode
+            enkod : p.state.enkode,
+            topview : p.state.topview,
+            normalview : p.state.normalview
         });
     } else { 
         location.reload(); 

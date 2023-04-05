@@ -1,4 +1,4 @@
-@if($userRangka && !in_array($rekRangka->url(), [$urlRangka->route('akun', ['uuid' => $userRangka->sdm_uuid]), $urlRangka->route('ubah-akun', ['uuid' => $userRangka->sdm_uuid])]))
+@if($userRangka && !in_array($rekRangka->url(), [$urlRangka->route('akun', ['uuid' => $userRangka->sdm_uuid]), $urlRangka->route('ubah-akun', ['uuid' => $userRangka->sdm_uuid])]) && $rekRangka->routeIs('sdm.*', 'register', 'akun', 'ubah-akun', 'ubah-sandi', 'komponen.menu-sdm'))
     @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM'))
     <div @class(['menu-t', 'aktif' => $rekRangka->routeIs('sdm.mulai')])>
         <a class="nav-xhr" href="{{ $urlRangka->route('sdm.mulai', [], false) }}" >
@@ -65,5 +65,3 @@
     </div>
     @endif
 @endif
-
-

@@ -21,31 +21,31 @@
             lemparXHR({
                 tujuan : "#sdmIngatKeluar",
                 tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatKeluar'], false) }}",
-                topview : true,
+                normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatBaru",
                 tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatBaru'], false) }}",
-                topview : true,
+                normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatPstatus",
                 tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPstatus'], false) }}",
-                topview : true,
+                normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatPkpd",
                 tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPkpd'], false) }}",
-                topview : true,
+                normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatPtsb",
                 tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPtsb'], false) }}",
-                topview : true,
+                normalview : true,
                 fragmen : true
             });
         })();
@@ -64,6 +64,7 @@
             lemparXHR({
                 tujuan : "#sdmIngatUltah",
                 tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatUltah'], false) }}",
+                normalview : true,
                 fragmen : true
             });
         })();
@@ -98,5 +99,6 @@
     </div>
 
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+    @include('komponen')
 </div>
 @endsection

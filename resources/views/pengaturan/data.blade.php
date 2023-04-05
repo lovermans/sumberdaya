@@ -2,7 +2,6 @@
 
 @section('isi')
 <div id="atur_data">
-    
     <p class="tcetak kartu">
         <svg fill="var(--taut-umum)" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <use xlink:href="{{ $mixRangka('/ikon.svg') . '#informasi' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
@@ -238,6 +237,7 @@
         </script>
         
         @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+        @include('komponen')
         @endfragment
     </div>
     
