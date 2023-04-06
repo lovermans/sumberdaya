@@ -68,10 +68,6 @@
             menuSDM.innerHTML = "";
             @endif
 
-            @if ($rekRangka->routeIs('logout'))
-            pemberitahuan.innerHTML = "";
-            @endif
-
         })();
     }();
 </script>

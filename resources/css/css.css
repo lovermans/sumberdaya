@@ -700,6 +700,10 @@ aside .aktif {
     white-space: nowrap;
 }
 
+.spanduk a {
+    border: none!important;
+}
+
 .pesan,
 .periksa {
     border-radius: .25em;

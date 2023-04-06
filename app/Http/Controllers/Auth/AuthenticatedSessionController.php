@@ -70,6 +70,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return app()->redirect->route('mulai');
+        return app()->redirect->route('mulai')->with('pesan', 'Berhasil keluar aplikasi.');
     }
 }
