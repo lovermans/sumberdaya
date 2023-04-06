@@ -1,5 +1,6 @@
-@if($userRangka && !in_array($rekRangka->url(), [$urlRangka->route('akun', ['uuid' => $userRangka->sdm_uuid]), $urlRangka->route('ubah-akun', ['uuid' => $userRangka->sdm_uuid])]) && $rekRangka->routeIs('sdm.*', 'register', 'akun', 'ubah-akun', 'ubah-sandi', 'komponen.menu-sdm'))
+@if($userRangka && !in_array($rekRangka->url(), [$urlRangka->route('akun', ['uuid' => $userRangka->sdm_uuid]), $urlRangka->route('ubah-akun', ['uuid' => $userRangka->sdm_uuid])]) && $rekRangka->routeIs('sdm.*', 'register', 'akun', 'ubah-akun', 'komponen.menu-sdm'))
     @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM'))
+    <h2>Sumber Daya Manusia</h2>
     <div @class(['menu-t', 'aktif' => $rekRangka->routeIs('sdm.mulai')])>
         <a class="nav-xhr" href="{{ $urlRangka->route('sdm.mulai', [], false) }}" >
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

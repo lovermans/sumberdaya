@@ -16,7 +16,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function create()
     {
-        return view('mulai');
+        $app = app();
+
+        $HtmlPenuh = $app->view->make('mulai');
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+        return $app->request->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')
+                                ->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlIsi;
     }
 
     /**
@@ -45,7 +50,10 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('mulai')->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
+        $HtmlPenuh = $app->view->make('mulai');
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+        return $request->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')
+                                ->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlIsi;
     }
 
     /**
@@ -62,6 +70,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return view('mulai');
+        return app()->redirect->route('mulai');
     }
 }

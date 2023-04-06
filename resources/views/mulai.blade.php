@@ -3,7 +3,7 @@
 @section('isi')
 <div id="mulai-aplikasi">
     @if(!$userRangka)
-    <form class="form-xhr kartu" method="POST" action="{{ $urlRangka->route('login', [], false) }}">
+    <form class="form-xhr kartu" method="POST" data-tn="true" action="{{ $urlRangka->route('login', [], false) }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
         
         <div class="isian normal">
@@ -34,10 +34,10 @@
         <select class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR({
             rekam : true,
             tautan : this.value
-            });">
+            })">
             <option value="">PILIH SUMBER DAYA</option>
             @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM'))
-                <option value="{{ $urlRangka->route('sdm.mulai', [], false) }}">SUMBER DAYA MANUSIA</option>
+            <option value="{{ $urlRangka->route('sdm.mulai', [], false) }}">SUMBER DAYA MANUSIA</option>
             @endif
         </select>
     </div>

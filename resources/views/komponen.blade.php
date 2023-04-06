@@ -1,4 +1,4 @@
-@if ($userRangka && $rekRangka->pjax())
+@if ($rekRangka->pjax())
 <script>
     !function(){
         (async() => {
@@ -7,8 +7,15 @@
                 setTimeout(resolve, 1000));
             }
 
-            var avatar = document.getElementById('tbl-menu')?.innerHTML.trim();
-            if (!avatar) {
+            var avatar = document.getElementById('tbl-menu'),
+                pengaturan = document.getElementById('menu-pengaturan'),
+                pilihSumberdaya = document.getElementById('pilih-sumber_daya'),
+                menuSDM = document.getElementById('navigasi-sdm'),
+                menuAvatar = document.getElementById('menu-avatar'),
+                pemberitahuan = document.getElementById('pemberitahuan');
+
+            @if ($userRangka)
+            if (!avatar.innerHTML.trim()) {
                 lemparXHR({
                 tujuan : "#tbl-menu",
                 tautan : "{{ $urlRangka->route('komponen.avatar', [], false) }}",
@@ -20,38 +27,49 @@
                 normalview : true
                 });
             };
+            @else
+            avatar.innerHTML = "";
+            menuAvatar.innerHTML = "";
+            @endif
 
             @if($strRangka->contains($userRangka?->sdm_hak_akses, 'PENGURUS'))
-            var pengaturan = document.getElementById('menu-pengaturan')?.innerHTML.trim();
-            if (!pengaturan) {
+            if (!pengaturan.innerHTML.trim()) {
                 lemparXHR({
                 tujuan : "#menu-pengaturan",
                 tautan : "{{ $urlRangka->route('komponen.menu-pengaturan', [], false) }}",
                 normalview : true
                 });
             };
+            @else
+            pengaturan.innerHTML = "";
             @endif
 
-            @if (!$rekRangka->routeIs('mulai'))
-            var pilihSumberdaya = document.getElementById('pilih-sumber_daya')?.innerHTML.trim();
-            if (!pilihSumberdaya) {
+            @if (!$rekRangka->routeIs('mulai') && $userRangka)
+            if (!pilihSumberdaya.innerHTML.trim()) {
                 lemparXHR({
                 tujuan : "#pilih-sumber_daya",
                 tautan : "{{ $urlRangka->route('komponen.pilih-sumberdaya', [], false) }}",
                 normalview : true
                 });
             };
+            @else
+            pilihSumberdaya.innerHTML = "";
             @endif
 
-            @if(!in_array($rekRangka->url(), [$urlRangka->route('akun', ['uuid' => $userRangka->sdm_uuid]), $urlRangka->route('ubah-akun', ['uuid' => $userRangka->sdm_uuid])]) && $rekRangka->routeIs('sdm.*', 'register', 'akun', 'ubah-akun', 'ubah-sandi'))
-            var menuSDM = document.getElementById('navigasi-sdm')?.innerHTML.trim();
-            if (!menuSDM) {
+            @if($userRangka && !in_array($rekRangka->url(), [$urlRangka->route('akun', ['uuid' => $userRangka?->sdm_uuid]), $urlRangka->route('ubah-akun', ['uuid' => $userRangka?->sdm_uuid])]) && $rekRangka->routeIs('sdm.*', 'register', 'akun', 'ubah-akun'))
+            if (!menuSDM.innerHTML.trim()) {
                 lemparXHR({
                 tujuan : "#navigasi-sdm",
                 tautan : "{{ $urlRangka->route('komponen.menu-sdm', [], false) }}",
                 normalview : true
                 });
             };
+            @else
+            menuSDM.innerHTML = "";
+            @endif
+
+            @if ($rekRangka->routeIs('logout'))
+            pemberitahuan.innerHTML = "";
             @endif
 
         })();

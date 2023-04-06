@@ -72,7 +72,17 @@
             </svg>
         </a>
         
-        <a href="{{ $urlRangka->route('mulai') }}"><span class="judul">@if($userRangka) PILIH SUMBER DAYA @else MASUK @endif</span></a>
+        <a class="isi-xhr" data-tn="true" href="{{ $urlRangka->route('mulai') }}">
+            @if($userRangka)
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#aplikasi' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            </svg>
+            @else
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#masuk' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            </svg>
+            @endif
+        </a>
     </div>
 
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')

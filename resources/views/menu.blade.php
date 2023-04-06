@@ -6,7 +6,7 @@
             </svg>
             
             <svg class="off" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menu' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </label>
 
@@ -54,10 +54,10 @@
             Ubah Sandi
         </a>
         
-        <form method="POST" action="{{ $urlRangka->route('logout', [], false) }}">
+        <form method="POST" class="form-xhr" action="{{ $urlRangka->route('logout', [], false) }}">
             <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
-            
-            <a href="{{ $urlRangka->route('logout', [], false) }}" onclick="event.preventDefault(); this.closest('form').submit()">
+            <button type="submit" id="keluar-aplikasi" sembunyikan></button>
+            <a href="{{ $urlRangka->route('logout', [], false) }}" onclick="event.preventDefault(); document.querySelector('#keluar-aplikasi').click()">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <use xlink:href="{{ $mixRangka('/ikon.svg') . '#keluar' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                 </svg>

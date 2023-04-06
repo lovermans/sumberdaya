@@ -146,7 +146,8 @@ main :is(h2, h4),
 .merah,
 .biru,
 .oranye,
-summary {
+summary,
+nav h2 {
     font-weight: 500;
 }
 
@@ -330,8 +331,8 @@ main :is(a:visited, h4) {
     color: var(--oranye)
 }
 
-main :is(a:hover,
-    h2) {
+main :is(a:hover,h2),
+nav h2 {
     color: var(--taut-fokus)
 }
 
@@ -485,6 +486,11 @@ nav {
     z-index: 800
 }
 
+nav h2 {
+    padding: 0.75em 1.5em;
+    margin: 0;
+}
+
 .aksi,
 aside {
     box-shadow: var(--tk-8);
@@ -516,7 +522,7 @@ aside {
     padding: 1em;
 }
 
-.aksi a {
+.aksi a, nav h2 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -537,8 +543,9 @@ aside {
     display: block;
 }
 
-.submenu li {
-    border-top: var(--batas)
+:is(.submenu li, nav [class|=menu]):not(:empty),
+nav h2 {
+    border-bottom: var(--batas)
 }
 
 :is(aside,
@@ -585,10 +592,6 @@ aside .aktif {
 #menu-akun {
     max-height: 75vh;
     overflow-y: auto
-}
-
-nav [class|="menu"]:not(:first-child) {
-    border-top: var(--batas)
 }
 
 .menu-j:after {
@@ -980,9 +983,9 @@ a.sekunder svg {
     background: var(--bg-tabel);
 }
 
-.data .tabel tbody :is(th,
-    td),
-.trek-data .ket {
+.data .tabel tbody :is(th,td),
+.trek-data .ket,
+nav h2 {
     font-size: .875em;
     letter-spacing: .01785em;
 }

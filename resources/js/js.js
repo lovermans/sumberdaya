@@ -208,7 +208,7 @@ window.lemparXHR = function (data) {
                 // }
                 if (responTujuan) {
                     isi = document.getElementById(responTujuan) ?? document.querySelector('#isi') ?? document.querySelector('body');
-                }
+                };
                 isi.replaceChildren(range.createContextualFragment(responXHR));
                 topview ? scrollTo(0,0) :
                 normalview ? scrollBy(0,0) :
