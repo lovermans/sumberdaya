@@ -240,7 +240,7 @@ details[open]>summary:before {
 header h1 {
     float: right;
     font-weight: 500;
-    color: var(--oranye)
+    color: var(--taut-umum)
 }
 
 .bersih {
@@ -499,7 +499,7 @@ aside {
 
 }
 
-aside {
+aside:not(:empty) {
     display: none;
     position: fixed;
     right: 1em;
