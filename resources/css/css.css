@@ -37,6 +37,7 @@
     --tk-4: 0 .25em .313em 0 rgba(0, 0, 0, 0.14), 0 .063em .625em 0 rgba(0, 0, 0, 0.12), 0 .125em .25em -0.063em rgba(0, 0, 0, 0.20);
     --tk-6: 0 .375em .625em 0 rgba(0, 0, 0, 0.14), 0 .063em 1.125em 0 rgba(0, 0, 0, 0.12), 0 .188em .313em -0.063em rgba(0, 0, 0, 0.20);
     --tk-8: 0 .5em .625em .063em rgba(0, 0, 0, 0.14), 0 .188em .875em .125em rgba(0, 0, 0, 0.12), 0 .313em .313em -0.188em rgba(0, 0, 0, 0.20);
+    --tk-12 : 0 0.4375em 0.5em -0.25em rgba(0,0,0,.2), 0 0.75em 1.0625em 0.125em rgba(0,0,0,.14), 0 0.3125em 1.375em 0.25em rgba(0,0,0,.12);
     --tk-16: 0 1em 1.5em .125em rgba(0, 0, 0, 0.14), 0 .375em 1.875em .313em rgba(0, 0, 0, 0.12), 0 .5em .625em -0.313em rgba(0, 0, 0, 0.20);
     --tk-24: 0 1.5em 2.375em .188em rgba(0, 0, 0, 0.14), 0 .563em 2.875em .5em rgba(0, 0, 0, 0.12), 0 .688em .936em -0.438em rgba(0, 0, 0, 0.20);
     --bg-aside: #2d2d2d;
@@ -44,7 +45,9 @@
     --batas: .125em solid rgba(255, 255, 255, .12);
     --brand-op: .1;
     --bg-e1: rgba(255, 255, 255, .05);
+    --bg-e4: rgba(255, 255, 255, .09);
     --bg-e8: rgba(255, 255, 255, .12);
+    --bg-e12: rgba(255, 255, 255, .14);
     --invert-87: invert(.87);
     --bg-tabel: #616161;
 }
@@ -72,7 +75,9 @@
     --batas: .125em solid rgba(0, 0, 0, .12);
     --brand-op: 1;
     --bg-e1: rgba(255, 255, 255, .55);
+    --bg-e4: rgba(255, 255, 255, .59);
     --bg-e8: rgba(255, 255, 255, .62);
+    --bg-e12: rgba(255, 255, 255, .64);
     --invert-87: invert(.13);
     --bg-tabel: #eee;
 }
@@ -331,8 +336,7 @@ main :is(a:visited, h4) {
     color: var(--oranye)
 }
 
-main :is(a:hover,h2),
-nav h2 {
+main :is(a:hover,h2) {
     color: var(--taut-fokus)
 }
 
@@ -434,7 +438,7 @@ header :is(label,
     #logo),
 .tutup-i,
 img.akun {
-    margin: .25em;
+    margin: .25em 0;
 }
 
 header img,
@@ -489,6 +493,7 @@ nav {
 nav h2 {
     padding: 0.75em 1.5em;
     margin: 0;
+    color: var(--putih-2);
 }
 
 .aksi,
@@ -743,6 +748,38 @@ aside .aktif {
     background-color: transparent;
 }
 
+#daftar_aplikasi {
+    justify-content: center;
+}
+
+.aplikasi {
+    display: block;
+    width: 11em;
+    text-align: center;
+}
+
+.aplikasi :is(svg, span) {
+    display: inline-block;
+}
+
+.aplikasi svg{
+    width: 10em;
+    height: 10em;
+    padding: 2em;
+    background: var(--bg-e8);
+    box-shadow: var(--tk-8);
+    border-radius: 50%;
+}
+
+.aplikasi svg:hover{
+    background: var(--bg-e12);
+    box-shadow: var(--tk-12);
+}
+
+.aplikasi span {
+    margin: 0.5em 0 0;
+}
+
 .kartu {
     padding: 1em;
     border-radius: .25em;
@@ -765,7 +802,8 @@ aside .aktif {
 /* --form */
 
 form.kartu,
-.kartu.form {
+.kartu.form,
+#daftar_aplikasi {
     gap: 1em;
     display: flex;
     flex-wrap: wrap;
@@ -1027,7 +1065,8 @@ nav h2 {
 }
 
 .biru,
-.data .biru td {
+.data .biru td,
+a.aplikasi span {
     color: var(--taut-umum);
 }
 
@@ -1799,12 +1838,15 @@ screen and (min-width:672rem) {
         --batas: .125em solid rgba(0, 0, 0, .12);
         --brand-op: 1;
         --bg-e1: rgba(255, 255, 255, .55);
+        --bg-e4: rgba(255, 255, 255, .59);
         --bg-e8: rgba(255, 255, 255, .62);
+        --bg-e12: rgba(255, 255, 255, .64);
         --tk-1: none;
         --tk-2: none;
         --tk-4: none;
         --tk-6: none;
         --tk-8: none;
+        --tk-12: none;
         --tk-16: none;
         --tk-24: none;
         --invert-87: invert(0);

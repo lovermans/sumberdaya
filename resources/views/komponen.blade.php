@@ -44,7 +44,7 @@
             pengaturan.innerHTML = "";
             @endif
 
-            @if (!$rekRangka->routeIs('mulai') && $userRangka)
+            @if (!$rekRangka->routeIs('mulai', 'tentang-aplikasi') && $userRangka)
             if (!pilihSumberdaya.innerHTML.trim()) {
                 lemparXHR({
                 tujuan : "#pilih-sumber_daya",
@@ -56,7 +56,7 @@
             pilihSumberdaya.innerHTML = "";
             @endif
 
-            @if($userRangka && !in_array($rekRangka->url(), [$urlRangka->route('akun', ['uuid' => $userRangka?->sdm_uuid]), $urlRangka->route('ubah-akun', ['uuid' => $userRangka?->sdm_uuid])]) && $rekRangka->routeIs('sdm.*', 'register', 'akun', 'ubah-akun'))
+            @if($userRangka && $rekRangka->routeIs('sdm.*', 'register', 'akun', 'ubah-akun'))
             if (!menuSDM.innerHTML.trim()) {
                 lemparXHR({
                 tujuan : "#navigasi-sdm",

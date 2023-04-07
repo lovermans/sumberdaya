@@ -13,13 +13,6 @@
         <a class="menu-xhr" href="{{ $urlRangka->route('mulai', [], false) }}">
             <img id="logo" src="{{ $mixRangka('/images/Logo Perusahaan.webp') }}" title="{{ $confRangka->get('app.usaha') }}" alt="{{ $confRangka->get('app.usaha') }}" loading="lazy"></a>
             
-            <label for="tema" id="tbl-tema" onclick=""title="Ubah Tema">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tema' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                </svg>
-            </label>
-            
-            
             <label for="menu" id="tbl-menu" onclick="" title="Akun">
                 @fragment('avatar')
                 @if($userRangka)
@@ -29,8 +22,14 @@
                 @endif
                 @endfragment
             </label>
-        
-        <h1>{{ $confRangka->get('app.name', 'Laravel') }}</h1>
+            
+            <label for="tema" id="tbl-tema" onclick=""title="Ubah Tema">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tema' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                </svg>
+            </label>
+            
+            <h1>{{ $confRangka->get('app.name', 'Laravel') }}</h1>
 
         <div class="bersih"></div>
     </section>

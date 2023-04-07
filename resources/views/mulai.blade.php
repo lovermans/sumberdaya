@@ -30,28 +30,16 @@
     @endif
 
     @if($userRangka)
-    <div class="isian" id="pilih_sumber_daya">
-        <select class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR({
-            rekam : true,
-            tautan : this.value
-            })">
-            <option value="">PILIH SUMBER DAYA</option>
-            @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM'))
-            <option value="{{ $urlRangka->route('sdm.mulai', [], false) }}">SUMBER DAYA MANUSIA</option>
-            @endif
-        </select>
+    <h2>Pilih Sumber Daya</h2>
+
+    <div id="daftar_aplikasi">
+        <a class="aplikasi isi-xhr" href="{{ $urlRangka->route('sdm.mulai', [], false) }}">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#personil' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            </svg>
+            <span>SDM</span>
+        </a>
     </div>
-    
-    <script>
-        (async() => {
-            while(!window.aplikasiSiap) {
-                await new Promise((resolve,reject) =>
-                setTimeout(resolve, 1000));
-            }
-            
-            pilSaja('#pilih_sumber_daya .pil-saja');
-        })();
-    </script>
     @endif
     
     <h2>Sejarah</h2>
