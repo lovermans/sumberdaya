@@ -1,7 +1,7 @@
 @extends('rangka')
 
 @section('isi')
-    <div class="kesalahan-internal">
+    <div class="pesan-internal">
         {{-- <p>{{__('Server Error')}}.</p> --}}
         <p>Kesalahan Penanganan : {{ $exception?->getMessage() ?? 'Kesalahan tidak diketahui.'}}</p>
         <a class="utama" href="{{ $urlRangka->route('mulai') }}">OKE</a>

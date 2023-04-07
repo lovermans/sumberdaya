@@ -5,8 +5,6 @@ $route->get('/', 'Umum@mulai')->name('mulai');
 $route->get('/foto-profil/{berkas_foto_profil?}', 'Berkas@fotoProfil')->name('tautan-foto-profil');
 $route->get('/berkas/{berkas?}', 'Berkas@berkas')->name('berkas');
 $route->get('/panduan', 'Berkas@panduan')->name('panduan');
-$route->match(['get', 'post'], '/unggah', 'Umum@unggah')->name('unggah');
-$route->get('/contoh-unggah', 'Umum@contohUnggah')->name('contoh-unggah');
 
 $route->group(['prefix' => 'permintaan-tambah-sdm', 'as' => 'permintaan-tambah-sdm.'], base_path('routes/sdm/permintaan-tambah-sdm.php'));
 $route->group(['prefix' => 'posisi', 'as' => 'posisi.'], base_path('routes/sdm/posisi.php'));

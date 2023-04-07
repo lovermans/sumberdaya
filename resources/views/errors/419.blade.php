@@ -1,7 +1,7 @@
 @extends('rangka')
 
 @section('isi')
-    <div class="kesalahan-internal">
+    <div class="pesan-internal">
         {{-- <p>{{__('Page Expired')}}.</p> --}}
         <p>Tautan kadaluarsa, periksa tautan, data dan atau token yang dikirim.</p>
         <a class="utama" href="{{ $urlRangka->route('mulai') }}">OKE</a>

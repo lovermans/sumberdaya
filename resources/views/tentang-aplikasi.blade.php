@@ -75,7 +75,7 @@
         <a class="isi-xhr" data-tn="true" href="{{ $urlRangka->route('mulai') }}">
             @if($userRangka)
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#aplikasi' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#rumah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
             @else
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

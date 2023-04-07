@@ -2,7 +2,7 @@
 
 @section('isi')
 <div id="sdm_mulai">
-    <h4>Kelola SDM</h4>
+    <h4>Ringkasan</h4>
     
     @if($strRangka->contains($userRangka->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
     <div id="sdmIngatPtsb"><p class="kartu">Mengambil data permintaan tambah SDM...</p></div>

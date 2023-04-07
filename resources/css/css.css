@@ -136,6 +136,12 @@ body {
     background-blend-mode: var(--bg-blend)
 }
 
+small {
+    font-size: smaller;
+    line-height: 1;
+    color: inherit;
+}
+
 b,
 button,
 .menu-j,
@@ -164,9 +170,14 @@ button,
 }
 
 button {
-    background: none;
     border: none;
     padding: 0;
+}
+
+#menu-kanvas,
+#aplikasi-kanvas,
+button {
+    background: none;
 }
 
 address,
@@ -242,12 +253,6 @@ details[open]>summary:before {
     margin: 1.25em 0;
 }
 
-header h1 {
-    float: right;
-    font-weight: 500;
-    color: var(--taut-umum)
-}
-
 .bersih {
     clear: both
 }
@@ -278,7 +283,8 @@ svg {
 .skip-navigation,
 #nav,
 #menu,
-#tema {
+#tema,
+#pilih-aplikasi {
     display: block;
     position: fixed;
     top: 0;
@@ -315,7 +321,8 @@ svg {
 
 #nav,
 #menu,
-#tema {
+#tema,
+#pilih-aplikasi {
     z-index: -10
 }
 
@@ -415,7 +422,8 @@ img.akun {
 }
 
 #tbl-tema,
-#tbl-menu {
+#tbl-menu,
+#pilih-sumber_daya {
     float: right
 }
 
@@ -439,6 +447,10 @@ header :is(label,
 .tutup-i,
 img.akun {
     margin: .25em 0;
+}
+
+header #logo:hover {
+    background: var(--bg-e8);
 }
 
 header img,
@@ -513,6 +525,11 @@ aside:not(:empty) {
     max-width: 17.5em;
     padding: .5em 0;
     z-index: 1200
+}
+
+#menu-aplikasi {
+    right: 2.5em;
+    top: 0.625em;
 }
 
 .aksi {
@@ -590,11 +607,14 @@ aside .aktif {
 }
 
 #menu-kanvas {
-    background: none;
     z-index: 900
 }
 
-#menu-akun {
+#aplikasi-kanvas {
+    z-index: 950
+}
+
+.menu-akun {
     max-height: 75vh;
     overflow-y: auto
 }
@@ -612,7 +632,9 @@ aside .aktif {
 #nav:checked~:is(#nav-kanvas,
     nav),
 #menu:checked~:is(#menu-kanvas,
-    aside),
+    aside#menu-avatar),
+#pilih-aplikasi:checked~:is(#aplikasi-kanvas,
+    aside#menu-aplikasi),
 .aktif+.submenu,
 .isian :is(label, .t-bantu) {
     display: block
@@ -715,11 +737,11 @@ aside .aktif {
     box-shadow: var(--tk-6);
 }
 
-.kesalahan-internal {
+.pesan-internal {
     position: fixed;
     top: 50%;
     left: 50%;
-    max-width: 50em;
+    max-width: 60ch;
     background: var(--bg-aside);
     z-index: 9000;
     transform: translate(-50%, -50%);
@@ -730,54 +752,23 @@ aside .aktif {
     padding: 1em;
     box-shadow: var(--tk-24);
     border: var(--batas);
+    width: 95%;
 }
 
-.kesalahan-internal p {
+.pesan-internal p {
     color: var(--putih-1);
 }
 
-.kesalahan-internal a {
+.pesan-internal a {
     float: right;
 }
 
-.kesalahan-internal a.utama {
+.pesan-internal a.utama {
     margin:0 0 1em 1em;
 }
 
-.kesalahan-internal a.sekunder {
+.pesan-internal a.sekunder {
     background-color: transparent;
-}
-
-#daftar_aplikasi {
-    justify-content: center;
-}
-
-.aplikasi {
-    display: block;
-    width: 11em;
-    text-align: center;
-}
-
-.aplikasi :is(svg, span) {
-    display: inline-block;
-}
-
-.aplikasi svg{
-    width: 10em;
-    height: 10em;
-    padding: 2em;
-    background: var(--bg-e8);
-    box-shadow: var(--tk-8);
-    border-radius: 50%;
-}
-
-.aplikasi svg:hover{
-    background: var(--bg-e12);
-    box-shadow: var(--tk-12);
-}
-
-.aplikasi span {
-    margin: 0.5em 0 0;
 }
 
 .kartu {
@@ -802,8 +793,7 @@ aside .aktif {
 /* --form */
 
 form.kartu,
-.kartu.form,
-#daftar_aplikasi {
+.kartu.form {
     gap: 1em;
     display: flex;
     flex-wrap: wrap;
@@ -1065,8 +1055,7 @@ nav h2 {
 }
 
 .biru,
-.data .biru td,
-a.aplikasi span {
+.data .biru td {
     color: var(--taut-umum);
 }
 
@@ -1763,7 +1752,7 @@ screen and (min-width:672rem) {
         display: none
     }
 
-    .kesalahan-internal {
+    .pesan-internal {
         transform: translate(-75%, -50%);
     }
 

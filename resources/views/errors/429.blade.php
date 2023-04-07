@@ -1,7 +1,7 @@
 @extends('rangka')
 
 @section('isi')
-    <div class="kesalahan-internal">
+    <div class="pesan-internal">
         {{-- <p>{{__('Too Many Requests')}}.</p> --}}
         <p>Terlalu banyak percobaan akses, coba lagi nanti.</p>
         <a class="utama" href="{{ $urlRangka->route('mulai') }}">OKE</a>

@@ -1,7 +1,7 @@
 @extends('rangka')
 
 @section('isi')
-    <div class="kesalahan-internal">
+    <div class="pesan-internal">
         {{-- <p>{{__('Not Found')}}.</p> --}}
         <p>{{ $exception->getMessage() ?: 'Data/halaman/dokumen/tautan tidak ditemukan.' }}</p>
         <a class="utama" href="{{ $urlRangka->route('mulai') }}">OKE</a>

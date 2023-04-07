@@ -1,7 +1,7 @@
 @extends('rangka')
 
 @section('isi')
-    <div class="kesalahan-internal">
+    <div class="pesan-internal">
         {{-- <p>{{__('Unauthorized')}}.</p> --}}
         <p>{{ $exception->getMessage() ?: 'Periksa akses masuk dan durasi sesi.' }}</p>
         <a class="utama" href="{{ $urlRangka->route('mulai') }}">OKE</a>

@@ -1,7 +1,7 @@
 @extends('rangka')
 
 @section('isi')
-    <div class="kesalahan-internal">
+    <div class="pesan-internal">
         {{-- <p>{{__('Service Unavailable')}}.</p> --}}
         <p>Sedang perawatan/perbaikan.</p>
         <a class="utama" href="{{ $urlRangka->route('mulai') }}">OKE</a>

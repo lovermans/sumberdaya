@@ -7,7 +7,8 @@ var range = document.createRange(),
 
 document.addEventListener('click', function (e) {
     var navCb = document.getElementById('nav'),
-        menuCb = document.getElementById('menu');
+        menuCb = document.getElementById('menu'),
+        aplikasiCb = document.getElementById('pilih-aplikasi');
 
     if (e.target.closest('a.nav-xhr, a.menu-xhr, a.isi-xhr')) {
         e.preventDefault();
@@ -26,15 +27,22 @@ document.addEventListener('click', function (e) {
             tn = b.dataset.tn == 'true' ? true : false,
             nn = b.dataset.nn == 'true' ? true : false,
             simpan = rekam == 'false' ? false : true;
+        if (!alamat.startsWith(location.origin)) {
+            alamat = location.origin + alamat;
+        };
+        if (location.href == alamat) {
+            return;
+        };
         if (a) {
             var navAktif = document.querySelectorAll('nav a.aktif, aside a.aktif');
             for (let z = 0; z < navAktif.length; z++) {
-                navAktif[z].classList.remove('aktif')
+                navAktif[z].classList.remove('aktif');
             };
             a.classList.add('aktif');
-        }
+        };
         navCb.checked = false;
         menuCb.checked = false;
+        aplikasiCb.checked = false;
         return lemparXHR({
             rekam : simpan,
             tujuan : ke,
@@ -75,7 +83,6 @@ document.addEventListener('submit', function (e) {
             tn = a.dataset.tn == 'true' ? true : false,
             nn = a.dataset.nn == 'true' ? true : false,
             data = new FormData(a);
-            console.log(a.action);
         if (metode == 'GET') {
             ke += '?' + new URLSearchParams(data).toString();
             var rekam = a.dataset.rekam,
@@ -210,9 +217,6 @@ window.lemparXHR = function (data) {
                     isi = document.getElementById(responTujuan) ?? document.querySelector('#isi') ?? document.querySelector('body');
                 };
                 isi.replaceChildren(range.createContextualFragment(responXHR));
-                topview ? scrollTo(0,0) :
-                normalview ? scrollBy(0,0) :
-                isi.scrollIntoView();
                 muat.classList.toggle('mati');
                 return true;
             };  

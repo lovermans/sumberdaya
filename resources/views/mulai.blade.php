@@ -27,24 +27,27 @@
         
         <button class="utama pelengkap" type="submit">MASUK</button>
     </form>
-    @endif
 
-    @if($userRangka)
-    <h2>Pilih Sumber Daya</h2>
-
-    <div id="daftar_aplikasi">
-        <a class="aplikasi isi-xhr" href="{{ $urlRangka->route('sdm.mulai', [], false) }}">
+    @else
+    <div class="pesan-internal">
+        <p>
+            Tekan/sentuh tombol
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#personil' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#aplikasi' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
-            <span>SDM</span>
-        </a>
+            di ujung kanan atas layar untuk memilih aplikasi.
+        </p>
+        
+        <a class="sekunder" href="#" onclick="event.preventDefault();this.parentElement.remove()">MENGERTI</a>
+        
+        <div class="bersih"></div>
     </div>
+
     @endif
-    
-    <h2>Sejarah</h2>
 
     <div class="kartu">
+        <h2>Sejarah</h2>
+
         <p>PT. Kepuh Kencana Arum didirikan pada tahun 1991 di Mojokerto, Jawa Timur. <b>"KENCANA"</b> adalah merk yang
             diperkenalkan kepada masyarakat oleh PT. Kepuh Kencana Arum.</p>
         <p>Awal mulanya PT. Kepuh Kencana Arum memproduksi atap metal gelombang tanpa sambungan lalu seiring berjalannya
@@ -62,15 +65,15 @@
         </p>
     </div>
 
-    <h2>Visi</h2>
-
     <div class="kartu">
+        <h2>Visi</h2>
+
         <p><b>"Menjadi produsen bahan bangunan terbesar di Indonesia dan Asia Tenggara"</b></p>
     </div>
 
-    <h2>Misi</h2>
-
     <div class="kartu">
+        <h2>Misi</h2>
+
         <ol>
             <li>Menanam budaya kejujuran kepada karyawan, pelanggan dan pemasok.</li>
             <li>Menjamin ketersediaan produk yang berkualitas di seluruh area.</li>
@@ -80,9 +83,9 @@
         </ol>
     </div>
 
-    <h2>Nilai Budaya</h2>
-
     <div class="kartu">
+        <h2>Nilai Budaya</h2>
+
         <ol>
             <li><b>Kejujuran</b> : <q>Jujur baik secara pribadi maupun dalam bekerja</q></li>
             <li><b>Integritas</b> : <q>Setia pada kebenaran dan menjunjung tinggi kesetiaan</q></li>
@@ -91,9 +94,9 @@
         </ol>
     </div>
 
-    <h2>Kebijakan Mutu</h2>
-
     <div class="kartu">
+        <h2>Kebijakan Mutu</h2>
+
         <ol>
             <li>Melaksanakan proses yang efektif dan efisien dan berpedoman pada Sistem Manajemen Mutu ISO 9001 dan terus
                 berusaha melakukan peningkatan yang berkesinambungan di dalam Sistem Manajemen Mutu Perusahaan.</li>
@@ -108,9 +111,9 @@
         </ol>
     </div>
 
-    <h2>Wilayah Operasional</h2>
-
     <div class="kartu">
+        <h2>Wilayah Operasional</h2>
+        
         <ol>
             <li><b>Pusat Pemasaran</b> : <a href="https://goo.gl/maps/A2gJWm7A7byQLWCd6" target="_blank"
                     rel="noreferrer noopener">Jln Bubutan 127-135, Bubutan, Bubutan, Surabaya, Jawa Timur 60174.</a></li>

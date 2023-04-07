@@ -26,11 +26,15 @@
     
     <input class="tcetak" type="checkbox" id="menu" aria-label="Menu">
     
+    <input class="tcetak" type="checkbox" id="pilih-aplikasi" aria-label="Aplikasi">
+    
     <input class="tcetak" type="checkbox" id="tema" aria-label="Tema">
     
     <label for="nav" id="nav-kanvas" class="blok-kanvas"></label>
     
     <label for="menu" id="menu-kanvas" class="blok-kanvas"></label>
+
+    <label for="pilih-aplikasi" id="aplikasi-kanvas" class="blok-kanvas"></label>
     
     <div id="memuat" class="mati">
         <div class="progress">
