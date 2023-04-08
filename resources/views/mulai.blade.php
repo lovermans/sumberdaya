@@ -149,5 +149,20 @@
     
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
     @include('komponen')
+
+    @if($userRangka && $rekRangka->pjax())
+    <script>
+        (async() => {
+            while(!document.getElementById('menu-aplikasi').innerHTML.trim()) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+
+            var beranda = document.querySelector("#menu-aplikasi a[href='/']");
+            beranda.classList.add("aktif");
+
+        })();
+    </script>
+    @endif
 </div>
 @endsection

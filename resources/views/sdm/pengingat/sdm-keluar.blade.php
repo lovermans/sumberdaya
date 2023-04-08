@@ -49,7 +49,7 @@
                         <td>{{ $loop->iteration }}</td>
 
                         <td>
-                            <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('akun', ['uuid' => $henti->sdm_uuid], false) }}">
+                            <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('sdm.akun', ['uuid' => $henti->sdm_uuid], false) }}">
                                 <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' . $henti->sdm_no_absen .
                                 '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $henti->sdm_no_absen . '.webp') ?
                                 $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $henti->sdm_no_absen . '.webp' .

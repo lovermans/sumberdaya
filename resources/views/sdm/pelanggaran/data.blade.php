@@ -168,7 +168,7 @@
                             <td>
                                 <div @class(['merah' => $tabel->langgar_tsdm_tgl_berhenti])>
                                     <b><i><u>Terlapor</u></i></b> :<br/>
-                                    <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('akun', ['uuid' => $tabel->langgar_tsdm_uuid]) }}">
+                                    <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('sdm.akun', ['uuid' => $tabel->langgar_tsdm_uuid]) }}">
                                         <img @class(['akun', 'svg' => !$storageRangka->exists('sdm/foto-profil/' . $tabel->langgar_no_absen . '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $tabel->langgar_no_absen . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $tabel->langgar_no_absen . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $tabel->langgar_no_absen . '.webp'))]) : $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{ $tabel->langgar_tsdm_nama ?? 'foto akun' }}" title="{{ $tabel->langgar_tsdm_nama ?? 'foto akun' }}" loading="lazy">
                                     </a>
                                     {{$tabel->langgar_no_absen}} - {{$tabel->langgar_tsdm_nama}} <br/>
@@ -176,7 +176,7 @@
                                 </div>
                                 <div @class(['merah' => $tabel->langgar_psdm_tgl_berhenti])>
                                     <b><i><u>Pelapor</u></i></b> :<br/>
-                                    <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('akun', ['uuid' => $tabel->langgar_psdm_uuid]) }}">
+                                    <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('sdm.akun', ['uuid' => $tabel->langgar_psdm_uuid]) }}">
                                         <img @class(['akun', 'svg' => !$storageRangka->exists('sdm/foto-profil/' . $tabel->langgar_pelapor . '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $tabel->langgar_pelapor . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $tabel->langgar_pelapor . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $tabel->langgar_pelapor . '.webp'))]) : $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{ $tabel->langgar_psdm_nama ?? 'foto akun' }}" title="{{ $tabel->langgar_psdm_nama ?? 'foto akun' }}" loading="lazy">
                                     </a>
                                     {{$tabel->langgar_pelapor}} - {{$tabel->langgar_psdm_nama}} <br/>

@@ -12,6 +12,7 @@ document.addEventListener('click', function (e) {
 
     if (e.target.closest('a.nav-xhr, a.menu-xhr, a.isi-xhr')) {
         e.preventDefault();
+        e.stopImmediatePropagation();
         var a = e.target.closest('a.nav-xhr, a.menu-xhr'),
             b = e.target.closest('a.nav-xhr, a.menu-xhr, a.isi-xhr');
         var ke = b.dataset.tujuan,
@@ -30,15 +31,27 @@ document.addEventListener('click', function (e) {
         if (!alamat.startsWith(location.origin)) {
             alamat = location.origin + alamat;
         };
-        if (location.href == alamat) {
-            return;
-        };
         if (a) {
-            var navAktif = document.querySelectorAll('nav a.aktif, aside a.aktif');
+            var navAktif = document.querySelectorAll('nav a.aktif, aside a.aktif'),
+                appAktif = document.querySelectorAll('aside#menu-aplikasi a'),
+                urlAktif = new URL(alamat);
+            
             for (let z = 0; z < navAktif.length; z++) {
                 navAktif[z].classList.remove('aktif');
             };
+
             a.classList.add('aktif');
+            
+            if (appAktif) {
+                for (let m = 0; m < appAktif.length; m++) {
+                    if (urlAktif.href.includes(appAktif[m].href) && appAktif[m].pathname.length > 1) {
+                        appAktif[m].classList.add('aktif');
+                    };
+                };
+            };
+        };
+        if (location.href == alamat) {
+            return;
         };
         navCb.checked = false;
         menuCb.checked = false;
@@ -59,12 +72,15 @@ document.addEventListener('click', function (e) {
         });
     }
     if (e.target.matches('.menu-j')) {
+        e.stopImmediatePropagation();
         return e.target.classList.toggle('aktif');
     }
     if (e.target.closest('button.tutup-i')) {
+        e.stopImmediatePropagation();
         return e.target.closest('button.tutup-i').parentNode.remove();
     }
     if (e.target.closest('a.tutup-i')) {
+        e.stopImmediatePropagation();
         return e.target.closest('a.tutup-i').parentNode.parentNode.parentNode.remove();
     }
 });
@@ -219,7 +235,10 @@ window.lemparXHR = function (data) {
                 isi.replaceChildren(range.createContextualFragment(responXHR));
                 muat.classList.toggle('mati');
                 return true;
-            };  
+            } else {
+                muat.classList.toggle('mati');
+                return;
+            };
         };
     }
     xhr.open(metode, tautan, true);

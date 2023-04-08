@@ -63,7 +63,7 @@
         pengaturan.innerHTML = "";
         @endif
 
-        @if($userRangka && $rekRangka->routeIs('sdm.*', 'register', 'akun', 'ubah-akun'))
+        @if($userRangka && $rekRangka->routeIs('sdm.*', 'register'))
         if (!menuSDM.innerHTML.trim()) {
             lemparXHR({
             tujuan : "#navigasi-sdm",
@@ -72,7 +72,15 @@
             });
         };
         @else
-        if (!location.href.includes('/atur') || !location.href.includes('/tentang-aplikasi')) menuSDM.innerHTML = "";
+        var NavSDM = ['/atur', '/tentang-aplikasi'],
+            bolehkanNavSDM = false;
+
+        for (var i = 0; i < NavSDM.length; i++) {
+            if (location.href.includes(NavSDM[i])) {
+                bolehkanNavSDM = true;
+            };
+        };
+        if (bolehkanNavSDM == false) menuSDM.innerHTML = "";
         @endif
 
     })();

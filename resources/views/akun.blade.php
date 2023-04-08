@@ -22,7 +22,7 @@
                 
                 <p @class(['merah' => $akun->tgl_berhenti_atasan])>
                     @if ($akun->uuid_atasan)
-                    <a class="taut-akun isi-xhr" href="{{ $urlRangka->route('akun', ['uuid' => $akun->uuid_atasan], false) }}">
+                    <a class="taut-akun isi-xhr" href="{{ $urlRangka->route('sdm.akun', ['uuid' => $akun->uuid_atasan], false) }}">
                         <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' . $akun->sdm_id_atasan .
                         '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $akun->sdm_id_atasan . '.webp') ?
                         $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $akun->sdm_id_atasan . '.webp' .
@@ -320,7 +320,7 @@
                 
                     @forelse ($personils as $personil)
                     <li class="bersih">
-                        <a class="taut-akun isi-xhr" href="{{ $urlRangka->route('akun', ['uuid' => $personil->sdm_uuid], false) }}">
+                        <a class="taut-akun isi-xhr" href="{{ $urlRangka->route('sdm.akun', ['uuid' => $personil->sdm_uuid], false) }}">
                             <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' . $personil->sdm_no_absen .
                             '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $personil->sdm_no_absen . '.webp') ?
                             $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $personil->sdm_no_absen . '.webp' .
@@ -363,19 +363,19 @@
             <div class="isian tcetak" id="akun-cetakFormulir">
                 <select class="pil-saja tombol" onchange="if (this.value !== '') lemparXHR({tujuan : '#akun-cetakFormulirStatus', tautan : this.value, strim : true})">
                     <option value="">CETAK FORMULIR</option>
-                    <option value="{{$urlRangka->route('formulir-serah-terima-sdm-baru', ['uuid' => $akun->sdm_uuid], false)}}">SERAH TERIMA SDM BARU</option>
-                    <option value="{{$urlRangka->route('formulir-persetujuan-gaji', ['uuid' => $akun->sdm_uuid], false)}}">PERSETUJUAN GAJI</option>
-                    <option value="{{$urlRangka->route('formulir-tt-dokumen-titipan', ['uuid' => $akun->sdm_uuid], false)}}">TANDA TERIMA DOKUMEN TITIPAN</option>
-                    <option value="{{$urlRangka->route('formulir-tt-inventaris', ['uuid' => $akun->sdm_uuid], false)}}">TANDA TERIMA SERAGAM/SEPATU/INVENTARIS</option>
-                    <option value="{{$urlRangka->route('formulir-pelepasan-sdm', ['uuid' => $akun->sdm_uuid], false)}}">PELEPASAN KARYAWAN</option>
-                    <option value="{{$urlRangka->route('surat-keterangan-sdm', ['uuid' => $akun->sdm_uuid], false)}}">SURAT KETERANGAN KERJA</option>
+                    <option value="{{$urlRangka->route('sdm.formulir-serah-terima-sdm-baru', ['uuid' => $akun->sdm_uuid], false)}}">SERAH TERIMA SDM BARU</option>
+                    <option value="{{$urlRangka->route('sdm.formulir-persetujuan-gaji', ['uuid' => $akun->sdm_uuid], false)}}">PERSETUJUAN GAJI</option>
+                    <option value="{{$urlRangka->route('sdm.formulir-tt-dokumen-titipan', ['uuid' => $akun->sdm_uuid], false)}}">TANDA TERIMA DOKUMEN TITIPAN</option>
+                    <option value="{{$urlRangka->route('sdm.formulir-tt-inventaris', ['uuid' => $akun->sdm_uuid], false)}}">TANDA TERIMA SERAGAM/SEPATU/INVENTARIS</option>
+                    <option value="{{$urlRangka->route('sdm.formulir-pelepasan-sdm', ['uuid' => $akun->sdm_uuid], false)}}">PELEPASAN KARYAWAN</option>
+                    <option value="{{$urlRangka->route('sdm.surat-keterangan-sdm', ['uuid' => $akun->sdm_uuid], false)}}">SURAT KETERANGAN KERJA</option>
                 </select>
             </div>
             @endif
 
             <div class="isian gspan-4 scroll-margin" id="akun-cetakFormulirStatus"></div>
 
-            <a class="utama isi-xhr tcetak" data-tujuan="#profil-akun" data-rekam="false" href="{{ $urlRangka->route('ubah-akun', ['uuid' => $akun->sdm_uuid], false) }}">UBAH</a>
+            <a class="utama isi-xhr tcetak" data-tujuan="#profil-akun" data-rekam="false" href="{{ $urlRangka->route('sdm.ubah-akun', ['uuid' => $akun->sdm_uuid], false) }}">UBAH</a>
 
             @else
             <p>Periksa data yang dikirim.</p>
@@ -396,7 +396,7 @@
             </svg>
         </a>
         
-        <a href="{{ $urlRangka->route('unduh.kartu-sdm', ['uuid' => $akun->sdm_uuid], false) }}" title="Unduh Kartu Identitas">
+        <a href="{{ $urlRangka->route('sdm.unduh.kartu-sdm', ['uuid' => $akun->sdm_uuid], false) }}" title="Unduh Kartu Identitas">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#kartuID' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>

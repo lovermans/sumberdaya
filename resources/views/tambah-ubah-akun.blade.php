@@ -577,7 +577,7 @@
         <button class="utama pelengkap" type="submit">SIMPAN</button>
 
         @if ($sdm->sdm_uuid ?? null)
-        <a class="sekunder isi-xhr" href="{{ $urlRangka->route('akun', ['uuid' => $sdm->sdm_uuid], false) }}">TUTUP</a>
+        <a class="sekunder isi-xhr" href="{{ $urlRangka->route('sdm.akun', ['uuid' => $sdm->sdm_uuid], false) }}">TUTUP</a>
         @else
         <a class="sekunder isi-xhr" href="{{ $urlRangka->to($rekRangka->session()->get('tautan_perujuk') ?? '/') }}">TUTUP</a>
         @endif

@@ -78,7 +78,7 @@
             </svg>
         </a>
         
-        <a class="isi-xhr" href="{{ $urlRangka->route('unggah', [], false) }}" title="Unggah Data Profil SDM">
+        <a class="isi-xhr" href="{{ $urlRangka->route('sdm.unggah', [], false) }}" title="Unggah Data Profil SDM">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unggah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
@@ -100,5 +100,20 @@
 
     @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
     @include('komponen')
+
+    @if($userRangka && $rekRangka->pjax())
+    <script>
+        (async() => {
+            while(!document.getElementById('navigasi-sdm').innerHTML.trim()) {
+                await new Promise((resolve,reject) =>
+                setTimeout(resolve, 1000));
+            }
+
+            var ringkasan = document.querySelector("#navigasi-sdm a[href='/sdm']");
+            ringkasan.classList.add("aktif");
+
+        })();
+    </script>
+    @endif
 </div>
 @endsection

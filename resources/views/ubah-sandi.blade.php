@@ -2,7 +2,7 @@
 
 @section('isi')
 <div id="ubahSandi">
-    <form class="form-xhr kartu tcetak" method="POST" action="{{ $urlRangka->route('ubah-sandi', [], false) }}">
+    <form class="form-xhr kartu tcetak" method="POST" action="{{ $urlRangka->route('sdm.ubah-sandi', [], false) }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
         
         <div class="isian gspan-4">

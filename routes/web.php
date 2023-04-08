@@ -15,22 +15,10 @@ $route = app('router');
 
 $route->get('/','App\Http\Controllers\SumberDaya@mulai')->name('mulai');
 $route->view('/perlu-javascript','perlu-javascript')->name('perlu-javascript');
-$route->get('/sdm/akun/{uuid?}', 'App\Http\Controllers\SumberDaya@akun')->name('akun');
-$route->match(['get','post'],'/sdm/ubah-akun/{uuid?}', 'App\Http\Controllers\SumberDaya@ubahAkun')->name('ubah-akun');
-$route->match(['get','post'],'/sdm/ubah-sandi', 'App\Http\Controllers\SumberDaya@ubahSandi')->name('ubah-sandi');
 $route->get('/tentang-aplikasi', 'App\Http\Controllers\SumberDaya@tentangAplikasi')->name('tentang-aplikasi');
 $route->view('/antarmuka','antarmuka')->name('antarmuka');
 $route->get('/unduh/{berkas?}', 'App\Http\Controllers\SumberDaya@unduh')->name('unduh');
 $route->get('/unduh-panduan/{berkas?}', 'App\Http\Controllers\SumberDaya@unduhPanduan')->where('berkas', '.*')->name('unduh.panduan')->middleware('signed');
-$route->get('/sdm/unduh-kartu-sdm/{uuid?}', 'App\Http\Controllers\SumberDaya@unduhKartuSDM')->name('unduh.kartu-sdm');
-$route->get('/sdm/formulir-serahterimasdm/{uuid?}','App\Http\Controllers\SumberDaya@formulirSerahTerimaSDMBaru')->name('formulir-serah-terima-sdm-baru');
-$route->get('/sdm/formulir-persetujuangaji/{uuid?}','App\Http\Controllers\SumberDaya@formulirPersetujuanGaji')->name('formulir-persetujuan-gaji');
-$route->get('/sdm/formulir-ttdokumentitipan/{uuid?}','App\Http\Controllers\SumberDaya@formulirTTDokumenTitipan')->name('formulir-tt-dokumen-titipan');
-$route->get('/sdm/formulir-ttinventaris/{uuid?}','App\Http\Controllers\SumberDaya@formulirTTInventaris')->name('formulir-tt-inventaris');
-$route->get('/sdm/formulir-pelepasan-sdm/{uuid?}','App\Http\Controllers\SumberDaya@formulirPelepasanSDM')->name('formulir-pelepasan-sdm');
-$route->get('/sdm/surat-keterangan-sdm/{uuid?}','App\Http\Controllers\SumberDaya@suratKeteranganSDM')->name('surat-keterangan-sdm');
-$route->get('/sdm/contoh-unggah', 'App\Http\Controllers\SumberDaya@contohUnggah')->name('contoh-unggah');
-$route->match(['get', 'post'], '/sdm/unggah', 'App\Http\Controllers\SumberDaya@unggah')->name('unggah');
 // $route->get('/format-foto', 'App\Http\Controllers\SumberDaya@formatFoto')->name('format-foto');
 
 require __DIR__.'/auth.php';

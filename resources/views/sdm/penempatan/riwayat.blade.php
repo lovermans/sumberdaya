@@ -344,7 +344,7 @@
                             
                         @unless ($halamanAkun ?? null)
                         <td>
-                            <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('akun', ['uuid' => $tabel->sdm_uuid], false) }}">
+                            <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('sdm.akun', ['uuid' => $tabel->sdm_uuid], false) }}">
                                 <img @class(['akun', 'svg' => !$storageRangka->exists('sdm/foto-profil/' . $tabel->sdm_no_absen . '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $tabel->sdm_no_absen . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $tabel->sdm_no_absen . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $tabel->sdm_no_absen . '.webp'))], false) : $mixRangka('/ikon.svg') . '#akun' }}" alt="{{ $tabel->sdm_nama ?? 'foto akun' }}" title="{{ $tabel->sdm_nama ?? 'foto akun' }}" loading="lazy">
                             </a>
                             <b>No Absen</b> : {{$tabel->sdm_no_absen}}<br/>
