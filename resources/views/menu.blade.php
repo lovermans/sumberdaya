@@ -87,7 +87,7 @@
             Beranda
         </a>
         
-        <a @class(['menu-xhr', 'aktif' => $rekRangka->routeIs('sdm.*')]) href="{{ $urlRangka->route('sdm.mulai', [], false) }}">
+        <a @class(['menu-xhr', 'aktif' => $rekRangka->routeIs('sdm.*', 'register')]) href="{{ $urlRangka->route('sdm.mulai', [], false) }}">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#personil' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
