@@ -4,7 +4,7 @@
 <div id="akun">
     <h2>Informasi Dasar</h2>
 
-    <div id="profil-akun scroll-margin">
+    <div id="profil-akun" class="scroll-margin">
         <div class="kartu form">
             @isset($akun)
             <div class="isian pendek">
@@ -375,7 +375,7 @@
 
             <div class="isian gspan-4 scroll-margin" id="akun-cetakFormulirStatus"></div>
 
-            <a class="utama isi-xhr tcetak" data-tujuan="#profil-akun" data-rekam="false" href="{{ $urlRangka->route('sdm.ubah-akun', ['uuid' => $akun->sdm_uuid], false) }}">UBAH</a>
+            <a class="utama isi-xhr tcetak" data-tujuan="#profil-akun" href="{{ $urlRangka->route('sdm.ubah-akun', ['uuid' => $akun->sdm_uuid], false) }}">UBAH</a>
 
             @else
             <p>Periksa data yang dikirim.</p>
