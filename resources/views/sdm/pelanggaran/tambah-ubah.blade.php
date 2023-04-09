@@ -68,7 +68,7 @@
         <div class="isian gspan-4">
             <label>Bukti Pendukung</label>
             @if ($storageRangka->exists('sdm/pelanggaran/'. $langgar->langgar_lap_no.'.pdf'))
-                <iframe class="tcetak" src="{{ $urlRangka->route('sdm.pelanggaran.berkas', ['berkas' =>  $langgar->langgar_lap_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/pelanggaran/' .  $langgar->langgar_lap_no . '.pdf'))]) }}" title="Berkas Laporan" loading="lazy" style="width:100%;height:auto;aspect-ratio:4/3"></iframe>
+                <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.pelanggaran.berkas', ['berkas' =>  $langgar->langgar_lap_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/pelanggaran/' .  $langgar->langgar_lap_no . '.pdf'))]) }}" title="Berkas Laporan" loading="lazy" onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
                 <a class="utama tcetak" href="{{ $urlRangka->route('sdm.pelanggaran.berkas', ['berkas' =>  $langgar->langgar_lap_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/pelanggaran/' .  $langgar->langgar_lap_no . '.pdf'))]) }}" download>
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>

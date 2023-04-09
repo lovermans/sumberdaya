@@ -50,6 +50,8 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
+        $request->session()->now('pesan', 'Berhasil masuk aplikasi.');
+
         $HtmlPenuh = $app->view->make('mulai');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
         return $request->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')

@@ -66,10 +66,10 @@
         <div class="isian gspan-4">
             <h3>Berkas Permohonan</h3>
 
-            @if ($storageRangka->exists('sdm/permintaan-tambah-sdm/'.$permin->tambahsdm_no.'.pdf'))
-            <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $permin->tambahsdm_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/' . $permin->tambahsdm_no . '.pdf'))], false) }}" title="Berkas Permintaan SDM" loading="lazy"></iframe>
+            @if ($storageRangka->exists('sdm/permintaan-tambah-sdm/berkas/'.$permin->tambahsdm_no.'.pdf'))
+            <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $permin->tambahsdm_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/berkas/' . $permin->tambahsdm_no . '.pdf'))], false) }}" title="Berkas Permintaan SDM" loading="lazy" onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
-            <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $permin->tambahsdm_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/' . $permin->tambahsdm_no . '.pdf'))], false) }}">
+            <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $permin->tambahsdm_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/berkas/' . $permin->tambahsdm_no . '.pdf'))], false) }}">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                 </svg>

@@ -231,24 +231,6 @@ class PermintaanTambahSDM
         ];
     }
 
-    public function berkas($berkas)
-    {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        
-        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
-
-        abort_unless($berkas && $app->filesystem->exists("sdm/permintaan-tambah-sdm/{$berkas}"), 404, 'Berkas tidak ditemukan.');
-
-        $jalur = $app->storagePath("app/sdm/permintaan-tambah-sdm/{$berkas}");
-
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->file($jalur, [
-            'Content-Disposition' => 'inline',
-            'Content-Type' => $app->files->mimeType($jalur),
-        ]);
-    }
-
     public function dataDasar()
     {
         return app('db')->query()->select('tambahsdm_no', 'tambahsdm_penempatan', 'tambahsdm_posisi', 'tambahsdm_jumlah', 'tambahsdm_tgl_diusulkan', 'tambahsdm_tgl_dibutuhkan', 'tambahsdm_alasan', 'tambahsdm_keterangan', 'tambahsdm_status', 'tambahsdm_sdm_id')->from('tambahsdms');
@@ -388,7 +370,7 @@ class PermintaanTambahSDM
             $berkas = $validasi->safe()->only('tambahsdm_berkas')['tambahsdm_berkas'] ?? false;
             
             if ($berkas) {
-                $berkas->storeAs('sdm/permintaan-tambah-sdm', $nomorPermintaan . '.pdf');
+                $berkas->storeAs('sdm/permintaan-tambah-sdm/berkas', $nomorPermintaan . '.pdf');
             }
             
             $fungsiStatis->hapusCacheSDMUmum();
@@ -477,7 +459,7 @@ class PermintaanTambahSDM
             $berkas = $validasi->safe()->only('tambahsdm_berkas')['tambahsdm_berkas'] ?? false;
             
             if ($berkas) {
-                $berkas->storeAs('sdm/permintaan-tambah-sdm', $nomorPermintaan . '.pdf');
+                $berkas->storeAs('sdm/permintaan-tambah-sdm/berkas', $nomorPermintaan . '.pdf');
             }
 
             $perujuk = $session->get('tautan_perujuk');

@@ -136,10 +136,10 @@
         <div class="isian gspan-4">
             <label>Berkas Permohonan</label>
 
-            @if ($storageRangka->exists('sdm/permintaan-tambah-sdm/'.$rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null).'.pdf'))
-            <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null) . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/' . $rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null) . '.pdf'))], false) }}" title="Berkas Permintaan SDM" loading="lazy"></iframe>
+            @if ($storageRangka->exists('sdm/permintaan-tambah-sdm/berkas'.$rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null).'.pdf'))
+            <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null) . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/berkas' . $rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null) . '.pdf'))], false) }}" title="Berkas Permintaan SDM" loading="lazy" onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
             
-            <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null) . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/' . $rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null) . '.pdf'))], false) }}">
+            <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null) . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/berkas' . $rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null) . '.pdf'))], false) }}">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                 </svg>
@@ -157,7 +157,7 @@
             
             <input id="permintambahsdmUnggah" type="file" name="tambahsdm_berkas" accept=".pdf,application/pdf">
             
-            <span class="t-bantu">Format PDF {{ $storageRangka->exists('sdm/permintaan-tambah-sdm/'.$rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null).'.pdf') ? '(berkas yang diunggah akan menindih berkas unggahan lama).' : '' }}</span>
+            <span class="t-bantu">Format PDF {{ $storageRangka->exists('sdm/permintaan-tambah-sdm/berkas'.$rekRangka->old('tambahsdm_no', $permin->tambahsdm_no ?? null).'.pdf') ? '(berkas yang diunggah akan menindih berkas unggahan lama).' : '' }}</span>
         </div>
 
         <div class="gspan-4"></div>

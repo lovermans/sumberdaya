@@ -391,24 +391,6 @@ window.pilDasar = function (a) {
             closeOnSelect: true
         });
     });
-    
-    // var ps = document.querySelectorAll(a);
-    // ps.forEach(function (a) {
-    //     new SlimSelect({
-    //         select: a,
-    //         // settings: {
-    //             placeholder: 'PILIH',
-    //             showSearch: false,
-    //             searchFocus: false,
-    //             allowDeselect: true,
-    //             showContent: 'down',
-    //             addToBody: false,
-    //             hideSelectedOption: true,
-    //             selectByGroup: true,
-    //             closeOnSelect: true
-    //         // }
-    //     });
-    // });
 };
 
 window.pilSaja = function (a) {
@@ -428,23 +410,6 @@ window.pilSaja = function (a) {
             closeOnSelect: true
         });
     });
-    // var ps = document.querySelectorAll(a);
-    // ps.forEach(function (a) {
-    //     new SlimSelect({
-    //         select: a,
-    //         // settings: {
-    //             placeholder: 'PILIH',
-    //             showSearch: false,
-    //             searchFocus: false,
-    //             allowDeselect: false,
-    //             showContent: 'down',
-    //             addToBody: false,
-    //             hideSelectedOption: true,
-    //             selectByGroup: true,
-    //             closeOnSelect: true
-    //         // }
-    //     });
-    // });
 };
 
 window.pilCari = function (a) {
@@ -466,27 +431,6 @@ window.pilCari = function (a) {
             closeOnSelect: true
         });
     });
-    
-    // var pc = document.querySelectorAll(a);
-    // pc.forEach(function (a) {
-    //     new SlimSelect({
-    //         select: a,
-    //         // settings: {
-    //             searchPlaceholder: 'CARI',
-    //             searchText: 'KOSONG',
-    //             searchingText: 'MENCARI...',
-    //             showContent: 'down',
-    //             placeholder: 'PILIH',
-    //             showSearch: true,
-    //             searchFocus: true,
-    //             allowDeselect: true,
-    //             addToBody: false,
-    //             hideSelectedOption: true,
-    //             selectByGroup: true,
-    //             closeOnSelect: true
-    //         // }
-    //     });
-    // });
 };
 
 window.muatSlimSelect = function (data) {

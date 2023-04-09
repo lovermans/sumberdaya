@@ -288,9 +288,9 @@
                                 </a>
                             </p>
 
-                            @if ($storageRangka->exists('sdm/permintaan-tambah-sdm/'.$tabel->tambahsdm_no.'.pdf'))
+                            @if ($storageRangka->exists('sdm/permintaan-tambah-sdm/berkas/'.$tabel->tambahsdm_no.'.pdf'))
                             <p class="tcetak">
-                                <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $tabel->tambahsdm_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/' . $tabel->tambahsdm_no . '.pdf'))], false) }}">
+                                <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $tabel->tambahsdm_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/berkas/' . $tabel->tambahsdm_no . '.pdf'))], false) }}">
                                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                     </svg>

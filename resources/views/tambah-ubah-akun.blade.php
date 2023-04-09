@@ -480,7 +480,7 @@
         </div>
         @endif
         
-        @if ($rekRangka->routeIs('ubah-akun'))
+        @if ($rekRangka->routeIs('sdm.ubah-akun'))
             @if (!$userRangka?->sdm_ijin_akses && $strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS'))
             <div class="isian normal">
                 <label for="sdm_hak_akses">Peran</label>
@@ -545,7 +545,7 @@
                 <label>Berkas SDM</label>
             
                 @if ($storageRangka->exists('sdm/berkas/'. $sdm->sdm_no_absen.'.pdf'))
-                <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $sdm->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' .  $sdm->sdm_no_absen . '.pdf'))], false) }}" title="Berkas SDM" loading="lazy"></iframe>
+                <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $sdm->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' .  $sdm->sdm_no_absen . '.pdf'))], false) }}" title="Berkas SDM" loading="lazy" onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
                 
                 <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $sdm->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' .  $sdm->sdm_no_absen . '.pdf'))], false) }}">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

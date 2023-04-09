@@ -15,12 +15,13 @@ class Berkas
         $app = app();
         $reqs = $app->request;
         $pengguna = $reqs->user();
+        $permintaanBerkas = $reqs->path();
         
         abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
         
-        abort_unless($berkas && $app->filesystem->exists("sdm/berkas/{$berkas}"), 404, 'Berkas tidak ditemukan.');
+        abort_unless($berkas && $app->filesystem->exists("{$permintaanBerkas}"), 404, 'Berkas tidak ditemukan.');
         
-        $jalur = $app->storagePath("app/sdm/berkas/{$berkas}");
+        $jalur = $app->storagePath("app/{$permintaanBerkas}");
         
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->file($jalur, [
             'Content-Disposition' => 'inline',

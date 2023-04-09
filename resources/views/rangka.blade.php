@@ -2,7 +2,7 @@
 
 <html lang="{{ str_replace('_', '-', $appRangka->getLocale()) }}" dir="ltr">
     
-<head>
+<head id="kepala-dokumen">
     <noscript>
         <meta HTTP-EQUIV="refresh" content="0;url='{{ $urlRangka->route('perlu-javascript', [], false) }}'">
     </noscript>
@@ -11,7 +11,7 @@
     
 </head>
 
-<body data-tematerang="">
+<body data-tematerang="" id="badan-dokumen">
     <div id="sambutan">
         <img src="{{ $mixRangka('/images/Lambang Perusahaan.webp') }}" alt="{{ $confRangka->get('app.usaha') }}" title="{{ $confRangka->get('app.usaha') }}">
         <p>

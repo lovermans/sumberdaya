@@ -47,14 +47,14 @@
     @fragment('menu-avatar')
     @if($userRangka)
     <div class="menu-akun">
-        <a @class(['menu-xhr', 'aktif' => $rekRangka->routeIs('akun')]) href="{{ $urlRangka->route('sdm.akun', ['uuid' => $userRangka->sdm_uuid], false) }}">
+        <a @class(['menu-xhr', 'aktif' => $rekRangka->routeIs('sdm.akun')]) href="{{ $urlRangka->route('sdm.akun', ['uuid' => $userRangka->sdm_uuid], false) }}">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#akun' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
             Profil
         </a>
         
-        <a @class(['menu-xhr', 'aktif' => $rekRangka->routeIs('ubah-sandi')]) href="{{ $urlRangka->route('sdm.ubah-sandi', [], false) }}">
+        <a @class(['menu-xhr', 'aktif' => $rekRangka->routeIs('sdm.ubah-sandi')]) href="{{ $urlRangka->route('sdm.ubah-sandi', [], false) }}">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#kunci' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
