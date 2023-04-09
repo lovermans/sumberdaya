@@ -2,4 +2,4 @@
 
 <div id="sematan_javascript" class="tcetak"></div>
 
-<div id="sematan_kesalahan" class="tcetak"></div>
+<div id="sematan_umum" class="tcetak scroll-margin"></div>

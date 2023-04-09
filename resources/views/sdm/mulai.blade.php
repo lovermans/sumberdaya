@@ -78,7 +78,7 @@
             </svg>
         </a>
         
-        <a class="isi-xhr" href="{{ $urlRangka->route('sdm.unggah', [], false) }}" title="Unggah Data Profil SDM">
+        <a class="isi-xhr" data-rekam="false" data-tujuan="#sematan_umum" href="{{ $urlRangka->route('sdm.unggah', [], false) }}" title="Unggah Data Profil SDM">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unggah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>

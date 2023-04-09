@@ -7,12 +7,10 @@
         }
 
         var avatar = document.getElementById('tbl-menu'),
-            pengaturan = document.getElementById('menu-pengaturan'),
             pilihSumberdaya = document.getElementById('pilih-sumber_daya'),
             menuSDM = document.getElementById('navigasi-sdm'),
             menuAvatar = document.getElementById('menu-avatar'),
-            menuAplikasi = document.getElementById('menu-aplikasi'),
-            pemberitahuan = document.getElementById('pemberitahuan');
+            menuAplikasi = document.getElementById('menu-aplikasi');
 
         @if ($userRangka)
         if (!avatar.innerHTML.trim()) {
@@ -49,18 +47,6 @@
         pilihSumberdaya.innerHTML = "";
         menuAplikasi.innerHTML = "";
         
-        @endif
-
-        @if($strRangka->contains($userRangka?->sdm_hak_akses, 'PENGURUS'))
-        if (!pengaturan.innerHTML.trim()) {
-            lemparXHR({
-            tujuan : "#menu-pengaturan",
-            tautan : "{{ $urlRangka->route('komponen.menu-pengaturan', [], false) }}",
-            normalview : true
-            });
-        };
-        @else
-        pengaturan.innerHTML = "";
         @endif
 
         @if($userRangka && $rekRangka->routeIs('sdm.*', 'register'))

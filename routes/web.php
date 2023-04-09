@@ -33,9 +33,6 @@ $route->group(['prefix' => 'komponen', 'as' => 'komponen.'], function () use ($r
     $route->get('/menu-aplikasi', function () {
         return response(view('menu')->fragment('menu-aplikasi'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'menu-aplikasi']);
     })->name('menu-aplikasi');
-    $route->get('/menu-pengaturan', function () {
-        return response(view('pengaturan.navigasi'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'menu-pengaturan']);
-    })->name('menu-pengaturan');
     $route->get('/pilih-sumberdaya', function () {
         return response(view('menu')->fragment('pilih-sumber_daya'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'pilih-sumber_daya']);
     })->name('pilih-sumberdaya');

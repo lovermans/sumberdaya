@@ -29,7 +29,7 @@
     </form>
 
     @else
-    <div class="pesan-internal">
+    <div id="mengerti-mulai-aplikasi" class="pesan-internal">
         <p>
             Tekan/sentuh tombol
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -38,10 +38,18 @@
             di ujung kanan atas layar untuk memilih aplikasi.
         </p>
         
-        <a class="sekunder" href="#" onclick="event.preventDefault();this.parentElement.remove()">MENGERTI</a>
+        <a class="sekunder" href="#" onclick="event.preventDefault();
+            localStorage.setItem('mengerti-mulai-aplikasi', true);
+            this.parentElement.remove()">
+            MENGERTI
+        </a>
         
         <div class="bersih"></div>
     </div>
+
+    <script>
+        if(localStorage.getItem('mengerti-mulai-aplikasi') == 'true') document.getElementById('mengerti-mulai-aplikasi').remove();
+    </script>
 
     @endif
 

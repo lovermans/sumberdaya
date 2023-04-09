@@ -64,7 +64,12 @@
         <form method="POST" class="form-xhr" action="{{ $urlRangka->route('logout', [], false) }}">
             <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
             <button type="submit" id="keluar-aplikasi" sembunyikan></button>
-            <a href="{{ $urlRangka->route('logout', [], false) }}" onclick="event.preventDefault();document.querySelector('#nav').checked=false;document.querySelector('#menu').checked=false;document.querySelector('#pilih-aplikasi').checked=false;document.querySelector('#keluar-aplikasi').click()">
+            <a href="{{ $urlRangka->route('logout', [], false) }}" onclick="event.preventDefault();
+                document.querySelector('#sematan_umum').innerHTML = '';
+                document.querySelector('#nav').checked = false;
+                document.querySelector('#menu').checked = false;
+                document.querySelector('#pilih-aplikasi').checked = false;
+                document.querySelector('#keluar-aplikasi').click()">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <use xlink:href="{{ $mixRangka('/ikon.svg') . '#keluar' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                 </svg>
@@ -94,9 +99,15 @@
             Sumber Daya Manusia
         </a>
 
-        <div id="menu-pengaturan">
-            @include('pengaturan.navigasi')
-        </div>
+        @if($strRangka->contains($userRangka?->sdm_hak_akses, 'PENGURUS'))
+        <a @class(['nav-xhr', 'aktif' => $rekRangka->is('/atur*')]) href="{{ $urlRangka->route('atur.data', [], false) }}">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#pengaturan' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            </svg>
+            Pengaturan Umum
+        </a>
+        @endif
+
     </div>
     @endif
     @endfragment
