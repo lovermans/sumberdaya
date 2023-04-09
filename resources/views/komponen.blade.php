@@ -58,15 +58,8 @@
             });
         };
         @else
-        var NavSDM = ['/atur', '/tentang-aplikasi'],
-            bolehkanNavSDM = false;
-
-        for (var i = 0; i < NavSDM.length; i++) {
-            if (location.href.includes(NavSDM[i])) {
-                bolehkanNavSDM = true;
-            };
-        };
-        if (bolehkanNavSDM == false) menuSDM.innerHTML = "";
+        var NavSDM = ['/atur', '/tentang-aplikasi'];
+        if (NavSDM.includes(location.href.pathname)) menuSDM.innerHTML = "";
         @endif
 
     })();

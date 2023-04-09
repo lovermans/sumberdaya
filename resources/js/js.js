@@ -42,7 +42,7 @@ document.addEventListener('click', function (e) {
 
             a.classList.add('aktif');
             
-            if (appAktif) {
+            if (appAktif && urlAktif.pathname.length > 1) {
                 for (let m = 0; m < appAktif.length; m++) {
                     if (urlAktif.href.includes(appAktif[m].href) && appAktif[m].pathname.length > 1) {
                         appAktif[m].classList.add('aktif');
@@ -197,11 +197,16 @@ window.lemparXHR = function (data) {
             isiPesan.prepend(isiRespon);
             lastResponseLength = responseLength;
             // return true;
-         
+        };
+
+        xhr.onerror = function (er) {
+            return;
         };
     } else {
 
         muat.classList.toggle('mati');
+
+        xhr.timeout = 10000;
 
         xhr.onload = function () {
             // console.log(this.getAllResponseHeaders());
@@ -240,7 +245,17 @@ window.lemparXHR = function (data) {
                 return;
             };
         };
-    }
+
+        xhr.ontimeout = function (to) {
+            muat.classList.toggle('mati');
+            return;
+        };
+
+        xhr.onerror = function (er) {
+            muat.classList.toggle('mati');
+            return;
+        };
+    };
     xhr.open(metode, tautan, true);
     xhr.setRequestHeader('X-PJAX', true);
     if (enkod) {
