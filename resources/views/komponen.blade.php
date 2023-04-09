@@ -59,7 +59,7 @@
         };
         @else
         var NavSDM = ['/atur', '/tentang-aplikasi'];
-        if (NavSDM.includes(location.href.pathname)) menuSDM.innerHTML = "";
+        if (!NavSDM.includes(location.pathname)) menuSDM.innerHTML = "";
         @endif
 
     })();
