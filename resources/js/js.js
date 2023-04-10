@@ -50,9 +50,9 @@ document.addEventListener('click', function (e) {
                 };
             };
         };
-        if (location.href == alamat) {
-            return;
-        };
+        // if (location.href == alamat) {
+        //     return;
+        // };
         navCb.checked = false;
         menuCb.checked = false;
         aplikasiCb.checked = false;
