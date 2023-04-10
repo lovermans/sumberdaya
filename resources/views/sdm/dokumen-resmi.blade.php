@@ -2,7 +2,12 @@
 
 @section('isi')
 <div id="sdm_dokumen_resmi">
-    <h4>Dokumen Resmi SDM</h4>
+    <p class="tcetak kartu">
+        <svg fill="var(--taut-umum)" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#informasi' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+        </svg>
+        Semua tautan dokumen di halaman ini hanya valid selama 5 (lima) menit. Muat ulang halaman untuk memperbarui validasi tautan dokumen di halaman ini.
+    </p>
 
     @if($strRangka->contains($userRangka->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
     <details class="kartu">
@@ -45,7 +50,7 @@
         </details>
         
         @empty
-        <p>Panduan Pengurus belum tersedia.</p>
+        <p class="kartu">Panduan Pengurus belum tersedia.</p>
         
         @endforelse
     @endisset
@@ -65,7 +70,7 @@
         </details>
         
         @empty
-        <p>Panduan SDM belum tersedia.</p>
+        <p class="kartu">Panduan SDM belum tersedia.</p>
         
         @endforelse
     @endisset

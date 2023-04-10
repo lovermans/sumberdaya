@@ -4,15 +4,11 @@ namespace App\Http\Controllers\SDM;
 
 use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
-use App\Tambahan\ChunkReadFilter;
-use App\Tambahan\CustomValueBinder;
-use PhpOffice\PhpSpreadsheet\Cell\Cell;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Http\Controllers\SDM\Berkas;
 
 class Posisi
 {
-    public function index(Rule $rule)
+    public function index(Rule $rule, Berkas $berkas)
     {
         $app = app();
         $reqs = $app->request;
@@ -102,48 +98,7 @@ class Posisi
 
 
         if ($reqs->unduh == 'excel') {
-            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
-
-            set_time_limit(0);
-            ob_implicit_flush();
-            ob_end_flush();
-            header('X-Accel-Buffering: no');
-            
-            $spreadsheet = new Spreadsheet();
-            $filename = 'eksporjabatansdm-' . date('YmdHis') . '.xlsx';
-            Cell::setValueBinder(new CustomValueBinder());
-            $worksheet = $spreadsheet->getActiveSheet();
-            $x = 1;
-            
-            $cari->clone()->chunk(100, function ($hasil) use (&$x, $worksheet) {
-                if ($x == 1) {
-                    $list = $hasil->map(function ($x) {
-                        return collect($x)->except(['posisi_uuid']);
-                    })->toArray();
-                    array_unshift($list, array_keys($list[0]));
-                    $worksheet->fromArray($list, NULL, 'A' . $x);
-                    $x++;
-                } else {
-                    $list = $hasil->map(function ($x) {
-                        return collect($x)->except(['posisi_uuid']);
-                    })->toArray();
-                    $worksheet->fromArray($list, NULL, 'A' . $x);
-                };
-                $x += count($hasil);
-                echo '<p>Status : Memproses ' . ($x - 2) . ' data jabatan SDM.</p>';
-            });
-            
-            echo '<p>Status : Menyiapkan berkas excel.</p>';
-            
-            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-            $writer->setPreCalculateFormulas(false);
-            $writer->save($app->storagePath("app/unduh/{$filename}"));
-            $spreadsheet->disconnectWorksheets();
-            unset($spreadsheet);
-            
-            echo '<p>Selesai menyiapkan berkas excel. <a href="' . $app->filesystem->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
-            
-            exit();
+            $berkas->unduhIndexPosisiSDMExcel($cari, $reqs, $app);
         }
 
         $aktif = $cari->clone()->sum('jml_aktif');
@@ -336,133 +291,6 @@ class Posisi
         ];
 
         $HtmlPenuh = $app->view->make('sdm.posisi.tambah-ubah', $data);
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
-    }
-
-    public function unggah()
-    {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
-        
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
-        
-        if ($reqs->isMethod('post')) {
-            
-            set_time_limit(0);
-            ob_implicit_flush();
-            ob_end_flush();
-            header('X-Accel-Buffering: no');
-
-            $validator = $app->validator;
-            
-            $validasifile = $validator->make(
-                $reqs->all(),
-                [
-                    'posisi_unggah' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
-                ],
-                [],
-                [
-                    'posisi_unggah' => 'Berkas Yang Diunggah'
-                ]
-            );
-            
-            $validasifile->validate();
-            $file = $validasifile->safe()->only('posisi_unggah')['posisi_unggah'];
-            $namafile = 'unggahjabatansdm-' . date('YmdHis') . '.xlsx';
-
-            $storage = $app->filesystem;
-            $storage->putFileAs('unggah', $file, $namafile);
-            $fileexcel = $app->storagePath("app/unggah/{$namafile}");
-            $reader = IOFactory::createReader('Xlsx');
-            $spreadsheetInfo = $reader->listWorksheetInfo($fileexcel);
-            $chunkSize = 25;
-            $chunkFilter = new ChunkReadFilter();
-            $reader->setReadFilter($chunkFilter);
-            $reader->setReadDataOnly(true);
-            $totalRows = $spreadsheetInfo[1]['totalRows'];
-            $kategori_status = Rule::in(['AKTIF', 'NON-AKTIF']);
-            $idPengunggah = $pengguna->sdm_no_absen;
-            
-            for ($startRow = 2; $startRow <= $totalRows; $startRow += $chunkSize) {
-                $chunkFilter->setRows($startRow, $chunkSize);
-                $spreadsheet = $reader->load($fileexcel);
-                $worksheet = $spreadsheet->getSheet(1);
-                $barisTertinggi = $worksheet->getHighestRow();
-                $kolomTertinggi = $worksheet->getHighestColumn();
-                
-                $pesanbaca = '<p>Status : Membaca excel baris ' . ($startRow) . ' sampai baris ' . $barisTertinggi . '.</p>';
-                $pesansimpan = '<p>Status : Berhasil menyimpan data excel baris ' . ($startRow) . ' sampai baris ' . $barisTertinggi . '.</p>';
-                
-                echo $pesanbaca;
-                
-                $headingArray = $worksheet->rangeToArray('A1:' . $kolomTertinggi . '1', NULL, FALSE, TRUE, FALSE);
-                $dataArray = $worksheet->rangeToArray('A' . $startRow . ':' . $kolomTertinggi . $barisTertinggi, NULL, FALSE, TRUE, FALSE);
-                $tabel = array_merge($headingArray, $dataArray);
-                $isitabel = array_shift($tabel);
-                
-                $datas = array_map(function ($x) use ($isitabel) {
-                    return array_combine($isitabel, $x);
-                }, $tabel);
-                
-                $dataexcel = array_map(function ($x) use ($idPengunggah) {
-                    return $x + ['posisi_id_pengunggah' => $idPengunggah] + ['posisi_id_pembuat' => $idPengunggah] + ['posisi_id_pengubah' => $idPengunggah] + ['posisi_diunggah' => date('Y-m-d H:i:s')];
-                }, $datas);
-
-                $data = array_combine(range(($startRow - 1), count($dataexcel) + ($startRow - 2) ), array_values($dataexcel));
-                
-                $validasi = $validator->make(
-                    $data,
-                    [
-                        '*.posisi_nama' => ['required', 'string', 'max:40'],
-                        '*.posisi_atasan' => ['nullable', 'string', 'max:40', 'different:*.posisi_nama'],
-                        '*.posisi_wlkp' => ['nullable'],
-                        '*.posisi_status' => ['required', 'string', $kategori_status],
-                        '*.posisi_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                        '*.posisi_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                        '*.posisi_id_pengubah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                        '*.posisi_diunggah' => ['sometimes', 'nullable', 'date']
-                    ],
-                    [
-                        '*.posisi_nama.*' => 'Nama Jabatan baris ke-:position wajib diisi, berupa karakter maks 40 karakter.',
-                        '*.posisi_atasan.*' => 'Jabatan Atasan baris ke-:position wajib berbeda dengan Nama Jabatan, berupa karakter maks 40 karakter.',
-                        '*.posisi_wlkp.*' => 'Kode Jabatan WLKP baris ke-:position wajib diisi, berupa karakter.',
-                        '*.posisi_status.*' => 'Status Jabatan baris ke-:position wajib diisi sesuai daftar.',
-                        '*.posisi_id_pengunggah.*' => 'ID Pengunggah baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
-                        '*.posisi_id_pembuat.*' => 'ID Pembuat baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
-                        '*.posisi_id_pengubah.*' => 'ID Pengubah baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
-                        '*.posisi_diunggah.*' => 'Waktu Unggah baris ke-:position wajib berupa tanggal.'
-                    ]
-                );
-                
-                if ($validasi->fails()) {
-                    return $app->redirect->back()->withErrors($validasi);
-                }
-                                
-                $app->db->table('posisis')->upsert(
-                    $validasi->validated(),
-                    ['posisi_nama'],
-                    ['posisi_wlkp', 'posisi_status', 'posisi_id_pengunggah', 'posisi_diunggah', 'posisi_id_pengubah']
-                );
-                
-                echo $pesansimpan;
-            };
-            
-            $spreadsheet->disconnectWorksheets();
-            unset($spreadsheet);
-            
-            $storage->delete($fileexcel);
-            
-            FungsiStatis::hapusCacheSDMUmum();
-            
-            echo '<p>Selesai menyimpan data excel. Mohon <a class="isi-xhr" href="' . $app->url->route('sdm.posisi.data') . '">periksa ulang data</a>.</p>';
-            
-            exit();
-        };
-
-        $HtmlPenuh = $app->view->make('sdm.posisi.unggah');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
         return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
     }
