@@ -94,7 +94,7 @@
     
     <div id="tambah_sdm_tabels" class="kartu scroll-margin">
         @fragment('tambah_sdm_tabels')
-        <b><i>Total permintaan tambah SDM ({{ $rekRangka->anyFilled(['kata_kunci', 'tambahsdm_status', 'tgl_diusulkan_mulai', 'tgl_diusulkan_sampai', 'tambahsdm_penempatan', 'tambahsdm_laju', 'posisi']) ? 'sesuai data pencarian & penyaringan' : 'global' }}) : Kebutuhan = {{number_format($kebutuhan, 0, ',', '.')}} Personil -> Terpenuhi = {{number_format($terpenuhi, 0, ',', '.')}} Personil -> Selisih = {{number_format($selisih, 0, ',', '.')}} Personil.</i></b>
+        <b><i><small>Total permintaan tambah SDM ({{ $rekRangka->anyFilled(['kata_kunci', 'tambahsdm_status', 'tgl_diusulkan_mulai', 'tgl_diusulkan_sampai', 'tambahsdm_penempatan', 'tambahsdm_laju', 'posisi']) ? 'sesuai data pencarian & penyaringan' : 'global' }}) : Kebutuhan = {{number_format($kebutuhan, 0, ',', '.')}} Personil -> Terpenuhi = {{number_format($terpenuhi, 0, ',', '.')}} Personil -> Selisih = {{number_format($selisih, 0, ',', '.')}} Personil.</small></i></b>
         
         <div id="permintaan-sdm_sematan" class="scroll-margin"></div>
 
