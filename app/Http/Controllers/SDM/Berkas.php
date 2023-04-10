@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\SDM;
 
 use QRcode;
+use App\Tambahan\CustomValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpWord\TemplateProcessor;
+use App\Http\Controllers\SDM\PermintaanTambahSDM;
+use App\Http\Controllers\SDM\Posisi;
 use PhpOffice\PhpSpreadsheet\Cell\StringValueBinder;
 
 class Berkas
@@ -142,6 +145,63 @@ class Berkas
         unset($spreadsheet);
         
         return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
+    }
+
+    public function contohUnggahPosisiSDM(Posisi $posisi)
+    {
+        $app = app();
+        $reqs = $app->request;
+        $pengguna = $reqs->user();
+        $str = str();
+        
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        $storage = $app->filesystem;
+        
+        abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
+        
+        set_time_limit(0);
+        ob_implicit_flush();
+        ob_end_flush();
+        header('X-Accel-Buffering: no');
+        
+        $reader = IOFactory::createReader('Xlsx');
+        $spreadsheet = $reader->load($app->storagePath('app/contoh/unggah-umum.xlsx'));
+        $filename = 'unggahjabatansdm-' . date('YmdHis') . '.xlsx';
+        Cell::setValueBinder(new CustomValueBinder());
+        $worksheet = $spreadsheet->getSheet(1);
+        $x = 1;
+        
+        $posisi->dataDasar()->clone()->latest('posisi_dibuat')->chunk(100, function ($hasil) use (&$x, $worksheet) {
+            if ($x == 1) {
+                $list = $hasil->map(function ($x) {
+                    return collect($x)->except(['posisi_uuid']);
+                })->toArray();
+                array_unshift($list, array_keys($list[0]));
+                $worksheet->fromArray($list, NULL, 'A' . $x);
+                $x++;
+            } else {
+                $list = $hasil->map(function ($x) {
+                    return collect($x)->except(['posisi_uuid']);
+                })->toArray();
+                $worksheet->fromArray($list, NULL, 'A' . $x);
+            };
+            $x += count($hasil);
+            echo '<p>Status : Memproses ' . ($x - 2) . ' data jabatan SDM.</p>';
+        });
+        
+        echo '<p>Status : Menyiapkan berkas excel.</p>';
+        
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->setPreCalculateFormulas(false);
+        $writer->save($app->storagePath("app/unduh/{$filename}"));
+        $spreadsheet->disconnectWorksheets();
+        
+        unset($spreadsheet);
+        
+        echo '<p>Selesai menyiapkan berkas excel. <a href="' . $storage->disk('local')->temporaryUrl("unduh/{$filename}", now()->addMinutes(5)) . '">Unduh</a>.</p>';
+        
+        exit();
     }
 
     public function unduhKartuSDM($uuid = null)
@@ -390,6 +450,62 @@ class Berkas
         $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
         
         return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
+    }
+
+    public function formulirPermintaanTambahSDM(PermintaanTambahSDM $permintaanTambahSDM, $uuid = null)
+    {
+        $app = app();
+        $reqs = $app->request;
+        $pengguna = $reqs->user();
+        
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+        
+        set_time_limit(0);
+        ob_implicit_flush();
+        ob_end_flush();
+        header('X-Accel-Buffering: no');
+        
+        echo '<p>Memeriksa formulir.</p>';
+
+        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+
+        $permin = $permintaanTambahSDM->dataDasar()->clone()->addSelect('tambahsdm_uuid', 'b.sdm_nama')
+        ->join('sdms as b', 'tambahsdm_sdm_id', '=', 'b.sdm_no_absen')->where('tambahsdm_uuid', $uuid)->when($lingkupIjin, function ($query,$lingkupIjin) {
+            $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
+        })->first();
+        
+        abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
+
+        $storage = $app->filesystem;
+        
+        abort_unless($storage->exists("contoh/permintaan-tambah-sdm.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
+        
+        $filename = 'permintaan-tambah-sdm-'.$permin->tambahsdm_no.'.docx';
+        // \PhpOffice\PhpWord\Settings::setZipClass(\PhpOffice\PhpWord\Settings::PCLZIP);
+        
+        $templateProcessor = new TemplateProcessor($app->storagePath('app/contoh/permintaan-tambah-sdm.docx'));
+        
+        echo '<p>Menyiapkan formulir.</p>';
+
+        $date = $app->date;
+        $str = str();
+        
+        $templateProcessor->setValues([
+            'tambahsdm_no' => $permin->tambahsdm_no,
+            'sdm_nama' => $str->limit($permin->sdm_nama, 30),
+            'tambahsdm_sdm_id' => $permin->tambahsdm_sdm_id,
+            'tambahsdm_posisi' => $str->limit($permin->tambahsdm_posisi, 30),
+            'tambahsdm_jumlah' => $permin->tambahsdm_jumlah,
+            'tambahsdm_alasan' => $str->limit($permin->tambahsdm_alasan, 100),
+            'tambahsdm_tgl_diusulkan' => strtoupper($date->make($permin->tambahsdm_tgl_diusulkan)?->translatedFormat('d F Y')),
+            'tambahsdm_tgl_dibutuhkan' => strtoupper($date->make($permin->tambahsdm_tgl_dibutuhkan)?->translatedFormat('d F Y'))
+        ]);
+        
+        $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
+        
+        echo '<p>Selesai menyiapkan berkas formulir. <a href="' . $storage->disk('local')->temporaryUrl("unduh/{$filename}", $date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
+        
+        exit();
     }
 
     public function formulirTTDokumenTitipan($uuid = null)

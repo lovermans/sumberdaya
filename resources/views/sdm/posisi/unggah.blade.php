@@ -12,7 +12,7 @@
                 </svg>
             </a>
 
-            <h4>Unggah Data Pengaturan Jabatan</h4>
+            <h4 class="form">Unggah Data Pengaturan Jabatan</h4>
 
             <p>Unduh <a class="isi-xhr" href="{{ $urlRangka->route('sdm.posisi.contoh-unggah', [], false) }}" data-rekam="false" data-tujuan="#posisi_unggah" data-laju="true">contoh</a> excel, isi sesuai petunjuk dalam excel lalu unggah kembali.</p>
         </div>

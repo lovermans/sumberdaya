@@ -207,63 +207,6 @@ class Posisi
         ];
     }
 
-    public function contohUnggah()
-    {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
-        
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
-
-        $storage = $app->filesystem;
-        
-        abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
-        
-        set_time_limit(0);
-        ob_implicit_flush();
-        ob_end_flush();
-        header('X-Accel-Buffering: no');
-        
-        $reader = IOFactory::createReader('Xlsx');
-        $spreadsheet = $reader->load($app->storagePath('app/contoh/unggah-umum.xlsx'));
-        $filename = 'unggahjabatansdm-' . date('YmdHis') . '.xlsx';
-        Cell::setValueBinder(new CustomValueBinder());
-        $worksheet = $spreadsheet->getSheet(1);
-        $x = 1;
-        
-        $this->dataDasar()->clone()->latest('posisi_dibuat')->chunk(100, function ($hasil) use (&$x, $worksheet) {
-            if ($x == 1) {
-                $list = $hasil->map(function ($x) {
-                    return collect($x)->except(['posisi_uuid']);
-                })->toArray();
-                array_unshift($list, array_keys($list[0]));
-                $worksheet->fromArray($list, NULL, 'A' . $x);
-                $x++;
-            } else {
-                $list = $hasil->map(function ($x) {
-                    return collect($x)->except(['posisi_uuid']);
-                })->toArray();
-                $worksheet->fromArray($list, NULL, 'A' . $x);
-            };
-            $x += count($hasil);
-            echo '<p>Status : Memproses ' . ($x - 2) . ' data jabatan SDM.</p>';
-        });
-        
-        echo '<p>Status : Menyiapkan berkas excel.</p>';
-        
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        $writer->setPreCalculateFormulas(false);
-        $writer->save($app->storagePath("app/unduh/{$filename}"));
-        $spreadsheet->disconnectWorksheets();
-        
-        unset($spreadsheet);
-        
-        echo '<p>Selesai menyiapkan berkas excel. <a href="' . $storage->disk('local')->temporaryUrl("unduh/{$filename}", now()->addMinutes(5)) . '">Unduh</a>.</p>';
-        
-        exit();
-    }
-
     public function dataDasar()
     {
         return app('db')->query()->select('posisi_nama', 'posisi_atasan', 'posisi_wlkp', 'posisi_status', 'posisi_keterangan')->from('posisis');

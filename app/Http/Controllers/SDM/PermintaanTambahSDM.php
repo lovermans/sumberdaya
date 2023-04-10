@@ -8,7 +8,6 @@ use Illuminate\Validation\Rule;
 use App\Tambahan\CustomValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpWord\TemplateProcessor;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class PermintaanTambahSDM
@@ -250,62 +249,6 @@ class PermintaanTambahSDM
             'tambahsdm_status' => ['sometimes', 'nullable', 'string', Rule::in(['DIUSULKAN', 'DISETUJUI', 'DITOLAK', 'DITUNDA', 'DIBATALKAN'])],
             'tambahsdm_berkas' => ['sometimes', 'file', 'mimetypes:application/pdf'],
         ];
-    }
-
-    public function formulir($uuid = null)
-    {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        
-        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
-        
-        set_time_limit(0);
-        ob_implicit_flush();
-        ob_end_flush();
-        header('X-Accel-Buffering: no');
-        
-        echo '<p>Memeriksa formulir.</p>';
-
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
-
-        $permin = $this->dataDasar()->clone()->addSelect('tambahsdm_uuid', 'b.sdm_nama')
-        ->join('sdms as b', 'tambahsdm_sdm_id', '=', 'b.sdm_no_absen')->where('tambahsdm_uuid', $uuid)->when($lingkupIjin, function ($query,$lingkupIjin) {
-            $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
-        })->first();
-        
-        abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
-
-        $storage = $app->filesystem;
-        
-        abort_unless($storage->exists("contoh/permintaan-tambah-sdm.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
-        
-        $filename = 'permintaan-tambah-sdm-'.$permin->tambahsdm_no.'.docx';
-        // \PhpOffice\PhpWord\Settings::setZipClass(\PhpOffice\PhpWord\Settings::PCLZIP);
-        
-        $templateProcessor = new TemplateProcessor($app->storagePath('app/contoh/permintaan-tambah-sdm.docx'));
-        
-        echo '<p>Menyiapkan formulir.</p>';
-
-        $date = $app->date;
-        $str = str();
-        
-        $templateProcessor->setValues([
-            'tambahsdm_no' => $permin->tambahsdm_no,
-            'sdm_nama' => $str->limit($permin->sdm_nama, 30),
-            'tambahsdm_sdm_id' => $permin->tambahsdm_sdm_id,
-            'tambahsdm_posisi' => $str->limit($permin->tambahsdm_posisi, 30),
-            'tambahsdm_jumlah' => $permin->tambahsdm_jumlah,
-            'tambahsdm_alasan' => $str->limit($permin->tambahsdm_alasan, 100),
-            'tambahsdm_tgl_diusulkan' => strtoupper($date->make($permin->tambahsdm_tgl_diusulkan)?->translatedFormat('d F Y')),
-            'tambahsdm_tgl_dibutuhkan' => strtoupper($date->make($permin->tambahsdm_tgl_dibutuhkan)?->translatedFormat('d F Y'))
-        ]);
-        
-        $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
-        
-        echo '<p>Selesai menyiapkan berkas formulir. <a href="' . $storage->disk('local')->temporaryUrl("unduh/{$filename}", $date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
-        
-        exit();
     }
 
     public function lihat($uuid = null)

@@ -65,7 +65,7 @@
     
     <div id="sdm_posisi_tabels" class="kartu scroll-margin">
         @fragment('sdm_posisi_tabels')
-        <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['lokasi', 'kontrak']) ? 'sesuai data penyaringan' : 'global' }}) : Aktif = {{number_format($aktif, 0, ',', '.')}} Personil -> Non-Aktif = {{number_format($nonAktif, 0, ',', '.')}} Personil -> Total = {{number_format($total, 0, ',', '.')}} Personil.<small></i></b>
+        <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['lokasi', 'kontrak']) ? 'sesuai data penyaringan' : 'global' }}) : Aktif = {{number_format($aktif, 0, ',', '.')}} Personil -> Non-Aktif = {{number_format($nonAktif, 0, ',', '.')}} Personil -> Total = {{number_format($total, 0, ',', '.')}} Personil.</small></i></b>
         
         <div id="posisi-sdm_sematan" class="scroll-margin"></div>
         
