@@ -5,14 +5,11 @@ namespace App\Http\Controllers\SDM;
 use Illuminate\Support\Arr;
 use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
-use App\Tambahan\CustomValueBinder;
-use PhpOffice\PhpSpreadsheet\Cell\Cell;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Http\Controllers\SDM\Berkas;
 
 class PermintaanTambahSDM
 {
-    public function index(Rule $rule, FungsiStatis $fungsiStatis)
+    public function index(Rule $rule, FungsiStatis $fungsiStatis, Berkas $berkas)
     {
         $app = app();
         $reqs = $app->request;
@@ -118,51 +115,7 @@ class PermintaanTambahSDM
         );
 
         if ($reqs->unduh == 'excel') {
-            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
-
-            set_time_limit(0);
-            ob_implicit_flush();
-            ob_end_flush();
-            header('X-Accel-Buffering: no');
-            
-            $spreadsheet = new Spreadsheet();
-            $filename = 'eksporpermintaansdm-' . date('YmdHis') . '.xlsx';
-            Cell::setValueBinder(new CustomValueBinder());
-            $worksheet = $spreadsheet->getActiveSheet();
-            $x = 1;
-    
-            $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
-    
-            $cari->clone()->chunk(100, function ($hasil) use (&$x, $worksheet) {
-                if ($x == 1
-                ) {
-                    $list = $hasil->map(function ($x) {
-                        return collect($x)->except(['sdm_uuid', 'tambahsdm_uuid']);
-                    })->toArray();
-                    array_unshift($list, array_keys($list[0]));
-                    $worksheet->fromArray($list, NULL, 'A' . $x);
-                    $x++;
-                } else {
-                    $list = $hasil->map(function ($x) {
-                        return collect($x)->except(['sdm_uuid', 'tambahsdm_uuid']);
-                    })->toArray();
-                    $worksheet->fromArray($list, NULL, 'A' . $x);
-                };
-                $x += count($hasil);
-                echo '<p>Status : Memproses ' . ($x - 2) . ' data permintaan tambah SDM.</p>';
-            });
-            
-            echo '<p>Status : Menyiapkan berkas excel.</p>';
-            
-            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-            $writer->setPreCalculateFormulas(false);
-            $writer->save($app->storagePath("app/unduh/{$filename}"));
-            $spreadsheet->disconnectWorksheets();
-            unset($spreadsheet);
-            
-            echo '<p>Selesai menyiapkan berkas excel. <a href="' . $app->filesystem->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
-            
-            exit();
+            $berkas->unduhIndexPermintaanTambahSDMExcel($cari, $reqs, $app);
         }
 
         $kebutuhan = $cari->clone()->sum('tambahsdm_jumlah');
@@ -432,7 +385,7 @@ class PermintaanTambahSDM
         return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
     }
 
-    public function hapus(FungsiStatis $fungsiStatis, $uuid = null)
+    public function hapus(FungsiStatis $fungsiStatis, Berkas $berkas, $uuid = null)
     {
         $app = app();
         $reqs = $app->request;
@@ -483,19 +436,8 @@ class PermintaanTambahSDM
             $dataHapus = [
                 $jenisHapus, $hapus, $idHapus, $waktuHapus, $alasanHapus
             ];
-            
-            $reader = IOFactory::createReader('Xlsx');
-            $spreadsheet = $reader->load($app->storagePath('app/contoh/data-dihapus.xlsx'));
-            Cell::setValueBinder(new CustomValueBinder());
-            $worksheet = $spreadsheet->getActiveSheet();
-            $barisAkhir = $worksheet->getHighestRow() + 1;
-            $worksheet->fromArray($dataHapus, NULL, 'A' . $barisAkhir);
 
-            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-            $writer->setPreCalculateFormulas(false);
-            $writer->save($app->storagePath('app/contoh/data-dihapus.xlsx'));
-            $spreadsheet->disconnectWorksheets();
-            unset($spreadsheet);
+            $berkas->rekamHapusDataPermintaanSDM($app, $dataHapus);
 
             $database->table('tambahsdms')->where('tambahsdm_uuid', $uuid)->delete();
 

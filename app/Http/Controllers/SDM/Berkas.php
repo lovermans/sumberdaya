@@ -378,6 +378,53 @@ class Berkas
         exit();
     }
 
+    public function unduhIndexPermintaanTambahSDMExcel($cari, $reqs, $app)
+    {
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+
+        set_time_limit(0);
+        ob_implicit_flush();
+        ob_end_flush();
+        header('X-Accel-Buffering: no');
+        
+        $spreadsheet = new Spreadsheet();
+        $filename = 'eksporpermintaansdm-' . date('YmdHis') . '.xlsx';
+        Cell::setValueBinder(new CustomValueBinder());
+        $worksheet = $spreadsheet->getActiveSheet();
+        $x = 1;
+
+        $cari->clone()->chunk(100, function ($hasil) use (&$x, $worksheet) {
+            if ($x == 1
+            ) {
+                $list = $hasil->map(function ($x) {
+                    return collect($x)->except(['sdm_uuid', 'tambahsdm_uuid']);
+                })->toArray();
+                array_unshift($list, array_keys($list[0]));
+                $worksheet->fromArray($list, NULL, 'A' . $x);
+                $x++;
+            } else {
+                $list = $hasil->map(function ($x) {
+                    return collect($x)->except(['sdm_uuid', 'tambahsdm_uuid']);
+                })->toArray();
+                $worksheet->fromArray($list, NULL, 'A' . $x);
+            };
+            $x += count($hasil);
+            echo '<p>Status : Memproses ' . ($x - 2) . ' data permintaan tambah SDM.</p>';
+        });
+        
+        echo '<p>Status : Menyiapkan berkas excel.</p>';
+        
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->setPreCalculateFormulas(false);
+        $writer->save($app->storagePath("app/unduh/{$filename}"));
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
+        
+        echo '<p>Selesai menyiapkan berkas excel. <a href="' . $app->filesystem->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
+        
+        exit();
+    }
+
     public function formulirSerahTerimaSDMBaru($uuid = null)
     {
         $app = app();
@@ -751,6 +798,22 @@ class Berkas
         $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
         
         return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
+    }
+
+    public function rekamHapusDataPermintaanSDM($app, $dataHapus)
+    {
+        $reader = IOFactory::createReader('Xlsx');
+        $spreadsheet = $reader->load($app->storagePath('app/contoh/data-dihapus.xlsx'));
+        Cell::setValueBinder(new CustomValueBinder());
+        $worksheet = $spreadsheet->getActiveSheet();
+        $barisAkhir = $worksheet->getHighestRow() + 1;
+        $worksheet->fromArray($dataHapus, NULL, 'A' . $barisAkhir);
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->setPreCalculateFormulas(false);
+        $writer->save($app->storagePath('app/contoh/data-dihapus.xlsx'));
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
     }
 
     public function suratKeteranganSDM($uuid = null)
