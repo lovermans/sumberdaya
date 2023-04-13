@@ -103,16 +103,7 @@
 
     @if($userRangka && $rekRangka->pjax())
     <script>
-        (async() => {
-            while(!document.getElementById('navigasi-sdm').innerHTML.trim()) {
-                await new Promise((resolve,reject) =>
-                setTimeout(resolve, 1000));
-            }
-
-            var ringkasan = document.querySelector("#navigasi-sdm a[href='/sdm']");
-            ringkasan.classList.add("aktif");
-
-        })();
+        cariElemen("#navigasi-sdm a[href='/sdm']").then((el) => {el.classList.add("aktif");});
     </script>
     @endif
 </div>

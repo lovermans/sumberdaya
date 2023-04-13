@@ -1,4 +1,4 @@
-@if($userRangka && $rekRangka->routeIs('sdm.*', 'register', 'komponen.menu-sdm'))
+@if($userRangka && $rekRangka->routeIs('sdm.*', 'register', 'komponen'))
     @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM'))
     <h2>Sumber Daya Manusia</h2>
     <div class="menu-t">

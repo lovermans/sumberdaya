@@ -23,23 +23,7 @@ $route->get('/unduh-panduan/{berkas?}', 'App\Http\Controllers\SumberDaya@unduhPa
 
 require __DIR__.'/auth.php';
 
-$route->group(['prefix' => 'komponen', 'as' => 'komponen.'], function () use ($route) {
-    $route->get('/avatar', function () {
-        return response(view('menu')->fragment('avatar'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'tbl-menu']);
-    })->name('avatar');
-    $route->get('/menu-avatar', function () {
-        return response(view('menu')->fragment('menu-avatar'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'menu-avatar']);
-    })->name('menu-avatar');
-    $route->get('/menu-aplikasi', function () {
-        return response(view('menu')->fragment('menu-aplikasi'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'menu-aplikasi']);
-    })->name('menu-aplikasi');
-    $route->get('/pilih-sumberdaya', function () {
-        return response(view('menu')->fragment('pilih-sumber_daya'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'pilih-sumber_daya']);
-    })->name('pilih-sumberdaya');
-    $route->get('/menu-sdm', function () {
-        return response(view('sdm.navigasi'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'navigasi-sdm']);
-    })->name('menu-sdm');
-})->middleware('auth');
+$route->get('/komponen', 'App\Http\Controllers\SumberDaya@komponen')->name('komponen')->middleware('auth');
 
 $route->group(['prefix' => 'atur', 'as' => 'atur.', 'namespace' => 'App\Http\Controllers'], function () use ($route){
     $route->get('/', 'Pengaturan@index')->name('data');

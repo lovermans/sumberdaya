@@ -96,6 +96,12 @@
                 })();
             });
         }();
+        async function cariElemen(el) {
+            while ( document.querySelector(el) === null) {
+                await new Promise(resolve => requestAnimationFrame(resolve));
+            };
+            return document.querySelector(el);
+        };
     </script>
 </body>
 </html>

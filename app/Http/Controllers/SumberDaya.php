@@ -6,6 +6,17 @@ use App\Tambahan\FungsiStatis;
 
 class SumberDaya
 {
+    public function komponen()
+    {
+        $app = app();
+        $reqs = $app->request;
+
+        return $reqs->filled('komponen') && $reqs->pjax() ?
+        $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(
+            $app->view->make($reqs->komponen)->fragmentIf($reqs->filled('fragment'), $reqs->fragment)
+            )->withHeaders(['Vary' => 'Accept']) : '';
+    }
+
     public function mulai()
     {
         $app = app();

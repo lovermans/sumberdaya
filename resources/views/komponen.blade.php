@@ -1,67 +1,55 @@
 @if ($rekRangka->pjax())
 <script>
-    (async() => {
-        while(!window.aplikasiSiap) {
-            await new Promise((resolve,reject) =>
-            setTimeout(resolve, 1000));
-        }
-
-        var avatar = document.getElementById('tbl-menu'),
-            pilihSumberdaya = document.getElementById('pilih-sumber_daya'),
-            menuSDM = document.getElementById('navigasi-sdm'),
-            menuAvatar = document.getElementById('menu-avatar'),
-            menuAplikasi = document.getElementById('menu-aplikasi');
-
+    
         @if ($userRangka)
-        if (!avatar.innerHTML.trim()) {
+        if (!document.getElementById("tbl-menu").innerHTML.trim()) {
             lemparXHR({
             tujuan : "#tbl-menu",
-            tautan : "{{ $urlRangka->route('komponen.avatar', [], false) }}",
+            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'avatar'], false) !!}",
             normalview : true
             });
 
             lemparXHR({
             tujuan : "#menu-avatar",
-            tautan : "{{ $urlRangka->route('komponen.menu-avatar', [], false) }}",
+            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-avatar'], false) !!}",
             normalview : true
             });
         };
 
-        if (!pilihSumberdaya.innerHTML.trim()) {
+        if (!document.getElementById("pilih-sumber_daya").innerHTML.trim()) {
             lemparXHR({
             tujuan : "#pilih-sumber_daya",
-            tautan : "{{ $urlRangka->route('komponen.pilih-sumberdaya', [], false) }}",
+            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'pilih-sumber_daya'], false) !!}",
             normalview : true
             });
 
             lemparXHR({
             tujuan : "#menu-aplikasi",
-            tautan : "{{ $urlRangka->route('komponen.menu-aplikasi', [], false) }}",
+            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-aplikasi'], false) !!}",
             normalview : true
             });
         };
 
         @else
-        avatar.innerHTML = "";
-        menuAvatar.innerHTML = "";
-        pilihSumberdaya.innerHTML = "";
-        menuAplikasi.innerHTML = "";
+        document.getElementById("pilih-sumber_daya").replaceChildren();
+        document.getElementById("menu-aplikasi").replaceChildren();
+        document.getElementById("tbl-menu").replaceChildren();
+        document.getElementById("menu-avatar").replaceChildren();
         
         @endif
 
         @if($userRangka && $rekRangka->routeIs('sdm.*', 'register'))
-        if (!menuSDM.innerHTML.trim()) {
+        if (!document.getElementById("navigasi-sdm").innerHTML.trim()) {
             lemparXHR({
             tujuan : "#navigasi-sdm",
-            tautan : "{{ $urlRangka->route('komponen.menu-sdm', [], false) }}",
+            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'sdm.navigasi'], false) !!}",
             normalview : true
             });
         };
         @else
-        var NavSDM = ['/atur', '/tentang-aplikasi'];
-        if (!NavSDM.includes(location.pathname)) menuSDM.innerHTML = "";
+        var NavSDM = ["/atur", "/tentang-aplikasi"];
+        if (!NavSDM.includes(location.pathname)) document.getElementById("navigasi-sdm").replaceChildren();
         @endif
 
-    })();
 </script>
 @endif
