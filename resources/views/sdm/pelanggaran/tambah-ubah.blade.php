@@ -102,7 +102,7 @@
         formatIsian('#form_sdm_pelanggaran_tambahUbah .isian :is(textarea,input[type=text],input[type=search])');
     </script>
 
-    @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+    @include('pemberitahuan')
 
 </div>
 @endsection

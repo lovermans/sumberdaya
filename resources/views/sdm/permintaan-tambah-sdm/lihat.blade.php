@@ -105,7 +105,7 @@
         @endisset
     </div>
 
-    @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+    @include('pemberitahuan')
     @include('komponen')
 </div>
 @endsection

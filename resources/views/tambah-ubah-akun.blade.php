@@ -596,9 +596,19 @@
             pilDasar('#form_tambahUbahAkun .pil-dasar');
             formatIsian('#form_tambahUbahAkun .isian :is(textarea,input[type=text],input[type=search])');
         })();
+        function siapkanFoto(berkas) {
+            if (!window.SiapkanFoto) {
+                import(location.origin + '/siapkan-foto-es.js?id=202304042113').then(({default : SF}) => {
+                    window.SiapkanFoto = SF; 
+                    new SiapkanFoto(berkas);
+                });
+            } else {
+                    new SiapkanFoto(berkas);
+            };
+        }
     </script>
 
-    @includeWhen($rekRangka->session()->has('spanduk') || $rekRangka->session()->has('pesan') || $errors->any(), 'pemberitahuan')
+    @include('pemberitahuan')
     @include('komponen')
 </div>
 @endsection

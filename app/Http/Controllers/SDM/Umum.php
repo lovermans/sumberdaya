@@ -443,6 +443,7 @@ class Umum
             $foto = $valid->only('foto_profil')['foto_profil'] ?? false;
             $berkas = $valid->only('sdm_berkas')['sdm_berkas'] ?? false;
             $no_absen = $valid->only('sdm_no_absen')['sdm_no_absen'];
+            $session = $reqs->session();
             
             if ($foto) {
                 $foto->storeAs('sdm/foto-profil', $no_absen . '.webp');
@@ -451,12 +452,21 @@ class Umum
             if ($berkas && $pengurus && (blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0) || ($no_absen_sdm == $akun->sdm_no_absen))) {
                 $berkas->storeAs('sdm/berkas', $no_absen . '.pdf');
             }
+
+            if ($foto && $no_absen == $no_absen_sdm) {
+                $sesiJS = "lemparXHR({
+                    tujuan : '#tbl-menu',
+                    tautan : '{$app->url->route('komponen', ['komponen' => 'menu', 'fragment' => 'avatar'], false)}',
+                    normalview : true
+                    });";
+                $session->flash('sesiJS', $sesiJS);
+            }
             
             $fungsiStatis->hapusCacheSDMUmum();
             
             $pesan = $fungsiStatis->statusBerhasil();
 
-            $perujuk = $reqs->session()->get('tautan_perujuk');
+            $perujuk = $session->get('tautan_perujuk');
 
             $redirect = $app->redirect;
 

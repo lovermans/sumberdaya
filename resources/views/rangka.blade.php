@@ -102,6 +102,9 @@
             };
             return document.querySelector(el);
         };
+        function ringkasTabel (el) {
+            el.previousElementSibling.classList.toggle('ringkas');
+        };
     </script>
 </body>
 </html>
