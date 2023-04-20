@@ -8,7 +8,7 @@
 /public/*.json
 /public/*.svg
 /storage/*.key
-/vendor
+/vendor*
 .env
 .env.backup
 .phpunit.result.cache
@@ -20,3 +20,5 @@ yarn-error.log
 /.vscode
 .rnd
 /resources/views/css.blade.php
+*_old*.json
+*_old*.lock

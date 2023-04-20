@@ -32,9 +32,9 @@
             <li>Basis Bahasa : {{ 'PHP '.PHP_VERSION }}.</li>
             <li>Kerangka : {{ 'Laravel '.$appRangka->version() }}.</li>
             <li>Basis Data : MariaDB 10.8.3.</li>
-            <li>Webserver : Nginx 1.21.6.</li>
-            <li>Pengelola Rantai Paket : Composer 2.3.6.</li>
-            <li>Pengelola Aset Paket Antarmuka Pengguna : Node 16.14.0 + NPM 8.13.2 + Laravel Mix 6.0.43.</li>
+            <li>Webserver : Nginx 1.24.0.</li>
+            <li>Pengelola Rantai Paket : Composer 2.5.5.</li>
+            <li>Pengelola Aset Paket Antarmuka Pengguna : Node 16.14.0 + NPM 9.2.0 + Laravel Mix 6.0.43.</li>
             <li>Paket Tambahan :
                 <ul>
                     <li>Valet Windows : <a href="https://github.com/cretueusebiu/valet-windows" target="_blank" rel="noopener noreferrer">cretueusebiu/valet-windows</a>.</li>
