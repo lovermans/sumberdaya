@@ -21,5 +21,6 @@ mix.scripts('resources/js/siapkan-foto-es.js', 'public/siapkan-foto-es.js').vers
 // mix.combine(['resources/js/js.js', 'resources/js/slimselect.js'], 'public/interaksi.js', true).version();
 mix.css('resources/css/app.css', 'public/tampilan.css').version();
 mix.copy('resources/css/gambar/*.webp', 'public/images').version();
+mix.copy('resources/css/gambar/Ikon Aplikasi*.png', 'public/images').version();
 mix.copy('resources/css/svg/*.svg', 'public').version();
 // mix.copy('public/tampilan.css', 'resources/views/css.blade.php');

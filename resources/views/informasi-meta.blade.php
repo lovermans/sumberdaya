@@ -26,3 +26,7 @@
 <link href="{{ $mixRangka('images/Logo Perusahaan.webp') }}" rel="image_src">
 <link href="/favicon.ico" rel="icon" type="image/x-icon">
 <link href="{{ $mixRangka('tampilan.css') }}" rel="stylesheet">
+
+{{-- @if ($rekRangka->isSecure()) --}}
+<link href="{{ $urlRangka->asset('pwa-manifest.json') }}" rel="manifest">
+{{-- @endif --}}

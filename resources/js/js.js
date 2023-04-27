@@ -35,13 +35,13 @@ document.addEventListener('click', function (e) {
             var navAktif = document.querySelectorAll('nav a.aktif, aside a.aktif'),
                 appAktif = document.querySelectorAll('aside#menu-aplikasi a'),
                 urlAktif = new URL(alamat);
-            
+
             for (let z = 0; z < navAktif.length; z++) {
                 navAktif[z].classList.remove('aktif');
             };
 
             a.classList.add('aktif');
-            
+
             if (appAktif && urlAktif.pathname.length > 1) {
                 for (let m = 0; m < appAktif.length; m++) {
                     if (urlAktif.href.includes(appAktif[m].href) && appAktif[m].pathname.length > 1) {
@@ -57,18 +57,18 @@ document.addEventListener('click', function (e) {
         menuCb.checked = false;
         aplikasiCb.checked = false;
         return lemparXHR({
-            rekam : simpan,
-            tujuan : ke,
-            tautan : alamat,
-            method : metode,
-            pesanmuat : pesan,
-            postdata : data,
-            strim : laju,
-            enkod : enkode,
-            mintajs : singkat,
-            topview : tn,
-            normalview : nn,
-            fragmen : frag
+            rekam: simpan,
+            tujuan: ke,
+            tautan: alamat,
+            method: metode,
+            pesanmuat: pesan,
+            postdata: data,
+            strim: laju,
+            enkod: enkode,
+            mintajs: singkat,
+            topview: tn,
+            normalview: nn,
+            fragmen: frag
         });
     }
     if (e.target.matches('.menu-j')) {
@@ -105,33 +105,33 @@ document.addEventListener('submit', function (e) {
             var rekam = a.dataset.rekam,
                 simpan = rekam == 'false' ? false : true;
             return lemparXHR({
-                rekam : simpan,
-                tujuan : alamat,
-                tautan : ke,
-                method : metode,
-                pesanmuat : pesan,
-                strim : prog, 
-                mintajs : singkat,
-                topview : tn,
-                normalview : nn,
-                fragmen : frag
+                rekam: simpan,
+                tujuan: alamat,
+                tautan: ke,
+                method: metode,
+                pesanmuat: pesan,
+                strim: prog,
+                mintajs: singkat,
+                topview: tn,
+                normalview: nn,
+                fragmen: frag
             });
         }
         if (metode == 'POST') {
             var rekam = a.dataset.rekam,
                 simpan = rekam == 'true' ? true : false;
             return lemparXHR({
-                rekam : simpan,
-                tujuan : alamat,
-                tautan : ke,
-                method : metode,
-                pesanmuat : pesan,
-                postdata : data,
-                strim : prog,
-                mintajs : singkat,
-                topview : tn,
-                normalview : nn,
-                fragmen : frag
+                rekam: simpan,
+                tujuan: alamat,
+                tautan: ke,
+                method: metode,
+                pesanmuat: pesan,
+                postdata: data,
+                strim: prog,
+                mintajs: singkat,
+                topview: tn,
+                normalview: nn,
+                fragmen: frag
             });
         }
         return alert('Periksa kembali formulir.');
@@ -151,7 +151,7 @@ window.lemparXHR = function (data) {
         enkod = data.enkod ?? false,
         mintajs = data.mintajs ?? false,
         topview = data.topview ?? false,
-        normalview = data.normalview ?? false; 
+        normalview = data.normalview ?? false,
         fragmen = data.fragmen ?? false;
     var isi = document.querySelector(sisi) ?? document.querySelector('#isi') ?? document.querySelector('body');
     if (!tautan.startsWith(location.origin)) {
@@ -162,12 +162,12 @@ window.lemparXHR = function (data) {
         pesan = '';
     };
     if (rekam) {
-        rekamTautan({tujuan : sisi, tautan : tautan, method : metode, pesan : pesan, enkod : enkod, topview : topview, normalview : normalview});
+        rekamTautan({ tujuan: sisi, tautan: tautan, method: metode, pesan: pesan, enkod: enkod, topview: topview, normalview: normalview });
     }
     // g ? isi.prepend(range.createContextualFragment('')) : isi.prepend(range.createContextualFragment(pesan));
-    topview ? scrollTo(0,0) :
-    normalview ? scrollBy(0,0) :
-    isi.scrollIntoView();
+    topview ? scrollTo(0, 0) :
+        normalview ? scrollBy(0, 0) :
+            isi.scrollIntoView();
     if (strim) {
         let lastResponseLength;
         let progressResponse;
@@ -175,24 +175,24 @@ window.lemparXHR = function (data) {
         let isiRespon;
         let responseLength;
 
-        for(var IDacak = '', b = 36; IDacak.length < 9;) {
+        for (var IDacak = '', b = 36; IDacak.length < 9;) {
             IDacak += (Math.random() * b | 0).toString(b);
         };
         var wadahPesan = '<div class="pesan tcetak">' +
             '<div id="' + IDacak + '"><p>Menunggu jawaban server...</div>' +
             '<button class="tutup-i"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="/ikon.svg?id=ec47ccd0fadc02f2d210d55d23c3c657#tutup" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></button></div>';
-        
+
         isi.prepend(range.createContextualFragment(wadahPesan));
 
         var isiPesan = document.getElementById(IDacak);
 
         xhr.onprogress = function (e) {
-            
+
             responser = e.currentTarget.responseText;
             responseLength = responser.length;
             progressResponse = lastResponseLength ? responser.substring(lastResponseLength) : responser;
             isiRespon = range.createContextualFragment(progressResponse);
-            
+
             // isiPemberitahuan('pemberitahuan', '');
             // console.log(progressResponse);
             isiPesan.prepend(isiRespon);
@@ -215,7 +215,7 @@ window.lemparXHR = function (data) {
 
             if (tautan !== xhr.responseURL) {
                 if (xhr.getResponseHeader('Content-Type').startsWith('text/html')) {
-                    rekamTautan({tautan : xhr.responseURL});
+                    rekamTautan({ tautan: xhr.responseURL });
                 } else {
                     location = xhr.responseURL;
                     return true;
@@ -223,7 +223,7 @@ window.lemparXHR = function (data) {
             };
 
             var responXHR = xhr.responseText,
-            responTujuan = xhr.getResponseHeader('X-Tujuan');
+                responTujuan = xhr.getResponseHeader('X-Tujuan');
 
             if (responXHR) {
                 if (responXHR.startsWith('<!DOCTYPE html>')) {
@@ -287,23 +287,23 @@ function rekamTautan(data) {
         'pesan': data.pesan ?? null,
         'enkode': data.enkod ?? null,
         'topview': data.topview ?? false,
-        'normalview' : data.normalview ?? false
+        'normalview': data.normalview ?? false
     }, judul, data.tautan);
 };
 
 window.onpopstate = function (p) {
     if (p.state?.rute) {
         lemparXHR({
-            tujuan : p.state.tujuan,
-            tautan : p.state.rute,
-            method : p.state.metode,
-            pesanmuat : p.state.pesan,
-            enkod : p.state.enkode,
-            topview : p.state.topview,
-            normalview : p.state.normalview
+            tujuan: p.state.tujuan,
+            tautan: p.state.rute,
+            method: p.state.metode,
+            pesanmuat: p.state.pesan,
+            enkod: p.state.enkode,
+            topview: p.state.topview,
+            normalview: p.state.normalview
         });
-    } else { 
-        location.reload(); 
+    } else {
+        location.reload();
     };
 };
 
@@ -397,8 +397,8 @@ window.pilCari = function (a) {
 
 window.muatSlimSelect = function (data) {
     if (!window.SlimSelect) {
-        import('./slimselect-es.js?id=202304042113').then(({default : SS}) => {
-            window.SlimSelect = SS; 
+        import('./slimselect-es.js?id=202304042113').then(({ default: SS }) => {
+            window.SlimSelect = SS;
             new SlimSelect(data);
         });
     } else {
