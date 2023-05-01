@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta content="Laravel 9" name="generator">
+<meta content="Laravel 10" name="generator">
 <meta name="csrf-token" content="{{ $appRangka->session->token() }}">
 <title>{{ $confRangka->get('app.name', 'Laravel') }}</title>
 <meta name="description" content="{{ $confRangka->get('app.description') }}">
@@ -15,18 +15,17 @@
 <meta content="#d32f2f" name="theme-color">
 <meta content="#d32f2f" name="msapplication-TileColor">
 <meta content="#d32f2f" name="msapplication-navbutton-color">
-<meta content="{{ $urlRangka->route('mulai') }}" name="msapplication-starturl">
+<meta content="{{ $urlRangka->route('mulai', [], false) }}" name="msapplication-starturl">
 <link href="{{ $rekRangka->url() }}" rel="canonical">
 <link href="{{ $confRangka->get('app.author') }}" rel="author">
 <link href="{{ $confRangka->get('app.publisher') }}" rel="publisher">
-<link href="{{ $mixRangka('images/Logo Perusahaan.webp') }}" rel="shortcut icon">
-<link href="{{ $mixRangka('images/Logo Perusahaan.webp') }}" rel="icon" sizes="192x192">
-<link href="{{ $mixRangka('images/Logo Perusahaan.webp') }}" rel="apple-touch-icon">
-<meta content="{{ $mixRangka('images/Logo Perusahaan.webp') }}" name="msapplication-TileImage">
-<link href="{{ $mixRangka('images/Logo Perusahaan.webp') }}" rel="image_src">
+<link href="{{ $mixRangka('images/Ikon Aplikasi 192.png') }}" rel="shortcut icon">
+<link href="{{ $mixRangka('images/Ikon Aplikasi 192.png') }}" rel="icon" sizes="192x192">
+<link href="{{ $mixRangka('images/Ikon Aplikasi 512.png') }}" rel="icon" sizes="512x512">
+<link href="{{ $mixRangka('images/Ikon Aplikasi 192.png') }}" rel="apple-touch-icon">
+<meta content="{{ $mixRangka('images/Ikon Aplikasi 192.png') }}" name="msapplication-TileImage">
+<link href="{{ $mixRangka('images/Ikon Aplikasi 192.png') }}" rel="image_src">
 <link href="/favicon.ico" rel="icon" type="image/x-icon">
-<link href="{{ $mixRangka('tampilan.css') }}" rel="stylesheet">
-
-{{-- @if ($rekRangka->isSecure()) --}}
-<link href="{{ $urlRangka->asset('pwa-manifest.json') }}" rel="manifest">
-{{-- @endif --}}
+<link href="{{ $mixRangka('/tampilan.css') }}" rel="stylesheet">
+<link href="/pwa-manifest.json" crossorigin="use-credentials" rel="manifest">
+<script src="{{ $mixRangka('/interaksi.js') }}" defer></script>

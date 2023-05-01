@@ -13,24 +13,27 @@
 
 $route = app('router');
 
-$route->get('/','App\Http\Controllers\SumberDaya@mulai')->name('mulai');
-$route->view('/perlu-javascript','perlu-javascript')->name('perlu-javascript');
+$route->get('/', 'App\Http\Controllers\SumberDaya@mulai')->name('mulai');
+$route->view('/perlu-javascript', 'perlu-javascript')->name('perlu-javascript');
 $route->get('/tentang-aplikasi', 'App\Http\Controllers\SumberDaya@tentangAplikasi')->name('tentang-aplikasi');
-$route->view('/antarmuka','antarmuka')->name('antarmuka');
+$route->get('/mulai-aplikasi', 'App\Http\Controllers\SumberDaya@mulaiAplikasi')->name('mulai-aplikasi');
+$route->view('/antarmuka', 'antarmuka')->name('antarmuka');
 $route->get('/unduh/{berkas?}', 'App\Http\Controllers\SumberDaya@unduh')->name('unduh');
 $route->get('/unduh-panduan/{berkas?}', 'App\Http\Controllers\SumberDaya@unduhPanduan')->where('berkas', '.*')->name('unduh.panduan')->middleware('signed');
 // $route->get('/format-foto', 'App\Http\Controllers\SumberDaya@formatFoto')->name('format-foto');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
-$route->get('/komponen', 'App\Http\Controllers\SumberDaya@komponen')->name('komponen')->middleware('auth');
+$route->get('/komponen', 'App\Http\Controllers\SumberDaya@komponen')->name('komponen');
 
-$route->group(['prefix' => 'atur', 'as' => 'atur.', 'namespace' => 'App\Http\Controllers'], function () use ($route){
+$route->get('/periksa-pengguna', 'App\Http\Controllers\SumberDaya@PeriksaPengguna')->name('periksa-pengguna');
+
+$route->group(['prefix' => 'atur', 'as' => 'atur.', 'namespace' => 'App\Http\Controllers'], function () use ($route) {
     $route->get('/', 'Pengaturan@index')->name('data');
     $route->get('/lihat/{uuid?}', 'Pengaturan@lihat')->name('lihat');
-    $route->match(['get','post'],'/tambah','Pengaturan@tambah')->name('tambah');
-    $route->match(['get','post'], '/ubah/{uuid?}', 'Pengaturan@ubah')->name('ubah');
-    $route->match(['get','post'], '/unggah', 'Pengaturan@unggah')->name('unggah');
+    $route->match(['get', 'post'], '/tambah', 'Pengaturan@tambah')->name('tambah');
+    $route->match(['get', 'post'], '/ubah/{uuid?}', 'Pengaturan@ubah')->name('ubah');
+    $route->match(['get', 'post'], '/unggah', 'Pengaturan@unggah')->name('unggah');
     $route->get('/contoh-unggah', 'Pengaturan@contohUnggah')->name('contoh-unggah');
 });
 

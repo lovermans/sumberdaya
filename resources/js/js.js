@@ -212,7 +212,7 @@ window.lemparXHR = function (data) {
         xhr.onload = function () {
             // console.log(this.getAllResponseHeaders());
             // console.log(this.getResponseHeader('X-Kode-Javascript'));
-
+            // if (xhr.readyState == 4) {
             if (tautan !== xhr.responseURL) {
                 if (xhr.getResponseHeader('Content-Type').startsWith('text/html')) {
                     rekamTautan({ tautan: xhr.responseURL });
@@ -245,6 +245,7 @@ window.lemparXHR = function (data) {
                 muat.classList.toggle('mati');
                 return;
             };
+            // };
         };
 
         xhr.ontimeout = function (to) {

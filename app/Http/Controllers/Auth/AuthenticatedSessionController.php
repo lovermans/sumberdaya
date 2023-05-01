@@ -21,7 +21,7 @@ class AuthenticatedSessionController extends Controller
         $HtmlPenuh = $app->view->make('mulai');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
         return $app->request->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')
-                                ->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlIsi;
+            ->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlIsi;
     }
 
     /**
@@ -44,18 +44,19 @@ class AuthenticatedSessionController extends Controller
             $hash = $app->hash;
             $sandiKtp = $hash->check($pengguna->sdm_no_ktp, $sandi);
             $sandiBawaan = $hash->check('penggunaportalsdm', $sandi);
-            
+
             if ($sandiKtp || $sandiBawaan) {
                 $request->session()->put(['spanduk' => 'Sandi Anda kurang aman.']);
             }
+
+            $request->session()->now('pesan', 'Berhasil masuk aplikasi.');
         }
 
-        $request->session()->now('pesan', 'Berhasil masuk aplikasi.');
 
         $HtmlPenuh = $app->view->make('mulai');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
         return $request->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')
-                                ->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlIsi;
+            ->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlIsi;
     }
 
     /**

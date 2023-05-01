@@ -12,12 +12,20 @@ class SumberDaya
         $reqs = $app->request;
 
         return $reqs->filled('komponen') && $reqs->pjax() ?
-        $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(
-            $app->view->make($reqs->komponen)->fragmentIf($reqs->filled('fragment'), $reqs->fragment)
+            $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(
+                $app->view->make($reqs->komponen)->fragmentIf($reqs->filled('fragment'), $reqs->fragment)
             )->withHeaders(['Vary' => 'Accept']) : '';
     }
 
     public function mulai()
+    {
+        $app = app();
+
+        $HtmlPenuh = $app->view->make('rangka');
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlPenuh)->withHeaders(['Vary' => 'Accept']);
+    }
+
+    public function mulaiAplikasi()
     {
         $app = app();
         $reqs = $app->request;
@@ -28,10 +36,13 @@ class SumberDaya
             $hash = $app->hash;
             $sandiKtp = $hash->check($pengguna->sdm_no_ktp, $sandi);
             $sandiBawaan = $hash->check('penggunaportalsdm', $sandi);
-            
+            $sesi = $reqs->session();
+
             if ($sandiKtp || $sandiBawaan) {
-                $reqs->session()->put(['spanduk' => 'Sandi Anda kurang aman.']);
+                $sesi->put(['spanduk' => 'Sandi Anda kurang aman.']);
             }
+
+            $sesi->now('pesan', 'Berhasil masuk aplikasi.');
         }
 
         $HtmlPenuh = $app->view->make('mulai');
@@ -57,13 +68,13 @@ class SumberDaya
     public function unduhPanduan(FungsiStatis $fungsiStatis, $berkas)
     {
         $fungsiStatis->hapusBerkasLama();
-        
+
         $app = app();
 
         abort_unless($berkas && $app->filesystem->exists("{$berkas}"), 404, 'Berkas Tidak Ditemukan.');
 
         $jalur = $app->storagePath("app/{$berkas}");
-        
+
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->file($jalur, [
             'Cache-Control' => 'no-cache, no-store, must-revalidate',
             'Expires' => '0',
@@ -71,6 +82,13 @@ class SumberDaya
             'Content-Disposition' => 'inline',
             'Content-Type' => $app->files->mimeType($jalur),
         ]);
+    }
+
+    public function periksaPengguna()
+    {
+        $app = app();
+        $respon = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        $app->request->user() ? $respon->make('true')->withHeaders(['Vary' => 'Accept']) : $respon->make('false')->withHeaders(['Vary' => 'Accept']);
     }
 
     public function formatFoto()
@@ -81,5 +99,4 @@ class SumberDaya
 
         // return 'selesai';
     }
-
 }

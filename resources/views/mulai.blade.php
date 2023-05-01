@@ -2,8 +2,9 @@
 
 @section('isi')
 <div id="mulai-aplikasi">
-
-    <form class="form-xhr kartu" method="POST" data-tn="true" action="{{ $urlRangka->route('login', [], false) }}">
+    @if (!$rekRangka->user())
+    <form id="form-masuk" class="form-xhr kartu" method="POST" data-tn="true"
+        action="{{ $urlRangka->route('login', [], false) }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
 
         <div class="isian normal">
@@ -28,6 +29,7 @@
         <button class="utama pelengkap" type="submit">MASUK</button>
     </form>
 
+    @else
     <div id="mengerti-mulai-aplikasi" class="pesan-internal">
         <p>
             Tekan/sentuh tombol
@@ -39,8 +41,8 @@
         </p>
 
         <a class="sekunder" href="#" onclick="event.preventDefault();
-            localStorage.setItem('mengerti-mulai-aplikasi', true);
-            this.parentElement.remove()">
+        localStorage.setItem('mengerti-mulai-aplikasi', true);
+        this.parentElement.setAttribute('sembunyikan', '')">
             MENGERTI
         </a>
 
@@ -48,9 +50,9 @@
     </div>
 
     <script>
-        if(localStorage.getItem('mengerti-mulai-aplikasi') == 'true') document.getElementById('mengerti-mulai-aplikasi').remove();
+        if(localStorage.getItem('mengerti-mulai-aplikasi') == 'true') document.getElementById('mengerti-mulai-aplikasi').setAttribute('sembunyikan', '');
     </script>
-
+    @endif
 
     <div class="kartu">
         <h2>Sejarah</h2>

@@ -1,8 +1,7 @@
 @if ($rekRangka->pjax())
 <script>
-    
-        @if ($userRangka)
-        if (!document.getElementById("tbl-menu").innerHTML.trim()) {
+    @if ($userRangka)
+        if (!document.getElementById("tbl-menu")?.innerHTML.trim()) {
             lemparXHR({
             tujuan : "#tbl-menu",
             tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'avatar'], false) !!}",
@@ -16,7 +15,7 @@
             });
         };
 
-        if (!document.getElementById("pilih-sumber_daya").innerHTML.trim()) {
+        if (!document.getElementById("pilih-sumber_daya")?.innerHTML.trim()) {
             lemparXHR({
             tujuan : "#pilih-sumber_daya",
             tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'pilih-sumber_daya'], false) !!}",
@@ -31,15 +30,15 @@
         };
 
         @else
-        document.getElementById("pilih-sumber_daya").replaceChildren();
-        document.getElementById("menu-aplikasi").replaceChildren();
-        document.getElementById("tbl-menu").replaceChildren();
-        document.getElementById("menu-avatar").replaceChildren();
+        document.getElementById("pilih-sumber_daya")?.replaceChildren();
+        document.getElementById("menu-aplikasi")?.replaceChildren();
+        document.getElementById("tbl-menu")?.replaceChildren();
+        document.getElementById("menu-avatar")?.replaceChildren();
         
         @endif
 
         @if($userRangka && $rekRangka->routeIs('sdm.*', 'register'))
-        if (!document.getElementById("navigasi-sdm").innerHTML.trim()) {
+        if (!document.getElementById("navigasi-sdm")?.innerHTML.trim()) {
             lemparXHR({
             tujuan : "#navigasi-sdm",
             tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'sdm.navigasi'], false) !!}",
@@ -48,7 +47,7 @@
         };
         @else
         var NavSDM = ["/atur", "/tentang-aplikasi"];
-        if (!NavSDM.includes(location.pathname)) document.getElementById("navigasi-sdm").replaceChildren();
+        if (!NavSDM.includes(location.pathname)) document.getElementById("navigasi-sdm")?.replaceChildren();
         @endif
 
 </script>
