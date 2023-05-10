@@ -1,4 +1,4 @@
-var CACHE_VERSION = 202305020021;
+var CACHE_VERSION = 202305021024;
 var CURRENT_CACHES = {
     prefetch: 'sumberdaya-cache-v' + CACHE_VERSION
 };
@@ -84,14 +84,13 @@ self.addEventListener('fetch', function (event) {
     event.respondWith(
         caches.match(rek, { ignoreSearch: true, ignoreVary: true }).then(
             function (cr) {
-                if (cr) return cr;
-                return fetch(event.request).then(
+                return cr ? cr : fetch(event.request).then(
                     function (fr) {
-                        return fr
+                        return fr;
                     }
                 ).catch(
                     function (er) {
-                        return caches.match('/offline.html').then(
+                        caches.match('/offline.html').then(
                             function (x) {
                                 return x;
                             }
