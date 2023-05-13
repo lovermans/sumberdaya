@@ -15,9 +15,9 @@ class PermintaanTambahSDM
         $reqs = $app->request;
         $pengguna = $reqs->user();
         $str = str();
-        
+
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
-        
+
         $validator = $app->validator->make(
             $reqs->all(),
             [
@@ -44,7 +44,7 @@ class PermintaanTambahSDM
                 'urut.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.'
             ]
         );
-        
+
         if ($validator->fails()) {
             return $app->redirect->route('sdm.permintaan-tambah-sdm.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
@@ -57,7 +57,7 @@ class PermintaanTambahSDM
         $lokasis = $cacheAtur->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
             return $query->whereIn('atur_butir', $lingkupIjin)->sortBy(['atur_butir', 'asc']);
         });
-        
+
         $urutArray = $reqs->urut;
 
         $uruts = $urutArray ? implode(',', array_filter($urutArray)) : null;
@@ -65,66 +65,66 @@ class PermintaanTambahSDM
         $database = $app->db;
 
         $tabelSub = $this->dataDasar()->clone()->addSelect('tambahsdm_uuid', 'b.sdm_uuid', 'b.sdm_nama', $database->raw('COUNT(a.sdm_no_permintaan) as tambahsdm_terpenuhi, MAX(a.sdm_tgl_gabung) as pemenuhan_terkini'))
-        ->leftJoin('sdms as a', 'tambahsdm_no', '=', 'a.sdm_no_permintaan')
-        ->join('sdms as b', 'tambahsdm_sdm_id', '=', 'b.sdm_no_absen')
-        ->groupBy('tambahsdm_no');
+            ->leftJoin('sdms as a', 'tambahsdm_no', '=', 'a.sdm_no_permintaan')
+            ->join('sdms as b', 'tambahsdm_sdm_id', '=', 'b.sdm_no_absen')
+            ->groupBy('tambahsdm_no');
 
         $kataKunci = $reqs->kata_kunci;
 
         $cari = $database->query()->addSelect('tsdm.*')->fromSub($tabelSub, 'tsdm')
-        ->when($reqs->tambahsdm_status, function ($query) use ($reqs) {
-            $query->whereIn('tambahsdm_status', (array) $reqs->tambahsdm_status);
-        })
-        ->when($reqs->tambahsdm_penempatan, function ($query) use ($reqs) {
-            $query->whereIn('tambahsdm_penempatan', (array) $reqs->tambahsdm_penempatan);
-        })
-        ->when($kataKunci, function ($query) use ($kataKunci) {
-            $query->where(function ($group) use ($kataKunci) {
-                $group->where('tambahsdm_no', 'like', '%' . $kataKunci . '%')
-                ->orWhere('tambahsdm_posisi', 'like', '%' . $kataKunci . '%')
-                ->orWhere('tambahsdm_sdm_id', 'like', '%' . $kataKunci . '%')
-                ->orWhere('sdm_nama', 'like', '%' . $kataKunci . '%');
-            });
-        })
-        ->when($reqs->tgl_diusulkan_mulai && $reqs->tgl_diusulkan_sampai, function ($query) use ($reqs) {
-            $query->whereBetween('tambahsdm_tgl_diusulkan', [$reqs->tgl_diusulkan_mulai, $reqs->tgl_diusulkan_sampai]);
-        })
-        ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-            $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
-        })
-        ->when($reqs->posisi, function ($query) use ($reqs) {
-            $query->whereIn('tambahsdm_posisi', (array) $reqs->posisi);
-        })
-        ->when($reqs->tambahsdm_laju == 'BELUM TERPENUHI', function ($query) {
-            $query->whereColumn('tambahsdm_jumlah', '>' ,'tambahsdm_terpenuhi');
-        })
-        ->when($reqs->tambahsdm_laju == 'SUDAH TERPENUHI', function ($query) {
-            $query->whereColumn('tambahsdm_jumlah', 'tambahsdm_terpenuhi');
-        })
-        ->when($reqs->tambahsdm_laju == 'KELEBIHAN', function ($query) {
-            $query->whereColumn('tambahsdm_jumlah', '<' ,'tambahsdm_terpenuhi');
-        })
-        ->when(
-            $uruts,
-            function ($query, $uruts) {
-                $query->orderByRaw($uruts);
-            },
-            function ($query) {
-                $query->orderBy('tambahsdm_no', 'desc');
-            }
-        );
+            ->when($reqs->tambahsdm_status, function ($query) use ($reqs) {
+                $query->whereIn('tambahsdm_status', (array) $reqs->tambahsdm_status);
+            })
+            ->when($reqs->tambahsdm_penempatan, function ($query) use ($reqs) {
+                $query->whereIn('tambahsdm_penempatan', (array) $reqs->tambahsdm_penempatan);
+            })
+            ->when($kataKunci, function ($query) use ($kataKunci) {
+                $query->where(function ($group) use ($kataKunci) {
+                    $group->where('tambahsdm_no', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('tambahsdm_posisi', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('tambahsdm_sdm_id', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('sdm_nama', 'like', '%' . $kataKunci . '%');
+                });
+            })
+            ->when($reqs->tgl_diusulkan_mulai && $reqs->tgl_diusulkan_sampai, function ($query) use ($reqs) {
+                $query->whereBetween('tambahsdm_tgl_diusulkan', [$reqs->tgl_diusulkan_mulai, $reqs->tgl_diusulkan_sampai]);
+            })
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
+            })
+            ->when($reqs->posisi, function ($query) use ($reqs) {
+                $query->whereIn('tambahsdm_posisi', (array) $reqs->posisi);
+            })
+            ->when($reqs->tambahsdm_laju == 'BELUM TERPENUHI', function ($query) {
+                $query->whereColumn('tambahsdm_jumlah', '>', 'tambahsdm_terpenuhi');
+            })
+            ->when($reqs->tambahsdm_laju == 'SUDAH TERPENUHI', function ($query) {
+                $query->whereColumn('tambahsdm_jumlah', 'tambahsdm_terpenuhi');
+            })
+            ->when($reqs->tambahsdm_laju == 'KELEBIHAN', function ($query) {
+                $query->whereColumn('tambahsdm_jumlah', '<', 'tambahsdm_terpenuhi');
+            })
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->orderBy('tambahsdm_no', 'desc');
+                }
+            );
 
         if ($reqs->unduh == 'excel') {
-            $berkas->unduhIndexPermintaanTambahSDMExcel($cari, $reqs, $app);
+            return $berkas->unduhIndexPermintaanTambahSDMExcel($cari, $reqs, $app);
         }
 
         $kebutuhan = $cari->clone()->sum('tambahsdm_jumlah');
         $terpenuhi = $cari->clone()->sum('tambahsdm_terpenuhi');
         $selisih = $terpenuhi - $kebutuhan;
-        
+
         $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'tambah_sdm_tabels']);
-        
-        $kunciUrut = array_filter((array) $urutArray);    
+
+        $kunciUrut = array_filter((array) $urutArray);
 
         $urutPenempatan = $str->contains($uruts, 'tambahsdm_penempatan');
         $indexPenempatan = (head(array_keys($kunciUrut, 'tambahsdm_penempatan ASC')) + head(array_keys($kunciUrut, 'tambahsdm_penempatan DESC')) + 1);
@@ -160,8 +160,8 @@ class PermintaanTambahSDM
         $HtmlPenuh = $app->view->make('sdm.permintaan-tambah-sdm.data', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
-        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
-        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
+            ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
+            : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function atributInput()
@@ -209,20 +209,20 @@ class PermintaanTambahSDM
         $app = app();
         $reqs = $app->request;
         $pengguna = $reqs->user();
-        
+
         abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
         $permin = $this->dataDasar()->clone()->addSelect('tambahsdm_uuid', 'b.sdm_nama', $app->db->raw('COUNT(a.sdm_no_permintaan) as tambahsdm_terpenuhi'))
-        ->leftJoin('sdms as a', 'tambahsdm_no', '=', 'a.sdm_no_permintaan')
-        ->join('sdms as b', 'tambahsdm_sdm_id', '=', 'b.sdm_no_absen')
-        ->groupBy('tambahsdm_no')->where('tambahsdm_uuid', $uuid)->when($lingkupIjin, function ($query, $lingkupIjin) {
-            $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
-        })->first();
-        
+            ->leftJoin('sdms as a', 'tambahsdm_no', '=', 'a.sdm_no_permintaan')
+            ->join('sdms as b', 'tambahsdm_sdm_id', '=', 'b.sdm_no_absen')
+            ->groupBy('tambahsdm_no')->where('tambahsdm_uuid', $uuid)->when($lingkupIjin, function ($query, $lingkupIjin) {
+                $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
+            })->first();
+
         abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
-        
+
         $HtmlPenuh = $app->view->make('sdm.permintaan-tambah-sdm.lihat', compact('permin'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
         return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
@@ -233,19 +233,19 @@ class PermintaanTambahSDM
         $app = app();
         $reqs = $app->request;
         $pengguna = $reqs->user();
-        
+
         abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
-        
+
         if ($reqs->isMethod('post')) {
-            
+
             $hitungPermintaan = $this->dataDasar()->whereYear('tambahsdm_dibuat', date('Y'))->whereMonth('tambahsdm_dibuat', date('m'))->count();
-            
+
             $urutanPermintaan = $hitungPermintaan + 1;
-            
+
             $nomorPermintaan = date('Y') . date('m') . str($urutanPermintaan)->padLeft(4, '0');
 
             $reqs->merge(['tambahsdm_id_pembuat' => $pengguna->sdm_no_absen, 'tambahsdm_no' => $nomorPermintaan]);
-            
+
             $validasi = $app->validator->make(
                 $reqs->all(),
                 [
@@ -256,24 +256,24 @@ class PermintaanTambahSDM
                 [],
                 $this->atributInput()
             );
-            
+
             $validasi->validate();
-            
+
             $data = $validasi->safe()->except('tambahsdm_berkas');
-            
+
             $app->db->table('tambahsdms')->insert($data);
-            
+
             $berkas = $validasi->safe()->only('tambahsdm_berkas')['tambahsdm_berkas'] ?? false;
-            
+
             if ($berkas) {
                 $berkas->storeAs('sdm/permintaan-tambah-sdm/berkas', $nomorPermintaan . '.pdf');
             }
-            
+
             $fungsiStatis->hapusCacheSDMUmum();
             $redirect = $app->redirect;
             $perujuk = $reqs->session()->get('tautan_perujuk');
             $pesan = $fungsiStatis->statusBerhasil();
-            
+
             return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.permintaan-tambah-sdm.data')->with('pesan', $pesan);
         }
 
@@ -303,7 +303,7 @@ class PermintaanTambahSDM
         $app = app();
         $reqs = $app->request;
         $pengguna = $reqs->user();
-        
+
         abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
@@ -311,56 +311,56 @@ class PermintaanTambahSDM
         $permin = $this->dataDasar()->clone()->addSelect('tambahsdm_uuid')->where('tambahsdm_uuid', $uuid)->when($lingkupIjin, function ($query, $lingkupIjin) {
             $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
         })->first();
-        
+
         abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
 
         if ($reqs->isMethod('post')) {
-            
+
             $reqs->merge(['tambahsdm_id_pengubah' => $pengguna->sdm_no_absen]);
-            
+
             $aturan = [
                 'tambahsdm_no' => ['required', 'string', 'max:40', Rule::unique('tambahsdms')->where(fn ($query) => $query->whereNot('tambahsdm_uuid', $uuid))],
                 'tambahsdm_id_pengubah' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 ...$this->dasarValidasi()
             ];
-            
+
             if ($reqs->header('X-Minta-Javascript', false)) {
                 $aturan = Arr::only($aturan, ['tambahsdm_status', 'tambahsdm_id_pengubah']);
             }
-            
+
             $validasi = $app->validator->make(
                 $reqs->all(),
                 $aturan,
                 [],
                 $this->atributInput()
             );
-            
+
             $validasi->validate();
-            
+
             $data = $validasi->safe()->except('tambahsdm_berkas');
-                        
+
             $app->db->table('tambahsdms')->where('tambahsdm_uuid', $uuid)->update($data);
-            
+
             $fungsiStatis->hapusCacheSDMUmum();
             $pesan = $fungsiStatis->statusBerhasil();
             $session = $reqs->session();
-            
+
             if ($reqs->header('X-Minta-Javascript', false)) {
                 $session->now('pesan', $pesan);
                 return view('pemberitahuan');
             }
-            
+
             $nomorPermintaan = $validasi->safe()->only('tambahsdm_no')['tambahsdm_no'];
-            
+
             $berkas = $validasi->safe()->only('tambahsdm_berkas')['tambahsdm_berkas'] ?? false;
-            
+
             if ($berkas) {
                 $berkas->storeAs('sdm/permintaan-tambah-sdm/berkas', $nomorPermintaan . '.pdf');
             }
 
             $perujuk = $session->get('tautan_perujuk');
             $redirect = $app->redirect;
-            
+
             return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.permintaan-tambah-sdm.data')->with('pesan', $pesan);
         }
 
@@ -395,15 +395,15 @@ class PermintaanTambahSDM
         abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $database = $app->db;
-        
+
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
         $permin = $this->dataDasar()->clone()->addSelect('tambahsdm_uuid')->where('tambahsdm_uuid', $uuid)->when($lingkupIjin, function ($query, $lingkupIjin) {
             $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
         })->first();
-        
+
         abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
-        
+
         if ($reqs->isMethod('post')) {
             $reqs->merge(['id_penghapus' => $pengguna->sdm_no_absen, 'waktu_dihapus' => $app->date->now()]);
             $validasi = $app->validator->make(
@@ -424,15 +424,15 @@ class PermintaanTambahSDM
             $validasi->validate();
 
             abort_unless($app->filesystem->exists('contoh/data-dihapus.xlsx'), 404, 'Berkas riwayat penghapusan tidak ditemukan.');
-            
+
             $dataValid = $validasi->validated();
-            
+
             $jenisHapus = 'Penempatan SDM';
             $idHapus = $dataValid['id_penghapus'];
             $alasanHapus = $dataValid['alasan'];
             $waktuHapus = $dataValid['waktu_dihapus']->format('Y-m-d H:i:s');
             $hapus = collect($permin)->toJson();
-            
+
             $dataHapus = [
                 $jenisHapus, $hapus, $idHapus, $waktuHapus, $alasanHapus
             ];

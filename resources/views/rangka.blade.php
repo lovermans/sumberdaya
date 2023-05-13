@@ -83,7 +83,9 @@
     <aside id="menu-aplikasi" class="tcetak"></aside>
 
     <nav id="nav-rangka" class="tcetak">
-        <div id="navigasi-sdm"></div>
+        <div id="navigasi-sdm">
+            @includeWhen(!$rekRangka->pjax(), 'sdm.navigasi')
+        </div>
 
         <div class="menu-t">
             <a @class(['nav-xhr', 'aktif'=> $rekRangka->routeIs('tentang-aplikasi')]) href="{{

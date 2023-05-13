@@ -14,9 +14,9 @@ class Posisi
         $reqs = $app->request;
         $pengguna = $reqs->user();
         $str = str();
-        
+
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
-        
+
         $validator = $app->validator->make(
             $reqs->all(),
             [
@@ -36,7 +36,7 @@ class Posisi
                 'penempatan_kontrak.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
             ]
         );
-        
+
         if ($validator->fails()) {
             return $app->redirect->route('sdm.posisi.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
@@ -53,52 +53,52 @@ class Posisi
         $permin_akses = $lingkup_lokasi->count();
 
         abort_unless(blank($ijin_akses) || ($lingkup_akses <= $maks_akses && $maks_akses >= $permin_akses), 403, 'Akses lokasi lain dibatasi.');
-        
+
         $database = $app->db;
 
         $kontrak = $database->query()->select('penempatan_posisi', 'penempatan_no_absen', 'penempatan_lokasi', 'penempatan_kontrak')
-        ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
-            $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
-        });
+            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
+                $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
+            });
 
         $cariSub = $this->dataDasar()->clone()->addSelect('posisi_uuid', 'posisi_dibuat', 'penempatan_lokasi', 'penempatan_kontrak', $database->raw('COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NULL THEN sdm_no_absen END) jml_aktif, COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NOT NULL THEN sdm_no_absen END) jml_nonaktif'))
-        ->leftJoinSub($kontrak, 'kontrak', function ($join) {
-            $join->on('posisi_nama', '=', 'kontrak.penempatan_posisi');
-        })
-        ->leftJoin('sdms', 'sdm_no_absen', '=', 'penempatan_no_absen')
-        ->groupBy('posisi_nama');
+            ->leftJoinSub($kontrak, 'kontrak', function ($join) {
+                $join->on('posisi_nama', '=', 'kontrak.penempatan_posisi');
+            })
+            ->leftJoin('sdms', 'sdm_no_absen', '=', 'penempatan_no_absen')
+            ->groupBy('posisi_nama');
 
         $cari = $database->query()->addSelect('tsdm.*', $app->db->raw('IF((jml_aktif + jml_nonaktif) > 0, (jml_nonaktif / (jml_nonaktif + jml_aktif)) * 100, 0) as pergantian'))->fromSub($cariSub, 'tsdm')
-        ->when($reqs->posisi_status, function ($query) use ($reqs) {
-            $query->where('posisi_status', $reqs->posisi_status);
-        })
-        ->when($kataKunci, function ($query, $kataKunci) {
-            $query->where(function ($group) use ($kataKunci) {
-                $group->where('posisi_nama', 'like', '%' . $kataKunci . '%')
-                ->orWhere('posisi_atasan', 'like', '%' . $kataKunci . '%')
-                ->orWhere('posisi_wlkp', 'like', '%' . $kataKunci . '%')
-                ->orWhere('posisi_keterangan', 'like', '%' . $kataKunci . '%');
-            });
-        })
-        ->when($reqs->lokasi, function ($query) use ($reqs) {
-            $query->whereIn('penempatan_lokasi', $reqs->lokasi);
-        })
-        ->when($reqs->kontrak, function ($query) use ($reqs) {
-            $query->whereIn('penempatan_kontrak', $reqs->kontrak);
-        })
-        ->when(
-            $uruts,
-            function ($query, $uruts) {
-                $query->orderByRaw($uruts);
-            },
-            function ($query) {
-                $query->latest('posisi_dibuat');
-            }
-        );
+            ->when($reqs->posisi_status, function ($query) use ($reqs) {
+                $query->where('posisi_status', $reqs->posisi_status);
+            })
+            ->when($kataKunci, function ($query, $kataKunci) {
+                $query->where(function ($group) use ($kataKunci) {
+                    $group->where('posisi_nama', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('posisi_atasan', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('posisi_wlkp', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('posisi_keterangan', 'like', '%' . $kataKunci . '%');
+                });
+            })
+            ->when($reqs->lokasi, function ($query) use ($reqs) {
+                $query->whereIn('penempatan_lokasi', $reqs->lokasi);
+            })
+            ->when($reqs->kontrak, function ($query) use ($reqs) {
+                $query->whereIn('penempatan_kontrak', $reqs->kontrak);
+            })
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->latest('posisi_dibuat');
+                }
+            );
 
 
         if ($reqs->unduh == 'excel') {
-            $berkas->unduhIndexPosisiSDMExcel($cari, $reqs, $app);
+            return $berkas->unduhIndexPosisiSDMExcel($cari, $reqs, $app);
         }
 
         $aktif = $cari->clone()->sum('jml_aktif');
@@ -119,7 +119,7 @@ class Posisi
         $indexAktif = (head(array_keys($kunciUrut, 'jml_aktif ASC')) + head(array_keys(array_filter((array)  $urutArray), 'jml_aktif DESC')) + 1);
         $urutNonAktif = $str->contains($uruts, 'jml_nonaktif');
         $indexNonAktif = (head(array_keys($kunciUrut, 'jml_nonaktif ASC')) + head(array_keys(array_filter((array)  $urutArray), 'jml_nonaktif DESC')) + 1);
-        
+
         $data = [
             'tabels' => $tabels,
             'urutPergantian' => $urutPergantian,
@@ -144,8 +144,8 @@ class Posisi
         $HtmlPenuh = $app->view->make('sdm.posisi.data', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
-        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
-        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
+            ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
+            : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function atributInput()
@@ -182,13 +182,13 @@ class Posisi
         $reqs = $app->request;
         $pengguna = $reqs->user();
         $str = str();
-        
+
         abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
-        
+
         $pos = $this->dataDasar()->clone()->addSelect('posisi_uuid')->where('posisi_uuid', $uuid)->first();
-        
+
         abort_unless($pos, 404);
-        
+
         $HtmlPenuh = $app->view->make('sdm.posisi.lihat', compact('pos'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
         return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
@@ -200,13 +200,13 @@ class Posisi
         $reqs = $app->request;
         $pengguna = $reqs->user();
         $str = str();
-        
+
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
-        
+
         if ($reqs->isMethod('post')) {
-            
+
             $reqs->merge(['posisi_id_pembuat' => $pengguna->sdm_no_absen]);
-            
+
             $validasi = $app->validator->make(
                 $reqs->all(),
                 [
@@ -218,18 +218,18 @@ class Posisi
                 [],
                 $this->atributInput()
             );
-            
+
             $validasi->validate();
-            
+
             $data = $validasi->safe()->all();
-            
+
             $app->db->table('posisis')->insert($data);
-            
+
             $fungsiStatis->hapusCacheSDMUmum();
             $perujuk = $reqs->session()->get('tautan_perujuk');
             $pesan = $fungsiStatis->statusBerhasil();
             $redirect = $app->redirect;
-            
+
             return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.posisi.data')->with('pesan', $pesan);
         }
 
@@ -248,17 +248,17 @@ class Posisi
         $reqs = $app->request;
         $pengguna = $reqs->user();
         $str = str();
-        
+
         abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
-        
+
         $pos = $this->dataDasar()->clone()->addSelect('posisi_uuid')->where('posisi_uuid', $uuid)->first();
-        
+
         abort_unless($pos, 404, 'Data Jabatan tidak ditemukan.');
-        
+
         if ($reqs->isMethod('post')) {
-            
+
             $reqs->merge(['posisi_id_pengubah' => $pengguna->sdm_no_absen]);
-            
+
             $validasi = $app->validator->make(
                 $reqs->all(),
                 [
@@ -270,18 +270,18 @@ class Posisi
                 [],
                 $this->atributInput()
             );
-            
+
             $validasi->validate();
-            
+
             $data = $validasi->safe()->all();
-            
+
             $app->db->table('posisis')->where('posisi_uuid', $uuid)->update($data);
-            
+
             $fungsiStatis->hapusCacheSDMUmum();
             $perujuk = $reqs->session()->get('tautan_perujuk');
             $pesan = $fungsiStatis->statusBerhasil();
             $redirect = $app->redirect;
-            
+
             return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.posisi.data')->with('pesan', $pesan);
         }
 
