@@ -379,6 +379,32 @@ class Berkas
         return $this->eksporExcelStream(...$argumen);
     }
 
+    public function isiFormulir($app, $contoh, $data, $filename)
+    {
+        set_time_limit(0);
+        ob_implicit_flush();
+        ob_end_flush();
+        header('X-Accel-Buffering: no');
+
+        echo '<p>Memeriksa formulir.</p>';
+
+        $storage = $app->filesystem;
+
+        abort_unless($storage->exists("contoh/{$contoh}"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
+
+        $templateProcessor = new TemplateProcessor($app->storagePath("app/contoh/{$contoh}"));
+
+        echo '<p>Menyiapkan formulir.</p>';
+
+        $templateProcessor->setValues($data);
+
+        $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
+
+        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
+
+        exit();
+    }
+
     public function formulirSerahTerimaSDMBaru($uuid = null)
     {
         $app = app();
@@ -412,33 +438,22 @@ class Berkas
 
         abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi.');
 
-        set_time_limit(0);
-        ob_implicit_flush();
-        ob_end_flush();
-        header('X-Accel-Buffering: no');
-
-        echo '<p>Memeriksa formulir.</p>';
-
-        $storage = $app->filesystem;
-        $date = $app->date;
-
-        abort_unless($storage->exists("contoh/serah-terima-sdm-baru.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
-
         $filename = 'serah-terima-sdm-baru-' . $akun->sdm_no_absen . '.docx';
 
-        $templateProcessor = new TemplateProcessor($app->storagePath('app/contoh/serah-terima-sdm-baru.docx'));
-
-        echo '<p>Menyiapkan formulir.</p>';
-
-        $templateProcessor->setValues([
+        $data = [
             'sdm_nama' => str($akun->sdm_nama)->limit(30),
             'sdm_no_absen' => $akun->sdm_no_absen,
-            'sdm_tgl_gabung' => strtoupper($date->make($akun->sdm_tgl_gabung)?->translatedFormat('d F Y'))
-        ]);
+            'sdm_tgl_gabung' => strtoupper($app->date->make($akun->sdm_tgl_gabung)?->translatedFormat('d F Y'))
+        ];
 
-        $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
+        $argumen = [
+            'app' => $app,
+            'contoh' => 'serah-terima-sdm-baru.docx',
+            'data' => $data,
+            'filename' => $filename
+        ];
 
-        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
+        return $this->isiFormulir(...$argumen);
     }
 
     public function formulirPelepasanSDM($uuid = null)
@@ -473,34 +488,23 @@ class Berkas
 
         abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi.');
 
-        set_time_limit(0);
-        ob_implicit_flush();
-        ob_end_flush();
-        header('X-Accel-Buffering: no');
-
-        echo '<p>Memeriksa formulir.</p>';
-
-        $storage = $app->filesystem;
-        $date = $app->date;
-
-        abort_unless($storage->exists("contoh/pelepasan-karyawan.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
-
         $filename = 'pelepasan-karyawan-' . $akun->sdm_no_absen . '.docx';
 
-        $templateProcessor = new TemplateProcessor($app->storagePath('app/contoh/pelepasan-karyawan.docx'));
-
-        echo '<p>Menyiapkan formulir.</p>';
-
-        $templateProcessor->setValues([
+        $data = [
             'sdm_nama' => str($akun->sdm_nama)->limit(30),
             'sdm_no_absen' => $akun->sdm_no_absen,
-            'sdm_tgl_berhenti' => strtoupper($date->make($akun->sdm_tgl_berhenti)?->translatedFormat('d F Y')),
+            'sdm_tgl_berhenti' => strtoupper($app->date->make($akun->sdm_tgl_berhenti)?->translatedFormat('d F Y')),
             'sdm_jenis_berhenti' => $akun->sdm_jenis_berhenti,
-        ]);
+        ];
 
-        $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
+        $argumen = [
+            'app' => $app,
+            'contoh' => 'pelepasan-karyawan.docx',
+            'data' => $data,
+            'filename' => $filename
+        ];
 
-        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
+        return $this->isiFormulir(...$argumen);
     }
 
     public function formulirPermintaanTambahSDM(PermintaanTambahSDM $permintaanTambahSDM, $uuid = null)
@@ -511,13 +515,6 @@ class Berkas
 
         abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        set_time_limit(0);
-        ob_implicit_flush();
-        ob_end_flush();
-        header('X-Accel-Buffering: no');
-
-        echo '<p>Memeriksa formulir.</p>';
-
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
         $permin = $permintaanTambahSDM->dataDasar()->clone()->addSelect('tambahsdm_uuid', 'b.sdm_nama')
@@ -527,21 +524,12 @@ class Berkas
 
         abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
 
-        $storage = $app->filesystem;
-
-        abort_unless($storage->exists("contoh/permintaan-tambah-sdm.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
-
         $filename = 'permintaan-tambah-sdm-' . $permin->tambahsdm_no . '.docx';
-        // \PhpOffice\PhpWord\Settings::setZipClass(\PhpOffice\PhpWord\Settings::PCLZIP);
-
-        $templateProcessor = new TemplateProcessor($app->storagePath('app/contoh/permintaan-tambah-sdm.docx'));
-
-        echo '<p>Menyiapkan formulir.</p>';
 
         $date = $app->date;
         $str = str();
 
-        $templateProcessor->setValues([
+        $data = [
             'tambahsdm_no' => $permin->tambahsdm_no,
             'sdm_nama' => $str->limit($permin->sdm_nama, 30),
             'tambahsdm_sdm_id' => $permin->tambahsdm_sdm_id,
@@ -550,13 +538,16 @@ class Berkas
             'tambahsdm_alasan' => $str->limit($permin->tambahsdm_alasan, 100),
             'tambahsdm_tgl_diusulkan' => strtoupper($date->make($permin->tambahsdm_tgl_diusulkan)?->translatedFormat('d F Y')),
             'tambahsdm_tgl_dibutuhkan' => strtoupper($date->make($permin->tambahsdm_tgl_dibutuhkan)?->translatedFormat('d F Y'))
-        ]);
+        ];
 
-        $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
+        $argumen = [
+            'app' => $app,
+            'contoh' => 'permintaan-tambah-sdm.docx',
+            'data' => $data,
+            'filename' => $filename
+        ];
 
-        echo '<p>Selesai menyiapkan berkas formulir. <a href="' . $storage->disk('local')->temporaryUrl("unduh/{$filename}", $date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
-
-        exit();
+        return $this->isiFormulir(...$argumen);
     }
 
     public function formulirTTDokumenTitipan($uuid = null)
@@ -591,25 +582,11 @@ class Berkas
 
         abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi.');
 
-        set_time_limit(0);
-        ob_implicit_flush();
-        ob_end_flush();
-        header('X-Accel-Buffering: no');
-
-        echo '<p>Memeriksa formulir.</p>';
-
-        $storage = $app->filesystem;
         $date = $app->date;
-
-        abort_unless($storage->exists("contoh/tanda-terima-dokumen-titipan.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
 
         $filename = 'tanda-terima-dokumen-titipan-' . $akun->sdm_no_absen . '.docx';
 
-        $templateProcessor = new TemplateProcessor($app->storagePath('app/contoh/tanda-terima-dokumen-titipan.docx'));
-
-        echo '<p>Menyiapkan formulir.</p>';
-
-        $templateProcessor->setValues([
+        $data = [
             'sdm_nama' => $akun->sdm_nama,
             'sdm_no_absen' => $akun->sdm_no_absen,
             'sdm_tgl_gabung' => strtoupper($date->make($akun->sdm_tgl_gabung)?->translatedFormat('d F Y')),
@@ -621,11 +598,16 @@ class Berkas
             'sdm_penerbit_dok' => $akun->sdm_penerbit_dok,
             'sdm_an_dok' => $akun->sdm_an_dok,
             'sdm_kadaluarsa_dok' => strtoupper($date->make($akun->sdm_kadaluarsa_dok)?->translatedFormat('d F Y')),
-        ]);
+        ];
 
-        $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
+        $argumen = [
+            'app' => $app,
+            'contoh' => 'tanda-terima-dokumen-titipan.docx',
+            'data' => $data,
+            'filename' => $filename
+        ];
 
-        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
+        return $this->isiFormulir(...$argumen);
     }
 
     public function formulirTTInventaris($uuid = null)
@@ -660,34 +642,22 @@ class Berkas
 
         abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi.');
 
-        set_time_limit(0);
-        ob_implicit_flush();
-        ob_end_flush();
-        header('X-Accel-Buffering: no');
-
-        $storage = $app->filesystem;
-        $date = $app->date;
-
-        echo '<p>Memeriksa formulir.</p>';
-
-
-        abort_unless($storage->exists("contoh/tanda-terima-inventaris.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
-
         $filename = 'tanda-terima-inventaris-' . $akun->sdm_no_absen . '.docx';
 
-        $templateProcessor = new TemplateProcessor($app->storagePath('app/contoh/tanda-terima-inventaris.docx'));
-
-        echo '<p>Menyiapkan formulir.</p>';
-
-        $templateProcessor->setValues([
+        $data = [
             'sdm_uk_seragam' => $akun->sdm_uk_seragam,
             'sdm_uk_sepatu' => $akun->sdm_uk_sepatu,
             'ket_tanda_terima' => "UNTUK KARYAWAN A.N {$akun->sdm_nama} - ({$akun->sdm_no_absen})",
-        ]);
+        ];
 
-        $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
+        $argumen = [
+            'app' => $app,
+            'contoh' => 'tanda-terima-inventaris.docx',
+            'data' => $data,
+            'filename' => $filename
+        ];
 
-        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
+        return $this->isiFormulir(...$argumen);
     }
 
     public function formulirPersetujuanGaji($uuid = null)
@@ -722,36 +692,27 @@ class Berkas
 
         abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi.');
 
-        set_time_limit(0);
-        ob_implicit_flush();
-        ob_end_flush();
-        header('X-Accel-Buffering: no');
-
-        echo '<p>Memeriksa formulir.</p>';
-
-        $storage = $app->filesystem;
         $date = $app->date;
-
-        abort_unless($storage->exists("contoh/persetujuan-gaji.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
 
         $filename = 'persetujuan-gaji-' . $akun->sdm_no_absen . '.docx';
 
-        $templateProcessor = new TemplateProcessor($app->storagePath('app/contoh/persetujuan-gaji.docx'));
-
-        echo '<p>Menyiapkan formulir.</p>';
-
-        $templateProcessor->setValues([
+        $data = [
             'sdm_nama' => $akun->sdm_nama,
             'sdm_no_absen' => $akun->sdm_no_absen,
             'sdm_tgl_gabung' => strtoupper($date->make($akun->sdm_tgl_gabung)?->translatedFormat('d F Y')),
             'sdm_tgl_lahir' => $akun->sdm_tempat_lahir . ', ' . strtoupper($date->make($akun->sdm_tgl_lahir)?->translatedFormat('d F Y')),
             'sdm_kelamin' => $akun->sdm_kelamin == 'L' ? 'LAKI - LAKI' : 'PEREMPUAN',
             'sdm_alamat' => "{$akun->sdm_alamat}, {$akun->sdm_alamat_kelurahan}, {$akun->sdm_alamat_kecamatan}, {$akun->sdm_alamat_kota}, {$akun->sdm_alamat_provinsi}.",
-        ]);
+        ];
 
-        $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
+        $argumen = [
+            'app' => $app,
+            'contoh' => 'persetujuan-gaji.docx',
+            'data' => $data,
+            'filename' => $filename
+        ];
 
-        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
+        return $this->isiFormulir(...$argumen);
     }
 
     public function rekamHapusDataPermintaanSDM($app, $dataHapus)
@@ -802,25 +763,11 @@ class Berkas
 
         abort_unless((blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0)) && ($no_absen_sdm !== $akun->sdm_no_absen), 403, 'Akses pengguna dibatasi.');
 
-        set_time_limit(0);
-        ob_implicit_flush();
-        ob_end_flush();
-        header('X-Accel-Buffering: no');
-
-        echo '<p>Memeriksa formulir.</p>';
-
-        $storage = $app->filesystem;
         $date = $app->date;
-
-        abort_unless($storage->exists("contoh/keterangan-kerja.docx"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
 
         $filename = 'keterangan-kerja-' . $akun->sdm_no_absen . '.docx';
 
-        $templateProcessor = new TemplateProcessor($app->storagePath('app/contoh/keterangan-kerja.docx'));
-
-        echo '<p>Menyiapkan formulir.</p>';
-
-        $templateProcessor->setValues([
+        $data = [
             'sdm_nama' => $akun->sdm_nama,
             'sdm_no_absen' => $akun->sdm_no_absen,
             'sdm_tgl_gabung' => strtoupper($date->make($akun->sdm_tgl_gabung)?->translatedFormat('d F Y')),
@@ -829,11 +776,16 @@ class Berkas
             'sdm_alamat' => "{$akun->sdm_alamat}, {$akun->sdm_alamat_kelurahan}, {$akun->sdm_alamat_kecamatan}, {$akun->sdm_alamat_kota}, {$akun->sdm_alamat_provinsi}.",
             'sdm_tgl_berhenti' => strtoupper($date->make($akun->sdm_tgl_berhenti)?->translatedFormat('d F Y')) ?: 'saat surat ini diterbitkan',
             'paragraf_keterangan' => $akun->sdm_tgl_berhenti ? 'PT. Kepuh Kencana Arum mengapresiasi kontribusi dan dedikasi yang diberikan, selama bekerja yang bersangkutan menunjukkan kinerja yang baik untuk menunjang kesuksesan kerjanya' : 'Surat keterangan ini dibuat untuk ...[isi keterangan]',
-        ]);
+        ];
 
-        $templateProcessor->saveAs($app->storagePath("app/unduh/{$filename}"));
+        $argumen = [
+            'app' => $app,
+            'contoh' => 'keterangan-kerja.docx',
+            'data' => $data,
+            'filename' => $filename
+        ];
 
-        return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
+        return $this->isiFormulir(...$argumen);
     }
 
     public function unggahPosisiSDM()
