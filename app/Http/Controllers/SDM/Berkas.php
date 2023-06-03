@@ -335,9 +335,9 @@ class Berkas
         exit();
     }
 
-    public function unduhIndexPosisiSDMExcel($cari, $reqs, $app)
+    public function unduhIndexPosisiSDMExcel($cari, $app)
     {
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+        abort_unless($app->request->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         $binder = new CustomValueBinder();
         $spreadsheet = new Spreadsheet();
@@ -357,9 +357,9 @@ class Berkas
         return $this->eksporExcelStream(...$argumen);
     }
 
-    public function unduhIndexPermintaanTambahSDMExcel($cari, $reqs, $app)
+    public function unduhIndexPermintaanTambahSDMExcel($cari, $app)
     {
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+        abort_unless($app->request->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         $binder = new CustomValueBinder();
         $spreadsheet = new Spreadsheet();

@@ -98,7 +98,7 @@ class Posisi
 
 
         if ($reqs->unduh == 'excel') {
-            return $berkas->unduhIndexPosisiSDMExcel($cari, $reqs, $app);
+            return $berkas->unduhIndexPosisiSDMExcel($cari, $app);
         }
 
         $aktif = $cari->clone()->sum('jml_aktif');

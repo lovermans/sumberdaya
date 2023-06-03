@@ -115,7 +115,7 @@ class PermintaanTambahSDM
             );
 
         if ($reqs->unduh == 'excel') {
-            return $berkas->unduhIndexPermintaanTambahSDMExcel($cari, $reqs, $app);
+            return $berkas->unduhIndexPermintaanTambahSDMExcel($cari, $app);
         }
 
         $kebutuhan = $cari->clone()->sum('tambahsdm_jumlah');
