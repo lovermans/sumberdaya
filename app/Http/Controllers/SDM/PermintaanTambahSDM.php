@@ -437,7 +437,7 @@ class PermintaanTambahSDM
                 $jenisHapus, $hapus, $idHapus, $waktuHapus, $alasanHapus
             ];
 
-            $berkas->rekamHapusDataPermintaanSDM($app, $dataHapus);
+            $berkas->rekamHapusDataSDM($app, $dataHapus);
 
             $database->table('tambahsdms')->where('tambahsdm_uuid', $uuid)->delete();
 
