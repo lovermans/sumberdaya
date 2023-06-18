@@ -674,6 +674,30 @@ class Berkas
         return $this->eksporExcelStream(...$argumen);
     }
 
+    public function unduhIndexPelanggaranSDM($cari, $app)
+    {
+        abort_unless($app->request->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+
+        $binder = new CustomValueBinder();
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $argumen = [
+            'namaBerkas' => 'eksporpelanggaransdm-',
+            'dataEkspor' => $cari->clone(),
+            'pengecualian' => ['langgar_uuid', 'langgar_tsdm_uuid', 'langgar_psdm_uuid', 'final_sanksi_uuid
+            '],
+            'pesanData' =>  ' data laporan pelanggaran SDM',
+            'app' => $app,
+            'binder' => $binder,
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet,
+            'chunk' => 500
+        ];
+
+        return $this->eksporExcelStream(...$argumen);
+    }
+
     public function isiFormulir($app, $contoh, $data, $filename)
     {
         set_time_limit(0);
