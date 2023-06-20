@@ -187,24 +187,6 @@ class Pelanggaran
         ];
     }
 
-    public function berkas($berkas)
-    {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-
-        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
-
-        abort_unless($berkas && $app->filesystem->exists("sdm/pelanggaran/{$berkas}"), 404, 'Berkas tidak ditemukan.');
-
-        $jalur = $app->storagePath("app/sdm/pelanggaran/{$berkas}");
-
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->file($jalur, [
-            'Content-Disposition' => 'inline',
-            'Content-Type' => $app->files->mimeType($jalur),
-        ]);
-    }
-
     public function dataDasar()
     {
         return app('db')->query()->select('langgar_uuid', 'langgar_lap_no', 'langgar_no_absen', 'langgar_pelapor', 'langgar_tanggal', 'langgar_status', 'langgar_isi', 'langgar_keterangan')->from('pelanggaransdms');
@@ -323,7 +305,7 @@ class Pelanggaran
 
             $urutanLaporan = $hitungNomor + 1;
 
-            $jmlTerlapor = count($reqs->langgar_no_absen);
+            $jmlTerlapor = count($reqs->langgar_no_absen) + $hitungNomor;
 
             $dataMap = array_map(function ($x, $y) use ($reqs) {
                 return ['langgar_no_absen' => $x]
@@ -335,8 +317,6 @@ class Pelanggaran
                     + ['langgar_keterangan' => $reqs->langgar_keterangan]
                     + ['langgar_id_pembuat' => $reqs->user()->sdm_no_absen];
             }, $reqs->langgar_no_absen, range($urutanLaporan, $jmlTerlapor));
-
-            // dd($dataMap);
 
             $validasi = $app->validator->make(
                 $dataMap,
@@ -352,7 +332,7 @@ class Pelanggaran
                 ],
                 [
                     '*.langgar_no_absen.*' => 'No Absen Terlapor urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
-                    '*.langgar_lap_no.*' => 'No Abseb Terlapor urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+                    '*.langgar_lap_no.*' => 'No Laporan urutan ke-:position maksimal 20 karakter atau sudah pernah dipakai sebelumnya.',
                     '*.langgar_pelapor.*' => 'No Absen Pelapor maksimal 10 karakter dan terdaftar di data SDM.',
                     '*.langgar_tanggal.*' => 'Tanggal Laporan tidak valid.',
                     '*.langgar_status.*' => 'Status Laporan tidak sesuai.',
@@ -377,15 +357,13 @@ class Pelanggaran
 
             $validasiBerkas->validate();
 
-            // $database->table('pelanggaransdms')->insert($validasi->validated());
+            $database->table('pelanggaransdms')->insert($validasi->validated());
 
             $berkas = $validasiBerkas->validated()['berkas_laporan'] ?? false;
 
             if ($berkas) {
 
                 $valid = $validasi->safe()->only(['*.langgar_lap_no'])['*']['langgar_lap_no'];
-
-                // dd($valid);
 
                 array_walk($valid, function ($x, $y) use ($berkas) {
                     $berkas->storeAs('sdm/pelanggaran/berkas', $x . '.pdf');
@@ -504,7 +482,7 @@ class Pelanggaran
             $berkas = $validasi->safe()->only('berkas_laporan')['berkas_laporan'] ?? false;
 
             if ($berkas) {
-                $berkas->storeAs('sdm/pelanggaran', $nomorLaporan . '.pdf');
+                $berkas->storeAs('sdm/pelanggaran/berkas', $nomorLaporan . '.pdf');
             }
 
             $perujuk = $session->get('tautan_perujuk');
