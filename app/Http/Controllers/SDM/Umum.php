@@ -18,180 +18,197 @@ class Umum
         $str = str();
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         $halaman = $app->view;
-        
-        abort_unless($str->contains($pengguna?->sdm_hak_akses, 'SDM'), 403, 'Akses dibatasi hanya untuk Pengguna Aplikasi SDM.');
 
-        if($reqs->fragment == 'navigasi') {
-            $navigasi = $halaman->make('sdm.navigasi');
-            return $tanggapan->make($navigasi)->withHeaders(['Vary' => 'Accept']);
-        }
+        abort_unless($str->contains($pengguna?->sdm_hak_akses, 'SDM'), 403, 'Akses dibatasi hanya untuk Pengguna Aplikasi SDM.');
 
         $linkupIjin = $pengguna->sdm_ijin_akses;
         $lingkup = array_filter(explode(',', $linkupIjin));
         $cache = $app->cache;
-        $date = $app->date;        
+        $date = $app->date;
         $database = $app->db;
-        
+
+        $kemarin = $date->today()->subDay()->format('Y-m-d');
+        $hariIni = $date->today()->format('Y-m-d');
+        $bulanLalu = $date->today()->subDays(40)->toDateString();
+        $bulanDepan = $date->today()->addDays(40)->toDateString();
+
         $kontrak = $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_keterangan')
-        ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
-            $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
-        });
-        
-        if($reqs->fragment == 'sdmIngatUltah') {
-            
-            $cache->forget('SDMUlangTahun - ' . $date->today()->subMonth()->format('Y-m'));
-
-            $cache_ulangTahuns = $cache->rememberForever('SDMUlangTahun - ' . $date->today()->format('Y-m'), function () use ($kontrak, $database, $date) {
-                return $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_nama', 'sdm_tgl_lahir', 'penempatan_lokasi', 'penempatan_kontrak', 'penempatan_posisi')->from('sdms')
-                    ->leftJoinSub($kontrak, 'kontrak', function ($join) {
-                        $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
-                    })
-                    ->whereNull('sdm_tgl_berhenti')
-                    ->where(function ($query) use ($date) {
-                        $query->whereMonth('sdm_tgl_lahir', $date->today()->format('m'))->orWhereMonth('sdm_tgl_lahir', $date->today()->addMonth()->format('m'));
-                    })->orderByRaw('DAYOFYEAR(sdm_tgl_lahir), sdm_tgl_lahir')->get();
+            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
+                $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
             });
 
-            $ulangTahuns = $cache_ulangTahuns->when($linkupIjin, function ($c) use ($lingkup) {
-                return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
-            });
+        $pengurus = $str->contains($pengguna->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']);
 
-            $sdmIngatUltah = $halaman->make('sdm.pengingat.sdm-ultah', ['ulangTahuns' => $ulangTahuns ?? null]);
-            return $tanggapan->make($sdmIngatUltah)->withHeaders(['Vary' => 'Accept']);
+        $fragmen = $reqs->fragment;
 
-        }
+        $respon = match (true) {
+            $fragmen == 'navigasi' => $this->halamanNavigasi($halaman, $tanggapan),
+            $fragmen == 'sdmIngatUltah' => $this->halamanUltah($cache, $date, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan),
+            $pengurus && $fragmen == 'sdmIngatPtsb' => $this->halamanPermintaanTambahSDM($linkupIjin, $lingkup, $halaman, $tanggapan),
+            $pengurus && $fragmen == 'sdmIngatPkpd' => $this->halamanPKWTHabis($cache, $kemarin, $hariIni, $kontrak, $database, $bulanDepan, $linkupIjin, $lingkup, $halaman, $tanggapan),
+            $pengurus && $fragmen == 'sdmIngatPstatus' => $this->halamanPerubahanStatusSDMTerbaru($cache, $kemarin, $hariIni, $database, $bulanLalu, $linkupIjin, $lingkup, $halaman, $tanggapan),
+            $pengurus && $fragmen == 'sdmIngatBaru' => $this->halamanSDMGabungTerbaru($cache, $kemarin, $hariIni, $kontrak, $database, $bulanLalu, $linkupIjin, $lingkup, $halaman, $tanggapan),
+            $pengurus && $fragmen == 'sdmIngatKeluar' => $this->halamanSDMKeluarTerbaru($cache, $kemarin, $hariIni, $kontrak, $database, $bulanLalu, $linkupIjin, $lingkup, $halaman, $tanggapan),
+            default => $this->halamanAwal($reqs, $halaman, $tanggapan),
+        };
 
-        if ($str->contains($pengguna->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN'])) {
-            
-            $kemarin = $date->today()->subDay()->format('Y-m-d');
-            $hariIni = $date->today()->format('Y-m-d');
-            
-            if($reqs->fragment == 'sdmIngatPtsb') {
-                
-                $perminSDMS = FungsiStatis::ambilCachePermintaanTambahSDM()
-                    ->filter(function ($item) {
-                        return $item->tambahsdm_jumlah > $item->tambahsdm_terpenuhi;
-                    })
-                    ->when($linkupIjin, function ($c) use ($lingkup) {
-                        return $c->whereIn('tambahsdm_penempatan', [...$lingkup]);
-                    });
-                
-                $sdmIngatPtsb = $halaman->make('sdm.pengingat.permintaan-tambah-sdm', ['perminSDMS' => $perminSDMS ?? null]);
-                return $tanggapan->make($sdmIngatPtsb)->withHeaders(['Vary' => 'Accept']);
-            
-            }
+        return $respon;
+    }
 
-            if($reqs->fragment == 'sdmIngatPkpd') {
+    public function halamanNavigasi($halaman, $tanggapan)
+    {
+        $navigasi = $halaman->make('sdm.navigasi');
 
-                $cache->forget('PengingatKontrak - ' . $kemarin);
+        return $tanggapan->make($navigasi)->withHeaders(['Vary' => 'Accept']);
+    }
 
-                $cache_kontraks = $cache->rememberForever('PengingatKontrak - ' . $hariIni, function () use ($kontrak, $database, $date) {
-                    return $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_nama', 'penempatan_uuid', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke')
-                        ->from('sdms')
-                        ->leftJoinSub($kontrak, 'kontrak', function ($join) {
-                            $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
-                        })
-                        ->whereNull('sdm_tgl_berhenti')
-                        ->where('penempatan_kontrak', 'not like', 'OS-%')
-                        ->where('penempatan_selesai', '<=', $date->today()->addDays(40)->toDateString())
-                        ->latest('penempatan_selesai')
-                        ->get();
-                });
-
-                $kontraks = $cache_kontraks->when($linkupIjin, function ($c) use ($lingkup) {
-                    return $c->whereIn('penempatan_lokasi', [...$lingkup]);
-                });
-
-                $sdmIngatPkpd = $halaman->make('sdm.pengingat.pkwt-perlu-ditinjau', ['kontraks' => $kontraks ?? null]);
-                return $tanggapan->make($sdmIngatPkpd)->withHeaders(['Vary' => 'Accept']);
-            
-            }
-
-            $bulanLalu = $date->today()->subDays(40)->toDateString();
-
-            if($reqs->fragment == 'sdmIngatPstatus') {
-
-                $cache->forget('PerubahanStatus - ' . $kemarin);
-
-
-                $cache_statuses = $cache->rememberForever('PerubahanStatus - ' . $hariIni, function () use ($database, $bulanLalu) {
-                    
-                    return $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan', 'sdm_uuid', 'sdm_no_absen', 'sdm_nama')
-                    ->from('penempatans')->join('sdms', 'sdm_no_absen', '=', 'penempatan_no_absen')
-                    ->where('penempatan_mulai', '>=', $bulanLalu)
-                    ->latest('penempatan_mulai')
-                    ->get();
-                });
-
-                $statuses = $cache_statuses->when($linkupIjin, function ($c) use ($lingkup) {
-                    return $c->whereIn('penempatan_lokasi', [...$lingkup]);
-                });
-
-                $sdmIngatPstatus = $halaman->make('sdm.pengingat.perubahan-status', ['statuses' => $statuses ?? null]);
-                return $tanggapan->make($sdmIngatPstatus)->withHeaders(['Vary' => 'Accept']);
-        
-            }
-
-            if($reqs->fragment == 'sdmIngatBaru') {
-
-                $cache->forget('PengingatAkunBaru - ' . $kemarin);
-
-                $cache_barus = $cache->rememberForever('PengingatAkunBaru - ' . $hariIni, function () use ($kontrak, $database, $bulanLalu) {
-                    return $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_nama', 'sdm_no_permintaan',  'sdm_no_ktp', 'sdm_tgl_gabung', 'penempatan_uuid', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak')
-                        ->from('sdms')
-                        ->leftJoinSub($kontrak, 'kontrak', function ($join) {
-                            $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
-                        })
-                        ->whereNull('sdm_tgl_berhenti')
-                        ->where('sdm_tgl_gabung', '>=', $bulanLalu)
-                        ->latest('sdm_tgl_gabung')
-                        ->get();
-                });
-
-                $barus = $cache_barus->when($linkupIjin, function ($c) use ($lingkup) {
-                    return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
-                });
-
-                $sdmIngatBaru = $halaman->make('sdm.pengingat.sdm-baru', ['barus' => $barus ?? null]);
-                return $tanggapan->make($sdmIngatBaru)->withHeaders(['Vary' => 'Accept']);
-        
-            }
-
-            if($reqs->fragment == 'sdmIngatKeluar') {
-            
-                $cache->forget('PengingatNon-Aktif - ' . $kemarin);
-
-                $cache_berhentis = $cache->rememberForever('PengingatNon-Aktif - ' . $hariIni, function () use ($kontrak, $database, $bulanLalu) {
-                    return $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_nama', 'sdm_jenis_berhenti', 'sdm_tgl_berhenti', 'sdm_ket_berhenti', 'penempatan_uuid', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak')
-                        ->from('sdms')
-                        ->leftJoinSub($kontrak, 'kontrak', function ($join) {
-                            $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
-                        })
-                        ->where(function ($query) {
-                            $query->whereNotNull('sdm_tgl_berhenti')
-                                ->orWhereNull('penempatan_kontrak');
-                        })
-                        ->where('sdm_tgl_berhenti', '>=', $bulanLalu)
-                        ->latest('sdm_tgl_berhenti')
-                        ->get();
-                });
-
-                $berhentis = $cache_berhentis->when($linkupIjin, function ($c) use ($lingkup) {
-                    return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
-                });
-
-                $sdmIngatKeluar = $halaman->make('sdm.pengingat.sdm-keluar', ['berhentis' => $berhentis ?? null]);
-                return $tanggapan->make($sdmIngatKeluar)->withHeaders(['Vary' => 'Accept']);
-
-            }
-            
-        }
-
+    public function halamanAwal($reqs, $halaman, $tanggapan)
+    {
         $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
 
         $HtmlPenuh = $halaman->make('sdm.mulai');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
         return $reqs->pjax() ? $tanggapan->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlPenuh;
+    }
+
+    public function halamanUltah($cache, $date, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan)
+    {
+        $cache->forget('SDMUlangTahun - ' . $date->today()->subMonth()->format('Y-m'));
+
+        $cache_ulangTahuns = $cache->rememberForever('SDMUlangTahun - ' . $date->today()->format('Y-m'), function () use ($kontrak, $database, $date) {
+            return $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_nama', 'sdm_tgl_lahir', 'penempatan_lokasi', 'penempatan_kontrak', 'penempatan_posisi')->from('sdms')
+                ->leftJoinSub($kontrak, 'kontrak', function ($join) {
+                    $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+                })
+                ->whereNull('sdm_tgl_berhenti')
+                ->where(function ($query) use ($date) {
+                    $query->whereMonth('sdm_tgl_lahir', $date->today()->format('m'))->orWhereMonth('sdm_tgl_lahir', $date->today()->addMonth()->format('m'));
+                })->orderByRaw('DAYOFYEAR(sdm_tgl_lahir), sdm_tgl_lahir')->get();
+        });
+
+        $ulangTahuns = $cache_ulangTahuns->when($linkupIjin, function ($c) use ($lingkup) {
+            return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
+        });
+
+        $sdmIngatUltah = $halaman->make('sdm.pengingat.sdm-ultah', ['ulangTahuns' => $ulangTahuns ?? null]);
+
+        return $tanggapan->make($sdmIngatUltah)->withHeaders(['Vary' => 'Accept']);
+    }
+
+    public function halamanPermintaanTambahSDM($linkupIjin, $lingkup, $halaman, $tanggapan)
+    {
+        $perminSDMS = FungsiStatis::ambilCachePermintaanTambahSDM()
+            ->filter(function ($item) {
+                return $item->tambahsdm_jumlah > $item->tambahsdm_terpenuhi;
+            })
+            ->when($linkupIjin, function ($c) use ($lingkup) {
+                return $c->whereIn('tambahsdm_penempatan', [...$lingkup]);
+            });
+
+        $sdmIngatPtsb = $halaman->make('sdm.pengingat.permintaan-tambah-sdm', ['perminSDMS' => $perminSDMS ?? null]);
+
+        return $tanggapan->make($sdmIngatPtsb)->withHeaders(['Vary' => 'Accept']);
+    }
+
+    public function halamanPKWTHabis($cache, $kemarin, $hariIni, $kontrak, $database, $bulanDepan, $linkupIjin, $lingkup, $halaman, $tanggapan)
+    {
+        $cache->forget('PengingatKontrak - ' . $kemarin);
+
+        $cache_kontraks = $cache->rememberForever('PengingatKontrak - ' . $hariIni, function () use ($kontrak, $database, $bulanDepan) {
+            return $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_nama', 'penempatan_uuid', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke')
+                ->from('sdms')
+                ->leftJoinSub($kontrak, 'kontrak', function ($join) {
+                    $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+                })
+                ->whereNull('sdm_tgl_berhenti')
+                ->where('penempatan_kontrak', 'not like', 'OS-%')
+                ->where('penempatan_selesai', '<=', $bulanDepan)
+                ->latest('penempatan_selesai')
+                ->get();
+        });
+
+        $kontraks = $cache_kontraks->when($linkupIjin, function ($c) use ($lingkup) {
+            return $c->whereIn('penempatan_lokasi', [...$lingkup]);
+        });
+
+        $sdmIngatPkpd = $halaman->make('sdm.pengingat.pkwt-perlu-ditinjau', ['kontraks' => $kontraks ?? null]);
+
+        return $tanggapan->make($sdmIngatPkpd)->withHeaders(['Vary' => 'Accept']);
+    }
+
+    public function halamanPerubahanStatusSDMTerbaru($cache, $kemarin, $hariIni, $database, $bulanLalu, $linkupIjin, $lingkup, $halaman, $tanggapan)
+    {
+        $cache->forget('PerubahanStatus - ' . $kemarin);
+
+        $cache_statuses = $cache->rememberForever('PerubahanStatus - ' . $hariIni, function () use ($database, $bulanLalu) {
+            return $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan', 'sdm_uuid', 'sdm_no_absen', 'sdm_nama')
+                ->from('penempatans')->join('sdms', 'sdm_no_absen', '=', 'penempatan_no_absen')
+                ->where('penempatan_mulai', '>=', $bulanLalu)
+                ->latest('penempatan_mulai')
+                ->get();
+        });
+
+        $statuses = $cache_statuses->when($linkupIjin, function ($c) use ($lingkup) {
+            return $c->whereIn('penempatan_lokasi', [...$lingkup]);
+        });
+
+        $sdmIngatPstatus = $halaman->make('sdm.pengingat.perubahan-status', ['statuses' => $statuses ?? null]);
+
+        return $tanggapan->make($sdmIngatPstatus)->withHeaders(['Vary' => 'Accept']);
+    }
+
+    public function halamanSDMGabungTerbaru($cache, $kemarin, $hariIni, $kontrak, $database, $bulanLalu, $linkupIjin, $lingkup, $halaman, $tanggapan)
+    {
+        $cache->forget('PengingatAkunBaru - ' . $kemarin);
+
+        $cache_barus = $cache->rememberForever('PengingatAkunBaru - ' . $hariIni, function () use ($kontrak, $database, $bulanLalu) {
+            return $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_nama', 'sdm_no_permintaan',  'sdm_no_ktp', 'sdm_tgl_gabung', 'penempatan_uuid', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak')
+                ->from('sdms')
+                ->leftJoinSub($kontrak, 'kontrak', function ($join) {
+                    $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+                })
+                ->whereNull('sdm_tgl_berhenti')
+                ->where('sdm_tgl_gabung', '>=', $bulanLalu)
+                ->latest('sdm_tgl_gabung')
+                ->get();
+        });
+
+        $barus = $cache_barus->when($linkupIjin, function ($c) use ($lingkup) {
+            return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
+        });
+
+        $sdmIngatBaru = $halaman->make('sdm.pengingat.sdm-baru', ['barus' => $barus ?? null]);
+
+        return $tanggapan->make($sdmIngatBaru)->withHeaders(['Vary' => 'Accept']);
+    }
+
+    public function halamanSDMKeluarTerbaru($cache, $kemarin, $hariIni, $kontrak, $database, $bulanLalu, $linkupIjin, $lingkup, $halaman, $tanggapan)
+    {
+        $cache->forget('PengingatNon-Aktif - ' . $kemarin);
+
+        $cache_berhentis = $cache->rememberForever('PengingatNon-Aktif - ' . $hariIni, function () use ($kontrak, $database, $bulanLalu) {
+            return $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_nama', 'sdm_jenis_berhenti', 'sdm_tgl_berhenti', 'sdm_ket_berhenti', 'penempatan_uuid', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak')
+                ->from('sdms')
+                ->leftJoinSub($kontrak, 'kontrak', function ($join) {
+                    $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+                })
+                ->where(function ($query) {
+                    $query->whereNotNull('sdm_tgl_berhenti')
+                        ->orWhereNull('penempatan_kontrak');
+                })
+                ->where('sdm_tgl_berhenti', '>=', $bulanLalu)
+                ->latest('sdm_tgl_berhenti')
+                ->get();
+        });
+
+        $berhentis = $cache_berhentis->when($linkupIjin, function ($c) use ($lingkup) {
+            return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
+        });
+
+        $sdmIngatKeluar = $halaman->make('sdm.pengingat.sdm-keluar', ['berhentis' => $berhentis ?? null]);
+
+        return $tanggapan->make($sdmIngatKeluar)->withHeaders(['Vary' => 'Accept']);
     }
 
     public function akun(FungsiStatis $fungsiStatis, $uuid = null)
@@ -199,9 +216,9 @@ class Umum
         $app = app();
         $reqs = $app->request;
         $pengguna = $reqs->user();
-        
+
         abort_unless($pengguna, 401);
-        
+
         $database = $app->db;
 
         $kontrak = $database->query()->select('penempatan_no_absen', 'penempatan_lokasi', 'penempatan_posisi')->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
@@ -209,13 +226,13 @@ class Umum
         });
 
         $dasar = $database->query()->select('a.sdm_uuid', 'a.sdm_no_permintaan', 'a.sdm_no_absen', 'a.sdm_tgl_gabung', 'a.sdm_warganegara', 'a.sdm_no_ktp', 'a.sdm_nama', 'a.sdm_tempat_lahir', 'a.sdm_tgl_lahir', 'a.sdm_kelamin', 'a.sdm_gol_darah', 'a.sdm_alamat', 'a.sdm_alamat_rt', 'a.sdm_alamat_rw', 'a.sdm_alamat_kelurahan', 'a.sdm_alamat_kecamatan', 'a.sdm_alamat_kota', 'a.sdm_alamat_provinsi', 'a.sdm_alamat_kodepos', 'a.sdm_agama', 'a.sdm_no_kk', 'a.sdm_status_kawin', 'a.sdm_jml_anak', 'a.sdm_pendidikan', 'a.sdm_jurusan', 'a.sdm_telepon', 'a.email', 'a.sdm_disabilitas', 'a.sdm_no_bpjs', 'a.sdm_no_jamsostek', 'a.sdm_no_npwp', 'a.sdm_nama_bank', 'a.sdm_cabang_bank', 'a.sdm_rek_bank', 'a.sdm_an_rek', 'a.sdm_nama_dok', 'a.sdm_nomor_dok', 'a.sdm_penerbit_dok', 'a.sdm_an_dok', 'a.sdm_kadaluarsa_dok', 'a.sdm_uk_seragam', 'a.sdm_uk_sepatu', 'a.sdm_ket_kary', 'a.sdm_tgl_berhenti', 'a.sdm_jenis_berhenti', 'a.sdm_ket_berhenti', 'a.sdm_id_atasan', 'a.sdm_hak_akses', 'a.sdm_ijin_akses')->from('sdms', 'a');
-        
+
         $akun = $dasar->clone()->addSelect('b.sdm_uuid as uuid_atasan', 'b.sdm_nama as nama_atasan', 'b.sdm_tgl_berhenti as tgl_berhenti_atasan', 'penempatan_lokasi', 'penempatan_posisi')->leftJoin('sdms as b', 'a.sdm_id_atasan', '=', 'b.sdm_no_absen')
-        ->leftJoinSub($kontrak, 'kontrak', function ($join) {
-            $join->on('b.sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
-        })
-        ->where('a.sdm_uuid', $uuid)->first();
-        
+            ->leftJoinSub($kontrak, 'kontrak', function ($join) {
+                $join->on('b.sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            })
+            ->where('a.sdm_uuid', $uuid)->first();
+
         abort_unless($akun, 404, 'Profil yang dicari tidak ada.');
 
         $penempatans = $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_tgl_gabung', 'sdm_tgl_lahir', 'sdm_no_ktp', 'sdm_nama', 'sdm_kelamin', 'sdm_tgl_berhenti', 'penempatan_uuid', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan', 'posisi_wlkp', $app->db->raw('IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, sdm_tgl_berhenti)) as masa_kerja, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, penempatan_mulai, NOW()),TIMESTAMPDIFF(YEAR, penempatan_mulai, sdm_tgl_berhenti)) as masa_aktif, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, sdm_tgl_berhenti)) as usia'))
@@ -234,7 +251,7 @@ class Umum
         $str = str();
 
         abort_unless(($str->contains($pengguna->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) && (blank($ijin_akses) || $lingkup_lokasi->isEmpty() || ($lingkup_akses > 0))) || ($no_absen_sdm == $akun->sdm_no_absen) || ($akun->sdm_no_absen == $no_absen_atasan) || ($akun->sdm_id_atasan == $no_absen_sdm) || (!blank($no_absen_atasan) && ($akun->sdm_id_atasan == $no_absen_atasan)), 403, 'Ijin akses dibatasi.');
-        
+
         $no_wa_ts = $str->replace('-', '', $akun->sdm_telepon);
         $no_wa_tst = $str->replace(' ', '', $no_wa_ts);
         $no_wa_tn = $str->startsWith($no_wa_tst, '0');
@@ -256,7 +273,7 @@ class Umum
             'no_wa' =>  $no_wa ?: '0',
             'batasi' => $str->contains($pengguna->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) || $no_absen_sdm == $akun->sdm_no_absen,
         ];
-        
+
         $HtmlPenuh = $app->view->make('akun', $data);
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
         return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
@@ -269,14 +286,14 @@ class Umum
         $pengguna = $reqs->user();
         abort_unless($pengguna && $uuid, 401);
         $database = $app->db;
-        
+
         $penem = $database->query()->select('penempatan_no_absen', 'penempatan_lokasi', 'penempatan_mulai')->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
             $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
         });
-        
+
         $ijin_akses = $pengguna->sdm_ijin_akses;
         $lingkup = array_filter(explode(',', $ijin_akses));
-        
+
         $akun = $database->query()->select('sdms.*', 'penempatan_lokasi')
             ->from('sdms')
             ->leftJoinSub($penem, 'kontrak', function ($join) {
@@ -284,7 +301,7 @@ class Umum
             })
             ->where('sdm_uuid', $uuid)
             ->first();
-            
+
         $no_absen_sdm = $pengguna->sdm_no_absen;
         $lingkup_lokasi = $akun->penempatan_lokasi;
         $lingkup_akses = collect($lingkup_lokasi)->intersect($lingkup)->count();
@@ -296,23 +313,23 @@ class Umum
 
         if ($reqs->isMethod('post')) {
             abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
-            
+
             $reqs->whenFilled('sdm_hak_akses', function ($input) use ($reqs) {
                 $reqs->except('sdm_hak_akses');
                 $reqs->merge(['sdm_hak_akses' => implode(',', $input)]);
             }, function () use ($reqs) {
                 $reqs->merge(['sdm_hak_akses' => null]);
             });
-            
+
             $reqs->whenFilled('sdm_ijin_akses', function ($input) use ($reqs) {
                 $reqs->except('sdm_ijin_akses');
                 $reqs->merge(['sdm_ijin_akses' => implode(',', $input)]);
             }, function () use ($reqs) {
                 $reqs->merge(['sdm_ijin_akses' => null]);
             });
-            
+
             $reqs->merge(['sdm_id_pengubah' => $pengguna->sdm_no_absen]);
-            
+
             $validasi = $app->validator->make(
                 $reqs->all(),
                 [
@@ -421,15 +438,15 @@ class Umum
                     'sdm_tgl_berhenti' => 'Tanggal Berhenti',
                     'sdm_jenis_berhenti' => 'Jenis Berhenti SDM',
                     'sdm_ket_berhenti' => 'Keterangan Berhenti SDM',
-                    ]
-                );
-                
+                ]
+            );
+
             $validasi->validate();
-            
+
             $valid = $validasi->safe();
             $str = str();
             $pengurus = $str->contains($pengguna->sdm_hak_akses, 'SDM-PENGURUS');
-            
+
             if ($pengurus && blank($ijin_akses)) {
                 $data = $valid->except(['foto_profil', 'sdm_berkas']);
             } elseif ($pengurus & !blank($ijin_akses)) {
@@ -437,18 +454,18 @@ class Umum
             } else {
                 $data = $valid->except(['foto_profil', 'sdm_berkas', 'sdm_hak_akses', 'sdm_ijin_akses', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_berhenti', 'sdm_ket_kary', 'sdm_nama_dok', 'sdm_nomor_dok', 'sdm_penerbit_dok', 'sdm_an_dok', 'sdm_kadaluarsa_dok', 'sdm_no_permintaan', 'sdm_no_absen', 'sdm_id_atasan', 'sdm_tgl_gabung', 'sdm_warganegara', 'sdm_disabilitas', 'sdm_nama_bank', 'sdm_cabang_bank', 'sdm_rek_bank', 'sdm_an_bank']);
             }
-            
+
             $database->table('sdms')->where('sdm_uuid', $uuid)->update($data);
-            
+
             $foto = $valid->only('foto_profil')['foto_profil'] ?? false;
             $berkas = $valid->only('sdm_berkas')['sdm_berkas'] ?? false;
             $no_absen = $valid->only('sdm_no_absen')['sdm_no_absen'];
             $session = $reqs->session();
-            
+
             if ($foto) {
                 $foto->storeAs('sdm/foto-profil', $no_absen . '.webp');
             }
-            
+
             if ($berkas && $pengurus && (blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0) || ($no_absen_sdm == $akun->sdm_no_absen))) {
                 $berkas->storeAs('sdm/berkas', $no_absen . '.pdf');
             }
@@ -461,9 +478,9 @@ class Umum
                     });";
                 $session->flash('sesiJS', $sesiJS);
             }
-            
+
             $fungsiStatis->hapusCacheSDMUmum();
-            
+
             $pesan = $fungsiStatis->statusBerhasil();
 
             $perujuk = $session->get('tautan_perujuk');
@@ -509,16 +526,16 @@ class Umum
 
         $database = $app->db;
         $idPenguna = $pengguna->id;
-        
+
         $akun = $database->query()->select('id')->from('sdms')->where('id', $idPenguna)->first();
-        
+
         abort_unless($idPenguna == $akun->id, 403, 'Identitas pengguna berbeda.');
 
         $session = $reqs->session();
         $hash = $app->hash;
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         $halaman = $app->view;
-        
+
         if ($reqs->isMethod('post')) {
             abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
@@ -534,15 +551,15 @@ class Umum
                     'password' => 'Kata Sandi Baru',
                 ]
             );
-            
+
             $validasiSandi->validate();
-            
+
             $sandiBaru = $hash->make($validasiSandi->safe()->only('password')['password']);
-            
+
             $database->table('sdms')->where('id', $idPenguna)->update(['password' => $sandiBaru]);
-            
+
             $session->forget('spanduk');
-            
+
             return $app->redirect->route('mulai')->with('pesan', 'Sandi berhasil diubah.');
         }
 
@@ -551,12 +568,13 @@ class Umum
         return $reqs->pjax() ? $tanggapan->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlPenuh;
     }
 
-    public function unggah(Rule $rule, FungsiStatis $fungsiStatis) {
+    public function unggah(Rule $rule, FungsiStatis $fungsiStatis)
+    {
         $app = app();
         $reqs = $app->request;
         $pengguna = $reqs->user();
         $str = str();
-        
+
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         if ($reqs->isMethod('post')) {
@@ -568,7 +586,7 @@ class Umum
             header('X-Accel-Buffering: no');
 
             $validator = $app->validator;
-            
+
             $validasifile = $validator->make(
                 $reqs->all(),
                 [
@@ -579,12 +597,12 @@ class Umum
                     'unggah_profil_sdm' => 'Berkas Yang Diunggah'
                 ]
             );
-            
+
             $validasifile->validate();
 
             $file = $validasifile->safe()->only('unggah_profil_sdm')['unggah_profil_sdm'];
             $namafile = 'unggahprofilsdm-' . date('YmdHis') . '.xlsx';
-            
+
             $storage = $app->filesystem;
             $storage->putFileAs('unggah', $file, $namafile);
             $fileexcel = $app->storagePath("app/unggah/{$namafile}");
@@ -604,27 +622,27 @@ class Umum
                 $worksheet = $spreadsheet->getSheet(1);
                 $barisTertinggi = $worksheet->getHighestRow();
                 $kolomTertinggi = $worksheet->getHighestColumn();
-                
+
                 $pesanbaca = '<p>Status : Membaca excel baris ' . ($startRow) . ' sampai baris ' . $barisTertinggi . '.</p>';
                 $pesansimpan = '<p>Status : Berhasil menyimpan data excel baris ' . ($startRow) . ' sampai baris ' . $barisTertinggi . '.</p>';
-                
+
                 echo $pesanbaca;
-                
+
                 $headingArray = $worksheet->rangeToArray('A1:' . $kolomTertinggi . '1', null, false, false, false);
                 $dataArray = $worksheet->rangeToArray('A' . $startRow . ':' . $kolomTertinggi . $barisTertinggi, null, false, false, false);
                 $tabel = array_merge($headingArray, $dataArray);
                 $isitabel = array_shift($tabel);
-                
+
                 $datas = array_map(function ($x) use ($isitabel) {
                     return array_combine($isitabel, $x);
                 }, $tabel);
-                
+
                 $dataexcel = array_map(function ($x) use ($idPengunggah, $hash) {
                     return $x + ['sdm_id_pengunggah' => $idPengunggah] + ['sdm_id_pembuat' => $idPengunggah] + ['sdm_id_pengubah' => $idPengunggah] + ['sdm_diunggah' => date('Y-m-d H:i:s')] + ['password' => $hash->make($x['sdm_no_ktp'])];
                 }, $datas);
 
-                $data = array_combine(range(($startRow - 1), count($dataexcel) + ($startRow - 2) ), array_values($dataexcel));
-                
+                $data = array_combine(range(($startRow - 1), count($dataexcel) + ($startRow - 2)), array_values($dataexcel));
+
                 $validasi = $validator->make(
                     $data,
                     [
@@ -752,26 +770,26 @@ class Umum
                         '*.sdm_diunggah.*' => 'Waktu Unggah baris ke-:position wajib berupa tanggal.',
                     ]
                 );
-                
+
                 $validasi->validate();
-                                
+
                 $app->db->table('sdms')->upsert(
                     $validasi->validated(),
                     ['sdm_no_absen'],
                     ['sdm_no_permintaan', 'sdm_tgl_gabung', 'sdm_warganegara', 'sdm_no_ktp', 'sdm_nama', 'sdm_tempat_lahir', 'sdm_tgl_lahir', 'sdm_kelamin', 'sdm_gol_darah', 'sdm_alamat', 'sdm_alamat_rt', 'sdm_alamat_rw', 'sdm_alamat_kelurahan', 'sdm_alamat_kecamatan', 'sdm_alamat_kota', 'sdm_alamat_provinsi', 'sdm_alamat_kodepos', 'sdm_agama', 'sdm_no_kk', 'sdm_status_kawin', 'sdm_jml_anak', 'sdm_pendidikan', 'sdm_jurusan', 'sdm_telepon', 'email', 'sdm_disabilitas', 'sdm_no_bpjs', 'sdm_no_jamsostek', 'sdm_no_npwp', 'sdm_nama_bank', 'sdm_cabang_bank', 'sdm_rek_bank', 'sdm_an_rek', 'sdm_nama_dok', 'sdm_nomor_dok', 'sdm_penerbit_dok', 'sdm_an_dok', 'sdm_kadaluarsa_dok', 'sdm_uk_seragam', 'sdm_uk_sepatu', 'sdm_ket_kary', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_berhenti', 'sdm_id_atasan', 'sdm_id_pengunggah', 'sdm_id_pengubah', 'sdm_diunggah']
                 );
-                
+
                 echo $pesansimpan;
             };
 
             $spreadsheet->disconnectWorksheets();
             unset($spreadsheet);
-            
+
             $storage->delete($fileexcel);
-            
+
             $fungsiStatis->hapusCacheSDMUmum();
             $pesan = $fungsiStatis->statusBerhasil();
-            
+
             return $app->redirect->route('atur.data')->with('pesan', $pesan);
         }
 
