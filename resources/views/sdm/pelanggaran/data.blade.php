@@ -115,7 +115,8 @@
             @if($tabels->hasPages())
             <span class="trek">
                 @if($tabels->currentPage() > 1)
-                <a class="isi-xhr" href="{{ $tabels->url(1) }}" title="Awal">
+                <a class="isi-xhr" data-tujuan="#pelanggaran-sdm_tabels" data-frag="true" href="{{ $tabels->url(1) }}"
+                    title="Awal">
                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <use xlink:href="{{ $mixRangka('/ikon.svg') . '#awal' }}"
                             xmlns:xlink="http://www.w3.org/1999/xlink"></use>
@@ -124,7 +125,8 @@
                 @endif
 
                 @if($tabels->previousPageUrl())
-                <a class="isi-xhr" href="{{ $tabels->previousPageUrl() }}" title="Sebelumnya">
+                <a class="isi-xhr" data-tujuan="#pelanggaran-sdm_tabels" data-frag="true"
+                    href="{{ $tabels->previousPageUrl() }}" title="Sebelumnya">
                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <use xlink:href="{{ $mixRangka('/ikon.svg') . '#mundur' }}"
                             xmlns:xlink="http://www.w3.org/1999/xlink"></use>
@@ -133,14 +135,16 @@
                 @endif
 
                 @if($tabels->nextPageUrl())
-                <a class="isi-xhr" href="{{ $tabels->nextPageUrl() }}" title="Berikutnya">
+                <a class="isi-xhr" data-tujuan="#pelanggaran-sdm_tabels" data-frag="true"
+                    href="{{ $tabels->nextPageUrl() }}" title="Berikutnya">
                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <use xlink:href="{{ $mixRangka('/ikon.svg') . '#maju' }}"
                             xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                     </svg>
                 </a>
 
-                <a class="isi-xhr" href="{{ $tabels->url($tabels->lastPage()) }}" title="Akhir">
+                <a class="isi-xhr" data-tujuan="#pelanggaran-sdm_tabels" data-frag="true"
+                    href="{{ $tabels->url($tabels->lastPage()) }}" title="Akhir">
                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <use xlink:href="{{ $mixRangka('/ikon.svg') . '#akhir' }}"
                             xmlns:xlink="http://www.w3.org/1999/xlink"></use>
@@ -219,6 +223,9 @@
                                                 xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                         </svg>
                                     </a> --}}
+                                    <a class="isi-xhr" data-rekam="false" data-tujuan="#pelanggaran-sdm_sematan"
+                                        href="{{ $urlRangka->route('sdm.pelanggaran.lihat', ['uuid' => $tabel->langgar_uuid], false) }}"
+                                        title="Lihat Data">Lihat Laporan</a>
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#pelanggaran-sdm_sematan"
                                         href="{{ $urlRangka->route('sdm.pelanggaran.ubah', ['uuid' => $tabel->langgar_uuid], false) }}"
                                         title="Ubah Data">Ubah Laporan</a>
