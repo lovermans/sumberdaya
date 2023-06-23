@@ -168,7 +168,7 @@ class Umum
                 ->leftJoinSub($kontrak, 'kontrak', function ($join) {
                     $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
                 })
-                ->whereNull('sdm_tgl_berhenti')
+                // ->whereNull('sdm_tgl_berhenti')
                 ->where('sdm_tgl_gabung', '>=', $bulanLalu)
                 ->latest('sdm_tgl_gabung')
                 ->get();
