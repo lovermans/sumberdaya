@@ -271,8 +271,9 @@ class Pelanggaran
         $app = app();
         $reqs = $app->request;
         $pengguna = $reqs->user();
+        $str = str();
 
-        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         if ($reqs->isMethod('post')) {
 
@@ -349,12 +350,12 @@ class Pelanggaran
                 });
             }
 
-            $fungsiStatis->hapusCacheSDMUmum();
+            // $fungsiStatis->hapusCacheSDMUmum();
             $redirect = $app->redirect;
             $perujuk = $reqs->session()->get('tautan_perujuk');
             $pesan = $fungsiStatis->statusBerhasil();
 
-            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);
+            return $str->contains($perujuk, ['pelanggaran']) ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);
         }
 
         $sdms = $fungsiStatis->ambilCacheSDM();

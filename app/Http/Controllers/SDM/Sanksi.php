@@ -121,6 +121,7 @@ class Sanksi
         $data = [
             'tabels' => $tabels,
             'lokasis' => $lokasis,
+            'jenisSanksis' => $cacheAtur->where('atur_jenis', 'SANKSI SDM'),
             'urutTanggalMulai' => $urutTanggalMulai,
             'indexTanggalMulai' => $indexTanggalMulai,
             'urutTanggalSelesai' => $urutTanggalSelesai,

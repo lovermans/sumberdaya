@@ -693,7 +693,7 @@ class Berkas
         $argumen = [
             'namaBerkas' => 'eksporsanksisdm-',
             'dataEkspor' => $cari->clone(),
-            'pengecualian' => ['id', 'sdm_uuid', 'penempatan_uuid'],
+            'pengecualian' => ['sanksi_uuid', 'langgar_tsdm_uuid', 'langgar_psdm_uuid'],
             'pesanData' =>  ' data sanksi SDM',
             'app' => $app,
             'binder' => $binder,

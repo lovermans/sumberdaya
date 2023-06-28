@@ -80,9 +80,6 @@
                         <span class="t-bantu">Isi tanggal</span>
                     </div>
                 </div>
-
-
-
             </details>
         </form>
     </div>
@@ -172,6 +169,7 @@
                         </select>
                         <span class="t-bantu">Pilih satu</span>
                     </div>
+
                     <div class="isian" data-indeks="{{ $urutTanggal ? $indexTanggal : 'X' }}">
                         <label for="sdm_pelanggaran_tambah_cariUrutTanggal">{{ $urutTanggal ? $indexTanggal.'. '
                             : '' }}Urut Tanggal Laporan</label>
@@ -209,7 +207,7 @@
                     <tr @class(['merah'=> $tabel->langgar_status == 'DIBATALKAN','biru' => $tabel->final_sanksi_jenis])>
                         <th>
                             <div class="pil-aksi">
-                                <button id="{{ 'aksi_penempatan_baris_' .$tabels->firstItem() + $nomor}}"
+                                <button id="{{ 'aksi_pelanggaran_baris_' .$tabels->firstItem() + $nomor}}"
                                     title="Pilih Tindakan">
                                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}"
@@ -219,7 +217,7 @@
                                 <div class="aksi">
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#pelanggaran-sdm_sematan"
                                         href="{{ $urlRangka->route('sdm.pelanggaran.lihat', ['uuid' => $tabel->langgar_uuid], false) }}"
-                                        title="Lihat Data">Tindaklanjuti</a>
+                                        title="Tindaklanjuti">Tindaklanjuti</a>
                                 </div>
                             </div>
                         </th>
