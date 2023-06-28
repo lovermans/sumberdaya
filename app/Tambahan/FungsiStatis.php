@@ -63,45 +63,6 @@ class FungsiStatis
         });
     }
 
-    public static function ambilCachePelanggaranSDM()
-    {
-        $app = app();
-        $database = $app->db;
-
-        $dataDasar = $database->query()->select('langgar_uuid', 'langgar_lap_no', 'langgar_no_absen', 'langgar_pelapor', 'langgar_tanggal', 'langgar_status', 'langgar_isi', 'langgar_keterangan')->from('pelanggaransdms');
-
-        $kontrak = $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_keterangan')
-            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
-                $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
-            });
-
-        $sanksi = $database->query()->select('sanksi_no_absen', 'sanksi_jenis', 'sanksi_lap_no', 'sanksi_selesai')
-            ->from('sanksisdms as p1')->where('sanksi_selesai', '=', function ($query) use ($database) {
-                $query->select($database->raw('MAX(sanksi_selesai)'))->from('sanksisdms as p2')->whereColumn('p1.sanksi_no_absen', 'p2.sanksi_no_absen');
-            });
-
-        return $app->cache->rememberForever('PelanggaranSDM', function () use ($dataDasar, $kontrak, $sanksi) {
-            return $dataDasar->addSelect('a.sdm_uuid as langgar_tsdm_uuid', 'a.sdm_nama as langgar_tsdm_nama', 'a.sdm_tgl_berhenti as langgar_tsdm_tgl_berhenti', 'kontrak_t.penempatan_lokasi as langgar_tlokasi', 'kontrak_t.penempatan_posisi as langgar_tposisi', 'kontrak_t.penempatan_kontrak as langgar_tkontrak', 'b.sdm_uuid as langgar_psdm_uuid', 'b.sdm_nama as langgar_psdm_nama', 'b.sdm_tgl_berhenti as langgar_psdm_tgl_berhenti', 'kontrak_p.penempatan_lokasi as langgar_plokasi', 'kontrak_p.penempatan_posisi as langgar_pposisi', 'kontrak_p.penempatan_kontrak as langgar_pkontrak', 'sanksilama.sanksi_jenis as sanksi_aktif_sebelumnya', 'sanksilama.sanksi_lap_no as lap_no_sebelumnya', 'sanksilama.sanksi_selesai as sanksi_selesai_sebelumnya', 'sanksisdms.sanksi_uuid as final_sanksi_uuid', 'sanksisdms.sanksi_jenis as final_sanksi_jenis', 'sanksisdms.sanksi_mulai as final_sanksi_mulai', 'sanksisdms.sanksi_selesai as final_sanksi_selesai', 'sanksisdms.sanksi_tambahan as final_sanksi_tambahan', 'sanksisdms.sanksi_keterangan as final_sanksi_keterangan')
-                ->join('sdms as a', 'langgar_no_absen', '=', 'a.sdm_no_absen')
-                ->join('sdms as b', 'langgar_pelapor', '=', 'b.sdm_no_absen')
-                ->leftJoinSub($kontrak, 'kontrak_t', function ($join) {
-                    $join->on('langgar_no_absen', '=', 'kontrak_t.penempatan_no_absen');
-                })
-                ->leftJoinSub($kontrak, 'kontrak_p', function ($join) {
-                    $join->on('langgar_pelapor', '=', 'kontrak_p.penempatan_no_absen');
-                })
-                ->leftJoinSub($sanksi, 'sanksilama', function ($join) {
-                    $join->on('langgar_no_absen', '=', 'sanksilama.sanksi_no_absen')->on('sanksilama.sanksi_selesai', '>=', 'langgar_tanggal')->on('langgar_lap_no', '!=', 'sanksilama.sanksi_lap_no');
-                })
-                ->leftJoin('sanksisdms', function ($join) {
-                    $join->on('langgar_no_absen', '=', 'sanksisdms.sanksi_no_absen')->on('langgar_lap_no', '=', 'sanksisdms.sanksi_lap_no');
-                })
-                ->whereNull('sanksisdms.sanksi_jenis')
-                ->where('langgar_status', '=', 'DIPROSES')
-                ->orderBy('langgar_lap_no', 'desc')->get();
-        });
-    }
-
     public static function hapusBerkasLama()
     {
         $app = app();
@@ -139,6 +100,11 @@ class FungsiStatis
         cache()->forget('PosisiSDM');
     }
 
+    public static function hapusCachePelanggaranSDM()
+    {
+        cache()->forget('PengingatPelanggaran');
+    }
+
     public static function hapusCacheSDMUmum()
     {
         $app = app();
@@ -152,6 +118,7 @@ class FungsiStatis
         $cache->forget('PengingatNon-Aktif - ' . $hariIni->format('Y-m-d'));
         $cache->forget('PengingatAkunBaru - ' . $hariIni->format('Y-m-d'));
         $cache->forget('PerubahanStatus - ' . $hariIni->format('Y-m-d'));
+        $cache->forget('PengingatPelanggaran');
     }
 
     public static function statusBerhasil()

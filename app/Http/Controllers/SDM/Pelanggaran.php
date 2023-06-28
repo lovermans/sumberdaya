@@ -350,7 +350,7 @@ class Pelanggaran
                 });
             }
 
-            // $fungsiStatis->hapusCacheSDMUmum();
+            $fungsiStatis->hapusCachePelanggaranSDM();
             $redirect = $app->redirect;
             $perujuk = $reqs->session()->get('tautan_perujuk');
             $pesan = $fungsiStatis->statusBerhasil();
@@ -464,7 +464,7 @@ class Pelanggaran
 
             $database->table('pelanggaransdms')->where('langgar_uuid', $uuid)->update($data);
 
-            $fungsiStatis->hapusCacheSDMUmum();
+            $fungsiStatis->hapusCachePelanggaranSDM();
             $pesan = $fungsiStatis->statusBerhasil();
 
             if ($reqs->header('X-Minta-Javascript', false)) {

@@ -1,7 +1,7 @@
 @extends('rangka')
 
 @section('isi')
-<div id="penempatan_sdm_lihat">
+<div id="pelanggaran_sdm_lihat">
     <div class="kartu form">
         @isset($langgar)
         <div class="gspan-4">
@@ -76,7 +76,7 @@
 
         <div class="isian gspan-4"></div>
 
-        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#pelanggaran-sdm_sematan"
+        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#pelanggaran_sdm_lihat_sematan"
             href="{{ $urlRangka->route('sdm.pelanggaran.ubah', ['uuid' => $langgar->langgar_uuid], false) }}">UBAH
             LAPORAN PELANGGARAN</a>
 
@@ -172,12 +172,12 @@
 
         @if ($langgar->langgar_status == 'DIPROSES')
         @unless ($langgar->final_sanksi_jenis)
-        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#penempatan_sdm_lihat_sematan"
+        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#pelanggaran_sdm_lihat_sematan"
             href="{{ $urlRangka->route('sdm.sanksi.tambah', ['lap_uuid' => $langgar->langgar_uuid], false) }}">TAMBAH
             SANKSI</a>
 
         @else
-        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#penempatan_sdm_lihat_sematan"
+        <a class="utama isi-xhr" data-rekam="false" data-tujuan="#pelanggaran_sdm_lihat_sematan"
             href="{{ $urlRangka->route('sdm.sanksi.ubah', ['uuid' => $langgar->final_sanksi_uuid], false) }}">UBAH
             SANKSI</a>
         @endunless
@@ -187,7 +187,7 @@
         @endisset
     </div>
 
-    <div id="penempatan_sdm_lihat_sematan" class="scroll-margin"></div>
+    <div id="pelanggaran_sdm_lihat_sematan" class="scroll-margin"></div>
 
     @include('pemberitahuan')
     @include('komponen')

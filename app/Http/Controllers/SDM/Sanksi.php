@@ -317,7 +317,7 @@ class Sanksi
                 $berkas->storeAs('sdm/sanksi/berkas', $validasi->safe()->only('sanksi_no_absen')['sanksi_no_absen'] . ' - '  . $validasi->safe()->only('sanksi_jenis')['sanksi_jenis'] . ' - ' . $validasi->safe()->only('sanksi_mulai')['sanksi_mulai'] . '.pdf');
             }
 
-            // $fungsiStatis->hapusCacheSDMUmum();
+            $fungsiStatis->hapusCachePelanggaranSDM();
             $pesan = $fungsiStatis->statusBerhasil();
 
             return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);
@@ -397,7 +397,7 @@ class Sanksi
                 $berkas->storeAs('sdm/sanksi/berkas', $validasi->safe()->only('sanksi_no_absen')['sanksi_no_absen'] . ' - '  . $validasi->safe()->only('sanksi_jenis')['sanksi_jenis'] . ' - ' . $validasi->safe()->only('sanksi_mulai')['sanksi_mulai'] . '.pdf');
             }
 
-            // $fungsiStatis->hapusCacheSDMUmum();
+            $fungsiStatis->hapusCachePelanggaranSDM();
             $pesan = $fungsiStatis->statusBerhasil();
 
             return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);

@@ -94,29 +94,6 @@
             <span class="t-bantu">Isi keterangan lain yang diperlukan</span>
         </div>
 
-        @if ($rekRangka->routeIs('sdm.pelanggaran.ubah'))
-        <div class="isian gspan-4">
-            <label>Bukti Pendukung</label>
-            @if ($storageRangka->exists('sdm/pelanggaran/berkas/'. $langgar->langgar_lap_no.'.pdf'))
-            <iframe class="berkas tcetak"
-                src="{{ $urlRangka->route('sdm.pelanggaran.berkas', ['berkas' =>  $langgar->langgar_lap_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/pelanggaran/berkas/' .  $langgar->langgar_lap_no . '.pdf'))], false) }}"
-                title="Berkas Laporan" loading="lazy"
-                onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
-            <a class="utama tcetak"
-                href="{{ $urlRangka->route('sdm.pelanggaran.berkas', ['berkas' =>  $langgar->langgar_lap_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/pelanggaran/berkas/' .  $langgar->langgar_lap_no . '.pdf'))], false) }}"
-                download>
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                </svg>
-                BERKAS
-            </a>
-            @else
-            <p class="merah">Tidak ada berkas terunggah.</p>
-            @endif
-        </div>
-        @endif
-
         <div class="isian gspan-2">
             <label for="sdm_langgar_tambahUbahUnggahBerkas">Unggah/Perbarui Bukti Pelanggaran</label>
             <input id="sdm_langgar_tambahUbahUnggahBerkas" type="file" name="berkas_laporan"
