@@ -28,6 +28,7 @@ class Pelanggaran
                 'langgar_status.*' => ['sometimes', 'nullable', 'string', $rule->in(['DIPROSES', 'DIBATALKAN'])],
                 'langgar_penempatan.*' => ['sometimes', 'nullable', 'string'],
                 'langgar_proses' => ['sometimes', 'nullable', 'string', $rule->in(['SELESAI', 'BELUM SELESAI'])],
+                'unduh' => ['sometimes', 'nullable', 'string', $rule->in(['excel'])],
                 'bph' => ['sometimes', 'nullable', 'numeric', $rule->in([25, 50, 75, 100])],
                 'urut.*' => ['sometimes', 'nullable', 'string']
             ],
@@ -37,6 +38,7 @@ class Pelanggaran
                 'langgar_status.*' => 'Status Laporan tidak sesuai daftar.',
                 'kata_kunci.*' => 'Kata Kunci Pencarian harus berupa karakter.',
                 'langgar_penempatan.*' => 'Lokasi #:position wajib berupa karakter.',
+                'unduh.*' => 'Format ekspor tidak dikenali.',
                 'langgar_proses.*' => 'Proses Laporan tidak sesuai daftar.',
                 'bph.*' => 'Baris Per halaman tidak sesuai daftar.',
                 'urut.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.'

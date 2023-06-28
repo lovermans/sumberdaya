@@ -191,6 +191,8 @@
             @endunless
         </div>
 
+        <span class="merah">Merah</span> : Dibatalkan. <span class="biru">Biru</span> : Selesai diberikan sanksi.
+
         <div class="data ringkas">
             <table id="pelanggaran-sdm_tabel" class="tabel">
                 <thead>
@@ -204,7 +206,7 @@
                 </thead>
                 <tbody>
                     @forelse ($tabels as $nomor => $tabel)
-                    <tr>
+                    <tr @class(['merah'=> $tabel->langgar_status == 'DIBATALKAN','biru' => $tabel->final_sanksi_jenis])>
                         <th>
                             <div class="pil-aksi">
                                 <button id="{{ 'aksi_penempatan_baris_' .$tabels->firstItem() + $nomor}}"
@@ -217,7 +219,7 @@
                                 <div class="aksi">
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#pelanggaran-sdm_sematan"
                                         href="{{ $urlRangka->route('sdm.pelanggaran.lihat', ['uuid' => $tabel->langgar_uuid], false) }}"
-                                        title="Lihat Data">Tindak Lanjuti</a>
+                                        title="Lihat Data">Tindaklanjuti</a>
                                 </div>
                             </div>
                         </th>

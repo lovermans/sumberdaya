@@ -4,185 +4,139 @@ namespace App\Http\Controllers\SDM;
 
 use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\SDM\Berkas;
 
 class Sanksi
 {
-    public function index(Rule $rule)
+    public function index(Rule $rule, FungsiStatis $fungsiStatis, Berkas $berkas, $uuid = null)
     {
-        // $app = app();
-        // $reqs = $app->request;
-        // $pengguna = $reqs->user();
-        // $str = str();
+        $app = app();
+        $reqs = $app->request;
+        $pengguna = $reqs->user();
+        $str = str();
 
-        // abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        // $validator = $app->validator->make(
-        //     $reqs->all(),
-        //     [
-        //         'posisi_status' => ['sometimes', 'nullable', 'string', $rule->in(['AKTIF', 'NON-AKTIF'])],
-        //         'kata_kunci' => ['sometimes', 'nullable', 'string'],
-        //         'bph' => ['sometimes', 'nullable', 'numeric', $rule->in([25, 50, 75, 100])],
-        //         'urut.*' => ['sometimes', 'nullable', 'string'],
-        //         'penempatan_lokasi.*' => ['sometimes', 'nullable', 'string'],
-        //         'penempatan_kontrak.*' => ['sometimes', 'nullable', 'string']
-        //     ],
-        //     [
-        //         'posisi_status.*' => 'Status Jabatan harus sesuai daftar.',
-        //         'kata_kunci.*' => 'Kata Kunci Pencarian harus berupa karakter.',
-        //         'bph.*' => 'Baris Per halaman tidak sesuai daftar.',
-        //         'urut.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
-        //         'penempatan_lokasi.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
-        //         'penempatan_kontrak.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
-        //     ]
-        // );
+        $validator = $app->validator->make(
+            $reqs->all(),
+            [
+                'kata_kunci' => ['sometimes', 'nullable', 'string'],
+                'sanksi_jenis.*' => ['required', 'string', $rule->exists('aturs', 'atur_butir')->where(function ($query) {
+                    return $query->where('atur_jenis', 'SANKSI SDM');
+                })],
+                'sanksi_penempatan.*' => ['sometimes', 'nullable', 'string'],
+                'unduh' => ['sometimes', 'nullable', 'string', $rule->in(['excel'])],
+                'bph' => ['sometimes', 'nullable', 'numeric', $rule->in([25, 50, 75, 100])],
+                'urut.*' => ['sometimes', 'nullable', 'string']
+            ],
+            [
+                'kata_kunci.*' => 'Kata Kunci Pencarian harus berupa karakter.',
+                'sanksi_jenis.*' => 'Jenis Sanksi wajib berupa karakter dan terdaftar.',
+                'sanksi_penempatan.*' => 'Lokasi #:position wajib berupa karakter.',
+                'bph.*' => 'Baris Per halaman tidak sesuai daftar.',
+                'urut.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
+            ]
+        );
 
-        // if ($validator->fails()) {
-        //     return $app->redirect->route('sdm.posisi.data')->withErrors($validator)->withInput();
-        // };
+        if ($validator->fails()) {
+            return $app->redirect->route('sdm.sanksi.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
+        };
 
-        // $urutArray = $reqs->urut;
-        // $uruts = $urutArray ? implode(',', array_filter($urutArray)) : null;
-        // $kataKunci = $reqs->kata_kunci;
+        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
-        // $ijin_akses = $pengguna->sdm_ijin_akses;
-        // $lingkupIjin = array_filter(explode(',', $ijin_akses));
-        // $lingkup_lokasi = collect($reqs->lokasi);
-        // $lingkup_akses = $lingkup_lokasi->intersect($lingkupIjin)->count();
-        // $maks_akses = collect($lingkupIjin)->count();
-        // $permin_akses = $lingkup_lokasi->count();
+        $cacheAtur = $fungsiStatis->ambilCacheAtur();
 
-        // abort_unless(blank($ijin_akses) || ($lingkup_akses <= $maks_akses && $maks_akses >= $permin_akses), 403, 'Akses lokasi lain dibatasi.');
+        $lokasis = $cacheAtur->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+            return $query->whereIn('atur_butir', $lingkupIjin)->sortBy(['atur_butir', 'asc']);
+        });
 
-        // $database = $app->db;
+        $urutArray = $reqs->urut;
 
-        // $kontrak = $database->query()->select('penempatan_posisi', 'penempatan_no_absen', 'penempatan_lokasi', 'penempatan_kontrak')
-        // ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
-        //     $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
-        // });
+        $uruts = $urutArray ? implode(',', array_filter($urutArray)) : null;
 
-        // $cariSub = $this->dataDasar()->clone()->addSelect('posisi_uuid', 'posisi_dibuat', 'penempatan_lokasi', 'penempatan_kontrak', $database->raw('COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NULL THEN sdm_no_absen END) jml_aktif, COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NOT NULL THEN sdm_no_absen END) jml_nonaktif'))
-        // ->leftJoinSub($kontrak, 'kontrak', function ($join) {
-        //     $join->on('posisi_nama', '=', 'kontrak.penempatan_posisi');
-        // })
-        // ->leftJoin('sdms', 'sdm_no_absen', '=', 'penempatan_no_absen')
-        // ->groupBy('posisi_nama');
+        $kataKunci = $reqs->kata_kunci;
 
-        // $cari = $database->query()->addSelect('tsdm.*', $app->db->raw('IF((jml_aktif + jml_nonaktif) > 0, (jml_nonaktif / (jml_nonaktif + jml_aktif)) * 100, 0) as pergantian'))->fromSub($cariSub, 'tsdm')
-        // ->when($reqs->posisi_status, function ($query) use ($reqs) {
-        //     $query->where('posisi_status', $reqs->posisi_status);
-        // })
-        // ->when($kataKunci, function ($query, $kataKunci) {
-        //     $query->where(function ($group) use ($kataKunci) {
-        //         $group->where('posisi_nama', 'like', '%' . $kataKunci . '%')
-        //         ->orWhere('posisi_atasan', 'like', '%' . $kataKunci . '%')
-        //         ->orWhere('posisi_wlkp', 'like', '%' . $kataKunci . '%')
-        //         ->orWhere('posisi_keterangan', 'like', '%' . $kataKunci . '%');
-        //     });
-        // })
-        // ->when($reqs->lokasi, function ($query) use ($reqs) {
-        //     $query->whereIn('penempatan_lokasi', $reqs->lokasi);
-        // })
-        // ->when($reqs->kontrak, function ($query) use ($reqs) {
-        //     $query->whereIn('penempatan_kontrak', $reqs->kontrak);
-        // })
-        // ->when(
-        //     $uruts,
-        //     function ($query, $uruts) {
-        //         $query->orderByRaw($uruts);
-        //     },
-        //     function ($query) {
-        //         $query->latest('posisi_dibuat');
-        //     }
-        // );
+        $database = $app->db;
 
+        $kontrak = $this->dataKontrak($database);
 
-        // if ($reqs->unduh == 'excel') {
+        $cari = $this->dataDasar($database)
+            ->addSelect('a.sdm_uuid as langgar_tsdm_uuid', 'a.sdm_nama as langgar_tsdm_nama', 'a.sdm_tgl_berhenti as langgar_tsdm_tgl_berhenti', 'kontrak_t.penempatan_lokasi as langgar_tlokasi', 'kontrak_t.penempatan_posisi as langgar_tposisi', 'kontrak_t.penempatan_kontrak as langgar_tkontrak', 'langgar_isi', 'langgar_tanggal', 'langgar_status', 'langgar_pelapor', 'b.sdm_uuid as langgar_psdm_uuid', 'b.sdm_nama as langgar_psdm_nama', 'b.sdm_tgl_berhenti as langgar_psdm_tgl_berhenti', 'kontrak_p.penempatan_lokasi as langgar_plokasi', 'kontrak_p.penempatan_posisi as langgar_pposisi', 'kontrak_p.penempatan_kontrak as langgar_pkontrak')
+            ->join('sdms as a', 'sanksi_no_absen', '=', 'a.sdm_no_absen')
+            ->leftJoinSub($kontrak, 'kontrak_t', function ($join) {
+                $join->on('sanksi_no_absen', '=', 'kontrak_t.penempatan_no_absen');
+            })
+            ->leftJoin('pelanggaransdms', 'sanksi_lap_no', '=', 'langgar_lap_no')
+            ->leftJoin('sdms as b', 'langgar_pelapor', '=', 'b.sdm_no_absen')
+            ->leftJoinSub($kontrak, 'kontrak_p', function ($join) {
+                $join->on('langgar_pelapor', '=', 'kontrak_p.penempatan_no_absen');
+            })
+            ->when($reqs->sanksi_jenis, function ($query) use ($reqs) {
+                $query->whereIn('sanksi_jenis', (array) $reqs->sanksi_jenis);
+            })
+            ->when($reqs->sanksi_penempatan, function ($query) use ($reqs) {
+                $query->where(function ($group) use ($reqs) {
+                    $group->whereIn('kontrak_t.penempatan_lokasi', (array) $reqs->sanksi_penempatan)
+                        ->orWhereIn('kontrak_p.penempatan_lokasi', (array) $reqs->sanksi_penempatan);
+                });
+            })
+            ->when($kataKunci, function ($query, $kataKunci) {
+                $query->where(function ($group) use ($kataKunci) {
+                    $group->where('sanksi_no_absen', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('a.sdm_nama', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('b.sdm_nama', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('sanksi_tambahan', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('sanksi_keterangan', 'like', '%' . $kataKunci . '%');
+                });
+            })
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin)
+                        ->orWhereIn('kontrak_p.penempatan_lokasi', $lingkupIjin);
+                });
+            })
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->latest('sanksi_mulai');
+                }
+            );
 
-        //     set_time_limit(0);
-        //     ob_implicit_flush();
-        //     ob_end_flush();
-        //     header('X-Accel-Buffering: no');
+        if ($reqs->unduh == 'excel') {
+            return $berkas->unduhIndexSanksiSDM($cari, $app);
+        }
 
-        //     $spreadsheet = new Spreadsheet();
-        //     $filename = 'eksporjabatansdm-' . date('YmdHis') . '.xlsx';
-        //     Cell::setValueBinder(new CustomValueBinder());
-        //     $worksheet = $spreadsheet->getActiveSheet();
-        //     $x = 1;
+        $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'sanksi-sdm_tabels', 'uuid' => $uuid ?? '']);;
 
-        //     $cari->clone()->chunk(100, function ($hasil) use (&$x, $worksheet) {
-        //         if ($x == 1) {
-        //             $list = $hasil->map(function ($x) {
-        //                 return collect($x)->except(['posisi_uuid']);
-        //             })->toArray();
-        //             array_unshift($list, array_keys($list[0]));
-        //             $worksheet->fromArray($list, NULL, 'A' . $x);
-        //             $x++;
-        //         } else {
-        //             $list = $hasil->map(function ($x) {
-        //                 return collect($x)->except(['posisi_uuid']);
-        //             })->toArray();
-        //             $worksheet->fromArray($list, NULL, 'A' . $x);
-        //         };
-        //         $x += count($hasil);
-        //         echo '<p>Status : Memproses ' . ($x - 2) . ' data jabatan SDM.</p>';
-        //     });
+        $kunciUrut = array_filter((array) $urutArray);
 
-        //     echo '<p>Status : Menyiapkan berkas excel.</p>';
+        $urutTanggalMulai = $str->contains($uruts, 'sanksi_mulai');
+        $indexTanggalMulai = (head(array_keys($kunciUrut, 'sanksi_mulai ASC')) + head(array_keys($kunciUrut, 'sanksi_mulai DESC')) + 1);
+        $urutTanggalSelesai = $str->contains($uruts, 'sanksi_selesai');
+        $indexTanggalSelesai = (head(array_keys($kunciUrut, 'sanksi_selesai ASC')) + head(array_keys($kunciUrut, 'sanksi_selesai DESC')) + 1);
 
-        //     $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-        //     $writer->setPreCalculateFormulas(false);
-        //     $writer->save($app->storagePath("app/unduh/{$filename}"));
-        //     $spreadsheet->disconnectWorksheets();
-        //     unset($spreadsheet);
+        $data = [
+            'tabels' => $tabels,
+            'lokasis' => $lokasis,
+            'urutTanggalMulai' => $urutTanggalMulai,
+            'indexTanggalMulai' => $indexTanggalMulai,
+            'urutTanggalSelesai' => $urutTanggalSelesai,
+            'indexTanggalSelesai' => $indexTanggalSelesai,
+            'halamanAkun' => $uuid ?? '',
+        ];
 
-        //     echo '<p>Selesai menyiapkan berkas excel. <a href="' . $app->filesystem->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)) . '">Unduh</a>.</p>';
+        if (!isset($uuid)) {
+            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        }
 
-        //     exit();
-        // }
-
-        // $aktif = $cari->clone()->sum('jml_aktif');
-        // $nonAktif = $cari->clone()->sum('jml_nonaktif');
-        // $total = $aktif + $nonAktif;
-
-        // $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString();
-
-        // $kunciUrut = array_filter((array) $urutArray);
-
-        // $cacheAtur = FungsiStatis::ambilCacheAtur();
-
-        // $urutPergantian = $str->contains($uruts, 'pergantian');
-        // $indexPergantian = (head(array_keys($kunciUrut, 'pergantian ASC')) + head(array_keys(array_filter((array)  $urutArray), 'pergantian DESC')) + 1);
-        // $urutPosisi = $str->contains($uruts, 'posisi_nama');
-        // $indexPosisi = (head(array_keys($kunciUrut, 'posisi_nama ASC')) + head(array_keys(array_filter((array)  $urutArray), 'posisi_nama DESC')) + 1);
-        // $urutAktif = $str->contains($uruts, 'jml_aktif');
-        // $indexAktif = (head(array_keys($kunciUrut, 'jml_aktif ASC')) + head(array_keys(array_filter((array)  $urutArray), 'jml_aktif DESC')) + 1);
-        // $urutNonAktif = $str->contains($uruts, 'jml_nonaktif');
-        // $indexNonAktif = (head(array_keys($kunciUrut, 'jml_nonaktif ASC')) + head(array_keys(array_filter((array)  $urutArray), 'jml_nonaktif DESC')) + 1);
-
-        // $data = [
-        //     'tabels' => $tabels,
-        //     'urutPergantian' => $urutPergantian,
-        //     'indexPergantian' => $indexPergantian,
-        //     'urutPosisi' => $urutPosisi,
-        //     'indexPosisi' => $indexPosisi,
-        //     'urutAktif' => $urutAktif,
-        //     'indexAktif' => $indexAktif,
-        //     'urutNonAktif' => $urutNonAktif,
-        //     'indexNonAktif' => $indexNonAktif,
-        //     'lokasis' => $cacheAtur->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-        //         return $query->whereIn('atur_butir', $lingkupIjin);
-        //     })->sortBy(['atur_butir', 'asc']),
-        //     'kontraks' => $cacheAtur->where('atur_jenis', 'STATUS KONTRAK')->sortBy(['atur_butir', 'asc']),
-        //     'aktif' => $aktif,
-        //     'nonAktif' => $nonAktif,
-        //     'total' => $total
-        // ];
-
-        // $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
-
-        // $HtmlPenuh = $app->view->make('sdm.posisi.data', $data);
-        // $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        // return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        $HtmlPenuh = $app->view->make('sdm.sanksi.data', $data);
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+            ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
+            : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function atributInput()
@@ -206,14 +160,21 @@ class Sanksi
         return $database->query()->select('sanksi_uuid', 'sanksi_no_absen', 'sanksi_jenis', 'sanksi_mulai', 'sanksi_selesai', 'sanksi_lap_no', 'sanksi_tambahan', 'sanksi_keterangan')->from('sanksisdms');
     }
 
+    public function dataKontrak($database)
+    {
+        return $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_keterangan')
+            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
+                $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
+            });
+    }
+
     public function dataPelanggaran($database)
     {
         return $database->query()->select('langgar_uuid', 'langgar_lap_no', 'langgar_no_absen', 'langgar_pelapor', 'langgar_tanggal', 'langgar_status', 'langgar_isi', 'langgar_keterangan')->from('pelanggaransdms');
     }
 
-    public function dasarValidasi()
+    public function dasarValidasi(Rule $rule)
     {
-        $rule = app('Illuminate\Validation\Rule');
         return [
             'sanksi_jenis' => ['required', 'string', $rule->exists('aturs', 'atur_butir')->where(function ($query) {
                 return $query->where('atur_jenis', 'SANKSI SDM');
@@ -257,11 +218,7 @@ class Sanksi
 
         $database = $app->db;
 
-        $kontrak = $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_keterangan')
-            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
-                $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
-            });
-
+        $kontrak = $this->dataKontrak($database);
 
         $sanksi = $database->query()->select('sanksi_no_absen', 'sanksi_jenis', 'sanksi_lap_no', 'sanksi_selesai')
             ->from('sanksisdms as p1')->where('sanksi_selesai', '=', function ($query) use ($database) {
@@ -359,10 +316,7 @@ class Sanksi
 
         $database = $app->db;
 
-        $kontrak = $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_keterangan')
-            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
-                $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
-            });
+        $kontrak = $this->dataKontrak($database);
 
         $sanksiLama = $this->dataDasar($database)->addSelect('langgar_status')
             ->leftJoin('pelanggaransdms', 'sanksi_lap_no', '=', 'langgar_lap_no')

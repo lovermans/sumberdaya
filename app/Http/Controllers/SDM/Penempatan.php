@@ -1199,6 +1199,7 @@ class Penempatan
             'unduh.*' => 'Format ekspor tidak dikenali.',
             'kata_kunci.*' => 'Kata Kunci Pencarian harus berupa karakter.',
             'bph.*' => 'Baris Per halaman tidak sesuai daftar.',
+            'urut.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.'
         ];
     }
 
@@ -1302,6 +1303,7 @@ class Penempatan
             'unduh' => ['sometimes', 'nullable', 'string', $rule->in(['excel'])],
             'kata_kunci' => ['sometimes', 'nullable', 'string'],
             'bph' => ['sometimes', 'nullable', 'numeric', $rule->in([100, 250, 500, 1000])],
+            'urut.*' => ['sometimes', 'nullable', 'string']
         ];
     }
 
