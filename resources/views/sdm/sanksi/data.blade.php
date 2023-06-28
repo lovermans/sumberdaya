@@ -192,8 +192,8 @@
                                     </button>
                                     <div class="aksi">
                                         <a class="isi-xhr" data-rekam="false" data-tujuan="#sanksi-sdm_sematan"
-                                            href="{{ $urlRangka->route('sdm.sanksi.ubah', ['uuid' => $tabel->sanksi_uuid], false) }}"
-                                            title="Ubah Sanksi">Ubah Sanksi</a>
+                                            href="{{ $urlRangka->route('sdm.sanksi.lihat', ['uuid' => $tabel->sanksi_uuid], false) }}"
+                                            title="Lihat/Ubah Sanksi">Lihat/Ubah Sanksi</a>
                                     </div>
                                 </div>
                             </th>

@@ -128,12 +128,12 @@
             <h3>Sanksi Diberikan</h3>
             <p>
                 @if ($langgar->final_sanksi_jenis)
-                Sanksi : {{ $langgar->final_sanksi_jenis }} <br> Tambahan : {!! nl2br($langgar->final_sanksi_tambahan)
-                !!}<br>
+                Sanksi : {{ $langgar->final_sanksi_jenis }} <br>
                 Mulai : {{ strtoupper($dateRangka->make($langgar->final_sanksi_mulai)?->translatedFormat('d F Y'))
                 }}<br>
                 Selesai : {{ strtoupper($dateRangka->make($langgar->final_sanksi_selesai)?->translatedFormat('d F Y'))
                 }}<br>
+                Tambahan : {!! nl2br($langgar->final_sanksi_tambahan) !!}<br>
                 Keterangan : {!!nl2br($langgar->final_sanksi_keterangan) !!}
 
                 @else
