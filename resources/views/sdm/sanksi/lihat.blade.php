@@ -119,11 +119,9 @@
             @endif
         </div>
 
-        @if ($sanksi->langgar_status == 'DIPROSES')
         <a class="utama isi-xhr" data-rekam="false" data-tujuan="#sanksi_sdm_lihat_sematan"
             href="{{ $urlRangka->route('sdm.sanksi.ubah', ['uuid' => $sanksi->sanksi_uuid], false) }}">UBAH
             SANKSI</a>
-        @endif
 
         @endisset
     </div>

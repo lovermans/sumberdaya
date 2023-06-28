@@ -172,7 +172,9 @@
                     <tr>
                         <th></th>
                         <th>No</th>
+                        @unless ($halamanAkun ?? null)
                         <th>Identitas</th>
+                        @endunless
                         <th>Sanksi</th>
                         <th>Laporan</th>
                         <th>Keterangan</th>
@@ -198,6 +200,7 @@
                                 </div>
                             </th>
                             <td>{{$tabels->firstItem() + $nomor}}</td>
+                            @unless ($halamanAkun ?? null)
                             <td>
                                 <div @class(['merah'=> $tabel->langgar_tsdm_tgl_berhenti])>
                                     <a class="isi-xhr taut-akun"
@@ -222,6 +225,7 @@
                                     '' }}
                                 </div>
                             </td>
+                            @endunless
                             <td>
                                 <b>Sanksi</b> : {{$tabel->sanksi_jenis}}<br />
                                 <b>Berlaku</b> : {{
@@ -273,7 +277,7 @@
                     @empty
                     <tr>
                         <th></th>
-                        <td colspan="5">Tidak ada data.</td>
+                        <td colspan="{{ isset($halamanAkun) ? '4' : '5' }}">Tidak ada data.</td>
                     </tr>
                     @endforelse
                 </tbody>

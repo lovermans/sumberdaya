@@ -89,6 +89,9 @@ class Sanksi
                         ->orWhere('sanksi_keterangan', 'like', '%' . $kataKunci . '%');
                 });
             })
+            ->when($uuid, function ($query) use ($uuid) {
+                $query->where('a.sdm_uuid', $uuid);
+            })
             ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 $query->where(function ($group) use ($lingkupIjin) {
                     $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin)
@@ -109,7 +112,7 @@ class Sanksi
             return $berkas->unduhIndexSanksiSDM($cari, $app);
         }
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'sanksi-sdm_tabels', 'uuid' => $uuid ?? '']);;
+        $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'sanksi-sdm_tabels', 'uuid' => $uuid ?? '']);
 
         $kunciUrut = array_filter((array) $urutArray);
 
