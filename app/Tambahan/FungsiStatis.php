@@ -107,7 +107,7 @@ class FungsiStatis
 
     public static function hapusCacheSanksiSDM()
     {
-        cache()->forget('PerubahanSanksi - ' . app()->date->today()->format('Y-m-d'));
+        cache()->forget('PengingatSanksi - ' . app()->date->today()->format('Y-m-d'));
     }
 
     public static function hapusCacheSDMUmum()
@@ -124,7 +124,7 @@ class FungsiStatis
         $cache->forget('PengingatAkunBaru - ' . $hariIni->format('Y-m-d'));
         $cache->forget('PerubahanStatus - ' . $hariIni->format('Y-m-d'));
         $cache->forget('PengingatPelanggaran');
-        $cache->forget('PerubahanSanksi - ' . $hariIni->format('Y-m-d'));
+        $cache->forget('PengingatSanksi - ' . $hariIni->format('Y-m-d'));
     }
 
     public static function statusBerhasil()
