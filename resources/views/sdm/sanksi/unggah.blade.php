@@ -1,26 +1,39 @@
 @extends('rangka')
 
 @section('isi')
-<div id="unggah_sanksi_sdm">
-    <h4>Unggah Data Sanksi SDM</h4>
-    <p class="kartu">Unduh <a class="isi-xhr" href="{{ $urlRangka->route('sdm.sanksi.contoh-unggah') }}" data-rekam="false" data-tujuan="#sanksi_sematan_unggah" data-laju="true">contoh</a> excel, isi sesuai petunjuk dalam excel lalu unggah kembali.</p>
-    <div id="sanksi_sematan_unggah" style="scroll-margin:4em 0 0 0"></div>
-    <form id="form_unggah_sanksi_sdm" class="form-xhr kartu" method="POST" data-laju="true" data-tujuan="#sanksi_sematan_unggah" action="{{ $urlRangka->route('sdm.sanksi.unggah') }}">
+<div id="sanksi_unggah">
+    <form id="form_sanksi_unggah" class="form-xhr kartu" method="POST" data-laju="true" data-tujuan="#sanksi_unggah"
+        action="{{ $urlRangka->route('sdm.sanksi.unggah', [], false) }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
-        <div class="isian gspan-2">
+
+        <div class="gspan-4">
+            <a class="tutup-i">
+                <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tutup' }}"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                </svg>
+            </a>
+
+            <h4 class="form">Unggah Data Sanksi SDM</h4>
+
+            <p>Unduh <a class="isi-xhr" href="{{ $urlRangka->route('sdm.sanksi.contoh-unggah', [], false) }}"
+                    data-rekam="false" data-tujuan="#sanksi_unggah" data-laju="true">contoh</a> excel, isi sesuai
+                petunjuk dalam excel lalu unggah kembali.</p>
+        </div>
+
+        <div class="isian">
             <label for="unggah_sanksirkas">Berkas</label>
-            <input id="unggah_sanksirkas" type="file" name="unggah_sanksi_sdm" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required>
+            <input id="unggah_sanksirkas" type="file" name="unggah_sanksi_sdm"
+                accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required>
             <span class="t-bantu">Berkas excel</span>
         </div>
+
         <div class="gspan-4"></div>
+
         <button class="utama pelengkap" type="submit">UNGGAH</button>
-        @if ($rekRangka->pjax())
-            <a class="sekunder" href="#" onclick="event.preventDefault();this.parentElement.parentElement.remove()">TUTUP</a>
-        @else
-            <a class="isi-xhr sekunder" href="{{$urlRangka->to($rekRangka->session()->get('tautan_perujuk') ?? '/')}}">TUTUP</a>
-        @endif
     </form>
 
     @include('pemberitahuan')
+    @include('komponen')
 </div>
 @endsection

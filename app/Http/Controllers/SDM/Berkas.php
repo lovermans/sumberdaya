@@ -7,7 +7,6 @@ use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
 use App\Tambahan\ChunkReadFilter;
 use App\Tambahan\CustomValueBinder;
-use App\Http\Controllers\SDM\Posisi;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpWord\TemplateProcessor;
@@ -192,7 +191,7 @@ class Berkas
         return $this->eksporExcelStream(...$argumen);
     }
 
-    public function contohUnggahPosisiSDM(Posisi $posisi)
+    public function contohUnggahPosisiSDM()
     {
         $app = app();
         $reqs = $app->request;
@@ -212,9 +211,11 @@ class Berkas
         $spreadsheet = $reader->load($app->storagePath("app/contoh/{$berkasContoh}"));
         $worksheet = $spreadsheet->getSheet(1);
 
+        $cari = $app->db->query()->select('posisi_nama', 'posisi_atasan', 'posisi_wlkp', 'posisi_status', 'posisi_keterangan')->from('posisis')->orderBy('id');
+
         $argumen = [
             'namaBerkas' => 'unggahjabatansdm-',
-            'dataEkspor' => $posisi->dataDasar()->clone()->latest('posisi_dibuat'),
+            'dataEkspor' => $cari,
             'pengecualian' => ['posisi_uuid'],
             'pesanData' =>  ' data jabatan SDM',
             'app' => $app,
@@ -257,13 +258,69 @@ class Berkas
             ->when($lingkup, function ($c) use ($lingkup) {
                 return $c->whereIn('penempatan_lokasi', $lingkup);
             })
-            ->orderBy('penempatan_no_absen')->latest('penempatan_mulai');
+            ->orderBy('penempatans.id');
 
         $argumen = [
             'namaBerkas' => 'unggahpenempatansdm-',
             'dataEkspor' => $cari->clone(),
             'pengecualian' => ['id'],
             'pesanData' =>  ' data penempatan SDM',
+            'app' => $app,
+            'binder' => $binder,
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet
+        ];
+
+        return $this->eksporExcelStream(...$argumen);
+    }
+
+    public function contohUnggahSanksiSDM()
+    {
+        $app = app();
+        $reqs = $app->request;
+        $pengguna = $reqs->user();
+        $str = str();
+
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        $storage = $app->filesystem;
+
+        $berkasContoh = 'unggah-umum.xlsx';
+
+        abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
+
+        $binder = new CustomValueBinder();
+        $reader = IOFactory::createReader('Xlsx');
+        $spreadsheet = $reader->load($app->storagePath("app/contoh/{$berkasContoh}"));
+        $worksheet = $spreadsheet->getSheet(1);
+
+        $database = $app->db;
+
+        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+
+        $kontrak = $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_keterangan')
+            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
+                $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
+            });
+
+        $cari = $database->query()->select('sdm_nama', 'sanksi_no_absen', 'sanksi_jenis', 'sanksi_mulai', 'sanksi_selesai', 'sanksi_lap_no', 'sanksi_tambahan', 'sanksi_keterangan')
+            ->from('sanksisdms')
+            ->join('sdms', 'sanksi_no_absen', '=', 'sdm_no_absen')
+            ->leftJoinSub($kontrak, 'kontrak_t', function ($join) {
+                $join->on('sanksi_no_absen', '=', 'kontrak_t.penempatan_no_absen');
+            })
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin);
+                });
+            })
+            ->orderBy('sanksisdms.id');
+
+        $argumen = [
+            'namaBerkas' => 'unggahsanksinsdm-',
+            'dataEkspor' => $cari->clone(),
+            'pengecualian' => ['id'],
+            'pesanData' =>  ' data sanksi SDM',
             'app' => $app,
             'binder' => $binder,
             'spreadsheet' => $spreadsheet,
@@ -1499,6 +1556,140 @@ class Berkas
         }
 
         $HtmlPenuh = $app->view->make('sdm.penempatan.unggah');
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+    }
+
+    public function unggahSanksiSDM(Rule $rule)
+    {
+        $app = app();
+        $reqs = $app->request;
+        $pengguna = $reqs->user();
+        $str = str();
+
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        if ($reqs->isMethod('post')) {
+
+            set_time_limit(0);
+            ob_implicit_flush();
+            ob_end_flush();
+            header('X-Accel-Buffering: no');
+
+            $validator = $app->validator;
+
+            $validasifile = $validator->make(
+                $reqs->all(),
+                [
+                    'unggah_sanksi_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+                ],
+                [],
+                [
+                    'unggah_sanksi_sdm' => 'Berkas Yang Diunggah'
+                ]
+            );
+
+            $validasifile->validate();
+            $file = $validasifile->safe()->only('unggah_sanksi_sdm')['unggah_sanksi_sdm'];
+            $namafile = 'unggahsanksisdm-' . date('YmdHis') . '.xlsx';
+
+            $storage = $app->filesystem;
+            $storage->putFileAs('unggah', $file, $namafile);
+            $fileexcel = $app->storagePath("app/unggah/{$namafile}");
+            $reader = IOFactory::createReader('Xlsx');
+            $spreadsheetInfo = $reader->listWorksheetInfo($fileexcel);
+            $chunkSize = 25;
+            $chunkFilter = new ChunkReadFilter();
+            $reader->setReadFilter($chunkFilter);
+            $reader->setReadDataOnly(true);
+            $totalRows = $spreadsheetInfo[1]['totalRows'];
+            $idPengunggah = $pengguna->sdm_no_absen;
+
+            for ($startRow = 2; $startRow <= $totalRows; $startRow += $chunkSize) {
+                $chunkFilter->setRows($startRow, $chunkSize);
+                $spreadsheet = $reader->load($fileexcel);
+                $worksheet = $spreadsheet->getSheet(1);
+                $barisTertinggi = $worksheet->getHighestRow();
+                $kolomTertinggi = $worksheet->getHighestColumn();
+
+                $pesanbaca = '<p>Status : Membaca excel baris ' . ($startRow) . ' sampai baris ' . $barisTertinggi . '.</p>';
+                $pesansimpan = '<p>Status : Berhasil menyimpan data excel baris ' . ($startRow) . ' sampai baris ' . $barisTertinggi . '.</p>';
+
+                echo $pesanbaca;
+
+                $headingArray = $worksheet->rangeToArray('A1:' . $kolomTertinggi . '1', null, false, TRUE, FALSE);
+                $dataArray = $worksheet->rangeToArray('A' . $startRow . ':' . $kolomTertinggi . $barisTertinggi, NULL, FALSE, TRUE, FALSE);
+                $tabel = array_merge($headingArray, $dataArray);
+                $isitabel = array_shift($tabel);
+
+                $datas = array_map(function ($x) use ($isitabel) {
+                    return array_combine($isitabel, $x);
+                }, $tabel);
+
+                $dataexcel = array_map(function ($x) use ($idPengunggah) {
+                    return $x + ['sanksi_id_pengunggah' => $idPengunggah] + ['sanksi_id_pembuat' => $idPengunggah] + ['sanksi_id_pengubah' => $idPengunggah] + ['sanksi_diunggah' => date('Y-m-d H:i:s')];
+                }, $datas);
+
+                $data = array_combine(range(($startRow - 1), count($dataexcel) + ($startRow - 2)), array_values($dataexcel));
+
+                $validasi = $validator->make(
+                    $data,
+                    [
+                        '*.sanksi_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                        '*.sanksi_jenis' => ['required', 'string', 'max:40', $rule->exists('aturs', 'atur_butir')->where(function ($query) {
+                            return $query->where('atur_jenis', 'SANKSI SDM');
+                        })],
+                        '*.sanksi_mulai' => ['required', 'date'],
+                        '*.sanksi_selesai' => ['required', 'date', 'after:sanksi_mulai'],
+                        '*.sanksi_lap_no' => ['sometimes', 'nullable', 'string', 'max:20'],
+                        '*.sanksi_tambahan' => ['sometimes', 'nullable', 'string'],
+                        '*.sanksi_keterangan' => ['sometimes', 'nullable', 'string'],
+                        '*.sanksi_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                        '*.sanksi_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                        '*.sanksi_id_pengubah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                        '*.sanksi_diunggah' => ['required', 'nullable', 'date']
+                    ],
+                    [
+                        '*.sanksi_no_absen.*' => 'Nomor Absen baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+                        '*.sanksi_jenis.*' => 'Jenis Sanksi baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+                        '*.sanksi_mulai.*' => 'Tanggal Mulai Sanksi baris ke-:position wajib berupa tanggal.',
+                        '*.sanksi_selesai.*' => 'Tanggal Selesai Sanksi baris ke-:position wajib berupa tanggal setelah Tanggal Mulai Sanksi.',
+                        '*.sanksi_lap_no.*' => 'Nomor Laporan baris ke-:position maksimal 20 karakter.',
+                        '*.sanksi_tambahan.*' => 'Tambahan Sanksi baris ke-:position wajib berupa karakter.',
+                        '*.sanksi_keterangan.*' => 'Keterangan Sanksi baris ke-:position wajib berupa karakter.',
+                        '*.sanksi_id_pengunggah.*' => 'ID Pengunggah baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+                        '*.sanksi_id_pembuat.*' => 'ID Pembuat baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+                        '*.sanksi_id_pengubah.*' => 'ID Pengubah baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+                        '*.sanksi_diunggah.*' => 'Waktu Unggah baris ke-:position wajib berupa tanggal.'
+                    ]
+                );
+
+                if ($validasi->fails()) {
+                    return $app->redirect->back()->withErrors($validasi);
+                }
+
+                $app->db->table('sanksisdms')->upsert(
+                    $validasi->validated(),
+                    ['sanksi_no_absen', 'sanksi_jenis', 'sanksi_mulai'],
+                    ['sanksi_selesai', 'sanksi_lap_no', 'sanksi_tambahan', 'sanksi_keterangan', 'sanksi_id_pengunggah', 'sanksi_id_pengubah', 'sanksi_diunggah']
+                );
+
+                echo $pesansimpan;
+            };
+
+            $spreadsheet->disconnectWorksheets();
+            unset($spreadsheet);
+
+            $storage->delete($fileexcel);
+
+            FungsiStatis::hapusCacheSDMUmum();
+
+            echo '<p>Selesai menyimpan data excel. Mohon <a class="isi-xhr" href="' . $app->url->route('sdm.sanksi.data') . '">periksa ulang data</a>.</p>';
+
+            exit();
+        };
+
+        $HtmlPenuh = $app->view->make('sdm.sanksi.unggah');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
         return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
     }

@@ -215,20 +215,9 @@
                                     </svg>
                                 </button>
                                 <div class="aksi">
-                                    {{-- <a class="isi-xhr" data-rekam="false" data-tujuan="#pelanggaran-sdm_sematan"
-                                        href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.lihat', ['uuid' => $tabel->tambahsdm_uuid], false) }}"
-                                        title="Lihat Data">
-                                        <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#lihat' }}"
-                                                xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                                        </svg>
-                                    </a> --}}
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#pelanggaran-sdm_sematan"
                                         href="{{ $urlRangka->route('sdm.pelanggaran.lihat', ['uuid' => $tabel->langgar_uuid], false) }}"
-                                        title="Lihat Data">Lihat Laporan</a>
-                                    <a class="isi-xhr" data-rekam="false" data-tujuan="#pelanggaran-sdm_sematan"
-                                        href="{{ $urlRangka->route('sdm.pelanggaran.ubah', ['uuid' => $tabel->langgar_uuid], false) }}"
-                                        title="Ubah Data">Ubah Laporan</a>
+                                        title="Lihat Data">Tindak Lanjuti</a>
                                 </div>
                             </div>
                         </th>
