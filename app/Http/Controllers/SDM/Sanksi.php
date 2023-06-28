@@ -318,6 +318,7 @@ class Sanksi
             }
 
             $fungsiStatis->hapusCachePelanggaranSDM();
+            $fungsiStatis->hapusCacheSanksiSDM();
             $pesan = $fungsiStatis->statusBerhasil();
 
             return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);
@@ -398,6 +399,7 @@ class Sanksi
             }
 
             $fungsiStatis->hapusCachePelanggaranSDM();
+            $fungsiStatis->hapusCacheSanksiSDM();
             $pesan = $fungsiStatis->statusBerhasil();
 
             return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);

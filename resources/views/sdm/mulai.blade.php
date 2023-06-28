@@ -25,6 +25,9 @@
     <div id="sdmIngatPelanggaran">
         <p class="kartu">Mengambil data pelanggaran SDM...</p>
     </div>
+    <div id="sdmIngatSanksi">
+        <p class="kartu">Mengambil data sanksi SDM...</p>
+    </div>
 
     <script>
         (async() => {
@@ -66,6 +69,12 @@
             lemparXHR({
                 tujuan : "#sdmIngatPelanggaran",
                 tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPelanggaran'], false) }}",
+                normalview : true,
+                fragmen : true
+            });
+            lemparXHR({
+                tujuan : "#sdmIngatSanksi",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatSanksi'], false) }}",
                 normalview : true,
                 fragmen : true
             });

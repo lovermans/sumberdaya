@@ -319,7 +319,7 @@ class Berkas
         $argumen = [
             'namaBerkas' => 'unggahsanksinsdm-',
             'dataEkspor' => $cari->clone(),
-            'pengecualian' => ['id'],
+            'pengecualian' => ['id', 'sanksi_lap_no'],
             'pesanData' =>  ' data sanksi SDM',
             'app' => $app,
             'binder' => $binder,
@@ -1664,7 +1664,6 @@ class Berkas
                         })],
                         '*.sanksi_mulai' => ['required', 'date'],
                         '*.sanksi_selesai' => ['required', 'date', 'after:sanksi_mulai'],
-                        '*.sanksi_lap_no' => ['sometimes', 'nullable', 'string', 'max:20'],
                         '*.sanksi_tambahan' => ['sometimes', 'nullable', 'string'],
                         '*.sanksi_keterangan' => ['sometimes', 'nullable', 'string'],
                         '*.sanksi_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
@@ -1677,7 +1676,6 @@ class Berkas
                         '*.sanksi_jenis.*' => 'Jenis Sanksi baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
                         '*.sanksi_mulai.*' => 'Tanggal Mulai Sanksi baris ke-:position wajib berupa tanggal.',
                         '*.sanksi_selesai.*' => 'Tanggal Selesai Sanksi baris ke-:position wajib berupa tanggal setelah Tanggal Mulai Sanksi.',
-                        '*.sanksi_lap_no.*' => 'Nomor Laporan baris ke-:position maksimal 20 karakter.',
                         '*.sanksi_tambahan.*' => 'Tambahan Sanksi baris ke-:position wajib berupa karakter.',
                         '*.sanksi_keterangan.*' => 'Keterangan Sanksi baris ke-:position wajib berupa karakter.',
                         '*.sanksi_id_pengunggah.*' => 'ID Pengunggah baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
@@ -1694,7 +1692,7 @@ class Berkas
                 $app->db->table('sanksisdms')->upsert(
                     $validasi->validated(),
                     ['sanksi_no_absen', 'sanksi_jenis', 'sanksi_mulai'],
-                    ['sanksi_selesai', 'sanksi_lap_no', 'sanksi_tambahan', 'sanksi_keterangan', 'sanksi_id_pengunggah', 'sanksi_id_pengubah', 'sanksi_diunggah']
+                    ['sanksi_selesai', 'sanksi_tambahan', 'sanksi_keterangan', 'sanksi_id_pengunggah', 'sanksi_id_pengubah', 'sanksi_diunggah']
                 );
 
                 echo $pesansimpan;
@@ -1706,6 +1704,7 @@ class Berkas
             $storage->delete($fileexcel);
 
             FungsiStatis::hapusCachePelanggaranSDM();
+            FungsiStatis::hapusCacheSanksiSDM();
 
             echo '<p>Selesai menyimpan data excel. Mohon <a class="isi-xhr" href="' . $app->url->route('sdm.sanksi.data') . '">periksa ulang data</a>.</p>';
 
