@@ -177,10 +177,10 @@ class Sanksi
         return $database->query()->select('langgar_uuid', 'langgar_lap_no', 'langgar_no_absen', 'langgar_pelapor', 'langgar_tanggal', 'langgar_status', 'langgar_isi', 'langgar_keterangan')->from('pelanggaransdms');
     }
 
-    public function dasarValidasi(Rule $rule)
+    public function dasarValidasi()
     {
         return [
-            'sanksi_jenis' => ['required', 'string', $rule->exists('aturs', 'atur_butir')->where(function ($query) {
+            'sanksi_jenis' => ['required', 'string', Rule::exists('aturs', 'atur_butir')->where(function ($query) {
                 return $query->where('atur_jenis', 'SANKSI SDM');
             })],
             'sanksi_mulai' => ['required', 'date'],
