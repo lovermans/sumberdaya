@@ -3,9 +3,13 @@
     <summary>Laporan Pelanggaran Yang Perlu Diproses : {{number_format($pelanggarans->count(), 0, ',','.')}} Laporan
     </summary>
 
+    <b><i><small>Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
+                {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
+
     <div id="tabel_pelanggaranSDM_sematan" class="scroll-margin"></div>
 
     <div id="tabel_pelanggaranSDM" class="kartu">
+        <span class="biru">Biru</span> : Outsource.
         <div class="data ringkas">
             <table class="tabel">
                 <thead>
@@ -20,7 +24,7 @@
 
                 <tbody>
                     @forelse ($pelanggarans as $no => $pelanggaran)
-                    <tr>
+                    <tr @class([ 'biru'=> $strRangka->contains($pelanggaran->langgar_tkontrak, 'OS-') ])>
                         <th>
                             <div class="pil-aksi">
                                 <button id="{{'aksi_pelanggaran_baris_' . $loop->iteration}}" title="Pilih Tindakan">

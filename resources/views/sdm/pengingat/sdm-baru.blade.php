@@ -1,10 +1,14 @@
 @isset($barus)
 <details class="kartu">
     <summary>SDM Baru Selama 40 Hari Terakhir : {{number_format($barus->count(), 0, ',','.')}} Personil</summary>
-    
+
+    <b><i><small>Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
+                {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
+
     <div id="tabel_sdm_baru_sematan" class="scroll-margin"></div>
-    
+
     <div id="tabel_sdm_baru" class="kartu">
+        <span class="biru">Biru</span> : Outsource.
         <div class="data ringkas">
             <table class="tabel">
                 <thead>
@@ -18,7 +22,7 @@
                 </thead>
                 <tbody>
                     @forelse ($barus as $no => $baru)
-                    <tr>
+                    <tr @class([ 'biru'=> $strRangka->contains($baru->penempatan_kontrak, 'OS-') ])>
                         <th>
                             <div class="pil-aksi">
                                 <button id="{{'aksi_sdm_baru_baris_' . $loop->iteration}}" title="Pilih Tindakan">
@@ -27,7 +31,7 @@
                                             xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                     </svg>
                                 </button>
-                                
+
                                 <div class="aksi">
                                     @if($baru->penempatan_uuid)
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_sdm_baru_sematan"
@@ -37,7 +41,7 @@
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_sdm_baru_sematan"
                                         href="{{ $urlRangka->route('sdm.penempatan.ubah', ['uuid' => $baru->penempatan_uuid], false) }}"
                                         title="Ubah Data Penempatan">Ubah Penempatan</a>
-                                    
+
                                     @else
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_sdm_baru_sematan"
                                         href="{{ $urlRangka->route('sdm.penempatan.tambah', ['uuid' => $baru->sdm_uuid], false) }}"
@@ -50,27 +54,36 @@
                         <td>{{ $loop->iteration }}</td>
 
                         <td>
-                            <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('sdm.akun', ['uuid' => $baru->sdm_uuid], false) }}">
-                                <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' . $baru->sdm_no_absen .
-                                '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $baru->sdm_no_absen . '.webp') ?
-                                $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $baru->sdm_no_absen . '.webp' . '?'
-                                . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $baru->sdm_no_absen . '.webp')), false]) :
+                            <a class="isi-xhr taut-akun"
+                                href="{{ $urlRangka->route('sdm.akun', ['uuid' => $baru->sdm_uuid], false) }}">
+                                <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
+                                $baru->sdm_no_absen .
+                                '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $baru->sdm_no_absen .
+                                '.webp') ?
+                                $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $baru->sdm_no_absen
+                                . '.webp' . '?'
+                                . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $baru->sdm_no_absen .
+                                '.webp')), false]) :
                                 $mixRangka('/ikon.svg') . '#akun' }}" alt="{{
                                 $baru->sdm_nama ?? 'foto akun' }}" title="{{ $baru->sdm_nama ?? 'foto akun' }}"
                                 loading="lazy">
                             </a>
 
-                            {{ $baru->sdm_no_absen }}<br/>
+                            {{ $baru->sdm_no_absen }}<br />
 
                             {{ $baru->sdm_nama }}
                         </td>
 
                         <td>
-                            {{ strtoupper($dateRangka->make($baru->sdm_tgl_gabung)?->translatedFormat('d F Y')) }} <br />
+                            {{ strtoupper($dateRangka->make($baru->sdm_tgl_gabung)?->translatedFormat('d F Y')) }}
+                            <br />
                             <u>
-                                <a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $baru->sdm_no_ktp], false) }}">{{ $baru->sdm_no_ktp }}</a></u><br />
+                                <a class="isi-xhr"
+                                    href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $baru->sdm_no_ktp], false) }}">{{
+                                    $baru->sdm_no_ktp }}</a></u><br />
                             No Permintaan : <u><a class="isi-xhr"
-                                    href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $baru->sdm_no_permintaan], false) }}" title="No Permintaan SDM">{{
+                                    href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $baru->sdm_no_permintaan], false) }}"
+                                    title="No Permintaan SDM">{{
                                     $baru->sdm_no_permintaan }}</a>
                             </u>
                         </td>
@@ -81,18 +94,18 @@
                             {{ $baru->penempatan_kontrak }}
                         </td>
                     </tr>
-                    
+
                     @empty
                     <tr>
                         <th></th>
                         <td colspan="4">Tidak Ada Data</td>
                     </tr>
-                    
+
                     @endforelse
                 </tbody>
             </table>
         </div>
-        
+
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
     </div>
 </details>

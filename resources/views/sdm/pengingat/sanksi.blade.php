@@ -2,9 +2,13 @@
 <details class="kartu">
     <summary>Sanksi Aktif : {{number_format($sanksis->count(), 0, ',','.')}} Personil</summary>
 
+    <b><i><small>Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
+                {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
+
     <div id="tabel_sanksi_sdm_sematan" class="scroll-margin"></div>
 
     <div id="tabel_sanksi_sdm" class="kartu">
+        <span class="biru">Biru</span> : Outsource.
         <div class="data ringkas">
             <table class="tabel">
                 <thead>
@@ -19,7 +23,7 @@
                 </thead>
                 <tbody>
                     @forelse ($sanksis as $no => $sanksi)
-                    <tr>
+                    <tr @class([ 'biru'=> $strRangka->contains($sanksi->langgar_tkontrak, 'OS-') ])>
                         <th>
                             <div class="pil-aksi">
                                 <button id="{{'aksi_sanksi_baris_' . $loop->iteration}}" title="Pilih Tindakan">

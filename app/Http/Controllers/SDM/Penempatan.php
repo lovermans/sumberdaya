@@ -121,6 +121,9 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
+        $jumlahOS = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'like', 'OS-%')->count();
+        $jumlahOrganik = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'not like', 'OS-%')->count();
+
         $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels', 'uuid' => $uuid ?? '']);
 
         $aturs = $fungsiStatis->ambilCacheAtur();
@@ -150,6 +153,8 @@ class Penempatan
             'urutKeluar' => $urutKeluar,
             'indexKeluar' => $indexKeluar,
             'halamanAkun' => $uuid ?? '',
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
         ];
 
         if (!isset($uuid)) {
@@ -276,6 +281,9 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
+        $jumlahOS = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'like', 'OS-%')->count();
+        $jumlahOrganik = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'not like', 'OS-%')->count();
+
         $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
 
         $aturs = $fungsiStatis->ambilCacheAtur();
@@ -304,6 +312,8 @@ class Penempatan
             'indexLahir' => $indexLahir,
             'urutKeluar' => $urutKeluar,
             'indexKeluar' => $indexKeluar,
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
         ];
 
         if (!isset($uuid)) {
@@ -421,6 +431,9 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
+        $jumlahOS = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'like', 'OS-%')->count();
+        $jumlahOrganik = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'not like', 'OS-%')->count();
+
         $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
 
         $aturs = $fungsiStatis->ambilCacheAtur();
@@ -449,6 +462,8 @@ class Penempatan
             'indexLahir' => $indexLahir,
             'urutKeluar' => $urutKeluar,
             'indexKeluar' => $indexKeluar,
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
         ];
 
         if (!isset($uuid)) {
@@ -566,6 +581,9 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
+        $jumlahOS = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'like', 'OS-%')->count();
+        $jumlahOrganik = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'not like', 'OS-%')->count();
+
         $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
 
         $aturs = $fungsiStatis->ambilCacheAtur();
@@ -594,6 +612,8 @@ class Penempatan
             'indexLahir' => $indexLahir,
             'urutKeluar' => $urutKeluar,
             'indexKeluar' => $indexKeluar,
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
         ];
 
         if (!isset($uuid)) {
@@ -717,6 +737,9 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
+        $jumlahOS = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'like', 'OS-%')->count();
+        $jumlahOrganik = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'not like', 'OS-%')->count();
+
         $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
 
         $aturs = $fungsiStatis->ambilCacheAtur();
@@ -745,6 +768,8 @@ class Penempatan
             'indexLahir' => $indexLahir,
             'urutKeluar' => $urutKeluar,
             'indexKeluar' => $indexKeluar,
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
         ];
 
         if (!isset($uuid)) {
@@ -865,6 +890,9 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
+        $jumlahOS = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'like', 'OS-%')->count();
+        $jumlahOrganik = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'not like', 'OS-%')->count();
+
         $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
 
         $aturs = $fungsiStatis->ambilCacheAtur();
@@ -893,6 +921,8 @@ class Penempatan
             'indexLahir' => $indexLahir,
             'urutKeluar' => $urutKeluar,
             'indexKeluar' => $indexKeluar,
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
         ];
 
         if (!isset($uuid)) {
@@ -993,6 +1023,9 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
+        $jumlahOS = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'like', 'OS-%')->count();
+        $jumlahOrganik = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'not like', 'OS-%')->count();
+
         $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
 
         $aturs = $fungsiStatis->ambilCacheAtur();
@@ -1021,6 +1054,8 @@ class Penempatan
             'indexLahir' => $indexLahir,
             'urutKeluar' => $urutKeluar,
             'indexKeluar' => $indexKeluar,
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
         ];
 
         if (!isset($uuid)) {
@@ -1121,6 +1156,9 @@ class Penempatan
         $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
         $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
 
+        $jumlahOS = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'like', 'OS-%')->count();
+        $jumlahOrganik = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'not like', 'OS-%')->count();
+
         $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
 
         $aturs = $fungsiStatis->ambilCacheAtur();
@@ -1149,6 +1187,8 @@ class Penempatan
             'indexLahir' => $indexLahir,
             'urutKeluar' => $urutKeluar,
             'indexKeluar' => $indexKeluar,
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
         ];
 
         if (!isset($uuid)) {

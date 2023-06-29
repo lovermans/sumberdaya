@@ -93,7 +93,22 @@ class Umum
             return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
         });
 
-        $sdmIngatUltah = $halaman->make('sdm.pengingat.sdm-ultah', ['ulangTahuns' => $ulangTahuns ?? null]);
+        $jumlahOS = $ulangTahuns->whereNotNull('penempatan_kontrak')->filter(function ($item) {
+            return false !== stristr($item->penempatan_kontrak, 'OS-');
+        })->count();
+
+        $jumlahOrganik = $ulangTahuns->whereNotNull('penempatan_kontrak')->filter(function ($item) {
+            return false === stristr($item->penempatan_kontrak, 'OS-');
+        })->count();
+
+        $data = [
+            'ulangTahuns' => $ulangTahuns ?? null,
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
+        ];
+
+
+        $sdmIngatUltah = $halaman->make('sdm.pengingat.sdm-ultah', $data);
 
         return $tanggapan->make($sdmIngatUltah)->withHeaders(['Vary' => 'Accept']);
     }
@@ -155,7 +170,21 @@ class Umum
             return $c->whereIn('penempatan_lokasi', [...$lingkup]);
         });
 
-        $sdmIngatPstatus = $halaman->make('sdm.pengingat.perubahan-status', ['statuses' => $statuses ?? null]);
+        $jumlahOS = $statuses->filter(function ($item) {
+            return false !== stristr($item->penempatan_kontrak, 'OS-');
+        })->count();
+
+        $jumlahOrganik = $statuses->filter(function ($item) {
+            return false === stristr($item->penempatan_kontrak, 'OS-');
+        })->count();
+
+        $data = [
+            'statuses' => $statuses ?? null,
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
+        ];
+
+        $sdmIngatPstatus = $halaman->make('sdm.pengingat.perubahan-status', $data);
 
         return $tanggapan->make($sdmIngatPstatus)->withHeaders(['Vary' => 'Accept']);
     }
@@ -180,7 +209,21 @@ class Umum
             return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
         });
 
-        $sdmIngatBaru = $halaman->make('sdm.pengingat.sdm-baru', ['barus' => $barus ?? null]);
+        $jumlahOS = $barus->whereNotNull('penempatan_kontrak')->filter(function ($item) {
+            return false !== stristr($item->penempatan_kontrak, 'OS-');
+        })->count();
+
+        $jumlahOrganik = $barus->whereNotNull('penempatan_kontrak')->filter(function ($item) {
+            return false === stristr($item->penempatan_kontrak, 'OS-');
+        })->count();
+
+        $data = [
+            'barus' => $barus ?? null,
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
+        ];
+
+        $sdmIngatBaru = $halaman->make('sdm.pengingat.sdm-baru', $data);
 
         return $tanggapan->make($sdmIngatBaru)->withHeaders(['Vary' => 'Accept']);
     }
@@ -208,7 +251,21 @@ class Umum
             return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
         });
 
-        $sdmIngatKeluar = $halaman->make('sdm.pengingat.sdm-keluar', ['berhentis' => $berhentis ?? null]);
+        $jumlahOS = $berhentis->whereNotNull('penempatan_kontrak')->filter(function ($item) {
+            return false !== stristr($item->penempatan_kontrak, 'OS-');
+        })->count();
+
+        $jumlahOrganik = $berhentis->whereNotNull('penempatan_kontrak')->filter(function ($item) {
+            return false === stristr($item->penempatan_kontrak, 'OS-');
+        })->count();
+
+        $data = [
+            'berhentis' => $berhentis ?? null,
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
+        ];
+
+        $sdmIngatKeluar = $halaman->make('sdm.pengingat.sdm-keluar', $data);
 
         return $tanggapan->make($sdmIngatKeluar)->withHeaders(['Vary' => 'Accept']);
     }
@@ -247,7 +304,21 @@ class Umum
             return $c->whereIn('langgar_tlokasi', [null, ...$lingkup]);
         });
 
-        $sdmIngatPelanggaran = $halaman->make('sdm.pengingat.pelanggaran', ['pelanggarans' => $pelanggarans ?? null]);
+        $jumlahOS = $pelanggarans->filter(function ($item) {
+            return false !== stristr($item->langgar_tkontrak, 'OS-');
+        })->count();
+
+        $jumlahOrganik = $pelanggarans->filter(function ($item) {
+            return false === stristr($item->langgar_tkontrak, 'OS-');
+        })->count();
+
+        $data = [
+            'pelanggarans' => $pelanggarans ?? null,
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
+        ];
+
+        $sdmIngatPelanggaran = $halaman->make('sdm.pengingat.pelanggaran', $data);
 
         return $tanggapan->make($sdmIngatPelanggaran)->withHeaders(['Vary' => 'Accept']);
     }
@@ -279,7 +350,21 @@ class Umum
             return $c->whereIn('langgar_tlokasi', [null, ...$lingkup]);
         });
 
-        $sdmIngatSanksi = $halaman->make('sdm.pengingat.sanksi', ['sanksis' => $sanksis ?? null]);
+        $jumlahOS = $sanksis->filter(function ($item) {
+            return false !== stristr($item->langgar_tkontrak, 'OS-');
+        })->count();
+
+        $jumlahOrganik = $sanksis->filter(function ($item) {
+            return false === stristr($item->langgar_tkontrak, 'OS-');
+        })->count();
+
+        $data = [
+            'sanksis' => $sanksis ?? null,
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
+        ];
+
+        $sdmIngatSanksi = $halaman->make('sdm.pengingat.sanksi', $data);
 
         return $tanggapan->make($sdmIngatSanksi)->withHeaders(['Vary' => 'Accept']);
     }

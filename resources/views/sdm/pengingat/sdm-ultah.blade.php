@@ -2,9 +2,13 @@
 <details class="kartu">
     <summary>Hari Lahir SDM Dalam Waktu Dekat : {{number_format($ulangTahuns->count(), 0, ',','.')}} Personil</summary>
 
+    <b><i><small>Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
+                {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
+
     <div id="tabel_ultah_sematan" class="scroll-margin"></div>
 
     <div id="tabel_ultah" class="kartu">
+        <span class="biru">Biru</span> : Outsource.
         <div class="data ringkas">
             <table class="tabel">
                 <thead>
@@ -18,21 +22,26 @@
 
                 <tbody>
                     @forelse ($ulangTahuns as $no => $ultah)
-                    <tr>
+                    <tr @class([ 'biru'=> $strRangka->contains($ultah->penempatan_kontrak, 'OS-') ])>
                         <td>{{ $loop->iteration }}</td>
 
                         <td>
-                            <a class="isi-xhr taut-akun" href="{{ $urlRangka->route('sdm.akun', ['uuid' => $ultah->sdm_uuid], false) }}">
-                                <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' . $ultah->sdm_no_absen .
-                                '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $ultah->sdm_no_absen . '.webp') ?
-                                $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $ultah->sdm_no_absen . '.webp' .
-                                '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $ultah->sdm_no_absen . '.webp')), false]) :
+                            <a class="isi-xhr taut-akun"
+                                href="{{ $urlRangka->route('sdm.akun', ['uuid' => $ultah->sdm_uuid], false) }}">
+                                <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
+                                $ultah->sdm_no_absen .
+                                '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $ultah->sdm_no_absen .
+                                '.webp') ?
+                                $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
+                                $ultah->sdm_no_absen . '.webp' .
+                                '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $ultah->sdm_no_absen .
+                                '.webp')), false]) :
                                 $mixRangka('/ikon.svg') . '#akun' }}" alt="{{
                                 $ultah->sdm_nama ?? 'foto akun' }}" title="{{ $ultah->sdm_nama ?? 'foto akun' }}"
                                 loading="lazy">
                             </a>
 
-                            {{ $ultah->sdm_no_absen }}<br/>
+                            {{ $ultah->sdm_no_absen }}<br />
 
                             {{ $ultah->sdm_nama }}
                         </td>
@@ -51,7 +60,7 @@
                         <th></th>
                         <td colspan="5">Tidak Ada Data</td>
                     </tr>
-                    
+
                     @endforelse
                 </tbody>
             </table>
