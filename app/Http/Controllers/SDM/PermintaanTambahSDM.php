@@ -118,8 +118,8 @@ class PermintaanTambahSDM
             return $berkas->unduhIndexPermintaanTambahSDMExcel($cari, $app);
         }
 
-        $kebutuhan = $cari->clone()->sum('tambahsdm_jumlah');
-        $terpenuhi = $cari->clone()->sum('tambahsdm_terpenuhi');
+        $kebutuhan = $cari->clone()->where('tambahsdm_status', '=', 'DISETUJUI')->sum('tambahsdm_jumlah');
+        $terpenuhi = $cari->clone()->where('tambahsdm_status', '=', 'DISETUJUI')->sum('tambahsdm_terpenuhi');
         $selisih = $terpenuhi - $kebutuhan;
 
         $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'tambah_sdm_tabels']);
