@@ -1,6 +1,7 @@
 @isset($pelanggarans)
 <details class="kartu">
-    <summary>Laporan Pelanggaran Yang Perlu Diproses : {{number_format($pelanggarans->count(), 0, ',','.')}} Laporan
+    <summary>Laporan Pelanggaran Yang Perlu Ditindaklanjuti : {{number_format($pelanggarans->count(), 0, ',','.')}}
+        Laporan
     </summary>
 
     <b><i><small>Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
