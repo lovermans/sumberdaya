@@ -11,7 +11,7 @@
             <input type="hidden" name="fragment" value="pelanggaran-sdm_tabels">
 
             <details class="gspan-4" {{ $rekRangka->anyFilled(['tgl_langgar_mulai', 'langgar_status', 'langgar_proses',
-                'tgl_langgar_sampai', 'langgar_penempatan', 'langgar_sanksi']) ? 'open' : '' }}>
+                'tgl_langgar_sampai', 'langgar_penempatan', 'langgar_sanksi', 'status_sdm']) ? 'open' : '' }}>
 
                 <summary class="cari">
                     <div class="isian gspan-4">
@@ -101,7 +101,8 @@
     <div id="pelanggaran-sdm_tabels" class="kartu scroll-margin">
         @fragment('pelanggaran-sdm_tabels')
         <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['tgl_langgar_mulai', 'langgar_status', 'langgar_proses',
-                    'tgl_langgar_sampai', 'langgar_penempatan', 'langgar_sanksi']) ? 'sesuai data penyaringan'
+                    'tgl_langgar_sampai', 'langgar_penempatan', 'langgar_sanksi', 'status_sdm']) ? 'sesuai data
+                    penyaringan'
                     : 'global'
                     }}) : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
                     {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>

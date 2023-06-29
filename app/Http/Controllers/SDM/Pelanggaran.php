@@ -117,6 +117,9 @@ class Pelanggaran
                         ->orWhere('langgar_keterangan', 'like', '%' . $kataKunci . '%');
                 });
             })
+            ->when($reqs->tgl_langgar_mulai && $reqs->tgl_langgar_sampai, function ($query) use ($reqs) {
+                $query->whereBetween('langgar_tanggal', [$reqs->tgl_langgar_mulai, $reqs->tgl_langgar_sampai]);
+            })
             ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 $query->where(function ($group) use ($lingkupIjin) {
                     $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin)

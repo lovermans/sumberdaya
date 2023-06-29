@@ -21,18 +21,27 @@ class Sanksi
             $reqs->all(),
             [
                 'kata_kunci' => ['sometimes', 'nullable', 'string'],
+                'tgl_sanksi_mulai' => ['sometimes', 'nullable', 'date'],
+                'tgl_sanksi_sampai' => ['sometimes', 'nullable', 'required_with:tgl_sanksi_mulai', 'date', 'after:tgl_sanksi_mulai'],
                 'sanksi_jenis.*' => ['required', 'string', $rule->exists('aturs', 'atur_butir')->where(function ($query) {
                     return $query->where('atur_jenis', 'SANKSI SDM');
                 })],
                 'sanksi_penempatan.*' => ['sometimes', 'nullable', 'string'],
+                'status_sdm.*' => ['sometimes', 'nullable', 'string'],
+                'status_sanksi' => ['sometimes', 'nullable', 'string', $rule->in(['AKTIF', 'BERAKHIR'])],
                 'unduh' => ['sometimes', 'nullable', 'string', $rule->in(['excel'])],
                 'bph' => ['sometimes', 'nullable', 'numeric', $rule->in([25, 50, 75, 100])],
                 'urut.*' => ['sometimes', 'nullable', 'string']
             ],
             [
                 'kata_kunci.*' => 'Kata Kunci Pencarian harus berupa karakter.',
+                'tgl_sanksi_mulai.*' => 'Tanggal Mulai Terbit Sanksi wajib berupa tanggal valid.',
+                'tgl_sanksi_sampai.*' => 'Tanggal Akhir Terbit Sanksi wajib berupa tanggal valid dan lebih lama dari Tanggal Mulai.',
                 'sanksi_jenis.*' => 'Jenis Sanksi wajib berupa karakter dan terdaftar.',
                 'sanksi_penempatan.*' => 'Lokasi #:position wajib berupa karakter.',
+                'status_sdm.*' => 'Status #:position wajib berupa karakter.',
+                'status_sanksi.*' => 'Status Sanksi wajib berupa karakter dan terdaftar.',
+                'unduh.*' => 'Format ekspor tidak dikenali.',
                 'bph.*' => 'Baris Per halaman tidak sesuai daftar.',
                 'urut.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
             ]
@@ -56,6 +65,8 @@ class Sanksi
 
         $kataKunci = $reqs->kata_kunci;
 
+        $hariIni = $app->date->today()->format('Y-m-d');
+
         $database = $app->db;
 
         $kontrak = $this->dataKontrak($database);
@@ -74,10 +85,21 @@ class Sanksi
             ->when($reqs->sanksi_jenis, function ($query) use ($reqs) {
                 $query->whereIn('sanksi_jenis', (array) $reqs->sanksi_jenis);
             })
+            ->when($reqs->sanksi_status == 'AKTIF', function ($query) use ($hariIni) {
+                $query->where('sanksi_selesai', '>=', $hariIni);
+            })
+            ->when($reqs->sanksi_status == 'BERAKHIR', function ($query) use ($hariIni) {
+                $query->where('sanksi_selesai', '<', $hariIni);
+            })
             ->when($reqs->sanksi_penempatan, function ($query) use ($reqs) {
                 $query->where(function ($group) use ($reqs) {
                     $group->whereIn('kontrak_t.penempatan_lokasi', (array) $reqs->sanksi_penempatan)
                         ->orWhereIn('kontrak_p.penempatan_lokasi', (array) $reqs->sanksi_penempatan);
+                });
+            })
+            ->when($reqs->status_sdm, function ($query) use ($reqs) {
+                $query->where(function ($group) use ($reqs) {
+                    $group->whereIn('kontrak_t.penempatan_kontrak', (array) $reqs->status_sdm);
                 });
             })
             ->when($kataKunci, function ($query, $kataKunci) {
@@ -88,6 +110,9 @@ class Sanksi
                         ->orWhere('sanksi_tambahan', 'like', '%' . $kataKunci . '%')
                         ->orWhere('sanksi_keterangan', 'like', '%' . $kataKunci . '%');
                 });
+            })
+            ->when($reqs->tgl_sanksi_mulai && $reqs->tgl_sanksi_sampai, function ($query) use ($reqs) {
+                $query->whereBetween('sanksi_mulai', [$reqs->tgl_sanksi_mulai, $reqs->tgl_sanksi_sampai]);
             })
             ->when($uuid, function ($query) use ($uuid) {
                 $query->where('a.sdm_uuid', $uuid);
@@ -112,6 +137,9 @@ class Sanksi
             return $berkas->unduhIndexSanksiSDM($cari, $app);
         }
 
+        $jumlahOS = $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'like', 'OS-%')->count();
+        $jumlahOrganik = $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'not like', 'OS-%')->count();
+
         $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'sanksi-sdm_tabels', 'uuid' => $uuid ?? '']);
 
         $kunciUrut = array_filter((array) $urutArray);
@@ -124,12 +152,15 @@ class Sanksi
         $data = [
             'tabels' => $tabels,
             'lokasis' => $lokasis,
-            'jenisSanksis' => $cacheAtur->where('atur_jenis', 'SANKSI SDM'),
+            'statusSDMs' => $cacheAtur->where('atur_jenis', 'STATUS KONTRAK')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'asc']),
+            'jenisSanksis' => $cacheAtur->where('atur_jenis', 'SANKSI SDM')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'desc']),
             'urutTanggalMulai' => $urutTanggalMulai,
             'indexTanggalMulai' => $indexTanggalMulai,
             'urutTanggalSelesai' => $urutTanggalSelesai,
             'indexTanggalSelesai' => $indexTanggalSelesai,
             'halamanAkun' => $uuid ?? '',
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
         ];
 
         if (!isset($uuid)) {

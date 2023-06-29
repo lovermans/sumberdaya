@@ -10,7 +10,9 @@
             method="GET" data-blank="true">
             <input type="hidden" name="fragment" value="sanksi-sdm_tabels">
 
-            <details class="gspan-4" {{ $rekRangka->anyFilled(['sanksi_jenis', 'sanksi_penempatan']) ? 'open' : '' }}>
+            <details class="gspan-4" {{ $rekRangka->anyFilled(['sanksi_jenis', 'sanksi_penempatan', 'status_sdm',
+                'sanksi_status', 'tgl_sanksi_mulai', 'tgl_sanksi_sampai']) ?
+                'open' : '' }}>
 
                 <summary class="cari">
                     <div class="isian gspan-4">
@@ -42,6 +44,18 @@
                     </div>
 
                     <div class="isian normal">
+                        <label for="sdm_sanksi_cariStatusSanksi">Saring Status Sanksi</label>
+
+                        <select id="sdm_sanksi_cariStatusSanksi" name="sanksi_status" class="pil-dasar">
+                            <option selected disabled></option>
+                            <option @selected($rekRangka->sanksi_status == 'AKTIF')>AKTIF</option>
+                            <option @selected($rekRangka->sanksi_status == 'BERAKHIR')>BERAKHIR</option>
+                        </select>
+
+                        <span class="t-bantu">Pilih satu atau lebih</span>
+                    </div>
+
+                    <div class="isian normal">
                         <label for="sdm_sanksi_cariLokasi">Saring Penempatan</label>
 
                         <select id="sdm_sanksi_cariLokasi" name="sanksi_penempatan[]" class="pil-cari" multiple>
@@ -54,6 +68,35 @@
 
                         <span class="t-bantu">Pilih satu atau lebih</span>
                     </div>
+
+                    <div class="isian normal">
+                        <label for="sdm_sanksi_cariStatusSDM">Saring Status SDM</label>
+
+                        <select id="sdm_sanksi_cariStatusSDM" name="status_sdm[]" class="pil-cari" multiple>
+                            @foreach ($statusSDMs as $statusSDM)
+                            <option @selected(in_array($statusSDM->atur_butir, (array)
+                                $rekRangka->status_sdm)) @class(['merah' => $statusSDM->atur_status ==
+                                'NON-AKTIF'])>{{ $statusSDM->atur_butir }}</option>
+                            @endforeach
+                        </select>
+
+                        <span class="t-bantu">Pilih satu atau lebih</span>
+                    </div>
+
+                    <div class="isian normal">
+                        <label for="sdm_sanksi_cariTanggalMulai">Terbit Sanksi Mulai</label>
+                        <input id="sdm_sanksi_cariTanggalMulai" type="date" name="tgl_sanksi_mulai"
+                            value="{{ $rekRangka->old('tgl_sanksi_mulai', $rekRangka->tgl_sanksi_mulai ?? null) }}">
+                        <span class="t-bantu">Isi tanggal</span>
+                    </div>
+
+                    <div class="isian normal">
+                        <label for="sdm_sanksi_cariTanggalSampai">Terbit Sanksi Sampai</label>
+                        <input id="sdm_sanksi_cariTanggalSampai" type="date" name="tgl_sanksi_sampai"
+                            value="{{ $rekRangka->old('tgl_sanksi_sampai', $rekRangka->tgl_sanksi_sampai ?? null) }}">
+                        <span class="t-bantu">Isi tanggal</span>
+                    </div>
+
                 </div>
             </details>
         </form>
@@ -61,6 +104,12 @@
 
     <div id="sanksi-sdm_tabels" class="kartu scroll-margin">
         @fragment('sanksi-sdm_tabels')
+        @unless ($halamanAkun ?? null)
+        <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['sanksi_jenis', 'sanksi_penempatan', 'status_sdm',
+                    'sanksi_status', 'tgl_sanksi_mulai', 'tgl_sanksi_sampai']) ? 'sesuai data penyaringan' : 'global'
+                    }}) : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
+                    {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
+        @endunless
         <div id="sanksi-sdm_sematan" class="scroll-margin"></div>
 
         <div class="trek-data tcetak">
@@ -182,7 +231,7 @@
                 </thead>
                 <tbody>
                     @forelse ($tabels as $nomor => $tabel)
-                    <tr @class(['merah'=> $tabel->sanksi_selesai <= $dateRangka->today() ])>
+                    <tr @class(['merah'=> $tabel->sanksi_selesai <= $dateRangka->today()])>
                             <th>
                                 <div class="pil-aksi">
                                     <button id="{{ 'aksi_sanksi_baris_' .$tabels->firstItem() + $nomor}}"
