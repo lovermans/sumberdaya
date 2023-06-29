@@ -269,6 +269,7 @@ class Umum
                 ->leftJoinSub($kontrak, 'kontrak_p', function ($join) {
                     $join->on('langgar_pelapor', '=', 'kontrak_p.penempatan_no_absen');
                 })
+                ->whereNull('a.sdm_tgl_berhenti')
                 ->where('sanksi_selesai', '>=', $hariIni)
                 ->latest('sanksi_selesai')
                 ->get();
