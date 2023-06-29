@@ -27,6 +27,7 @@ class Pelanggaran
                 'tgl_langgar_sampai' => ['sometimes', 'nullable', 'required_with:tgl_langgar_mulai', 'date', 'after:tgl_langgar_mulai'],
                 'langgar_status.*' => ['sometimes', 'nullable', 'string', $rule->in(['DIPROSES', 'DIBATALKAN'])],
                 'langgar_penempatan.*' => ['sometimes', 'nullable', 'string'],
+                'status_sdm.*' => ['sometimes', 'nullable', 'string'],
                 'langgar_proses' => ['sometimes', 'nullable', 'string', $rule->in(['SELESAI', 'BELUM SELESAI'])],
                 'unduh' => ['sometimes', 'nullable', 'string', $rule->in(['excel'])],
                 'bph' => ['sometimes', 'nullable', 'numeric', $rule->in([25, 50, 75, 100])],
@@ -38,6 +39,7 @@ class Pelanggaran
                 'langgar_status.*' => 'Status Laporan tidak sesuai daftar.',
                 'kata_kunci.*' => 'Kata Kunci Pencarian harus berupa karakter.',
                 'langgar_penempatan.*' => 'Lokasi #:position wajib berupa karakter.',
+                'status_sdm.*' => 'Status #:position wajib berupa karakter.',
                 'unduh.*' => 'Format ekspor tidak dikenali.',
                 'langgar_proses.*' => 'Proses Laporan tidak sesuai daftar.',
                 'bph.*' => 'Baris Per halaman tidak sesuai daftar.',
@@ -54,7 +56,7 @@ class Pelanggaran
         $cacheAtur = $fungsiStatis->ambilCacheAtur();
 
         $lokasis = $cacheAtur->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-            return $query->whereIn('atur_butir', $lingkupIjin)->sortBy(['atur_butir', 'asc']);
+            return $query->whereIn('atur_butir', $lingkupIjin)->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'asc']);
         });
 
         $urutArray = $reqs->urut;
@@ -99,6 +101,11 @@ class Pelanggaran
                         ->orWhereIn('kontrak_p.penempatan_lokasi', (array) $reqs->langgar_penempatan);
                 });
             })
+            ->when($reqs->status_sdm, function ($query) use ($reqs) {
+                $query->where(function ($group) use ($reqs) {
+                    $group->whereIn('kontrak_t.penempatan_kontrak', (array) $reqs->status_sdm);
+                });
+            })
             ->when($kataKunci, function ($query) use ($kataKunci) {
                 $query->where(function ($group) use ($kataKunci) {
                     $group->where('langgar_lap_no', 'like', '%' . $kataKunci . '%')
@@ -130,6 +137,9 @@ class Pelanggaran
             return $berkas->unduhIndexPelanggaranSDM($cari, $app);
         }
 
+        $jumlahOS = $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'like', 'OS-%')->count();
+        $jumlahOrganik = $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'not like', 'OS-%')->count();
+
         $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'pelanggaran-sdm_tabels', 'uuid' => $uuid ?? '']);;
 
         $kunciUrut = array_filter((array) $urutArray);
@@ -142,11 +152,14 @@ class Pelanggaran
         $data = [
             'tabels' => $tabels,
             'lokasis' => $lokasis,
+            'statusSDMs' => $cacheAtur->where('atur_jenis', 'STATUS KONTRAK')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'asc']),
             'urutTanggal' => $urutTanggal,
             'indexTanggal' => $indexTanggal,
             'urutNomor' => $urutNomor,
             'indexNomor' => $indexNomor,
             'halamanAkun' => $uuid ?? '',
+            'jumlahOS' => $jumlahOS,
+            'jumlahOrganik' => $jumlahOrganik
         ];
 
         if (!isset($uuid)) {

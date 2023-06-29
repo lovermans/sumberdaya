@@ -53,13 +53,27 @@
                     </div>
 
                     <div class="isian normal">
-                        <label for="sdm_pelanggaran_cariLokasi">Saring Penempatan</label>
+                        <label for="sdm_pelanggaran_cariLokasi">Saring Lokasi</label>
 
                         <select id="sdm_pelanggaran_cariLokasi" name="langgar_penempatan[]" class="pil-cari" multiple>
                             @foreach ($lokasis as $lokasi)
                             <option @selected(in_array($lokasi->atur_butir, (array)
                                 $rekRangka->langgar_penempatan)) @class(['merah' => $lokasi->atur_status ==
                                 'NON-AKTIF'])>{{ $lokasi->atur_butir }}</option>
+                            @endforeach
+                        </select>
+
+                        <span class="t-bantu">Pilih satu atau lebih</span>
+                    </div>
+
+                    <div class="isian normal">
+                        <label for="sdm_pelanggaran_cariStatusSDM">Saring Status SDM</label>
+
+                        <select id="sdm_pelanggaran_cariStatusSDM" name="status_sdm[]" class="pil-cari" multiple>
+                            @foreach ($statusSDMs as $statusSDM)
+                            <option @selected(in_array($statusSDM->atur_butir, (array)
+                                $rekRangka->status_sdm)) @class(['merah' => $statusSDM->atur_status ==
+                                'NON-AKTIF'])>{{ $statusSDM->atur_butir }}</option>
                             @endforeach
                         </select>
 
@@ -86,6 +100,11 @@
 
     <div id="pelanggaran-sdm_tabels" class="kartu scroll-margin">
         @fragment('pelanggaran-sdm_tabels')
+        <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['tgl_langgar_mulai', 'langgar_status', 'langgar_proses',
+                    'tgl_langgar_sampai', 'langgar_penempatan', 'langgar_sanksi']) ? 'sesuai data penyaringan'
+                    : 'global'
+                    }}) : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
+                    {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
         <div id="pelanggaran-sdm_sematan" class="scroll-margin"></div>
 
         <div class="trek-data tcetak">
@@ -204,7 +223,8 @@
                 </thead>
                 <tbody>
                     @forelse ($tabels as $nomor => $tabel)
-                    <tr @class(['merah'=> $tabel->langgar_status == 'DIBATALKAN','biru' => $tabel->final_sanksi_jenis])>
+                    <tr @class(['merah'=> $tabel->langgar_status == 'DIBATALKAN', 'biru' =>
+                        $tabel->final_sanksi_jenis])>
                         <th>
                             <div class="pil-aksi">
                                 <button id="{{ 'aksi_pelanggaran_baris_' .$tabels->firstItem() + $nomor}}"
