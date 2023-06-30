@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\SDM\Berkas;
+use Illuminate\Support\Facades\Storage;
 
 class PermintaanTambahSDM
 {
@@ -319,7 +320,6 @@ class PermintaanTambahSDM
             $reqs->merge(['tambahsdm_id_pengubah' => $pengguna->sdm_no_absen]);
 
             $aturan = [
-                'tambahsdm_no' => ['required', 'string', 'max:40', Rule::unique('tambahsdms')->where(fn ($query) => $query->whereNot('tambahsdm_uuid', $uuid))],
                 'tambahsdm_id_pengubah' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 ...$this->dasarValidasi()
             ];
@@ -437,9 +437,18 @@ class PermintaanTambahSDM
                 $jenisHapus, $hapus, $idHapus, $waktuHapus, $alasanHapus
             ];
 
-            $berkas->rekamHapusDataSDM($app, $dataHapus);
 
             $database->table('tambahsdms')->where('tambahsdm_uuid', $uuid)->delete();
+
+            $berkas->rekamHapusDataSDM($app, $dataHapus);
+
+            $namaBerkas = 'sdm/permintaan-tambah-sdm/berkas/' . $permin->tambahsdm_no . '.pdf';
+
+            $storage = $app->filesystem;
+
+            if ($storage->exists($namaBerkas)) {
+                $storage->delete($namaBerkas);
+            }
 
             $fungsiStatis->hapusCacheSDMUmum();
 

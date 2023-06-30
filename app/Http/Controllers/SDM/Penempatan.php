@@ -1617,9 +1617,17 @@ class Penempatan
                 $jenisHapus, $hapus, $idHapus, $waktuHapus, $alasanHapus
             ];
 
+            $database->table('penempatans')->where('penempatan_uuid', $uuid)->delete();
+
             $berkas->rekamHapusDataSDM($app, $dataHapus);
 
-            $database->table('penempatans')->where('penempatan_uuid', $uuid)->delete();
+            $namaBerkas = 'sdm/penempatan/berkas/' . $penem->penempatan_no_absen . ' - ' . $penem->penempatan_mulai . '.pdf';
+
+            $storage = $app->filesystem;
+
+            if ($storage->exists($namaBerkas)) {
+                $storage->delete($namaBerkas);
+            }
 
             $fungsiStatis->hapusCacheSDMUmum();
 
