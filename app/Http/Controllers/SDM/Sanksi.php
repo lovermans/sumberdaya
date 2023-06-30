@@ -282,9 +282,9 @@ class Sanksi
 
         $kontrak = $this->dataKontrak($database);
 
-        $sanksi = $database->query()->select('sanksi_no_absen', 'sanksi_jenis', 'sanksi_lap_no', 'sanksi_selesai')
-            ->from('sanksisdms as p1')->where('sanksi_selesai', '=', function ($query) use ($database) {
-                $query->select($database->raw('MAX(sanksi_selesai)'))->from('sanksisdms as p2')->whereColumn('p1.sanksi_no_absen', 'p2.sanksi_no_absen');
+        $sanksi = $database->query()->select('sanksi_no_absen', 'sanksi_jenis', 'sanksi_lap_no', 'sanksi_selesai', 'sanksi_mulai')
+            ->from('sanksisdms as p1')->where('sanksi_mulai', '=', function ($query) use ($database) {
+                $query->select($database->raw('MAX(sanksi_mulai)'))->from('sanksisdms as p2')->whereColumn('p1.sanksi_no_absen', 'p2.sanksi_no_absen');
             });
 
         $laporan = $this->dataPelanggaran($database)

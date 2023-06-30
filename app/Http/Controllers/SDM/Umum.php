@@ -277,8 +277,8 @@ class Umum
         $dataDasar = $database->query()->select('langgar_uuid', 'langgar_lap_no', 'langgar_no_absen', 'langgar_pelapor', 'langgar_tanggal', 'langgar_status', 'langgar_isi', 'langgar_keterangan')->from('pelanggaransdms');
 
         $sanksi = $database->query()->select('sanksi_no_absen', 'sanksi_jenis', 'sanksi_lap_no', 'sanksi_selesai', 'sanksi_mulai')
-            ->from('sanksisdms as p1')->where('sanksi_selesai', '=', function ($query) use ($database) {
-                $query->select($database->raw('MAX(sanksi_selesai)'))->from('sanksisdms as p2')->whereColumn('p1.sanksi_no_absen', 'p2.sanksi_no_absen');
+            ->from('sanksisdms as p1')->where('sanksi_mulai', '=', function ($query) use ($database) {
+                $query->select($database->raw('MAX(sanksi_mulai)'))->from('sanksisdms as p2')->whereColumn('p1.sanksi_no_absen', 'p2.sanksi_no_absen');
             });
 
         $cache_pelanggarans = $cache->rememberForever('PengingatPelanggaran', function () use ($kontrak, $dataDasar, $sanksi) {
