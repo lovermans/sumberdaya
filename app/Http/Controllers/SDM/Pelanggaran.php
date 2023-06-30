@@ -429,6 +429,15 @@ class Pelanggaran
 
         abort_unless($langgar, 404, 'Data Laporan Pelanggaran tidak ditemukan.');
 
+        $session = $reqs->session();
+        $perujuk = $session->get('tautan_perujuk');
+        $redirect = $app->redirect;
+        $kesalahan = 'Laporan pelanggaran yang sudah dikenai sanksi tidak dapat diubah.';
+
+        if ($langgar->final_sanksi_uuid) {
+            return $perujuk ? $redirect->to($perujuk)->withErrors($kesalahan) : $redirect->route('sdm.pelanggaran.data')->withErrors($kesalahan);
+        }
+
         if ($reqs->isMethod('post')) {
 
             $reqs->merge(['langgar_id_pengubah' => $pengguna->sdm_no_absen]);
@@ -466,15 +475,6 @@ class Pelanggaran
             );
 
             $validasi->validate();
-
-            $session = $reqs->session();
-            $perujuk = $session->get('tautan_perujuk');
-            $redirect = $app->redirect;
-            $kesalahan = 'Laporan yang sudah diberikan sanksi tidak dapat dibatalkan.';
-
-            if ($validasi->safe()->only('langgar_status')['langgar_status'] == 'DIBATALKAN' && $langgar->final_sanksi_uuid) {
-                return $perujuk ? $redirect->to($perujuk)->withErrors($kesalahan) : $redirect->route('sdm.pelanggaran.data')->withErrors($kesalahan);
-            }
 
             $data = $validasi->safe()->except('berkas_laporan');
 

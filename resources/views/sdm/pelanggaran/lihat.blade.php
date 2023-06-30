@@ -76,9 +76,11 @@
 
         <div class="isian gspan-4"></div>
 
+        @unless ($langgar->final_sanksi_jenis)
         <a class="utama isi-xhr" data-rekam="false" data-tujuan="#pelanggaran_sdm_lihat_sematan"
             href="{{ $urlRangka->route('sdm.pelanggaran.ubah', ['uuid' => $langgar->langgar_uuid], false) }}">UBAH
             LAPORAN PELANGGARAN</a>
+        @endunless
 
         <div class="isian gspan-4">
             <h3>Sanksi Aktif Sebelumnya</h3>
