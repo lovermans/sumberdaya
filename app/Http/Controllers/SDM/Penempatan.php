@@ -1621,7 +1621,7 @@ class Penempatan
 
             $berkas->rekamHapusDataSDM($app, $dataHapus);
 
-            $namaBerkas = 'sdm/penempatan/berkas/' . $penem->penempatan_no_absen . ' - ' . $penem->penempatan_mulai . '.pdf';
+            $namaBerkas = 'sdm/penempatan/berkas/' . $penem->sdm_no_absen . ' - ' . $penem->penempatan_mulai . '.pdf';
 
             $storage = $app->filesystem;
 
