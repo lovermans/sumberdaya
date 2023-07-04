@@ -46,7 +46,7 @@ return new class extends Migration
             $table->timestamp('nilaisdm_dibuat')->nullable()->useCurrent();
             $table->string('nilaisdm_id_pengubah', 10)->nullable();
             $table->timestamp('nilaisdm_diubah')->nullable()->useCurrentOnUpdate();
-            $table->unique(['nilaisdm_no_absen', 'nilaisdm_tahun', 'nilaisdm_periode']);
+            $table->unique(['nilaisdm_no_absen', 'nilaisdm_tahun', 'nilaisdm_periode'], 'penilaiansdm_kunci_komposit_unik');
         });
     }
 
