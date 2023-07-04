@@ -61,12 +61,17 @@ class Posisi
                 $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
             });
 
-        $cariSub = $this->dataDasar()->clone()->addSelect('posisi_uuid', 'posisi_dibuat', 'penempatan_lokasi', 'penempatan_kontrak', $database->raw('COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NULL THEN sdm_no_absen END) jml_aktif, COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NOT NULL THEN sdm_no_absen END) jml_nonaktif'))
+        $cariSub = $this->dataDasar()->clone()->addSelect('posisi_uuid', 'posisi_dibuat', $database->raw('COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NULL THEN sdm_no_absen END) jml_aktif, COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NOT NULL THEN sdm_no_absen END) jml_nonaktif'))
             ->leftJoinSub($kontrak, 'kontrak', function ($join) {
                 $join->on('posisi_nama', '=', 'kontrak.penempatan_posisi');
             })
             ->leftJoin('sdms', 'sdm_no_absen', '=', 'penempatan_no_absen')
-            ->groupBy('posisi_nama');
+            ->groupBy('posisi_nama')->when($reqs->lokasi, function ($query) use ($reqs) {
+                $query->whereIn('penempatan_lokasi', $reqs->lokasi);
+            })
+            ->when($reqs->kontrak, function ($query) use ($reqs) {
+                $query->whereIn('penempatan_kontrak', $reqs->kontrak);
+            });
 
         $cari = $database->query()->addSelect('tsdm.*', $app->db->raw('IF((jml_aktif + jml_nonaktif) > 0, (jml_nonaktif / (jml_nonaktif + jml_aktif)) * 100, 0) as pergantian'))->fromSub($cariSub, 'tsdm')
             ->when($reqs->posisi_status, function ($query) use ($reqs) {
@@ -79,12 +84,6 @@ class Posisi
                         ->orWhere('posisi_wlkp', 'like', '%' . $kataKunci . '%')
                         ->orWhere('posisi_keterangan', 'like', '%' . $kataKunci . '%');
                 });
-            })
-            ->when($reqs->lokasi, function ($query) use ($reqs) {
-                $query->whereIn('penempatan_lokasi', $reqs->lokasi);
-            })
-            ->when($reqs->kontrak, function ($query) use ($reqs) {
-                $query->whereIn('penempatan_kontrak', $reqs->kontrak);
             })
             ->when(
                 $uruts,
@@ -100,6 +99,8 @@ class Posisi
         if ($reqs->unduh == 'excel') {
             return $berkas->unduhIndexPosisiSDMExcel($cari, $app);
         }
+
+        // dd($cari->get());
 
         $aktif = $cari->clone()->sum('jml_aktif');
         $nonAktif = $cari->clone()->sum('jml_nonaktif');
