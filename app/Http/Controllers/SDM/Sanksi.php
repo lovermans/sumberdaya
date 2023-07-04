@@ -15,7 +15,7 @@ class Sanksi
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) || $pengguna->sdm_uuid == $uuid, 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $validator = $app->validator->make(
             $reqs->all(),
