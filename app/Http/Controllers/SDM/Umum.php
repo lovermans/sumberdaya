@@ -43,7 +43,7 @@ class Umum
 
         $respon = match (true) {
             $fragmen == 'navigasi' => $this->halamanNavigasi($halaman, $tanggapan),
-            $fragmen == 'sdmIngatUltah' => $this->halamanUltah($cache, $date, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan),
+            $fragmen == 'sdmIngatUltah' => $this->halamanUltah($cache, $date, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan, $pengguna, $str),
             $pengurus && $fragmen == 'sdmIngatPtsb' => $this->halamanPermintaanTambahSDM($linkupIjin, $lingkup, $halaman, $tanggapan),
             $pengurus && $fragmen == 'sdmIngatPkpd' => $this->halamanPKWTHabis($cache, $kemarin, $hariIni, $kontrak, $database, $bulanDepan, $linkupIjin, $lingkup, $halaman, $tanggapan),
             $pengurus && $fragmen == 'sdmIngatPstatus' => $this->halamanPerubahanStatusSDMTerbaru($cache, $kemarin, $hariIni, $database, $bulanLalu, $linkupIjin, $lingkup, $halaman, $tanggapan),
@@ -74,7 +74,7 @@ class Umum
         return $reqs->pjax() ? $tanggapan->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlPenuh;
     }
 
-    public function halamanUltah($cache, $date, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan)
+    public function halamanUltah($cache, $date, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan, $pengguna, $str)
     {
         $cache->forget('SDMUlangTahun - ' . $date->today()->subMonth()->format('Y-m'));
 
@@ -89,8 +89,15 @@ class Umum
                 })->orderByRaw('DAYOFYEAR(sdm_tgl_lahir), sdm_tgl_lahir')->get();
         });
 
+        $penemPengguna = $str->contains($pengguna->sdm_hak_akses, 'SDM-PENGGUNA') ? $database->query()->select('penempatan_lokasi')->from('sdms')
+            ->leftJoinSub($kontrak, 'kontrak', function ($join) {
+                $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            })->where('kontrak.penempatan_no_absen', $pengguna->sdm_no_absen)->first() : null;
+
         $ulangTahuns = $cache_ulangTahuns->when($linkupIjin, function ($c) use ($lingkup) {
             return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
+        })->when($penemPengguna, function ($c) use ($penemPengguna) {
+            return $c->whereIn('penempatan_lokasi', [$penemPengguna->penempatan_lokasi]);
         });
 
         $jumlahOS = $ulangTahuns->whereNotNull('penempatan_kontrak')->filter(function ($item) {
