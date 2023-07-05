@@ -7,8 +7,10 @@ use Illuminate\Validation\Rule;
 use App\Tambahan\ChunkReadFilter;
 use App\Tambahan\CustomValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ExcelReader;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as ExcelWriter;
+
 
 class Pengaturan
 {
@@ -92,8 +94,8 @@ class Pengaturan
             ->when($reqs->kata_kunci, function ($query) use ($reqs) {
                 $query->where(function ($group) use ($reqs) {
                     $group->where('atur_jenis', 'like', '%' . $reqs->kata_kunci . '%')
-                    ->orWhere('atur_butir', 'like', '%' . $reqs->kata_kunci . '%')
-                    ->orWhere('atur_detail', 'like', '%' . $reqs->kata_kunci . '%');
+                        ->orWhere('atur_butir', 'like', '%' . $reqs->kata_kunci . '%')
+                        ->orWhere('atur_detail', 'like', '%' . $reqs->kata_kunci . '%');
                 });
             })
             ->when(
@@ -108,18 +110,18 @@ class Pengaturan
 
         if ($reqs->unduh == 'excel') {
             abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
-            
+
             set_time_limit(0);
             ob_implicit_flush();
             ob_end_flush();
             header('X-Accel-Buffering: no');
-            
+
             $spreadsheet = new Spreadsheet();
             $filename = 'eksporpengaturan-' . date('YmdHis') . '.xlsx';
             Cell::setValueBinder(new CustomValueBinder());
             $worksheet = $spreadsheet->getActiveSheet();
             $x = 1;
-            
+
             $cari->clone()->chunk(100, function ($hasil) use (&$x, $worksheet) {
                 if ($x == 1) {
                     $list = $hasil->map(function ($x) {
@@ -137,15 +139,15 @@ class Pengaturan
                 $x += count($hasil);
                 echo '<p>Status : Memproses ' . ($x - 2) . ' data pengaturan.</p>';
             });
-            
+
             echo '<p>Status : Menyiapkan berkas excel.</p>';
-            
-            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+
+            $writer = new ExcelWriter($spreadsheet);
             $writer->setPreCalculateFormulas(false);
             $writer->save($app->storagePath("app/unduh/{$filename}"));
             $spreadsheet->disconnectWorksheets();
             unset($spreadsheet);
-            
+
             return $app->redirect->to($app->filesystem->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
         }
 
@@ -169,8 +171,8 @@ class Pengaturan
         $HtmlPenuh = $app->view->make('pengaturan.data', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
-        ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) 
-        : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
+            ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
+            : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function atributInput()
@@ -195,23 +197,23 @@ class Pengaturan
         $str = str();
 
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
-        
+
         abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
-        
+
         set_time_limit(0);
         ob_implicit_flush();
         ob_end_flush();
         header('X-Accel-Buffering: no');
-        
-        $reader = IOFactory::createReader('Xlsx');
+
+        $reader = new ExcelReader();
         $spreadsheet = $reader->load($app->storagePath('app/contoh/unggah-umum.xlsx'));
         $filename = 'unggahpengaturan-' . date('YmdHis') . '.xlsx';
         Cell::setValueBinder(new CustomValueBinder());
         $worksheet = $spreadsheet->getSheet(1);
         $x = 1;
-        
+
         $this->dataDasar()->clone()->latest('atur_dibuat')->chunk(100, function ($hasil) use (&$x, $worksheet) {
             if ($x == 1) {
                 $list = $hasil->map(function ($x) {
@@ -229,15 +231,15 @@ class Pengaturan
             $x += count($hasil);
             echo '<p>Status : Memproses ' . ($x - 2) . ' data pengaturan.</p>';
         });
-        
+
         echo '<p>Status : Menyiapkan berkas excel.</p>';
-        
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+
+        $writer = new ExcelWriter($spreadsheet);
         $writer->setPreCalculateFormulas(false);
         $writer->save($app->storagePath("app/unduh/{$filename}"));
         $spreadsheet->disconnectWorksheets();
         unset($spreadsheet);
-        
+
         return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
     }
 
@@ -268,9 +270,9 @@ class Pengaturan
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
         $atur = $this->dataDasar()->clone()->addSelect('atur_uuid')->where('atur_uuid', $uuid)->first();
-        
+
         abort_unless($atur, 404, 'Data Pengaturan tidak ditemukan.');
-       
+
         $HtmlPenuh = $app->view->make('pengaturan.lihat', compact('atur'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']);
@@ -289,33 +291,35 @@ class Pengaturan
 
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         $halaman = $app->view;
-        
+
         if ($reqs->isMethod('post')) {
-            
+
             $reqs->merge(['atur_id_pembuat' => $pengguna->sdm_no_absen]);
-            
+
             $validasi = $app->validator->make(
                 $reqs->all(),
                 [
-                    'atur_butir' => ['required', 'string', 'max:40', Rule::unique('aturs')->where(function ($query) use ($reqs) {$query->where('atur_jenis', $reqs->atur_jenis);})],
+                    'atur_butir' => ['required', 'string', 'max:40', Rule::unique('aturs')->where(function ($query) use ($reqs) {
+                        $query->where('atur_jenis', $reqs->atur_jenis);
+                    })],
                     'atur_id_pembuat' => ['sometimes', 'nullable', 'string', 'exists:sdms,sdm_no_absen'],
                     ...$this->dasarValidasi()
                 ],
                 [],
                 $this->atributInput()
             );
-            
+
             $validasi->validate();
-            
+
             $data = $validasi->safe()->all();
 
             $database = $app->db;
-            
+
             $database->table('aturs')->insert($data);
-            
+
             $fungsiStatis->hapusCacheAtur();
             $pesan = $fungsiStatis->statusBerhasil();
-            
+
             return $app->redirect->route('atur.data')->with('pesan', $pesan);
         }
 
@@ -332,24 +336,26 @@ class Pengaturan
         $str = str();
 
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
-        
+
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
-        
+
         $atur = $this->dataDasar()->clone()->addSelect('atur_uuid')->where('atur_uuid', $uuid)->first();
-        
+
         abort_unless($atur, 404, 'Data Pengaturan tidak ditemukan.');
 
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         $halaman = $app->view;
 
         if ($reqs->isMethod('post')) {
-            
+
             $reqs->merge(['atur_id_pengubah' => $pengguna->sdm_no_absen]);
-            
+
             $validasi = $app->validator->make(
                 $reqs->all(),
                 [
-                    'atur_butir' => ['required', 'string', 'max:40', Rule::unique('aturs')->where(function ($query) use ($reqs, $uuid) {$query->where('atur_jenis', $reqs->atur_jenis)->whereNot('atur_uuid', $uuid);})],
+                    'atur_butir' => ['required', 'string', 'max:40', Rule::unique('aturs')->where(function ($query) use ($reqs, $uuid) {
+                        $query->where('atur_jenis', $reqs->atur_jenis)->whereNot('atur_uuid', $uuid);
+                    })],
                     'atur_id_pengubah' => ['sometimes', 'nullable', 'string', 'exists:sdms,sdm_no_absen'],
                     ...$this->dasarValidasi()
                 ],
@@ -358,30 +364,32 @@ class Pengaturan
             );
 
             $validasi->validate();
-            
+
             $data = $validasi->safe()->all();
-            
+
             $database = $app->db;
-            
+
             $database->table('aturs')->where('atur_uuid', $uuid)->update($data);
-            
+
             $fungsiStatis->hapusCacheAtur();
             $pesan = $fungsiStatis->statusBerhasil();
 
             $session = $reqs->session();
             $redirect = $app->redirect;
-            
+
             if ($reqs->header('X-Minta-Javascript', false)) {
-                
+
                 $session->now('pesan', $pesan);
-                                
-                return $tanggapan->make($halaman->make('pemberitahuan'))->withHeaders(['Vary' => 'Accept',
+
+                return $tanggapan->make($halaman->make('pemberitahuan'))->withHeaders([
+                    'Vary' => 'Accept',
                     'X-Tujuan' => 'sematan_javascript',
-                    'X-Kode-Javascript' => true]);
+                    'X-Kode-Javascript' => true
+                ]);
             }
 
             $perujuk = $session->get('tautan_perujuk');
-            
+
             return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('atur.data')->with('pesan', $pesan);
         }
 
@@ -402,14 +410,14 @@ class Pengaturan
         $str = str();
 
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
-        
+
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         $halaman = $app->view;
-        
+
         if ($reqs->isMethod('post')) {
-            
+
             set_time_limit(0);
             ob_implicit_flush();
             ob_end_flush();
@@ -418,7 +426,7 @@ class Pengaturan
             $validator = $app->validator;
 
             echo '<p>Memeriksa berkas yang diunggah.</p>';
-            
+
             $validasifile = $validator->make(
                 $reqs->all(),
                 [
@@ -429,19 +437,19 @@ class Pengaturan
                     'atur_unggah' => 'Berkas Yang Diunggah'
                 ]
             );
-        
+
             $validasifile->validate();
 
             $file = $validasifile->safe()->only('atur_unggah')['atur_unggah'];
             $namafile = 'unggahpengaturan-' . date('YmdHis') . '.xlsx';
 
             $storage = $app->filesystem;
-            
+
             $storage->putFileAs('unggah', $file, $namafile);
-            
+
             $fileexcel = storage_path("app/unggah/{$namafile}");
-            
-            $reader = IOFactory::createReader('Xlsx');
+
+            $reader = new ExcelReader();
             $spreadsheetInfo = $reader->listWorksheetInfo($fileexcel);
             $chunkSize = 25;
             $chunkFilter = new ChunkReadFilter();
@@ -450,35 +458,35 @@ class Pengaturan
             $totalRows = $spreadsheetInfo[1]['totalRows'];
             $kategori_status = Rule::in(['AKTIF', 'NON-AKTIF']);
             $idPengunggah = $pengguna->sdm_no_absen;
-            
+
             for ($startRow = 2; $startRow <= $totalRows; $startRow += $chunkSize) {
                 $chunkFilter->setRows($startRow, $chunkSize);
                 $spreadsheet = $reader->load($fileexcel);
                 $worksheet = $spreadsheet->getSheet(1);
                 $barisTertinggi = $worksheet->getHighestRow();
                 $kolomTertinggi = $worksheet->getHighestColumn();
-                
+
                 $pesanbaca = '<p>Status : Membaca excel baris ' . ($startRow) . ' sampai baris ' . $barisTertinggi . '.</p>';
                 $pesansimpan = '<p>Status : Berhasil menyimpan data excel baris ' . ($startRow) . ' sampai baris ' . $barisTertinggi . '.</p>';
-                
+
                 echo $pesanbaca;
-                
+
                 $headingArray = $worksheet->rangeToArray('A1:' . $kolomTertinggi . '1', NULL, FALSE, TRUE, FALSE);
                 $dataArray = $worksheet->rangeToArray('A' . $startRow . ':' . $kolomTertinggi . $barisTertinggi, NULL, FALSE, TRUE, FALSE);
-                
+
                 $tabel = array_merge($headingArray, $dataArray);
                 $isitabel = array_shift($tabel);
-                
+
                 $datas = array_map(function ($x) use ($isitabel) {
                     return array_combine($isitabel, $x);
                 }, $tabel);
-                
+
                 $dataexcel = array_map(function ($x) use ($idPengunggah) {
                     return $x + ['atur_id_pengunggah' => $idPengunggah] + ['atur_id_pembuat' => $idPengunggah] + ['atur_id_pengubah' => $idPengunggah] + ['atur_diunggah' => date('Y-m-d H:i:s')];
                 }, $datas);
 
-                $data = array_combine(range(($startRow - 1), count($dataexcel) + ($startRow - 2) ), array_values($dataexcel));
-                
+                $data = array_combine(range(($startRow - 1), count($dataexcel) + ($startRow - 2)), array_values($dataexcel));
+
                 $validasi = $validator->make(
                     $data,
                     [
@@ -510,25 +518,25 @@ class Pengaturan
                 );
 
                 $validasi->validate();
-                                
+
                 $app->db->table('aturs')->upsert(
                     $validasi->validated(),
                     ['atur_jenis', 'atur_butir'],
                     ['atur_detail', 'atur_status', 'atur_id_pengunggah', 'atur_diunggah', 'atur_id_pengubah']
                 );
-                
+
                 echo $pesansimpan;
             }
-            
+
             $spreadsheet->disconnectWorksheets();
             unset($spreadsheet);
-            
+
             $storage->delete($fileexcel);
-            
+
             $fungsiStatis->hapusCacheAtur();
 
             $pesan = $fungsiStatis->statusBerhasil();
-            
+
             return $app->redirect->route('atur.data')->with('pesan', $pesan);
         };
 

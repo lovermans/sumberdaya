@@ -8,13 +8,12 @@ use Illuminate\Validation\Rule;
 use App\Tambahan\ChunkReadFilter;
 use App\Tambahan\CustomValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpWord\TemplateProcessor;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use App\Http\Controllers\SDM\PermintaanTambahSDM;
-use App\Http\Controllers\SDM\Penempatan;
 use PhpOffice\PhpSpreadsheet\Cell\StringValueBinder;
 use PhpOffice\PhpSpreadsheet\Worksheet\Table;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ExcelReader;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as ExcelWriter;
 
 class Berkas
 {
@@ -121,7 +120,7 @@ class Berkas
             $spreadsheet->addExternalSheet($clonedWorksheet);
         }
 
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer = new ExcelWriter($spreadsheet);
         $writer->setPreCalculateFormulas(false);
         $writer->save($app->storagePath("app/unduh/{$filename}"));
         $spreadsheet->disconnectWorksheets();
@@ -173,7 +172,7 @@ class Berkas
             ->orderBy('sdm_no_absen');
 
         $binder = new StringValueBinder();
-        $reader = IOFactory::createReader('Xlsx');
+        $reader = new ExcelReader();
         $spreadsheet = $reader->load($app->storagePath("app/contoh/{$berkasContoh}"));
         $worksheet = $spreadsheet->getSheet(1);
 
@@ -207,7 +206,7 @@ class Berkas
         abort_unless($storage->exists("contoh/{$berkasContoh}"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
 
         $binder = new CustomValueBinder();
-        $reader = IOFactory::createReader('Xlsx');
+        $reader = new ExcelReader();
         $spreadsheet = $reader->load($app->storagePath("app/contoh/{$berkasContoh}"));
         $worksheet = $spreadsheet->getSheet(1);
 
@@ -243,7 +242,7 @@ class Berkas
         abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
 
         $binder = new CustomValueBinder();
-        $reader = IOFactory::createReader('Xlsx');
+        $reader = new ExcelReader();
         $spreadsheet = $reader->load($app->storagePath("app/contoh/{$berkasContoh}"));
         $worksheet = $spreadsheet->getSheet(1);
 
@@ -290,7 +289,7 @@ class Berkas
         abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
 
         $binder = new CustomValueBinder();
-        $reader = IOFactory::createReader('Xlsx');
+        $reader = new ExcelReader();
         $spreadsheet = $reader->load($app->storagePath("app/contoh/{$berkasContoh}"));
         $worksheet = $spreadsheet->getSheet(1);
 
@@ -728,7 +727,7 @@ class Berkas
         return $this->eksporExcelStream(...$argumen);
     }
 
-    public function statistikPenempatanSDM(Penempatan $penempatan)
+    public function statistikPenempatanSDM()
     {
         $app = app();
         $pengguna = $app->request->user();
@@ -736,22 +735,33 @@ class Berkas
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $reader = IOFactory::createReader('Xlsx');
+        $reader = new ExcelReader();
         $spreadsheet2 = $reader->load($app->storagePath('app/contoh/statistik-sdm.xlsx'));
         $spreadsheet = new Spreadsheet();
         $binder = new CustomValueBinder();
         $worksheet = $spreadsheet->getActiveSheet();
+        $database = $app->db;
 
         // $rumusMasaKerja = '=IF([@sdm_tgl_berhenti]="",DATEDIF([@sdm_tgl_gabung],TODAY(),"Y"),DATEDIF([@sdm_tgl_gabung],[@sdm_tgl_berhenti],"Y"))';
         // $rumusUsia = '=IF([@sdm_tgl_berhenti]="",DATEDIF([@sdm_tgl_lahir],TODAY(),"Y"),DATEDIF([@sdm_tgl_lahir],[@sdm_tgl_berhenti],"Y"))';
 
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
-        $cari = $penempatan->dataPenempatanTerkini()->clone()->addSelect('posisi_wlkp', 'sdm_uuid', 'sdm_no_absen', 'sdm_tgl_lahir', 'sdm_tgl_gabung', 'sdm_no_ktp', 'sdm_nama', 'sdm_kelamin', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_berhenti', 'sdm_kelamin', 'sdm_disabilitas', 'sdm_agama', 'sdm_status_kawin', 'sdm_pendidikan', 'sdm_warganegara', $app->db->raw('IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, sdm_tgl_berhenti)) as masa_kerja, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, sdm_tgl_berhenti)) as usia'))
-            ->joinSub($penempatan->dataSDM(), 'sdm', function ($join) {
+        $penempatanTerkini = $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan')
+            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
+                $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
+            });
+
+        $dataSDM = $database->query()->select('id', 'sdm_uuid', 'sdm_no_absen', 'sdm_no_permintaan', 'sdm_tgl_lahir', 'sdm_tempat_lahir', 'sdm_tgl_gabung', 'sdm_no_ktp', 'sdm_nama', 'sdm_kelamin', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_kary', 'sdm_ket_berhenti', 'sdm_alamat', 'sdm_alamat_rt', 'sdm_alamat_rw', 'sdm_alamat_kelurahan', 'sdm_alamat_kecamatan', 'sdm_alamat_kota', 'sdm_alamat_provinsi', 'sdm_alamat_kodepos', 'sdm_disabilitas', 'sdm_agama', 'sdm_status_kawin', 'sdm_pendidikan', 'sdm_warganegara', 'sdm_uk_seragam', 'sdm_uk_sepatu', 'sdm_jurusan', 'sdm_telepon', 'email', 'sdm_id_atasan', 'sdm_no_bpjs', 'sdm_no_jamsostek', 'sdm_jml_anak')
+            ->from('sdms');
+
+        $dataPosisi = $database->query()->select('posisi_nama', 'posisi_wlkp')->from('posisis');
+
+        $cari = $penempatanTerkini->clone()->addSelect('posisi_wlkp', 'sdm_uuid', 'sdm_no_absen', 'sdm_tgl_lahir', 'sdm_tgl_gabung', 'sdm_no_ktp', 'sdm_nama', 'sdm_kelamin', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_berhenti', 'sdm_kelamin', 'sdm_disabilitas', 'sdm_agama', 'sdm_status_kawin', 'sdm_pendidikan', 'sdm_warganegara', $app->db->raw('IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, sdm_tgl_berhenti)) as masa_kerja, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, sdm_tgl_berhenti)) as usia'))
+            ->joinSub($dataSDM, 'sdm', function ($join) {
                 $join->on('penempatan_no_absen', '=', 'sdm.sdm_no_absen');
             })
-            ->leftJoinSub($penempatan->dataPosisi(), 'pos', function ($join) {
+            ->leftJoinSub($dataPosisi, 'pos', function ($join) {
                 $join->on('penempatan_posisi', '=', 'pos.posisi_nama');
             })
             ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
@@ -827,7 +837,7 @@ class Berkas
         exit();
     }
 
-    public function formulirPenilaianSDM(Penempatan $penempatan, $uuid = null)
+    public function formulirPenilaianSDM($uuid = null)
     {
         $app = app();
         $reqs = $app->request;
@@ -836,8 +846,14 @@ class Berkas
 
         abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-        $permin = $penempatan->dataDasar()->clone()->addSelect('sdm_nama')
-            ->joinSub($penempatan->dataSDM(), 'sdm', function ($join) {
+        $database = $app->db;
+
+        $dataSDM = $database->query()->select('id', 'sdm_uuid', 'sdm_no_absen', 'sdm_no_permintaan', 'sdm_tgl_lahir', 'sdm_tempat_lahir', 'sdm_tgl_gabung', 'sdm_no_ktp', 'sdm_nama', 'sdm_kelamin', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_kary', 'sdm_ket_berhenti', 'sdm_alamat', 'sdm_alamat_rt', 'sdm_alamat_rw', 'sdm_alamat_kelurahan', 'sdm_alamat_kecamatan', 'sdm_alamat_kota', 'sdm_alamat_provinsi', 'sdm_alamat_kodepos', 'sdm_disabilitas', 'sdm_agama', 'sdm_status_kawin', 'sdm_pendidikan', 'sdm_warganegara', 'sdm_uk_seragam', 'sdm_uk_sepatu', 'sdm_jurusan', 'sdm_telepon', 'email', 'sdm_id_atasan', 'sdm_no_bpjs', 'sdm_no_jamsostek', 'sdm_jml_anak')
+            ->from('sdms');
+
+        $permin = $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan')
+            ->from('penempatans')->clone()->addSelect('sdm_nama')
+            ->joinSub($dataSDM, 'sdm', function ($join) {
                 $join->on('penempatan_no_absen', '=', 'sdm_no_absen');
             })->where('penempatan_uuid', $uuid)->first();
 
@@ -863,7 +879,7 @@ class Berkas
         return $this->isiFormulir(...$argumen);
     }
 
-    public function formulirPerubahanStatusSDM(Penempatan $penempatan, $uuid = null)
+    public function formulirPerubahanStatusSDM($uuid = null)
     {
         $app = app();
         $reqs = $app->request;
@@ -872,8 +888,14 @@ class Berkas
 
         abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-        $permin = $penempatan->dataDasar()->clone()->addSelect('sdm_nama')
-            ->joinSub($penempatan->dataSDM(), 'sdm', function ($join) {
+        $database = $app->db;
+
+        $dataSDM = $database->query()->select('id', 'sdm_uuid', 'sdm_no_absen', 'sdm_no_permintaan', 'sdm_tgl_lahir', 'sdm_tempat_lahir', 'sdm_tgl_gabung', 'sdm_no_ktp', 'sdm_nama', 'sdm_kelamin', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_kary', 'sdm_ket_berhenti', 'sdm_alamat', 'sdm_alamat_rt', 'sdm_alamat_rw', 'sdm_alamat_kelurahan', 'sdm_alamat_kecamatan', 'sdm_alamat_kota', 'sdm_alamat_provinsi', 'sdm_alamat_kodepos', 'sdm_disabilitas', 'sdm_agama', 'sdm_status_kawin', 'sdm_pendidikan', 'sdm_warganegara', 'sdm_uk_seragam', 'sdm_uk_sepatu', 'sdm_jurusan', 'sdm_telepon', 'email', 'sdm_id_atasan', 'sdm_no_bpjs', 'sdm_no_jamsostek', 'sdm_jml_anak')
+            ->from('sdms');
+
+        $permin = $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan')
+            ->from('penempatans')->clone()->addSelect('sdm_nama')
+            ->joinSub($dataSDM, 'sdm', function ($join) {
                 $join->on('penempatan_no_absen', '=', 'sdm_no_absen');
             })->where('penempatan_uuid', $uuid)->first();
 
@@ -903,7 +925,7 @@ class Berkas
         return $this->isiFormulir(...$argumen);
     }
 
-    public function PKWTSDM(Penempatan $penempatan, $uuid = null)
+    public function PKWTSDM($uuid = null)
     {
         $app = app();
         $reqs = $app->request;
@@ -912,8 +934,14 @@ class Berkas
 
         abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-        $permin = $penempatan->dataDasar()->clone()->addSelect('sdm_nama', 'sdm_tgl_lahir', 'sdm_tempat_lahir', 'sdm_kelamin', 'sdm_alamat', 'sdm_alamat_kelurahan', 'sdm_alamat_kecamatan', 'sdm_alamat_kota', 'sdm_alamat_provinsi')
-            ->joinSub($penempatan->dataSDM(), 'sdm', function ($join) {
+        $database = $app->db;
+
+        $dataSDM = $database->query()->select('id', 'sdm_uuid', 'sdm_no_absen', 'sdm_no_permintaan', 'sdm_tgl_lahir', 'sdm_tempat_lahir', 'sdm_tgl_gabung', 'sdm_no_ktp', 'sdm_nama', 'sdm_kelamin', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_kary', 'sdm_ket_berhenti', 'sdm_alamat', 'sdm_alamat_rt', 'sdm_alamat_rw', 'sdm_alamat_kelurahan', 'sdm_alamat_kecamatan', 'sdm_alamat_kota', 'sdm_alamat_provinsi', 'sdm_alamat_kodepos', 'sdm_disabilitas', 'sdm_agama', 'sdm_status_kawin', 'sdm_pendidikan', 'sdm_warganegara', 'sdm_uk_seragam', 'sdm_uk_sepatu', 'sdm_jurusan', 'sdm_telepon', 'email', 'sdm_id_atasan', 'sdm_no_bpjs', 'sdm_no_jamsostek', 'sdm_jml_anak')
+            ->from('sdms');
+
+        $permin = $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan')
+            ->from('penempatans')->clone()->addSelect('sdm_nama', 'sdm_tgl_lahir', 'sdm_tempat_lahir', 'sdm_kelamin', 'sdm_alamat', 'sdm_alamat_kelurahan', 'sdm_alamat_kecamatan', 'sdm_alamat_kota', 'sdm_alamat_provinsi')
+            ->joinSub($dataSDM, 'sdm', function ($join) {
                 $join->on('penempatan_no_absen', '=', 'sdm_no_absen');
             })->where('penempatan_uuid', $uuid)->first();
 
@@ -1045,7 +1073,7 @@ class Berkas
         return $this->isiFormulir(...$argumen);
     }
 
-    public function formulirPermintaanTambahSDM(PermintaanTambahSDM $permintaanTambahSDM, $uuid = null)
+    public function formulirPermintaanTambahSDM($uuid = null)
     {
         $app = app();
         $reqs = $app->request;
@@ -1055,7 +1083,7 @@ class Berkas
 
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
-        $permin = $permintaanTambahSDM->dataDasar()->clone()->addSelect('tambahsdm_uuid', 'b.sdm_nama')
+        $permin = $app->db->query()->select('tambahsdm_no', 'tambahsdm_penempatan', 'tambahsdm_posisi', 'tambahsdm_jumlah', 'tambahsdm_tgl_diusulkan', 'tambahsdm_tgl_dibutuhkan', 'tambahsdm_alasan', 'tambahsdm_keterangan', 'tambahsdm_status', 'tambahsdm_sdm_id')->from('tambahsdms')->clone()->addSelect('tambahsdm_uuid', 'b.sdm_nama')
             ->join('sdms as b', 'tambahsdm_sdm_id', '=', 'b.sdm_no_absen')->where('tambahsdm_uuid', $uuid)->when($lingkupIjin, function ($query, $lingkupIjin) {
                 $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
             })->first();
@@ -1255,14 +1283,14 @@ class Berkas
 
     public function rekamHapusDataSDM($app, $dataHapus)
     {
-        $reader = IOFactory::createReader('Xlsx');
+        $reader = new ExcelReader();
         $spreadsheet = $reader->load($app->storagePath('app/contoh/data-dihapus.xlsx'));
         Cell::setValueBinder(new CustomValueBinder());
         $worksheet = $spreadsheet->getActiveSheet();
         $barisAkhir = $worksheet->getHighestRow() + 1;
         $worksheet->fromArray($dataHapus, NULL, 'A' . $barisAkhir);
 
-        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer = new ExcelWriter($spreadsheet);
         $writer->setPreCalculateFormulas(false);
         $writer->save($app->storagePath('app/contoh/data-dihapus.xlsx'));
         $spreadsheet->disconnectWorksheets();
@@ -1362,7 +1390,7 @@ class Berkas
             $storage = $app->filesystem;
             $storage->putFileAs('unggah', $file, $namafile);
             $fileexcel = $app->storagePath("app/unggah/{$namafile}");
-            $reader = IOFactory::createReader('Xlsx');
+            $reader = new ExcelReader();
             $spreadsheetInfo = $reader->listWorksheetInfo($fileexcel);
             $chunkSize = 25;
             $chunkFilter = new ChunkReadFilter();
@@ -1490,7 +1518,7 @@ class Berkas
             $storage = $app->filesystem;
             $storage->putFileAs('unggah', $file, $namafile);
             $fileexcel = $app->storagePath("app/unggah/{$namafile}");
-            $reader = IOFactory::createReader('Xlsx');
+            $reader = new ExcelReader();
             $spreadsheetInfo = $reader->listWorksheetInfo($fileexcel);
             $chunkSize = 50;
             $chunkFilter = new ChunkReadFilter();
@@ -1642,7 +1670,7 @@ class Berkas
             $storage = $app->filesystem;
             $storage->putFileAs('unggah', $file, $namafile);
             $fileexcel = $app->storagePath("app/unggah/{$namafile}");
-            $reader = IOFactory::createReader('Xlsx');
+            $reader = new ExcelReader();
             $spreadsheetInfo = $reader->listWorksheetInfo($fileexcel);
             $chunkSize = 25;
             $chunkFilter = new ChunkReadFilter();

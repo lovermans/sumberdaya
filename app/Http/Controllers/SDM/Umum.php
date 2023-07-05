@@ -4,9 +4,9 @@ namespace App\Http\Controllers\SDM;
 
 use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Validation\Rules\Password;
 use App\Tambahan\ChunkReadFilter;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ExcelReader;
 
 class Umum
 {
@@ -771,7 +771,7 @@ class Umum
             $storage = $app->filesystem;
             $storage->putFileAs('unggah', $file, $namafile);
             $fileexcel = $app->storagePath("app/unggah/{$namafile}");
-            $reader = IOFactory::createReader('Xlsx');
+            $reader = new ExcelReader();
             $spreadsheetInfo = $reader->listWorksheetInfo($fileexcel);
             $chunkSize = 50;
             $chunkFilter = new ChunkReadFilter();
