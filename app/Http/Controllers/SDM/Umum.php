@@ -89,14 +89,14 @@ class Umum
                 })->orderByRaw('DAYOFYEAR(sdm_tgl_lahir), sdm_tgl_lahir')->get();
         });
 
-        $penemPengguna = $str->contains($pengguna->sdm_hak_akses, 'SDM-PENGGUNA') ? $database->query()->select('penempatan_lokasi')->from('sdms')
+        $penemPengguna = $database->query()->select('penempatan_lokasi')->from('sdms')
             ->leftJoinSub($kontrak, 'kontrak', function ($join) {
                 $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
-            })->where('kontrak.penempatan_no_absen', $pengguna->sdm_no_absen)->first() : null;
+            })->where('kontrak.penempatan_no_absen', $pengguna->sdm_no_absen)->first();
 
         $ulangTahuns = $cache_ulangTahuns->when($linkupIjin, function ($c) use ($lingkup) {
             return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
-        })->when($penemPengguna, function ($c) use ($penemPengguna) {
+        })->when($str->contains($pengguna->sdm_hak_akses, 'SDM-PENGGUNA'), function ($c) use ($penemPengguna) {
             return $c->whereIn('penempatan_lokasi', [$penemPengguna->penempatan_lokasi]);
         });
 
