@@ -114,13 +114,13 @@ class Penilaian
                     $query->orderByRaw($uruts);
                 },
                 function ($query) {
-                    $query->orderBy('id', 'desc');
+                    $query->orderBy('penilaiansdms.id', 'desc');
                 }
             );
 
-        // if ($reqs->unduh == 'excel') {
-        //     return $berkas->unduhIndexSanksiSDM($cari, $app);
-        // }
+        if ($reqs->unduh == 'excel') {
+            return $berkas->unduhIndexPenilaianSDM($cari, $app);
+        }
 
         $jumlahOS = $cari->clone()->whereNotNull('kontrak.penempatan_kontrak')->where('kontrak.penempatan_kontrak', 'like', 'OS-%')->count();
         $jumlahOrganik = $cari->clone()->whereNotNull('kontrak.penempatan_kontrak')->where('kontrak.penempatan_kontrak', 'not like', 'OS-%')->count();

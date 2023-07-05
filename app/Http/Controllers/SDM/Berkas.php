@@ -705,6 +705,29 @@ class Berkas
         return $this->eksporExcelStream(...$argumen);
     }
 
+    public function unduhIndexPenilaianSDM($cari, $app)
+    {
+        abort_unless($app->request->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+
+        $binder = new CustomValueBinder();
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $argumen = [
+            'namaBerkas' => 'eksporpenilaiansdm-',
+            'dataEkspor' => $cari->clone(),
+            'pengecualian' => ['nilaisdm_uuid'],
+            'pesanData' =>  ' data penilaian SDM',
+            'app' => $app,
+            'binder' => $binder,
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet,
+            'chunk' => 100
+        ];
+
+        return $this->eksporExcelStream(...$argumen);
+    }
+
     public function statistikPenempatanSDM(Penempatan $penempatan)
     {
         $app = app();
