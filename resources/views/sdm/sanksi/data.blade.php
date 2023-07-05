@@ -16,7 +16,7 @@
 
                 <summary class="cari">
                     <div class="isian gspan-4">
-                        <input type="text" id="kata_kunci_pelanggaran_sdm" name="kata_kunci"
+                        <input type="text" id="kata_kunci_sanksi_sdm" name="kata_kunci"
                             value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
 
                         <button id="tombol_cari_sanksi" class="cari-cepat" type="submit" title="Cari Data">
