@@ -264,7 +264,8 @@
                         <td>
                             <b>Bobot Kehadiran</b> : {{ $tabel->nilaisdm_bobot_hadir }} <br>
                             <b>Bobot Sikap Kerja</b> : {{ $tabel->nilaisdm_bobot_sikap }} <br>
-                            <b>Bobot Target Pekerjaan</b> : {{ $tabel->nilaisdm_bobot_target }}
+                            <b>Bobot Target Pekerjaan</b> : {{ $tabel->nilaisdm_bobot_target }} <br>
+                            <b>Total Nilai</b> : {{ $tabel->nilaisdm_total }}
                         </td>
                         <td>
                             <b>Tindak Lanjut</b> : {!! nl2br($tabel->nilaisdm_tindak_lanjut) !!} <br>

@@ -15,7 +15,7 @@ class Penilaian
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) || $pengguna->sdm_uuid == $uuid, 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) || ($pengguna?->sdm_uuid == $uuid && $pengguna?->sdm_uuid !== null), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $validator = $app->validator->make(
             $reqs->all(),
@@ -45,7 +45,7 @@ class Penilaian
             return $app->redirect->route('sdm.penilaian.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
 
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+        $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
 
         $cacheAtur = $fungsiStatis->ambilCacheAtur();
 
@@ -64,7 +64,7 @@ class Penilaian
         $kontrak = $this->dataKontrak($database);
 
         $cari = $this->dataDasar($database)
-            ->addSelect('sdm_uuid', 'sdm_nama', 'sdm_tgl_berhenti', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak')
+            ->addSelect('sdm_uuid', 'sdm_nama', 'sdm_tgl_berhenti', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', $database->raw('(nilaisdm_bobot_hadir + nilaisdm_bobot_sikap + nilaisdm_bobot_target) as nilaisdm_total'))
             ->leftJoin('sdms', 'nilaisdm_no_absen', '=', 'sdm_no_absen')
             ->leftJoinSub($kontrak, 'kontrak', function ($join) {
                 $join->on('nilaisdm_no_absen', '=', 'kontrak.penempatan_no_absen');

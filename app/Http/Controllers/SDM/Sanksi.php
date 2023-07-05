@@ -15,7 +15,7 @@ class Sanksi
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) || $pengguna->sdm_uuid == $uuid, 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) || ($pengguna?->sdm_uuid == $uuid && $pengguna?->sdm_uuid !== null), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $validator = $app->validator->make(
             $reqs->all(),
@@ -51,7 +51,7 @@ class Sanksi
             return $app->redirect->route('sdm.sanksi.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
 
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+        $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
 
         $cacheAtur = $fungsiStatis->ambilCacheAtur();
 

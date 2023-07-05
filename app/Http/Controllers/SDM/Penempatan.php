@@ -15,7 +15,7 @@ class Penempatan
         $pengguna = $reqs->user();
         $str = str();
 
-        abort_unless($pengguna && ($str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) || $pengguna->sdm_uuid == $uuid), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) || ($pengguna?->sdm_uuid == $uuid && $pengguna?->sdm_uuid !== null), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $validator = $app->validator->make(
             $reqs->all(),
@@ -30,7 +30,7 @@ class Penempatan
         $urutArray = $reqs->urut;
         $uruts = $urutArray ? implode(',', array_filter($urutArray)) : null;
         $kataKunci = $reqs->kata_kunci;
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+        $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
 
         $cari = $this->dataSDM()->clone()->addSelect('penempatan_uuid', 'penempatan_no_absen', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan', 'posisi_wlkp', $app->db->raw('IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, sdm_tgl_berhenti)) as masa_kerja, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, penempatan_mulai, NOW()),TIMESTAMPDIFF(YEAR, penempatan_mulai, sdm_tgl_berhenti)) as masa_aktif, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, sdm_tgl_berhenti)) as usia'))
             ->leftJoinSub($this->dataDasar(), 'penem', function ($join) {
