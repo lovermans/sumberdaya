@@ -431,6 +431,9 @@
     <h2>Riwayat Sanksi</h2>
     <div id="sanksi-sdm_tabels" class="kartu scroll-margin">Memuat Riwayat Sanksi...</div>
 
+    <h2>Riwayat Penilaian</h2>
+    <div id="nilai-sdm_tabels" class="kartu scroll-margin">Memuat Riwayat Penilaian...</div>
+
 
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
@@ -459,6 +462,7 @@
             pilSaja('#akun-cetakFormulir .pil-saja');
             lemparXHR({tujuan : "#riwa-penem-sdm_tabels", tautan : "{{ $urlRangka->route('sdm.penempatan.riwayat', ['uuid' => $akun->sdm_uuid, 'fragment' => 'riwa-penem-sdm_tabels']) }}", normalview : true, fragmen : true});
             lemparXHR({tujuan : "#sanksi-sdm_tabels", tautan : "{{ $urlRangka->route('sdm.sanksi.data', ['uuid' => $akun->sdm_uuid, 'fragment' => 'sanksi-sdm_tabels']) }}", normalview : true, fragmen : true});
+            lemparXHR({tujuan : "#nilai-sdm_tabels", tautan : "{{ $urlRangka->route('sdm.penilaian.data', ['uuid' => $akun->sdm_uuid, 'fragment' => 'nilai-sdm_tabels']) }}", normalview : true, fragmen : true});
         })();
     </script>
 
