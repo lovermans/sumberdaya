@@ -184,6 +184,7 @@ class Sanksi
             'sanksi_selesai' => 'Tanggal Sanksi Berakhir',
             'sanksi_keterangan' => 'Keterangan',
             'sanksi_tambahan' => 'Sanksi Tambahan',
+            'sanksi_berkas' => 'Berkas Unggah Sanksi',
             'sanksi_id_pengunggah' => 'ID Pengunggah',
             'sanksi_id_pembuat' => 'ID Pembuat',
             'sanksi_id_pengubah' => 'ID Pengubah',
@@ -426,7 +427,7 @@ class Sanksi
             $berkas = $validasi->safe()->only('sanksi_berkas')['sanksi_berkas'] ?? false;
 
             if ($berkas) {
-                $berkas->storeAs('sdm/sanksi/berkas', $validasi->safe()->only('sanksi_no_absen')['sanksi_no_absen'] . ' - '  . $validasi->safe()->only('sanksi_jenis')['sanksi_jenis'] . ' - ' . $validasi->safe()->only('sanksi_mulai')['sanksi_mulai'] . '.pdf');
+                $berkas->storeAs('sdm/sanksi/berkas', $sanksiLama->sanksi_no_absen . ' - '  . $validasi->safe()->only('sanksi_jenis')['sanksi_jenis'] . ' - ' . $validasi->safe()->only('sanksi_mulai')['sanksi_mulai'] . '.pdf');
             }
 
             $fungsiStatis->hapusCachePelanggaranSDM();

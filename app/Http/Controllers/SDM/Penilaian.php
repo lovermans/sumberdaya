@@ -158,21 +158,22 @@ class Penilaian
             : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
-    // public function atributInput()
-    // {
-    //     return [
-    //         'sanksi_lap_no' => 'Nomor Laporan Pelanggaran',
-    //         'sanksi_no_absen' => 'ID Absen Penerima Sanksi',
-    //         'sanksi_jenis' => 'Jenis Sanksi',
-    //         'sanksi_mulai' => 'Tanggal Sanksi Mulai Berlaku',
-    //         'sanksi_selesai' => 'Tanggal Sanksi Berakhir',
-    //         'sanksi_keterangan' => 'Keterangan',
-    //         'sanksi_tambahan' => 'Sanksi Tambahan',
-    //         'sanksi_id_pengunggah' => 'ID Pengunggah',
-    //         'sanksi_id_pembuat' => 'ID Pembuat',
-    //         'sanksi_id_pengubah' => 'ID Pengubah',
-    //     ];
-    // }
+    public function atributInput()
+    {
+        return [
+            'nilaisdm_tahun' => 'Tahun Penilaian SDM',
+            'nilaisdm_periode' => 'Periode Penilaian Berkala SDM',
+            'nilaisdm_bobot_hadir' => 'Bobot Nilai Kehadiran',
+            'nilaisdm_bobot_sikap' => 'Bobot Nilai Sikap Kerja',
+            'nilaisdm_bobot_target' => 'Bobot Nilai Target Kerja',
+            'nilaisdm_tindak_lanjut' => 'Tindak Lanjut Penilaian SDM',
+            'nilaisdm_keterangan' => 'Keterangan Penilaian SDM',
+            'nilai_berkas' => 'Berkas Unggah Penilaian',
+            'nilaisdm_id_pengunggah' => 'ID Pengunggah',
+            'nilaisdm_id_pembuat' => 'ID Pembuat',
+            'nilaisdm_id_pengubah' => 'ID Pengubah',
+        ];
+    }
 
     public function dataDasar($database)
     {
@@ -192,19 +193,19 @@ class Penilaian
     //     return $database->query()->select('langgar_uuid', 'langgar_lap_no', 'langgar_no_absen', 'langgar_pelapor', 'langgar_tanggal', 'langgar_status', 'langgar_isi', 'langgar_keterangan')->from('pelanggaransdms');
     // }
 
-    // public function dasarValidasi()
-    // {
-    //     return [
-    //         'sanksi_jenis' => ['required', 'string', Rule::exists('aturs', 'atur_butir')->where(function ($query) {
-    //             return $query->where('atur_jenis', 'SANKSI SDM');
-    //         })],
-    //         'sanksi_mulai' => ['required', 'date'],
-    //         'sanksi_selesai' => ['required', 'date', 'after:sanksi_mulai'],
-    //         'sanksi_tambahan' => ['nullable', 'string'],
-    //         'sanksi_keterangan' => ['nullable', 'string'],
-    //         'sanksi_berkas' => ['sometimes', 'file', 'mimetypes:application/pdf'],
-    //     ];
-    // }
+    public function dasarValidasi()
+    {
+        return [
+            'nilaisdm_tahun' => ['required', 'date_format:Y'],
+            'nilaisdm_periode' => ['required', 'string'],
+            'nilaisdm_bobot_hadir' => ['sometimes', 'nullable', 'numeric'],
+            'nilaisdm_bobot_sikap' => ['sometimes', 'nullable', 'numeric'],
+            'nilaisdm_bobot_target' => ['sometimes', 'nullable', 'numeric'],
+            'nilaisdm_tindak_lanjut' => ['sometimes', 'nullable', 'string'],
+            'nilaisdm_keterangan' => ['sometimes', 'nullable', 'string'],
+            'nilai_berkas' => ['sometimes', 'file', 'mimetypes:application/pdf'],
+        ];
+    }
 
     public function lihat($uuid = null)
     {
@@ -344,85 +345,74 @@ class Penilaian
     //     return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
     // }
 
-    // public function ubah(FungsiStatis $fungsiStatis, $uuid = null)
-    // {
-    //     $app = app();
-    //     $reqs = $app->request;
-    //     $pengguna = $reqs->user();
-    //     $str = str();
+    public function ubah(FungsiStatis $fungsiStatis, $uuid = null)
+    {
+        $app = app();
+        $reqs = $app->request;
+        $pengguna = $reqs->user();
+        $str = str();
 
-    //     abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-    //     $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
-    //     $database = $app->db;
+        $database = $app->db;
 
-    //     $kontrak = $this->dataKontrak($database);
+        $kontrak = $this->dataKontrak($database);
 
-    //     $sanksiLama = $this->dataDasar($database)->addSelect('langgar_status')
-    //         ->leftJoin('pelanggaransdms', 'sanksi_lap_no', '=', 'langgar_lap_no')
-    //         ->leftJoinSub($kontrak, 'kontrak_t', function ($join) {
-    //             $join->on('sanksi_no_absen', '=', 'kontrak_t.penempatan_no_absen');
-    //         })
-    //         ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-    //             $query->where(function ($group) use ($lingkupIjin) {
-    //                 $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin);
-    //             });
-    //         })
-    //         ->where('sanksi_uuid', $uuid)->first();
+        $nilai = $this->dataDasar($database)
+            ->leftJoinSub($kontrak, 'kontrak', function ($join) {
+                $join->on('nilaisdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            })
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('kontrak.penempatan_lokasi', $lingkupIjin);
+                });
+            })
+            ->where('nilaisdm_uuid', $uuid)->first();
 
-    //     abort_unless($sanksiLama, 404, 'Data Laporan Pelanggaran tidak ditemukan.');
+        abort_unless($nilai, 404, 'Data Penilaian tidak ditemukan.');
 
-    //     if ($reqs->isMethod('post')) {
+        if ($reqs->isMethod('post')) {
 
-    //         $reqs->merge(['sanksi_id_pengubah' => $pengguna->sdm_no_absen]);
+            $reqs->merge(['nilaisdm_id_pengubah' => $pengguna->sdm_no_absen]);
 
-    //         $validasi = $app->validator->make(
-    //             $reqs->all(),
-    //             [
-    //                 'sanksi_id_pengubah' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-    //                 ...$this->dasarValidasi()
-    //             ],
-    //             [],
-    //             $this->atributInput()
-    //         );
+            $validasi = $app->validator->make(
+                $reqs->all(),
+                [
+                    'nilaisdm_id_pengubah' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                    ...$this->dasarValidasi()
+                ],
+                [],
+                $this->atributInput()
+            );
 
-    //         $validasi->validate();
+            $validasi->validate();
 
-    //         $redirect = $app->redirect;
-    //         $perujuk = $reqs->session()->get('tautan_perujuk');
-    //         $kesalahan = 'Laporan pelanggaran yang dibatalkan tidak dapat dikenai sanksi.';
+            $redirect = $app->redirect;
+            $perujuk = $reqs->session()->get('tautan_perujuk');
 
-    //         if ($sanksiLama->langgar_status == 'DIBATALKAN') {
-    //             return $perujuk ? $redirect->to($perujuk)->withErrors($kesalahan) : $redirect->route('sdm.pelanggaran.data')->withErrors($kesalahan);
-    //         }
+            $data = $validasi->safe()->except('nilai_berkas');
 
-    //         $data = $validasi->safe()->except('sanksi_berkas');
+            $database->table('penilaiansdms')->where('nilaisdm_uuid', $uuid)->update($data);
 
-    //         $database->table('sanksisdms')->where('sanksi_uuid', $uuid)->update($data);
+            $berkas = $validasi->safe()->only('nilai_berkas')['nilai_berkas'] ?? false;
 
-    //         $berkas = $validasi->safe()->only('sanksi_berkas')['sanksi_berkas'] ?? false;
+            if ($berkas) {
+                $berkas->storeAs('sdm/penilaian/berkas', $nilai->nilaisdm_no_absen . ' - '  . $validasi->safe()->only('nilaisdm_tahun')['nilaisdm_tahun'] . ' - ' . $validasi->safe()->only('nilaisdm_periode')['nilaisdm_periode'] . '.pdf');
+            }
 
-    //         if ($berkas) {
-    //             $berkas->storeAs('sdm/sanksi/berkas', $validasi->safe()->only('sanksi_no_absen')['sanksi_no_absen'] . ' - '  . $validasi->safe()->only('sanksi_jenis')['sanksi_jenis'] . ' - ' . $validasi->safe()->only('sanksi_mulai')['sanksi_mulai'] . '.pdf');
-    //         }
+            $pesan = $fungsiStatis->statusBerhasil();
 
-    //         $fungsiStatis->hapusCachePelanggaranSDM();
-    //         $fungsiStatis->hapusCacheSanksiSDM();
-    //         $pesan = $fungsiStatis->statusBerhasil();
+            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.penilaian.data')->with('pesan', $pesan);
+        }
 
-    //         return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);
-    //     }
+        $data = [
+            'nilai' => $nilai,
+        ];
 
-    //     $aturs = $fungsiStatis->ambilCacheAtur();
-
-    //     $data = [
-    //         'sanksiLama' => $sanksiLama,
-    //         'sanksis' => $aturs->where('atur_jenis', 'SANKSI SDM')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'desc']),
-    //     ];
-
-    //     $HtmlPenuh = $app->view->make('sdm.sanksi.tambah-ubah', $data);
-    //     $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-    //     return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
-    // }
+        $HtmlPenuh = $app->view->make('sdm.penilaian.tambah-ubah', $data);
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+    }
 }
