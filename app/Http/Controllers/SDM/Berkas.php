@@ -1945,7 +1945,7 @@ class Berkas
 
             $storage->delete($fileexcel);
 
-            echo '<p>Selesai menyimpan data excel. Mohon <a class="isi-xhr" href="' . $app->url->route('sdm.sanksi.data') . '">periksa ulang data</a>.</p>';
+            echo '<p>Selesai menyimpan data excel. Mohon <a class="isi-xhr" href="' . $app->url->route('sdm.penilaian.data') . '">periksa ulang data</a>.</p>';
 
             exit();
         };
