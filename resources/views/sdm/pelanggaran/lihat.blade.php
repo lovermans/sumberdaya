@@ -185,6 +185,10 @@
         @endunless
         @endif
 
+        @else
+        <div class="isian gspan-4">
+            <p>Periksa kembali data yang diminta.</p>
+        </div>
 
         @endisset
     </div>
