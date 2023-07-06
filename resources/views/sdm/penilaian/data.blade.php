@@ -11,7 +11,7 @@
             <input type="hidden" name="fragment" value="nilai-sdm_tabels">
 
             <details class="gspan-4" {{ $rekRangka->anyFilled(['nilaisdm_tahun', 'nilaisdm_periode',
-                'nilaisdm_kontrak']) ?
+                'nilaisdm_penempatan', 'nilaisdm_kontrak']) ?
                 'open' : '' }}>
 
                 <summary class="cari">
@@ -88,8 +88,8 @@
     <div id="nilai-sdm_tabels" class="kartu scroll-margin">
         @fragment('nilai-sdm_tabels')
         @unless ($halamanAkun ?? null)
-        <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['nilaisdm_tahun', 'nilaisdm_periode', 'nilaisdm_kontrak']) ?
-                    'sesuai data penyaringan' : 'global'
+        <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['nilaisdm_tahun', 'nilaisdm_periode',
+                    'nilaisdm_penempatan', 'nilaisdm_kontrak']) ? 'sesuai data penyaringan' : 'global'
                     }}) : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
                     {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
         @endunless
@@ -164,7 +164,7 @@
                 <div class="kartu form" id="sdm_nilai_cariUrut">
                     <div class="isian" data-indeks="{{ $urutTahun ? $indexTahun : 'X' }}">
                         <label for="sdm_nilai_tambah_cariUrutTahun">{{ $urutTahun ?
-                            $indexTahun . '. ' : '' }}Urut Tahun Penilaian</label>
+                            $indexTahun . '. ' : '' }}Urut Tahun</label>
                         <select id="sdm_nilai_tambah_cariUrutTahun" name="urut[]" class="pil-dasar"
                             form="form_sdm_nilai_cari" onchange="getElementById('tombol_cari_nilai').click()">
                             <option selected disabled></option>
@@ -179,7 +179,7 @@
                     <div class="isian" data-indeks="{{ $urutPeriode ? $indexPeriode : 'X' }}">
                         <label for="sdm_nilai_tambah_cariUrutPeriode">{{ $urutPeriode ?
                             $indexPeriode.'. '
-                            : '' }}Urut Periode Penilaian</label>
+                            : '' }}Urut Periode</label>
                         <select id="sdm_nilai_tambah_cariUrutPeriode" name="urut[]" class="pil-dasar"
                             form="form_sdm_nilai_cari" onchange="getElementById('tombol_cari_nilai').click()">
                             <option selected disabled></option>
@@ -187,6 +187,21 @@
                                 value="nilaisdm_periode ASC">A - Z</option>
                             <option @selected(in_array('nilaisdm_periode DESC', (array) $rekRangka->urut))
                                 value="nilaisdm_periode DESC">Z - A</option>
+                        </select>
+                        <span class="t-bantu">Pilih satu</span>
+                    </div>
+
+                    <div class="isian" data-indeks="{{ $urutNilai ? $indexNilai : 'X' }}">
+                        <label for="sdm_nilai_tambah_cariUrutNilai">{{ $urutNilai ?
+                            $indexNilai.'. '
+                            : '' }}Urut Nilai</label>
+                        <select id="sdm_nilai_tambah_cariUrutNilai" name="urut[]" class="pil-dasar"
+                            form="form_sdm_nilai_cari" onchange="getElementById('tombol_cari_nilai').click()">
+                            <option selected disabled></option>
+                            <option @selected(in_array('nilaisdm_total ASC', (array) $rekRangka->urut))
+                                value="nilaisdm_total ASC">0 - 9</option>
+                            <option @selected(in_array('nilaisdm_total DESC', (array) $rekRangka->urut))
+                                value="nilaisdm_total DESC">9 - 0</option>
                         </select>
                         <span class="t-bantu">Pilih satu</span>
                     </div>

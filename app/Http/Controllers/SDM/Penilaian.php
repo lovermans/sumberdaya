@@ -133,6 +133,8 @@ class Penilaian
         $indexTahun = (head(array_keys($kunciUrut, 'nilaisdm_tahun ASC')) + head(array_keys($kunciUrut, 'nilaisdm_tahun DESC')) + 1);
         $urutPeriode = $str->contains($uruts, 'nilaisdm_periode');
         $indexPeriode = (head(array_keys($kunciUrut, 'nilaisdm_periode ASC')) + head(array_keys($kunciUrut, 'nilaisdm_periode DESC')) + 1);
+        $urutNilai = $str->contains($uruts, 'nilaisdm_total');
+        $indexNilai = (head(array_keys($kunciUrut, 'nilaisdm_total ASC')) + head(array_keys($kunciUrut, 'nilaisdm_total DESC')) + 1);
 
         $data = [
             'tabels' => $tabels,
@@ -142,6 +144,8 @@ class Penilaian
             'indexTahun' => $indexTahun,
             'urutPeriode' => $urutPeriode,
             'indexPeriode' => $indexPeriode,
+            'urutNilai' => $urutNilai,
+            'indexNilai' => $indexNilai,
             'halamanAkun' => $uuid ?? '',
             'jumlahOS' => $jumlahOS,
             'jumlahOrganik' => $jumlahOrganik
