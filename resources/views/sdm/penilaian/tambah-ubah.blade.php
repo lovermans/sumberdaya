@@ -16,10 +16,31 @@
             <h4 class="form">{{$rekRangka->routeIs('sdm.penilaian.tambah') ? 'Tambah' : 'Ubah'}} Penilaian SDM</h4>
         </div>
 
+        @if ($rekRangka->routeIs('sdm.penilaian.tambah'))
+        <div class="isian panjang">
+            <label for="nilaisdm_no_absen">Identitas SDM</label>
+
+            <select id="nilaisdm_no_absen" name="nilaisdm_no_absen" class="pil-cari" required>
+                <option selected disabled></option>
+
+                @foreach ($sdms as $sdm)
+                <option @selected($sdm->sdm_no_absen==$rekRangka->old('nilaisdm_no_absen',
+                    $nilai->nilaisdm_no_absen ?? null)) value={{ $sdm->sdm_no_absen }}>{{ $sdm->sdm_no_absen . ' - ' .
+                    $sdm->sdm_nama . ' - ' . $sdm->penempatan_lokasi . ' - ' . $sdm->penempatan_kontrak . ' - ' .
+                    $sdm->penempatan_posisi }}</option>
+                @endforeach
+            </select>
+
+            <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
+        </div>
+        @endif
+
         <div class="isian normal">
             <label for="nilaisdm_tahun">Tahun Penilaian</label>
 
             <select id="nilaisdm_tahun" name="nilaisdm_tahun" class="pil-cari" required>
+                <option selected disabled></option>
+
                 @foreach (range(2020,date("Y")) as $tahun)
                 <option @selected($tahun==$rekRangka->old('nilaisdm_tahun',
                     $nilai->nilaisdm_tahun ?? null))>{{ $tahun }}</option>
@@ -33,6 +54,8 @@
             <label for="nilaisdm_periode">Periode Penilaian</label>
 
             <select id="nilaisdm_periode" name="nilaisdm_periode" class="pil-cari" required>
+                <option selected disabled></option>
+
                 <option @selected($rekRangka->old('nilaisdm_periode',
                     $nilai->nilaisdm_periode ?? null) == 'SEMESTER-I')>SEMESTER-I</option>
                 <option @selected($rekRangka->old('nilaisdm_periode',
@@ -46,8 +69,8 @@
             <label for="nilaisdm_bobot_hadir">Nilai Bobot Kehadiran</label>
 
             <input id="nilaisdm_bobot_hadir" type="number" name="nilaisdm_bobot_hadir"
-                value="{{ $rekRangka->old('nilaisdm_bobot_hadir', $nilai->nilaisdm_bobot_hadir ?? null) }}" step="0.001"
-                max="30">
+                value="{{ $rekRangka->old('nilaisdm_bobot_hadir', $nilai->nilaisdm_bobot_hadir ?? null) }}"
+                step="0.0001" max="30">
 
             <span class="t-bantu">Nilai Maksimal = 30</span>
         </div>
@@ -56,8 +79,8 @@
             <label for="nilaisdm_bobot_sikap">Nilai Bobot Sikap Kerja</label>
 
             <input id="nilaisdm_bobot_sikap" type="number" name="nilaisdm_bobot_sikap"
-                value="{{ $rekRangka->old('nilaisdm_bobot_sikap', $nilai->nilaisdm_bobot_sikap ?? null) }}" step="0.001"
-                max="30">
+                value="{{ $rekRangka->old('nilaisdm_bobot_sikap', $nilai->nilaisdm_bobot_sikap ?? null) }}"
+                step="0.0001" max="30">
 
             <span class="t-bantu">Nilai Maksimal = 30</span>
         </div>
@@ -67,7 +90,7 @@
 
             <input id="nilaisdm_bobot_target" type="number" name="nilaisdm_bobot_target"
                 value="{{ $rekRangka->old('nilaisdm_bobot_target', $nilai->nilaisdm_bobot_target ?? null) }}"
-                step="0.001" max="40">
+                step="0.0001" max="40">
 
             <span class="t-bantu">Nilai Maksimal = 40</span>
         </div>

@@ -226,7 +226,7 @@
                                 <div class="aksi">
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#nilai-sdm_sematan"
                                         href="{{ $urlRangka->route('sdm.penilaian.lihat', ['uuid' => $tabel->nilaisdm_uuid], false) }}"
-                                        title="Lihat/Ubah Penilaian">Lihat/Ubah Penilaian</a>
+                                        title="Lihat/Ubah">Lihat/Ubah</a>
                                 </div>
                             </div>
                         </th>

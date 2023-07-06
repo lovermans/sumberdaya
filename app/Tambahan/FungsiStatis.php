@@ -49,12 +49,12 @@ class FungsiStatis
         $app = app();
         $database = $app->db;
 
-        $kontrak = $database->query()->select('penempatan_no_absen', 'penempatan_lokasi', 'penempatan_posisi')->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
+        $kontrak = $database->query()->select('penempatan_no_absen', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kontrak')->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
             $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
         });
 
         return $app->cache->rememberForever('NamaNIKSDM', function () use ($kontrak, $database) {
-            return $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_tgl_berhenti', 'sdm_nama', 'penempatan_lokasi', 'penempatan_posisi', 'sdm_id_atasan')->from('sdms')
+            return $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_tgl_berhenti', 'sdm_nama', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kontrak', 'sdm_id_atasan')->from('sdms')
                 ->joinSub($kontrak, 'kontrak', function ($join) {
                     $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
                 })

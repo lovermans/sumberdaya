@@ -64,7 +64,7 @@ class Penilaian
         $kontrak = $this->dataKontrak($database);
 
         $cari = $this->dataDasar($database)
-            ->addSelect('sdm_uuid', 'sdm_nama', 'sdm_tgl_berhenti', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', $database->raw('(nilaisdm_bobot_hadir + nilaisdm_bobot_sikap + nilaisdm_bobot_target) as nilaisdm_total'))
+            ->addSelect('sdm_uuid', 'sdm_nama', 'sdm_tgl_berhenti', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', $database->raw('(IFNULL(nilaisdm_bobot_hadir, 0) + IFNULL(nilaisdm_bobot_sikap, 0) + IFNULL(nilaisdm_bobot_target, 0)) as nilaisdm_total'))
             ->leftJoin('sdms', 'nilaisdm_no_absen', '=', 'sdm_no_absen')
             ->leftJoinSub($kontrak, 'kontrak', function ($join) {
                 $join->on('nilaisdm_no_absen', '=', 'kontrak.penempatan_no_absen');
@@ -188,11 +188,6 @@ class Penilaian
             });
     }
 
-    // public function dataPelanggaran($database)
-    // {
-    //     return $database->query()->select('langgar_uuid', 'langgar_lap_no', 'langgar_no_absen', 'langgar_pelapor', 'langgar_tanggal', 'langgar_status', 'langgar_isi', 'langgar_keterangan')->from('pelanggaransdms');
-    // }
-
     public function dasarValidasi()
     {
         return [
@@ -223,7 +218,7 @@ class Penilaian
         $kontrak = $this->dataKontrak($database);
 
         $nilai = $this->dataDasar($database)
-            ->addSelect('sdm_uuid', 'sdm_nama', 'sdm_tgl_berhenti', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', $database->raw('(nilaisdm_bobot_hadir + nilaisdm_bobot_sikap + nilaisdm_bobot_target) as nilaisdm_total'))
+            ->addSelect('sdm_uuid', 'sdm_nama', 'sdm_tgl_berhenti', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', $database->raw('(IFNULL(nilaisdm_bobot_hadir, 0) + IFNULL(nilaisdm_bobot_sikap, 0) + IFNULL(nilaisdm_bobot_target, 0)) as nilaisdm_total'))
             ->leftJoin('sdms', 'nilaisdm_no_absen', '=', 'sdm_no_absen')
             ->leftJoinSub($kontrak, 'kontrak', function ($join) {
                 $join->on('nilaisdm_no_absen', '=', 'kontrak.penempatan_no_absen');
@@ -246,104 +241,64 @@ class Penilaian
         return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
     }
 
-    // public function tambah(FungsiStatis $fungsiStatis, $lap_uuid = null)
-    // {
-    //     $app = app();
-    //     $reqs = $app->request;
-    //     $pengguna = $reqs->user();
-    //     $str = str();
+    public function tambah(FungsiStatis $fungsiStatis)
+    {
+        $app = app();
+        $reqs = $app->request;
+        $pengguna = $reqs->user();
+        $str = str();
 
-    //     abort_unless($pengguna && $lap_uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-    //     $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
-    //     $database = $app->db;
+        if ($reqs->isMethod('post')) {
 
-    //     $kontrak = $this->dataKontrak($database);
+            $reqs->merge(['nilaisdm_id_pembuat' => $pengguna->sdm_no_absen]);
 
-    //     $sanksi = $database->query()->select('sanksi_no_absen', 'sanksi_jenis', 'sanksi_lap_no', 'sanksi_selesai', 'sanksi_mulai')
-    //         ->from('sanksisdms as p1')->where('sanksi_mulai', '=', function ($query) use ($database) {
-    //             $query->select($database->raw('MAX(sanksi_mulai)'))->from('sanksisdms as p2')->whereColumn('p1.sanksi_no_absen', 'p2.sanksi_no_absen');
-    //         });
+            $validasi = $app->validator->make(
+                $reqs->all(),
+                [
+                    'nilaisdm_id_pembuat' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                    'nilaisdm_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                    ...$this->dasarValidasi()
+                ],
+                [],
+                $this->atributInput()
+            );
 
-    //     $laporan = $this->dataPelanggaran($database)
-    //         ->join('sdms as a', 'langgar_no_absen', '=', 'a.sdm_no_absen')
-    //         ->join('sdms as b', 'langgar_pelapor', '=', 'b.sdm_no_absen')
-    //         ->leftJoinSub($kontrak, 'kontrak_t', function ($join) {
-    //             $join->on('langgar_no_absen', '=', 'kontrak_t.penempatan_no_absen');
-    //         })
-    //         ->leftJoinSub($kontrak, 'kontrak_p', function ($join) {
-    //             $join->on('langgar_pelapor', '=', 'kontrak_p.penempatan_no_absen');
-    //         })
-    //         ->leftJoinSub($sanksi, 'sanksilama', function ($join) {
-    //             $join->on('langgar_no_absen', '=', 'sanksilama.sanksi_no_absen')->on('sanksilama.sanksi_selesai', '>=', 'langgar_tanggal')->on('langgar_lap_no', '!=', 'sanksilama.sanksi_lap_no');
-    //         })
-    //         ->leftJoin('sanksisdms', function ($join) {
-    //             $join->on('langgar_no_absen', '=', 'sanksisdms.sanksi_no_absen')->on('langgar_lap_no', '=', 'sanksisdms.sanksi_lap_no');
-    //         })
-    //         ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-    //             $query->where(function ($group) use ($lingkupIjin) {
-    //                 $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin)
-    //                     ->orWhereIn('kontrak_p.penempatan_lokasi', $lingkupIjin);
-    //             });
-    //         })
-    //         ->where('langgar_uuid', $lap_uuid)->first();
+            $validasi->validate();
 
-    //     abort_unless($laporan, 404, 'Data Laporan Pelanggaran tidak ditemukan.');
+            $redirect = $app->redirect;
+            $perujuk = $reqs->session()->get('tautan_perujuk');
 
-    //     if ($reqs->isMethod('post')) {
+            $data = $validasi->safe()->except('nilai_berkas');
 
-    //         $reqs->merge(['sanksi_id_pembuat' => $pengguna->sdm_no_absen, 'sanksi_lap_no' => $laporan->langgar_lap_no, 'sanksi_no_absen' => $laporan->langgar_no_absen]);
+            $app->db->table('penilaiansdms')->insert($data);
 
-    //         $validasi = $app->validator->make(
-    //             $reqs->all(),
-    //             [
-    //                 'sanksi_lap_no' => ['required', 'string', 'max:20', 'unique:sanksisdms,sanksi_lap_no'],
-    //                 'sanksi_id_pembuat' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-    //                 'sanksi_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-    //                 ...$this->dasarValidasi()
-    //             ],
-    //             [],
-    //             $this->atributInput()
-    //         );
+            $berkas = $validasi->safe()->only('nilai_berkas')['nilai_berkas'] ?? false;
 
-    //         $validasi->validate();
+            if ($berkas) {
+                $berkas->storeAs('sdm/penilaian/berkas', $validasi->safe()->only('nilaisdm_no_absen')['nilaisdm_no_absen'] . ' - '  . $validasi->safe()->only('nilaisdm_tahun')['nilaisdm_tahun'] . ' - ' . $validasi->safe()->only('nilaisdm_periode')['nilaisdm_periode'] . '.pdf');
+            }
 
-    //         $redirect = $app->redirect;
-    //         $perujuk = $reqs->session()->get('tautan_perujuk');
-    //         $kesalahan = 'Laporan pelanggaran yang dibatalkan tidak dapat dikenai sanksi.';
+            $pesan = $fungsiStatis->statusBerhasil();
 
-    //         if ($laporan->langgar_status == 'DIBATALKAN') {
-    //             return $perujuk ? $redirect->to($perujuk)->withErrors($kesalahan) : $redirect->route('sdm.pelanggaran.data')->withErrors($kesalahan);
-    //         }
+            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.penilaian.data')->with('pesan', $pesan);
+        }
 
-    //         $data = $validasi->safe()->except('sanksi_berkas');
+        $sdms = $fungsiStatis->ambilCacheSDM()->when($lingkupIjin, function ($c) use ($lingkupIjin) {
+            return $c->whereIn('penempatan_lokasi', [null, ...$lingkupIjin]);
+        });
 
-    //         $database->table('sanksisdms')->insert($data);
+        $data = [
+            'sdms' => $sdms,
+        ];
 
-    //         $berkas = $validasi->safe()->only('sanksi_berkas')['sanksi_berkas'] ?? false;
-
-    //         if ($berkas) {
-    //             $berkas->storeAs('sdm/sanksi/berkas', $validasi->safe()->only('sanksi_no_absen')['sanksi_no_absen'] . ' - '  . $validasi->safe()->only('sanksi_jenis')['sanksi_jenis'] . ' - ' . $validasi->safe()->only('sanksi_mulai')['sanksi_mulai'] . '.pdf');
-    //         }
-
-    //         $fungsiStatis->hapusCachePelanggaranSDM();
-    //         $fungsiStatis->hapusCacheSanksiSDM();
-    //         $pesan = $fungsiStatis->statusBerhasil();
-
-    //         return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);
-    //     }
-
-    //     $aturs = $fungsiStatis->ambilCacheAtur();
-
-    //     $data = [
-    //         'sanksis' => $aturs->where('atur_jenis', 'SANKSI SDM')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'desc']),
-    //     ];
-
-    //     $HtmlPenuh = $app->view->make('sdm.sanksi.tambah-ubah', $data);
-    //     $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-    //     return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
-    // }
+        $HtmlPenuh = $app->view->make('sdm.penilaian.tambah-ubah', $data);
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+    }
 
     public function ubah(FungsiStatis $fungsiStatis, $uuid = null)
     {
