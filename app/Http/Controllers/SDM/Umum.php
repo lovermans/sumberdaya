@@ -45,7 +45,7 @@ class Umum
             $fragmen == 'navigasi' => $this->halamanNavigasi($halaman, $tanggapan),
             $fragmen == 'sdmIngatUltah' => $this->halamanUltah($cache, $date, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan, $pengguna, $str),
             $pengurus && $fragmen == 'sdmIngatPtsb' => $this->halamanPermintaanTambahSDM($linkupIjin, $lingkup, $halaman, $tanggapan),
-            $pengurus && $fragmen == 'sdmIngatPkpd' => $this->halamanPKWTHabis($cache, $kemarin, $hariIni, $kontrak, $database, $bulanDepan, $linkupIjin, $lingkup, $halaman, $tanggapan),
+            $pengurus && $fragmen == 'sdmIngatPkpd' => $this->halamanPKWTHabis($cache, $kemarin, $hariIni, $kontrak, $database, $bulanDepan, $linkupIjin, $lingkup, $halaman, $tanggapan, $date),
             $pengurus && $fragmen == 'sdmIngatPstatus' => $this->halamanPerubahanStatusSDMTerbaru($cache, $kemarin, $hariIni, $database, $bulanLalu, $linkupIjin, $lingkup, $halaman, $tanggapan),
             $pengurus && $fragmen == 'sdmIngatBaru' => $this->halamanSDMGabungTerbaru($cache, $kemarin, $hariIni, $kontrak, $database, $bulanLalu, $linkupIjin, $lingkup, $halaman, $tanggapan),
             $pengurus && $fragmen == 'sdmIngatKeluar' => $this->halamanSDMKeluarTerbaru($cache, $kemarin, $hariIni, $kontrak, $database, $bulanLalu, $linkupIjin, $lingkup, $halaman, $tanggapan),
@@ -136,7 +136,7 @@ class Umum
         return $tanggapan->make($sdmIngatPtsb)->withHeaders(['Vary' => 'Accept']);
     }
 
-    public function halamanPKWTHabis($cache, $kemarin, $hariIni, $kontrak, $database, $bulanDepan, $linkupIjin, $lingkup, $halaman, $tanggapan)
+    public function halamanPKWTHabis($cache, $kemarin, $hariIni, $kontrak, $database, $bulanDepan, $linkupIjin, $lingkup, $halaman, $tanggapan, $date)
     {
         $cache->forget('PengingatKontrak - ' . $kemarin);
 
@@ -157,7 +157,21 @@ class Umum
             return $c->whereIn('penempatan_lokasi', [...$lingkup]);
         });
 
-        $sdmIngatPkpd = $halaman->make('sdm.pengingat.pkwt-perlu-ditinjau', ['kontraks' => $kontraks ?? null]);
+        $jmlAkanHabis = $kontraks->filter(function ($v, $k) use ($date) {
+            return $date->make($v->penempatan_selesai)->diffInDays($date->today(), false) <= 0;
+        })->count();
+
+        $jmlKadaluarsa = $kontraks->filter(function ($v, $k) use ($date) {
+            return $date->make($v->penempatan_selesai)->diffInDays($date->today(), false) >= 0;
+        })->count();
+
+        $data = [
+            'kontraks' => $kontraks ?? null,
+            'jmlAkanHabis' => $jmlAkanHabis,
+            'jmlKadaluarsa' => $jmlKadaluarsa,
+        ];
+
+        $sdmIngatPkpd = $halaman->make('sdm.pengingat.pkwt-perlu-ditinjau', $data);
 
         return $tanggapan->make($sdmIngatPkpd)->withHeaders(['Vary' => 'Accept']);
     }
@@ -225,10 +239,13 @@ class Umum
             return false === stristr($item->penempatan_kontrak, 'OS-');
         })->count();
 
+        $belumDitempatkan = $barus->whereNull('penempatan_kontrak')->count();
+
         $data = [
             'barus' => $barus ?? null,
             'jumlahOS' => $jumlahOS,
-            'jumlahOrganik' => $jumlahOrganik
+            'jumlahOrganik' => $jumlahOrganik,
+            'belumDitempatkan' => $belumDitempatkan
         ];
 
         $sdmIngatBaru = $halaman->make('sdm.pengingat.sdm-baru', $data);

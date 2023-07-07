@@ -92,7 +92,9 @@
             </table>
         </div>
 
+        @if ($statuses->count() > 0)
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
+        @endif
     </div>
 </details>
 

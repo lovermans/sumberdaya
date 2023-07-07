@@ -3,12 +3,13 @@
     <summary>SDM Baru Selama 40 Hari Terakhir : {{number_format($barus->count(), 0, ',','.')}} Personil</summary>
 
     <b><i><small>Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
-                {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
+                {{number_format($jumlahOS, 0, ',', '.')}} Personil | Belum Ditempatkan =
+                {{number_format($belumDitempatkan, 0, ',', '.')}} Personil.</small></i></b>
 
     <div id="tabel_sdm_baru_sematan" class="scroll-margin"></div>
 
     <div id="tabel_sdm_baru" class="kartu">
-        <span class="biru">Biru</span> : Outsource.
+        <span class="biru">Biru</span> : Outsource. <span class="oranye">Oranye</span> : Belum Ditempatkan.
         <div class="data ringkas">
             <table class="tabel">
                 <thead>
@@ -22,7 +23,8 @@
                 </thead>
                 <tbody>
                     @forelse ($barus as $no => $baru)
-                    <tr @class([ 'biru'=> $strRangka->contains($baru->penempatan_kontrak, 'OS-') ])>
+                    <tr @class([ 'biru'=> $strRangka->contains($baru->penempatan_kontrak, 'OS-'), 'oranye' =>
+                        !$baru->penempatan_kontrak ])>
                         <th>
                             <div class="pil-aksi">
                                 <button id="{{'aksi_sdm_baru_baris_' . $loop->iteration}}" title="Pilih Tindakan">
@@ -106,7 +108,15 @@
             </table>
         </div>
 
+        @if ($barus->count() > 0)
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
+
+        @if ($belumDitempatkan > 0)
+        <a class="isi-xhr utama" href="{{ $urlRangka->route('sdm.penempatan.data-baru', [], false) }}">BELUM
+            DITEMPATKAN</a>
+        @endif
+
+        @endif
     </div>
 </details>
 

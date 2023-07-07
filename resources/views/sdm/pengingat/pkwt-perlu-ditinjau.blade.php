@@ -6,7 +6,8 @@
     <div id="tabel_kontrak_sematan" class="scroll-margin"></div>
 
     <div id="tabel_kontrak" class="kartu">
-        <span class="biru">Biru</span> : Akan Habis. <span class="oranye">Oranye</span> : Kadaluarsa.
+        <span class="biru">Biru</span> : Akan Habis = {{number_format($jmlAkanHabis, 0, ',','.')}} Personil. <span
+            class="oranye">Oranye</span> : Kadaluarsa = {{number_format($jmlKadaluarsa, 0, ',','.')}} Personil.
 
         <div class="data ringkas">
             <table class="tabel">
@@ -54,15 +55,18 @@
                                 <td>
                                     <a class="isi-xhr taut-akun"
                                         href="{{ $urlRangka->route('sdm.akun', ['uuid' => $kontrak->sdm_uuid], false) }}">
-                                        <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
+                                        <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/'
+                                        .
                                         $kontrak->sdm_no_absen . '.webp')]) src="{{
                                         $storageRangka->exists('sdm/foto-profil/' .
-                                        $kontrak->sdm_no_absen . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil',
+                                        $kontrak->sdm_no_absen . '.webp') ?
+                                        $urlRangka->route('sdm.tautan-foto-profil',
                                         ['berkas_foto_profil' => $kontrak->sdm_no_absen . '.webp' . '?' .
                                         filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
                                         $kontrak->sdm_no_absen . '.webp')), false])
                                         : $mixRangka('/ikon.svg') . '#akun' }}" alt="{{
-                                        $kontrak->sdm_nama ?? 'foto akun' }}" title="{{ $kontrak->sdm_nama ?? 'foto
+                                        $kontrak->sdm_nama ?? 'foto akun' }}" title="{{ $kontrak->sdm_nama ??
+                                        'foto
                                         akun'
                                         }}" loading="lazy">
                                     </a>
@@ -73,10 +77,13 @@
                                 </td>
 
                                 <td>
-                                    {{ strtoupper($dateRangka->make($kontrak->penempatan_mulai)?->translatedFormat('d F
+                                    {{
+                                    strtoupper($dateRangka->make($kontrak->penempatan_mulai)?->translatedFormat('d
+                                    F
                                     Y')) }}
                                     s.d
-                                    {{ strtoupper($dateRangka->make($kontrak->penempatan_selesai)?->translatedFormat('d
+                                    {{
+                                    strtoupper($dateRangka->make($kontrak->penempatan_selesai)?->translatedFormat('d
                                     F Y'))
                                     }} <br />
                                     {{ $kontrak->penempatan_kontrak }} Ke : {{ $kontrak->penempatan_ke }}
@@ -99,7 +106,19 @@
             </table>
         </div>
 
+        @if ($kontraks->count() > 0)
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
+
+        @if ($jmlAkanHabis > 0)
+        <a class="isi-xhr utama" href="{{ $urlRangka->route('sdm.penempatan.data-akanhabis', [], false) }}">AKAN
+            HABIS</a>&nbsp;
+        @endif
+
+        @if ($jmlKadaluarsa > 0)
+        <a class="isi-xhr utama"
+            href="{{ $urlRangka->route('sdm.penempatan.data-kadaluarsa', [], false) }}">KADALUARSA</a>
+        @endif
+        @endif
     </div>
 </details>
 

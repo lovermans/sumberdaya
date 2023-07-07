@@ -98,7 +98,12 @@
             </table>
         </div>
 
+        @if ($berhentis->count() > 0)
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
+
+        <a class="isi-xhr utama"
+            href="{{ $urlRangka->route('sdm.penempatan.data-nonaktif', [], false) }}">SELENGKAPNYA</a>
+        @endif
     </div>
 </details>
 
