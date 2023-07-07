@@ -51,6 +51,7 @@ class Umum
             $pengurus && $fragmen == 'sdmIngatKeluar' => $this->halamanSDMKeluarTerbaru($cache, $kemarin, $hariIni, $kontrak, $database, $bulanLalu, $linkupIjin, $lingkup, $halaman, $tanggapan),
             $pengurus && $fragmen == 'sdmIngatPelanggaran' => $this->halamanPelanggaran($cache, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan),
             $pengurus && $fragmen == 'sdmIngatSanksi' => $this->halamanSanksi($cache, $kemarin, $hariIni, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan),
+            $pengurus && $fragmen == 'sdmIngatNilai' => $this->halamanNilai($cache, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan, $date),
             default => $this->halamanAwal($reqs, $halaman, $tanggapan),
         };
 
@@ -372,6 +373,45 @@ class Umum
         ];
 
         $sdmIngatSanksi = $halaman->make('sdm.pengingat.sanksi', $data);
+
+        return $tanggapan->make($sdmIngatSanksi)->withHeaders(['Vary' => 'Accept']);
+    }
+
+    public function halamanNilai($cache, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan, $date)
+    {
+        $tahunIni = $date->today()->format('Y');
+        $tahunLalu = $date->today()->subYear()->format('Y');
+        $rentang = [
+            $tahunIni, $tahunLalu
+        ];
+
+        $cache->forget('PengingatNilai - ' . $tahunLalu);
+
+        $dataDasar = $database->query()->select('nilaisdm_uuid', 'nilaisdm_no_absen', 'nilaisdm_tahun', 'nilaisdm_periode', 'nilaisdm_bobot_hadir', 'nilaisdm_bobot_sikap', 'nilaisdm_bobot_target', 'nilaisdm_tindak_lanjut', 'nilaisdm_keterangan')->from('penilaiansdms');
+
+        $cache_nilais = $cache->rememberForever('PengingatNilai - ' . $tahunIni, function () use ($kontrak, $dataDasar, $rentang, $database) {
+            return $dataDasar->addSelect('penempatan_lokasi', 'penempatan_kontrak', $database->raw('(IFNULL(nilaisdm_bobot_hadir, 0) + IFNULL(nilaisdm_bobot_sikap, 0) + IFNULL(nilaisdm_bobot_target, 0)) as nilaisdm_total'))
+                ->leftJoinSub($kontrak, 'kontrak_t', function ($join) {
+                    $join->on('nilaisdm_no_absen', '=', 'kontrak_t.penempatan_no_absen');
+                })
+                ->whereIn('nilaisdm_tahun', $rentang)
+                ->get();
+        });
+
+        $nilais = $cache_nilais->when($linkupIjin, function ($c) use ($lingkup) {
+            return $c->whereIn('langgar_tlokasi', [null, ...$lingkup]);
+        });
+
+        $rataTahunLalu = $nilais->where('nilaisdm_tahun', $tahunLalu)->avg('nilaisdm_total');
+
+        $rataTahunIni = $nilais->where('nilaisdm_tahun', $tahunIni)->avg('nilaisdm_total');
+
+        $data = [
+            'rataTahunLalu' => $rataTahunLalu ?? 0,
+            'rataTahunIni' => $rataTahunIni ?? 0
+        ];
+
+        $sdmIngatSanksi = $halaman->make('sdm.pengingat.nilai', $data);
 
         return $tanggapan->make($sdmIngatSanksi)->withHeaders(['Vary' => 'Accept']);
     }

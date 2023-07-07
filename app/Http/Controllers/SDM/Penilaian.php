@@ -286,6 +286,8 @@ class Penilaian
                 $berkas->storeAs('sdm/penilaian/berkas', $validasi->safe()->only('nilaisdm_no_absen')['nilaisdm_no_absen'] . ' - '  . $validasi->safe()->only('nilaisdm_tahun')['nilaisdm_tahun'] . ' - ' . $validasi->safe()->only('nilaisdm_periode')['nilaisdm_periode'] . '.pdf');
             }
 
+            $fungsiStatis->hapusCacheNilaiSDM();
+
             $pesan = $fungsiStatis->statusBerhasil();
 
             return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.penilaian.data')->with('pesan', $pesan);
@@ -360,6 +362,8 @@ class Penilaian
             if ($berkas) {
                 $berkas->storeAs('sdm/penilaian/berkas', $nilai->nilaisdm_no_absen . ' - '  . $validasi->safe()->only('nilaisdm_tahun')['nilaisdm_tahun'] . ' - ' . $validasi->safe()->only('nilaisdm_periode')['nilaisdm_periode'] . '.pdf');
             }
+
+            $fungsiStatis->hapusCacheNilaiSDM();
 
             $pesan = $fungsiStatis->statusBerhasil();
 
