@@ -14,6 +14,12 @@
         </div>
 
         <div class="isian">
+            <h3>Identitas</h3>
+            <p>{{ $nilai->nilaisdm_no_absen }} - {{ $nilai->sdm_nama }} - {{ $nilai->penempatan_lokasi }} - {{
+                $nilai->penempatan_kontrak }} - {{ $nilai->penempatan_posisi }}</p>
+        </div>
+
+        <div class="isian">
             <h3>Tahun Penilaian</h3>
             <p>{{ $nilai->nilaisdm_tahun }}</p>
         </div>
