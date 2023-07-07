@@ -207,7 +207,7 @@ window.lemparXHR = function (data) {
 
         muat.classList.toggle('mati');
 
-        xhr.timeout = 10000;
+        xhr.timeout = 60000;
 
         xhr.onload = function () {
             // console.log(this.getAllResponseHeaders());
