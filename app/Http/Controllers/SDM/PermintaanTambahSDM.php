@@ -320,6 +320,7 @@ class PermintaanTambahSDM
             $reqs->merge(['tambahsdm_id_pengubah' => $pengguna->sdm_no_absen]);
 
             $aturan = [
+                'tambahsdm_no' => ['required', 'string', 'max:40', Rule::unique('tambahsdms')->where(fn ($query) => $query->whereNot('tambahsdm_uuid', $uuid))],
                 'tambahsdm_id_pengubah' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 ...$this->dasarValidasi()
             ];
