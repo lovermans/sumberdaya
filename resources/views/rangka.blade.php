@@ -176,9 +176,6 @@
         function ringkasTabel (el) {
             el.previousElementSibling.classList.toggle('ringkas');
         };
-        if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top) {
-            navigator.serviceWorker.register('/service-worker.js');
-        };
     </script>
 </body>
 
