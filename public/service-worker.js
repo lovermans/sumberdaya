@@ -1,4 +1,4 @@
-var CACHE_VERSION = 202307080007;
+var CACHE_VERSION = 202307091303;
 var CURRENT_CACHES = {
     prefetch: 'sumberdaya-cache-v' + CACHE_VERSION
 };
