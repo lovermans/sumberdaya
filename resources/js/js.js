@@ -100,6 +100,11 @@ document.addEventListener('submit', function (e) {
             tn = a.dataset.tn == 'true' ? true : false,
             nn = a.dataset.nn == 'true' ? true : false,
             data = new FormData(a);
+
+        if (!ke.startsWith(location.origin)) {
+            ke = location.origin + ke;
+        };
+
         if (metode == 'GET') {
             ke += '?' + new URLSearchParams(data).toString();
             var rekam = a.dataset.rekam,
@@ -116,7 +121,8 @@ document.addEventListener('submit', function (e) {
                 normalview: nn,
                 fragmen: frag
             });
-        }
+        };
+
         if (metode == 'POST') {
             var rekam = a.dataset.rekam,
                 simpan = rekam == 'true' ? true : false;
@@ -133,7 +139,8 @@ document.addEventListener('submit', function (e) {
                 normalview: nn,
                 fragmen: frag
             });
-        }
+        };
+
         return alert('Periksa kembali formulir.');
     }
 });
@@ -152,18 +159,20 @@ window.lemparXHR = function (data) {
         mintajs = data.mintajs ?? false,
         topview = data.topview ?? false,
         normalview = data.normalview ?? false,
-        fragmen = data.fragmen ?? false;
+        fragmen = data.fragmen ?? false,
+        tanam = data.tanam ?? 'ganti',
+        callback = data.callback ?? responUmum;
     var isi = document.querySelector(sisi) ?? document.querySelector('#isi') ?? document.querySelector('body');
     if (!tautan.startsWith(location.origin)) {
         tautan = location.origin + tautan;
-    }
+    };
     if (mintajs) {
         isi = document.querySelector('#sematan_javascript');
         pesan = '';
     };
     if (rekam) {
         rekamTautan({ tujuan: sisi, tautan: tautan, method: metode, pesan: pesan, enkod: enkod, topview: topview, normalview: normalview });
-    }
+    };
     // g ? isi.prepend(range.createContextualFragment('')) : isi.prepend(range.createContextualFragment(pesan));
     topview ? scrollTo(0, 0) :
         normalview ? scrollBy(0, 0) :
@@ -191,12 +200,12 @@ window.lemparXHR = function (data) {
             responser = e.currentTarget.responseText;
             responseLength = responser.length;
             progressResponse = lastResponseLength ? responser.substring(lastResponseLength) : responser;
+            lastResponseLength = responseLength;
             isiRespon = range.createContextualFragment(progressResponse);
 
             // isiPemberitahuan('pemberitahuan', '');
             // console.log(progressResponse);
             isiPesan.prepend(isiRespon);
-            lastResponseLength = responseLength;
             // return true;
         };
 
@@ -205,56 +214,49 @@ window.lemparXHR = function (data) {
         };
     } else {
 
-        muat.classList.toggle('mati');
+        muat.classList.remove('mati');
 
         xhr.timeout = 60000;
 
         xhr.onload = function () {
-            // console.log(this.getAllResponseHeaders());
-            // console.log(this.getResponseHeader('X-Kode-Javascript'));
-            // if (xhr.readyState == 4) {
-            if (tautan !== xhr.responseURL) {
-                if (xhr.getResponseHeader('Content-Type').startsWith('text/html')) {
-                    rekamTautan({ tautan: xhr.responseURL });
-                } else {
-                    location = xhr.responseURL;
-                    return true;
-                }
+
+            var xhrRes = {
+                responUrl: xhr.responseURL,
+                responXHR: xhr.responseText,
+                responTujuan: xhr.getResponseHeader('X-Tujuan'),
+                responHtml: xhr.getResponseHeader('Content-Type')?.startsWith('text/html')
             };
 
-            var responXHR = xhr.responseText,
-                responTujuan = xhr.getResponseHeader('X-Tujuan');
-
-            if (responXHR) {
-                if (responXHR.startsWith('<!DOCTYPE html>')) {
-                    document.open();
-                    document.write(responXHR);
-                    document.close();
-                    return true;
-                };
-                // if(!j){
-                //     isiPemberitahuan('pemberitahuan', '');
-                // }
-                if (responTujuan) {
-                    isi = document.getElementById(responTujuan) ?? document.querySelector('#isi') ?? document.querySelector('body');
-                };
-                isi.replaceChildren(range.createContextualFragment(responXHR));
-                muat.classList.toggle('mati');
-                return true;
-            } else {
-                muat.classList.toggle('mati');
-                return;
+            var dataReq = {
+                isi: isi,
+                pesan: pesan,
+                metode: metode,
+                muat: muat,
+                rekam: rekam,
+                tautan: tautan,
+                postdata: postdata,
+                strim: strim,
+                enkod: enkod,
+                mintajs: mintajs,
+                topview: topview,
+                normalview: normalview,
+                fragmen: fragmen,
+                tanam: tanam
             };
-            // };
+
+            callback({
+                ...xhrRes,
+                ...dataReq
+            });
         };
 
         xhr.ontimeout = function (to) {
-            muat.classList.toggle('mati');
+            muat.classList.add('mati');
             return;
         };
 
         xhr.onerror = function (er) {
-            muat.classList.toggle('mati');
+            muat.classList.add('mati');
             return;
         };
     };
@@ -275,6 +277,41 @@ window.lemparXHR = function (data) {
     if (metode == 'GET') {
         xhr.send();
     }
+};
+
+function responUmum(data) {
+    if (data.tautan !== data.responUrl) {
+        if (data.responHtml) {
+            rekamTautan({ tautan: data.responUrl });
+        } else {
+            location = data.responUrl;
+            return true;
+        }
+    };
+
+    if (data.responXHR) {
+        if (data.responXHR.startsWith('<!DOCTYPE html>')) {
+            document.open();
+            document.write(data.responXHR);
+            document.close();
+            return true;
+        };
+
+        if (data.responTujuan) {
+            data.isi = document.getElementById(data.responTujuan) ?? document.querySelector('#isi') ?? document.querySelector('body');
+        };
+
+        data.tanam == 'append' ? data.isi.append(range.createContextualFragment(data.responXHR)) : (data.tanam == 'prepend' ? data.isi.prepend(range.createContextualFragment(data.responXHR)) : data.isi.replaceChildren(range.createContextualFragment(data.responXHR)));
+
+        data.muat.classList.add('mati');
+
+        return true;
+
+    } else {
+        data.muat.classList.add('mati');
+
+        return;
+    };
 };
 
 function rekamTautan(data) {
