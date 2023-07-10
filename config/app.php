@@ -210,12 +210,14 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
-    
+
     'author' => env('APP_AUTHOR', 'https://laravel.com'),
-    
+
     'publisher' => env('APP_PUBLISHER', 'https://laravel.com'),
-    
+
     'description' => env('APP_DESCRIPTION', 'Laravel'),
-    
+
     'usaha' => env('APP_USAHA', 'Laravel'),
+
+    'aplikasivalet' => env('APP_VALET', 'Laravel'),
 ];

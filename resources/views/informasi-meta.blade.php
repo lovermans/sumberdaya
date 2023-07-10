@@ -27,5 +27,6 @@
 <link href="{{ $mixRangka('images/Ikon Aplikasi 192.png') }}" rel="image_src">
 <link href="/favicon.ico" rel="icon" type="image/x-icon">
 <link href="{{ $mixRangka('/tampilan.css') }}" rel="stylesheet">
-<link href="/pwa-manifest.json" crossorigin="use-credentials" rel="manifest">
+<link href="{{ '/pwa-manifest.json?aplikasivalet=' . $confRangka->get('app.aplikasivalet') }}"
+    crossorigin="use-credentials" rel="manifest">
 <script src="{{ $mixRangka('/interaksi.js') }}" defer></script>
