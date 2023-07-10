@@ -1,4 +1,4 @@
-var CACHE_VERSION = 202307091552;
+var CACHE_VERSION = 202307110212;
 var CURRENT_CACHES = {
     prefetch: 'sumberdaya-cache-v' + CACHE_VERSION
 };
@@ -11,7 +11,6 @@ var offline = [
     self.location.origin + "/interaksi.js",
     self.location.origin + "/slimselect-es.js",
     self.location.origin + "/siapkan-foto-es.js",
-    self.location.origin + "/pwa-manifest.json",
     self.location.origin + "/ikon.svg",
     self.location.origin + "/images/Logo Perusahaan.webp",
     self.location.origin + "/images/Lambang Perusahaan.webp",
