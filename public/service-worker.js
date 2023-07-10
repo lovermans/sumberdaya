@@ -1,4 +1,4 @@
-var CACHE_VERSION = 202307110212;
+var CACHE_VERSION = 202307110237;
 var CURRENT_CACHES = {
     prefetch: 'sumberdaya-cache-v' + CACHE_VERSION
 };
@@ -63,7 +63,6 @@ async function onActivate(event) {
             })
         );
     })
-    self.clients.claim();
 };
 
 self.addEventListener('install', function (event) {
@@ -75,6 +74,7 @@ self.addEventListener('activate', function (event) {
     // While there is only one cache in this example, the same logic will handle the case where
     // there are multiple versioned caches.
     event.waitUntil(onActivate(event));
+
 
     // clients.claim() tells the active service worker to take immediate
     // control of all of the clients under its scope.
