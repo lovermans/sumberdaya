@@ -1,6 +1,7 @@
 @if ($rekRangka->pjax())
 <script>
-    @if ($userRangka)
+    if (navigator.onLine) {
+        @if ($userRangka)
         if (!document.getElementById("tbl-menu")?.innerHTML.trim()) {
             lemparXHR({
             tujuan : "#tbl-menu",
@@ -49,6 +50,38 @@
         var NavSDM = ["/atur", "/tentang-aplikasi"];
         if (!NavSDM.includes(location.pathname)) document.getElementById("navigasi-sdm")?.replaceChildren();
         @endif
+    }
+</script>
+@else
+<script>
+    (async() => {
+        while(!window.aplikasiSiap) {
+            await new Promise((resolve,reject) =>
+            setTimeout(resolve, 1000));
+        }
 
+        if (navigator.onLine) {
+            lemparXHR({
+                tujuan : "#pilih-sumber_daya",
+                tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'pilih-sumber_daya'], false) !!}",
+                normalview : true
+            });
+            lemparXHR({
+                tujuan : "#tbl-menu",
+                tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'avatar'], false) !!}",
+                normalview : true
+            });
+            lemparXHR({
+                tujuan : "#menu-avatar",
+                tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-avatar'], false) !!}",
+                normalview : true
+            });
+            lemparXHR({
+                tujuan : "#menu-aplikasi",
+                tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-aplikasi'], false) !!}",
+                normalview : true
+            });
+        }
+    })();
 </script>
 @endif

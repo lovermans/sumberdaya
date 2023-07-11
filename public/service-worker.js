@@ -1,4 +1,4 @@
-var CACHE_VERSION = 202307110237;
+var CACHE_VERSION = 20230711207;
 var CURRENT_CACHES = {
     prefetch: 'sumberdaya-cache-v' + CACHE_VERSION
 };
@@ -6,11 +6,11 @@ var offline = [
     self.location.origin + "/",
     self.location.origin + "/tentang-aplikasi",
     self.location.origin + "/perlu-javascript",
-    self.location.origin + "/offline.html",
     self.location.origin + "/tampilan.css",
     self.location.origin + "/interaksi.js",
     self.location.origin + "/slimselect-es.js",
     self.location.origin + "/siapkan-foto-es.js",
+    self.location.origin + "/pwa-manifest.json",
     self.location.origin + "/ikon.svg",
     self.location.origin + "/images/Logo Perusahaan.webp",
     self.location.origin + "/images/Lambang Perusahaan.webp",
@@ -46,7 +46,7 @@ async function onInstall(event) {
     }).catch(function (error) {
         // This catch() will handle any exceptions from the caches.open()/cache.addAll() steps.
         console.error('Pre-fetching failed:', error);
-    })
+    });
     self.skipWaiting();
 };
 
@@ -62,7 +62,8 @@ async function onActivate(event) {
                 }
             })
         );
-    })
+    });
+    self.clients.claim();
 };
 
 self.addEventListener('install', function (event) {
@@ -75,7 +76,6 @@ self.addEventListener('activate', function (event) {
     // there are multiple versioned caches.
     event.waitUntil(onActivate(event));
 
-
     // clients.claim() tells the active service worker to take immediate
     // control of all of the clients under its scope.
 });
@@ -87,19 +87,11 @@ self.addEventListener('fetch', function (event) {
     event.respondWith(
         caches.match(rek, { ignoreSearch: true, ignoreVary: true }).then(
             function (cr) {
-                return cr ? cr : fetch(event.request).then(
-                    function (fr) {
-                        return fr;
-                    }
-                ).catch(
-                    function (er) {
-                        caches.match('/offline.html').then(
-                            function (x) {
-                                return x;
-                            }
-                        )
-                    }
-                );
+                return cr ? cr : fetch(event.request);
+            }
+        ).catch(
+            function (er) {
+                return caches.match('/');
             }
         )
     )

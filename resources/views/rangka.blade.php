@@ -16,7 +16,7 @@
         <img src="{{ $mixRangka('images/Lambang Perusahaan.webp') }}" alt="{{ $confRangka->get('app.usaha') }}"
             title="{{ $confRangka->get('app.usaha') }}">
         <p>
-            <b>Memulai Aplikasi</b> <br>
+            <b>Memulai Aplikasi, Periksa Koneksi Internet</b> <br>
             Penggunaan Terbaik di <u><b><a href="https://www.google.com/chrome/" target="_blank"
                         rel="noopener noreferrer">Chrome</a></b></u> Browser
         </p>
@@ -120,6 +120,7 @@
     {{-- <script defer type="module" src="{{ $mixRangka('/interaksi.js') }}"></script> --}}
 
     <script>
+        console.log(navigator.onLine);
         window.addEventListener('DOMContentLoaded', function () {
             var tema = document.getElementById('tema'),
                 halaman = document.body,
@@ -138,7 +139,7 @@
                 }
             
                 document.getElementById('sambutan')?.remove();
-                lemparXHR({
+                /* lemparXHR({
                     tujuan : "#pilih-sumber_daya",
                     tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'pilih-sumber_daya'], false) !!}",
                     normalview : true
@@ -157,13 +158,15 @@
                     tujuan : "#menu-aplikasi",
                     tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-aplikasi'], false) !!}",
                     normalview : true
-                });
+                }); */
                 if (location.pathname == '/') {
-                    lemparXHR({
-                        tujuan : "#isi",
-                        tautan : "{!! $urlRangka->route('mulai-aplikasi', [], false) !!}",
-                        normalview : true
-                    });
+                    if (navigator.onLine) {
+                        lemparXHR({
+                            tujuan : "#isi",
+                            tautan : "{!! $urlRangka->route('mulai-aplikasi', [], false) !!}",
+                            normalview : true
+                        });
+                    }
                 };
             })();
         });
@@ -175,6 +178,9 @@
         };
         function ringkasTabel (el) {
             el.previousElementSibling.classList.toggle('ringkas');
+        };
+        if (!navigator.onLine) {
+            document.getElementById("isi").replaceChildren("<p class='kartu'>Tidak ada koneksi internet. Coba periksa koneksi internet lalu muat ulang halaman.</p>");
         };
     </script>
 </body>
