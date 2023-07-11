@@ -35,20 +35,6 @@
 </head>
 
 <body data-tematerang="" id="badan-dokumen">
-    <div id="sambutan">
-        <img src="/images/Lambang Perusahaan.webp" alt="PT. Kepuh Kencana Arum" title="PT. Kepuh Kencana Arum">
-        <p>
-            <b>Memulai Aplikasi</b>
-            <br>
-            Penggunaan Terbaik di
-            <u>
-                <b>
-                    <a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome</a>
-                </b>
-            </u>
-            Browser
-        </p>
-    </div>
     <a class="skip-navigation tcetak" href="#main" tabindex="0">Langsung Ke Konten Utama</a>
     <input class="tcetak" type="checkbox" id="nav" aria-label="Navigasi">
     <input class="tcetak" type="checkbox" id="menu" aria-label="Menu">
@@ -106,8 +92,8 @@
             <div id="sematan_javascript" class="tcetak"></div>
             <div id="sematan_umum" class="tcetak scroll-margin"></div>
             <div id="isi" class="scroll-margin">
-                <p class="kartu">Anda Sedang Offline. Periksa Jaringan/Koneksi ke Server atau hubungi Personalia. Jika
-                    koneksi sudah lancar, maka muat ulang halaman untuk memperbarui tampilan.</p>
+                <p class="kartu">Tidak ada koneksi internet. Coba periksa koneksi internet lalu muat ulang halaman <a
+                        href="/">Beranda</a>.</p>
             </div>
         </section>
     </main>
@@ -128,23 +114,17 @@
                 halaman.setAttribute('data-tematerang', e.currentTarget.checked);
             }
             ));
-            (async () => {
-                while (!window.aplikasiSiap) {
-                    await new Promise((resolve, reject) => setTimeout(resolve, 1000));
-                }
-                document.getElementById('sambutan')?.remove();
-            }
-            )();
         });
         async function cariElemen(el) {
             while (document.querySelector(el) === null) {
                 await new Promise(resolve => requestAnimationFrame(resolve));
             }
             ; return document.querySelector(el);
-        }
-        ; function ringkasTabel(el) {
+        };
+        function ringkasTabel(el) {
             el.previousElementSibling.classList.toggle('ringkas');
-        }</script>
+        };
+    </script>
 </body>
 
 </html>

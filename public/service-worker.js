@@ -1,4 +1,4 @@
-var CACHE_VERSION = 20230711207;
+var CACHE_VERSION = 202307120013;
 var CURRENT_CACHES = {
     prefetch: 'sumberdaya-cache-v' + CACHE_VERSION
 };
@@ -6,6 +6,7 @@ var offline = [
     self.location.origin + "/",
     self.location.origin + "/tentang-aplikasi",
     self.location.origin + "/perlu-javascript",
+    self.location.origin + "/offline.html",
     self.location.origin + "/tampilan.css",
     self.location.origin + "/interaksi.js",
     self.location.origin + "/slimselect-es.js",
@@ -47,7 +48,7 @@ async function onInstall(event) {
         // This catch() will handle any exceptions from the caches.open()/cache.addAll() steps.
         console.error('Pre-fetching failed:', error);
     });
-    self.skipWaiting();
+    // self.skipWaiting();
 };
 
 async function onActivate(event) {
@@ -63,11 +64,11 @@ async function onActivate(event) {
             })
         );
     });
-    self.clients.claim();
 };
 
 self.addEventListener('install', function (event) {
     event.waitUntil(onInstall(event));
+    self.skipWaiting();
 });
 
 self.addEventListener('activate', function (event) {
@@ -75,7 +76,7 @@ self.addEventListener('activate', function (event) {
     // While there is only one cache in this example, the same logic will handle the case where
     // there are multiple versioned caches.
     event.waitUntil(onActivate(event));
-
+    // self.clients.claim();
     // clients.claim() tells the active service worker to take immediate
     // control of all of the clients under its scope.
 });
@@ -85,15 +86,27 @@ self.addEventListener('fetch', function (event) {
     rek = location.origin + rek.pathname;
     // if (event.request.method == 'GET') {
     event.respondWith(
-        caches.match(rek, { ignoreSearch: true, ignoreVary: true }).then(
-            function (cr) {
-                return cr ? cr : fetch(event.request);
+        (async () => {
+            try {
+
+                const cachedResponse = await caches.match(rek, { ignoreSearch: true, ignoreVary: true });
+                if (cachedResponse) return cachedResponse;
+                // First, try to use the navigation preload response if it's supported.
+
+                // Always try the network first.
+                const networkResponse = await fetch(event.request);
+                return networkResponse;
+            } catch (error) {
+                // catch is only triggered if an exception is thrown, which is likely
+                // due to a network error.
+                // If fetch() returns a valid HTTP response with a response code in
+                // the 4xx or 5xx range, the catch() will NOT be called.
+                console.log('Fetch failed; returning offline page instead.', error);
+
+                const cache = await caches.open(CURRENT_CACHES.prefetch);
+                const cachedResponse = await cache.match(self.location.origin + '/offline.html');
+                return cachedResponse;
             }
-        ).catch(
-            function (er) {
-                return caches.match('/');
-            }
-        )
-    )
+        })())
     // }
 });

@@ -16,7 +16,7 @@
         <img src="{{ $mixRangka('images/Lambang Perusahaan.webp') }}" alt="{{ $confRangka->get('app.usaha') }}"
             title="{{ $confRangka->get('app.usaha') }}">
         <p>
-            <b>Memulai Aplikasi, Periksa Koneksi Internet</b> <br>
+            <b>Memuat Aplikasi, Periksa Koneksi Internet</b> <br>
             Penggunaan Terbaik di <u><b><a href="https://www.google.com/chrome/" target="_blank"
                         rel="noopener noreferrer">Chrome</a></b></u> Browser
         </p>
@@ -132,14 +132,14 @@
                 halaman.setAttribute('data-tematerang', e.currentTarget.checked);
             }));
             
-            (async() => {
+            /* (async() => {
                 while(!window.aplikasiSiap) {
                     await new Promise((resolve,reject) =>
                     setTimeout(resolve, 1000));
                 }
             
-                document.getElementById('sambutan')?.remove();
-                /* lemparXHR({
+                
+                lemparXHR({
                     tujuan : "#pilih-sumber_daya",
                     tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'pilih-sumber_daya'], false) !!}",
                     normalview : true
@@ -158,17 +158,9 @@
                     tujuan : "#menu-aplikasi",
                     tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-aplikasi'], false) !!}",
                     normalview : true
-                }); */
-                if (location.pathname == '/') {
-                    if (navigator.onLine) {
-                        lemparXHR({
-                            tujuan : "#isi",
-                            tautan : "{!! $urlRangka->route('mulai-aplikasi', [], false) !!}",
-                            normalview : true
-                        });
-                    }
-                };
-            })();
+                });
+                
+            })(); */
         });
         async function cariElemen(el) {
             while ( document.querySelector(el) === null) {
@@ -180,8 +172,47 @@
             el.previousElementSibling.classList.toggle('ringkas');
         };
         if (!navigator.onLine) {
-            document.getElementById("isi").replaceChildren("<p class='kartu'>Tidak ada koneksi internet. Coba periksa koneksi internet lalu muat ulang halaman.</p>");
+            document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Coba periksa koneksi internet lalu muat ulang halaman.</p>";
         };
+        window.onload = function () {
+            document.getElementById('sambutan').remove();
+            if (location.pathname == '/' && navigator.onLine) {
+                lemparXHR({
+                    tujuan : "#isi",
+                    tautan : "{!! $urlRangka->route('mulai-aplikasi', [], false) !!}",
+                    normalview : true
+                });
+            };
+            if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
+                let updated = false;
+                let activated = false;
+                navigator.serviceWorker.register(location.origin + '/service-worker.js')
+                .then(regitration => {
+                    regitration.addEventListener("updatefound", () => {
+                        const worker = regitration.installing;
+                        worker.addEventListener('statechange', () => {
+                            console.log({ state: worker.state });
+                            if (worker.state === "activated") {
+                                activated = true;
+                                checkUpdate();
+                            }
+                        });
+                    });
+                });
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    console.log({ state: "updated" });
+                    updated = true;
+                    checkUpdate();
+                });
+
+                function checkUpdate() {
+                    if (activated && updated) {
+                        console.log("Application was updated refreshing the page...");
+                        window.location.reload();
+                    }
+                }
+            };
+        }
     </script>
 </body>
 
