@@ -132,14 +132,16 @@
                 halaman.setAttribute('data-tematerang', e.currentTarget.checked);
             }));
             
-            /* (async() => {
+            (async() => {
                 while(!window.aplikasiSiap) {
                     await new Promise((resolve,reject) =>
                     setTimeout(resolve, 1000));
                 }
+
+                document.getElementById('sambutan').remove();
             
                 
-                lemparXHR({
+                /* lemparXHR({
                     tujuan : "#pilih-sumber_daya",
                     tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'pilih-sumber_daya'], false) !!}",
                     normalview : true
@@ -158,9 +160,18 @@
                     tujuan : "#menu-aplikasi",
                     tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-aplikasi'], false) !!}",
                     normalview : true
-                });
+                }); */
+
                 
-            })(); */
+                if (location.pathname == '/' && navigator.onLine) {
+                    lemparXHR({
+                        tujuan : "#isi",
+                        tautan : "{!! $urlRangka->route('mulai-aplikasi', [ 'aplikasivalet' => $confRangka->get('app.aplikasivalet')], false) !!}",
+                        normalview : true
+                    });
+                };
+                
+            })();
         });
         async function cariElemen(el) {
             while ( document.querySelector(el) === null) {
@@ -172,17 +183,9 @@
             el.previousElementSibling.classList.toggle('ringkas');
         };
         if (!navigator.onLine) {
-            document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Coba periksa koneksi internet lalu muat ulang halaman.</p>";
+            document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Coba periksa koneksi internet lalu muat ulang halaman <a href='/'>Beranda</a>.</p>";
         };
         window.onload = function () {
-            document.getElementById('sambutan').remove();
-            if (location.pathname == '/' && navigator.onLine) {
-                lemparXHR({
-                    tujuan : "#isi",
-                    tautan : "{!! $urlRangka->route('mulai-aplikasi', [], false) !!}",
-                    normalview : true
-                });
-            };
             if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
                 let updated = false;
                 let activated = false;

@@ -1,4 +1,4 @@
-var CACHE_VERSION = 202307120013;
+var CACHE_VERSION = 202307120019;
 var CURRENT_CACHES = {
     prefetch: 'sumberdaya-cache-v' + CACHE_VERSION
 };
@@ -6,7 +6,7 @@ var offline = [
     self.location.origin + "/",
     self.location.origin + "/tentang-aplikasi",
     self.location.origin + "/perlu-javascript",
-    self.location.origin + "/offline.html",
+    self.location.origin + "/offline",
     self.location.origin + "/tampilan.css",
     self.location.origin + "/interaksi.js",
     self.location.origin + "/slimselect-es.js",
@@ -84,7 +84,7 @@ self.addEventListener('activate', function (event) {
 self.addEventListener('fetch', function (event) {
     var rek = new URL(event.request.url);
     rek = location.origin + rek.pathname;
-    // if (event.request.method == 'GET') {
+    // if (event.request.method === 'GET') {
     event.respondWith(
         (async () => {
             try {
@@ -104,9 +104,10 @@ self.addEventListener('fetch', function (event) {
                 console.log('Fetch failed; returning offline page instead.', error);
 
                 const cache = await caches.open(CURRENT_CACHES.prefetch);
-                const cachedResponse = await cache.match(self.location.origin + '/offline.html');
+                const cachedResponse = await cache.match(self.location.origin + '/offline');
                 return cachedResponse;
             }
-        })())
+        })()
+    )
     // }
 });

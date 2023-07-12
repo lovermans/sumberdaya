@@ -18,6 +18,7 @@ $route->view('/perlu-javascript', 'perlu-javascript')->name('perlu-javascript');
 $route->get('/tentang-aplikasi', 'App\Http\Controllers\SumberDaya@tentangAplikasi')->name('tentang-aplikasi');
 $route->get('/mulai-aplikasi', 'App\Http\Controllers\SumberDaya@mulaiAplikasi')->name('mulai-aplikasi');
 $route->view('/antarmuka', 'antarmuka')->name('antarmuka');
+$route->view('/offline', 'offline')->name('offline');
 $route->get('/unduh/{berkas?}', 'App\Http\Controllers\SumberDaya@unduh')->name('unduh');
 $route->get('/unduh-panduan/{berkas?}', 'App\Http\Controllers\SumberDaya@unduhPanduan')->where('berkas', '.*')->name('unduh.panduan')->middleware('signed');
 // $route->get('/format-foto', 'App\Http\Controllers\SumberDaya@formatFoto')->name('format-foto');
