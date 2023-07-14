@@ -4,7 +4,7 @@
 
 <head id="kepala-dokumen">
     <noscript>
-        <meta HTTP-EQUIV="refresh" content="0;url='{{ $urlRangka->route('perlu-javascript', [], false) }}'">
+        <meta HTTP-EQUIV="refresh" content="0;url='{{ $urlRangka->route('perlu-javascript' }}'">
     </noscript>
 
     @include('informasi-meta')
@@ -48,21 +48,21 @@
         <section>
             <label for="nav" id="tbl-nav" title="Menu">
                 <svg class="on" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menu' }}"
+                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#menu' }}"
                         xmlns:xlink="http://www.w3.org/1999/xlink">
                     </use>
                 </svg>
 
                 <svg class="off" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tutup' }}"
+                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}"
                         xmlns:xlink="http://www.w3.org/1999/xlink">
                     </use>
                 </svg>
             </label>
 
-            <a class="isi-xhr" href="{{ $urlRangka->route('mulai', [], false)
+            <a class="isi-xhr" href="{{ $urlRangka->route('mulai'
                 }}">
-                <img id="logo" src="{{ $mixRangka('images/Logo Perusahaan.webp') }}"
+                <img id="logo" src="{{  $urlRangka->asset($mixRangka('images/Logo Perusahaan.webp')) }}"
                     title="{{ $confRangka->get('app.usaha') }}" alt="{{ $confRangka->get('app.usaha') }}"
                     loading="lazy"></a>
 
@@ -70,7 +70,7 @@
             <label for="menu" id="tbl-menu" onclick="" title="Akun"></label>
             <label for="tema" id="tbl-tema" onclick="" title="Ubah Tema">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tema' }}"
+                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tema' }}"
                         xmlns:xlink="http://www.w3.org/1999/xlink">
                     </use>
                 </svg>
@@ -89,9 +89,9 @@
 
         <div class="menu-t">
             <a @class(['nav-xhr', 'aktif'=> $rekRangka->routeIs('tentang-aplikasi')]) href="{{
-                $urlRangka->route('tentang-aplikasi', [], false) }}">
+                $urlRangka->route('tentang-aplikasi' }}">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#informasi' }}"
+                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#informasi' }}"
                         xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                 </svg>
                 Tentang Aplikasi
@@ -143,22 +143,22 @@
                 
                 /* lemparXHR({
                     tujuan : "#pilih-sumber_daya",
-                    tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'pilih-sumber_daya'], false) !!}",
+                    tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'pilih-sumber_daya']) !!}",
                     normalview : true
                 });
                 lemparXHR({
                     tujuan : "#tbl-menu",
-                    tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'avatar'], false) !!}",
+                    tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'avatar']) !!}",
                     normalview : true
                 });
                 lemparXHR({
                     tujuan : "#menu-avatar",
-                    tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-avatar'], false) !!}",
+                    tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-avatar']) !!}",
                     normalview : true
                 });
                 lemparXHR({
                     tujuan : "#menu-aplikasi",
-                    tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-aplikasi'], false) !!}",
+                    tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-aplikasi']) !!}",
                     normalview : true
                 }); */
 
@@ -166,7 +166,7 @@
                 if (location.pathname == '/' && navigator.onLine) {
                     lemparXHR({
                         tujuan : "#isi",
-                        tautan : "{!! $urlRangka->route('mulai-aplikasi', [ 'aplikasivalet' => $confRangka->get('app.aplikasivalet')], false) !!}",
+                        tautan : "{!! $urlRangka->route('mulai-aplikasi', [ 'aplikasivalet' => $confRangka->get('app.aplikasivalet')]) !!}",
                         normalview : true
                     });
                 };

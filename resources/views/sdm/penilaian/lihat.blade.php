@@ -6,7 +6,7 @@
         @isset($nilai)
         <div class="gspan-4">
             <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tutup' }}"
+                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}"
                         xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                 </svg></a>
 
@@ -66,15 +66,15 @@
             $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf'))
             <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.penilaian.berkas', ['berkas' => $nilai->nilaisdm_no_absen . ' - ' .
                 $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf' . '?' . filemtime(storage_path('app/sdm/penilaian/berkas/' . $nilai->nilaisdm_no_absen . ' - ' .
-            $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf'))], false) }}"
+            $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf'))]) }}"
                 title="Bukti Pendukung Laporan Penilaian SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $urlRangka->route('sdm.penilaian.berkas', ['berkas' => $nilai->nilaisdm_no_absen . ' - ' .
                 $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf' . '?' . filemtime(storage_path('app/sdm/penilaian/berkas/' . $nilai->nilaisdm_no_absen . ' - ' .
-            $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf'))], false) }}">
+            $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf'))]) }}">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}"
+                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
                         xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                 </svg>
                 BERKAS
@@ -87,7 +87,7 @@
         </div>
 
         <a class="utama isi-xhr" data-rekam="false" data-tujuan="#nilai_sdm_lihat_sematan"
-            href="{{ $urlRangka->route('sdm.penilaian.ubah', ['uuid' => $nilai->nilaisdm_uuid], false) }}">UBAH
+            href="{{ $urlRangka->route('sdm.penilaian.ubah', ['uuid' => $nilai->nilaisdm_uuid]) }}">UBAH
             PENILAIAN</a>
 
         @else

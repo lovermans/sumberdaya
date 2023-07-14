@@ -30,14 +30,14 @@
                             <div class="pil-aksi">
                                 <button id="{{'aksi_pelanggaran_baris_' . $loop->iteration}}" title="Pilih Tindakan">
                                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}"
+                                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#menuvert' }}"
                                             xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                     </svg>
                                 </button>
 
                                 <div class="aksi">
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_pelanggaranSDM_sematan"
-                                        href="{{ $urlRangka->route('sdm.pelanggaran.lihat', ['uuid' => $pelanggaran->langgar_uuid], false) }}"
+                                        href="{{ $urlRangka->route('sdm.pelanggaran.lihat', ['uuid' => $pelanggaran->langgar_uuid]) }}"
                                         title="Tindaklanjuti">Tindaklanjuti</a>
                                 </div>
                             </div>
@@ -49,7 +49,7 @@
                             <div @class(['merah'=> $pelanggaran->langgar_tsdm_tgl_berhenti])>
                                 <b><i><u>Terlapor</u></i></b> :<br />
                                 <a class="isi-xhr taut-akun"
-                                    href="{{ $urlRangka->route('sdm.akun', ['uuid' => $pelanggaran->langgar_tsdm_uuid], false) }}">
+                                    href="{{ $urlRangka->route('sdm.akun', ['uuid' => $pelanggaran->langgar_tsdm_uuid]) }}">
                                     <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
                                     $pelanggaran->langgar_no_absen . '.webp')]) src="{{
                                     $storageRangka->exists('sdm/foto-profil/' . $pelanggaran->langgar_no_absen .
@@ -57,8 +57,8 @@
                                     ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
                                     $pelanggaran->langgar_no_absen . '.webp' . '?' .
                                     filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
-                                    $pelanggaran->langgar_no_absen . '.webp'))], false) :
-                                    $mixRangka('/ikon.svg') . '#akun' }}" alt="{{
+                                    $pelanggaran->langgar_no_absen . '.webp'))]) :
+                                    $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
                                     $pelanggaran->langgar_tsdm_nama ?? 'foto akun' }}" title="{{
                                     $pelanggaran->langgar_tsdm_nama
                                     ?? 'foto akun' }}" loading="lazy">
@@ -73,7 +73,7 @@
                             <div @class(['merah'=> $pelanggaran->langgar_psdm_tgl_berhenti])>
                                 <b><i><u>Pelapor</u></i></b> :<br />
                                 <a class="isi-xhr taut-akun"
-                                    href="{{ $urlRangka->route('sdm.akun', ['uuid' => $pelanggaran->langgar_psdm_uuid], false) }}">
+                                    href="{{ $urlRangka->route('sdm.akun', ['uuid' => $pelanggaran->langgar_psdm_uuid]) }}">
                                     <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
                                     $pelanggaran->langgar_pelapor . '.webp')]) src="{{
                                     $storageRangka->exists('sdm/foto-profil/' . $pelanggaran->langgar_pelapor .
@@ -81,8 +81,8 @@
                                     $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
                                     $pelanggaran->langgar_pelapor . '.webp' . '?' .
                                     filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
-                                    $pelanggaran->langgar_pelapor . '.webp'))], false) :
-                                    $mixRangka('/ikon.svg') . '#akun' }}" alt="{{
+                                    $pelanggaran->langgar_pelapor . '.webp'))]) :
+                                    $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
                                     $pelanggaran->langgar_psdm_nama ?? 'foto akun' }}" title="{{
                                     $pelanggaran->langgar_psdm_nama
                                     ?? 'foto akun' }}" loading="lazy">
@@ -141,7 +141,7 @@
         @if ($pelanggarans->count() > 0)
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
 
-        <a class="isi-xhr utama" href="{{ $urlRangka->route('sdm.pelanggaran.data', [], false) }}">SELENGKAPNYA</a>
+        <a class="isi-xhr utama" href="{{ $urlRangka->route('sdm.pelanggaran.data' }}">SELENGKAPNYA</a>
         @endif
     </div>
 </details>

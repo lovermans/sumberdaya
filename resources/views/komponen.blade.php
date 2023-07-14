@@ -5,13 +5,13 @@
         if (!document.getElementById("tbl-menu")?.innerHTML.trim()) {
             lemparXHR({
             tujuan : "#tbl-menu",
-            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'avatar'], false) !!}",
+            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'avatar']) !!}",
             normalview : true
             });
 
             lemparXHR({
             tujuan : "#menu-avatar",
-            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-avatar'], false) !!}",
+            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-avatar']) !!}",
             normalview : true
             });
         };
@@ -19,13 +19,13 @@
         if (!document.getElementById("pilih-sumber_daya")?.innerHTML.trim()) {
             lemparXHR({
             tujuan : "#pilih-sumber_daya",
-            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'pilih-sumber_daya'], false) !!}",
+            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'pilih-sumber_daya']) !!}",
             normalview : true
             });
 
             lemparXHR({
             tujuan : "#menu-aplikasi",
-            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-aplikasi'], false) !!}",
+            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-aplikasi']) !!}",
             normalview : true
             });
         };
@@ -42,7 +42,7 @@
         if (!document.getElementById("navigasi-sdm")?.innerHTML.trim()) {
             lemparXHR({
             tujuan : "#navigasi-sdm",
-            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'sdm.navigasi'], false) !!}",
+            tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'sdm.navigasi']) !!}",
             normalview : true
             });
         };
@@ -63,22 +63,22 @@
         if (navigator.onLine) {
             lemparXHR({
                 tujuan : "#pilih-sumber_daya",
-                tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'pilih-sumber_daya'], false) !!}",
+                tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'pilih-sumber_daya']) !!}",
                 normalview : true
             });
             lemparXHR({
                 tujuan : "#tbl-menu",
-                tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'avatar'], false) !!}",
+                tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'avatar']) !!}",
                 normalview : true
             });
             lemparXHR({
                 tujuan : "#menu-avatar",
-                tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-avatar'], false) !!}",
+                tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-avatar']) !!}",
                 normalview : true
             });
             lemparXHR({
                 tujuan : "#menu-aplikasi",
-                tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-aplikasi'], false) !!}",
+                tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-aplikasi']) !!}",
                 normalview : true
             });
         }

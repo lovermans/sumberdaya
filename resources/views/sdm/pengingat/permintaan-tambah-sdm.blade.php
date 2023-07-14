@@ -27,18 +27,18 @@
                             <div class="pil-aksi">
                                 <button id="{{'aksi_tsdm_baris_' . $loop->iteration}}" title="Pilih Tindakan">
                                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}"
+                                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#menuvert' }}"
                                             xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                     </svg>
                                 </button>
 
                                 <div class="aksi">
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_perminSDM_sematan"
-                                        href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.lihat', ['uuid' => $perminSDM->tambahsdm_uuid], false) }}"
+                                        href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.lihat', ['uuid' => $perminSDM->tambahsdm_uuid]) }}"
                                         title="Lihat Permintaan SDM">Lihat Data</a>
 
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_perminSDM_sematan"
-                                        href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $perminSDM->tambahsdm_uuid], false) }}"
+                                        href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $perminSDM->tambahsdm_uuid]) }}"
                                         title="Ubah Permintaan SDM">Ubah Data</a>
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
 
                         <td>
                             <a class="isi-xhr taut-akun"
-                                href="{{ $urlRangka->route('sdm.akun', ['uuid' => $perminSDM->sdm_uuid], false) }}">
+                                href="{{ $urlRangka->route('sdm.akun', ['uuid' => $perminSDM->sdm_uuid]) }}">
                                 <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
                                 $perminSDM->tambahsdm_sdm_id . '.webp')]) src="{{
                                 $storageRangka->exists('sdm/foto-profil/' .
@@ -56,7 +56,7 @@
                                 ['berkas_foto_profil' => $perminSDM->tambahsdm_sdm_id . '.webp' . '?' .
                                 filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $perminSDM->tambahsdm_sdm_id
                                 . '.webp')), false]) :
-                                $mixRangka('/ikon.svg') . '#akun' }}" alt="{{
+                                $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
                                 $perminSDM->sdm_nama ?? 'foto akun' }}" title="{{ $perminSDM->sdm_nama ?? 'foto akun'
                                 }}"
                                 loading="lazy">
@@ -78,7 +78,7 @@
                             <b>Posisi</b> : {{$perminSDM->tambahsdm_posisi}}<br />
                             <b>Jml Kebutuhan</b> : {{$perminSDM->tambahsdm_jumlah}}<br />
                             <b>Jml Terpenuhi</b> : <u><a class="isi-xhr"
-                                    href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $perminSDM->tambahsdm_no], false) }}">{{
+                                    href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $perminSDM->tambahsdm_no]) }}">{{
                                     $perminSDM->tambahsdm_terpenuhi }}</a></u><br />
                             <b>Pemenuhan Terbaru</b> : {{
                             strtoupper($dateRangka->make($perminSDM->pemenuhan_terkini)?->translatedFormat('d F Y')) }}
@@ -104,8 +104,7 @@
         @if ($perminSDMS->count() > 0)
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
 
-        <a class="isi-xhr utama"
-            href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', [], false) }}">SELENGKAPNYA</a>
+        <a class="isi-xhr utama" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data' }}">SELENGKAPNYA</a>
         @endif
     </div>
 </details>

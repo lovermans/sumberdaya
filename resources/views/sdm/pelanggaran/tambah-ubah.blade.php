@@ -9,7 +9,7 @@
         <div class="gspan-4">
             <a class="tutup-i">
                 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tutup' }}"
+                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}"
                         xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                 </svg>
             </a>

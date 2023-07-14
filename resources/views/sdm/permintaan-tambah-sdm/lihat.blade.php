@@ -5,7 +5,10 @@
     <div class="kartu form">
         @isset($permin)
         <div class="gspan-4">
-            <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="{{ $mixRangka('/ikon.svg') . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></a>
+            <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                </svg></a>
             <h4 class="form">Data Permintaan Tambah SDM</h4>
         </div>
 
@@ -29,12 +32,12 @@
             <p>{{ $permin->tambahsdm_posisi }}</p>
         </div>
 
-        <div class="isian" >
+        <div class="isian">
             <h3>Jumlah Dibutuhkan</h3>
             <p>{{ $permin->tambahsdm_jumlah }}</p>
         </div>
 
-        <div class="isian" >
+        <div class="isian">
             <h3>Jumlah Terpenuhi</h3>
             <p>{{ $permin->tambahsdm_terpenuhi }}</p>
         </div>
@@ -67,36 +70,45 @@
             <h3>Berkas Permohonan</h3>
 
             @if ($storageRangka->exists('sdm/permintaan-tambah-sdm/berkas/'.$permin->tambahsdm_no.'.pdf'))
-            <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $permin->tambahsdm_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/berkas/' . $permin->tambahsdm_no . '.pdf'))], false) }}" title="Berkas Permintaan SDM" loading="lazy" onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
+            <iframe class="berkas tcetak"
+                src="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $permin->tambahsdm_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/berkas/' . $permin->tambahsdm_no . '.pdf'))]) }}"
+                title="Berkas Permintaan SDM" loading="lazy"
+                onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
-            <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $permin->tambahsdm_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/berkas/' . $permin->tambahsdm_no . '.pdf'))], false) }}">
+            <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
+                href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.berkas', ['berkas' => $permin->tambahsdm_no . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/permintaan-tambah-sdm/berkas/' . $permin->tambahsdm_no . '.pdf'))]) }}">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                 </svg>
                 BERKAS
             </a>
 
             @else
-                <p class="merah">Tidak ada berkas terunggah.</p>
+            <p class="merah">Tidak ada berkas terunggah.</p>
             @endif
         </div>
 
-        
-        <a class="isi-xhr utama tcetak" data-rekam="false" data-laju="true" data-tujuan="#permintaan-sdm_sematan_lihat" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.formulir', ['uuid' => $permin->tambahsdm_uuid], false) }}">
+
+        <a class="isi-xhr utama tcetak" data-rekam="false" data-laju="true" data-tujuan="#permintaan-sdm_sematan_lihat"
+            href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.formulir', ['uuid' => $permin->tambahsdm_uuid]) }}">
             <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#cetak' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cetak' }}"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
             FORMULIR
         </a>
-        
+
         <div id="permintaan-sdm_sematan_lihat" class="isian gspan-4 scroll-margin"></div>
 
         <div class="gspan-4"></div>
 
-        <a class="utama isi-xhr tcetak" data-rekam="false" data-tujuan="#permintambahsdm_lihat" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $permin->tambahsdm_uuid], false) }}">UBAH</a>
-        
-        <a class="sekunder isi-xhr" data-rekam="false" data-tujuan="#permintambahsdm_lihat" href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.hapus', ['uuid' => $permin->tambahsdm_uuid]) }}">HAPUS</a>
-        
+        <a class="utama isi-xhr tcetak" data-rekam="false" data-tujuan="#permintambahsdm_lihat"
+            href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $permin->tambahsdm_uuid]) }}">UBAH</a>
+
+        <a class="sekunder isi-xhr" data-rekam="false" data-tujuan="#permintambahsdm_lihat"
+            href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.hapus', ['uuid' => $permin->tambahsdm_uuid]) }}">HAPUS</a>
+
         @else
         <div class="isian gspan-4">
             <p>Periksa kembali data yang diminta.</p>

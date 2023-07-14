@@ -695,7 +695,7 @@ class Umum
             if ($foto && $no_absen == $no_absen_sdm) {
                 $sesiJS = "lemparXHR({
                     tujuan : '#tbl-menu',
-                    tautan : '{$app->url->route('komponen', ['komponen' => 'menu', 'fragment' => 'avatar'], false)}',
+                    tautan : '{$app->url->route('komponen', ['komponen' => 'menu', 'fragment' => 'avatar'])}',
                     normalview : true
                     });";
                 $session->flash('sesiJS', $sesiJS);

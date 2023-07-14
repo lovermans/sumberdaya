@@ -41,49 +41,49 @@
             
             lemparXHR({
                 tujuan : "#sdmIngatKeluar",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatKeluar'], false) }}",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatKeluar']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatBaru",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatBaru'], false) }}",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatBaru']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatPstatus",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPstatus'], false) }}",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPstatus']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatPkpd",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPkpd'], false) }}",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPkpd']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatPtsb",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPtsb'], false) }}",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPtsb']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatNilai",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatNilai'], false) }}",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatNilai']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatPelanggaran",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPelanggaran'], false) }}",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPelanggaran']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatSanksi",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatSanksi'], false) }}",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatSanksi']) }}",
                 normalview : true,
                 fragmen : true
             });
@@ -104,7 +104,7 @@
             
             lemparXHR({
                 tujuan : "#sdmIngatUltah",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatUltah'], false) }}",
+                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatUltah']) }}",
                 normalview : true,
                 fragmen : true
             });
@@ -114,30 +114,32 @@
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#panahatas' }}"
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#panahatas' }}"
                     xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
 
         <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_unggah_sematan"
-            href="{{ $urlRangka->route('sdm.unggah', [], false) }}" title="Unggah Data Profil SDM">
+            href="{{ $urlRangka->route('sdm.unggah' }}" title="Unggah Data Profil SDM">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unggah' }}" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unggah' }}"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
                 </use>
             </svg>
         </a>
 
-        <a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.riwayat', [], false) }}"
+        <a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.riwayat' }}"
             title="Cari Semua Riwayat Penempatan SDM">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cari' }}"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
                 </use>
             </svg>
         </a>
 
-        <a class="isi-xhr" href="{{ $urlRangka->route('register', [], false) }}" title="Tambah Data SDM">
+        <a class="isi-xhr" href="{{ $urlRangka->route('register' }}" title="Tambah Data SDM">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tambahorang' }}"
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tambahorang' }}"
                     xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
