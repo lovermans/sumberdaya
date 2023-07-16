@@ -27,7 +27,7 @@
                             <div class="pil-aksi">
                                 <button id="{{'aksi_sdm_keluar_baris_' . $loop->iteration}}" title="Pilih Tindakan">
                                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}"
+                                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#menuvert' }}"
                                             xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                     </svg>
                                 </button>
@@ -35,16 +35,16 @@
                                 <div class="aksi">
                                     @if($henti->penempatan_uuid)
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_berhenti_sematan"
-                                        href="{{ $urlRangka->route('sdm.penempatan.lihat', ['uuid' => $henti->penempatan_uuid], false) }}"
+                                        href="{{ $urlRangka->route('sdm.penempatan.lihat', ['uuid' => $henti->penempatan_uuid]) }}"
                                         title="Lihat Data Penempatan">Lihat Penempatan</a>
 
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_berhenti_sematan"
-                                        href="{{ $urlRangka->route('sdm.penempatan.ubah', ['uuid' => $henti->penempatan_uuid], false) }}"
+                                        href="{{ $urlRangka->route('sdm.penempatan.ubah', ['uuid' => $henti->penempatan_uuid]) }}"
                                         title="Ubah Data Penempatan">Ubah Penempatan</a>
                                     @endif
 
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_berhenti_sematan"
-                                        href="{{ $urlRangka->route('sdm.penempatan.tambah', ['uuid' => $henti->sdm_uuid], false) }}"
+                                        href="{{ $urlRangka->route('sdm.penempatan.tambah', ['uuid' => $henti->sdm_uuid]) }}"
                                         title="Tambah Data Penempatan">Tambah Penempatan</a>
                                 </div>
                             </div>
@@ -54,7 +54,7 @@
 
                         <td>
                             <a class="isi-xhr taut-akun"
-                                href="{{ $urlRangka->route('sdm.akun', ['uuid' => $henti->sdm_uuid], false) }}">
+                                href="{{ $urlRangka->route('sdm.akun', ['uuid' => $henti->sdm_uuid]) }}">
                                 <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
                                 $henti->sdm_no_absen .
                                 '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $henti->sdm_no_absen .
@@ -63,7 +63,7 @@
                                 $henti->sdm_no_absen . '.webp' .
                                 '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $henti->sdm_no_absen .
                                 '.webp')), false]) :
-                                $mixRangka('/ikon.svg') . '#akun' }}" alt="{{
+                                $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
                                 $henti->sdm_nama ?? 'foto akun' }}" title="{{ $henti->sdm_nama ?? 'foto akun' }}"
                                 loading="lazy">
                             </a>
@@ -101,8 +101,7 @@
         @if ($berhentis->count() > 0)
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
 
-        <a class="isi-xhr utama"
-            href="{{ $urlRangka->route('sdm.penempatan.data-nonaktif', [], false) }}">SELENGKAPNYA</a>
+        <a class="isi-xhr utama" href="{{ $urlRangka->route('sdm.penempatan.data-nonaktif') }}">SELENGKAPNYA</a>
         @endif
     </div>
 </details>

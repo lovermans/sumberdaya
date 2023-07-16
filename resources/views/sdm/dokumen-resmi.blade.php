@@ -4,7 +4,8 @@
 <div id="sdm_dokumen_resmi">
     <p class="tcetak kartu">
         <svg fill="var(--taut-umum)" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#informasi' }}" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#informasi' }}"
+                xmlns:xlink="http://www.w3.org/1999/xlink">
             </use>
         </svg>
         Semua tautan dokumen di halaman ini hanya valid selama 5 (lima) menit. Muat ulang halaman untuk memperbarui
@@ -90,7 +91,7 @@
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#panahatas' }}"
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#panahatas' }}"
                     xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>

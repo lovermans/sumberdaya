@@ -5,17 +5,20 @@
     <h4>Data Pengaturan Jabatan</h4>
     @isset($tabels)
     <div class="cari-data tcetak">
-        <form id="form_sdm_posisi_cari" class="form-xhr kartu" method="GET" action="{{ $urlRangka->current() }}" data-tujuan="#sdm_posisi_tabels" data-frag="true">
+        <form id="form_sdm_posisi_cari" class="form-xhr kartu" method="GET" action="{{ $urlRangka->current() }}"
+            data-tujuan="#sdm_posisi_tabels" data-frag="true">
             <input type="hidden" name="fragment" value="sdm_posisi_tabels">
 
             <details class="gspan-4" {{ $rekRangka->anyFilled(['lokasi', 'kontrak', 'posisi_status']) ? 'open' : '' }}>
                 <summary class="cari">
                     <div class="isian gspan-4">
-                        <input id="sdm_posisi_cariKataKunci" type="text" name="kata_kunci" value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
+                        <input id="sdm_posisi_cariKataKunci" type="text" name="kata_kunci"
+                            value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
 
-                        <button id="tombol_cari_posisi_sdm"class="cari-cepat" type="submit" title="Cari Data">
+                        <button id="tombol_cari_posisi_sdm" class="cari-cepat" type="submit" title="Cari Data">
                             <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#cari' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cari' }}"
+                                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                             </svg>
                         </button>
                     </div>
@@ -24,7 +27,7 @@
                 <div class="kartu form gspan-4">
                     <div class="isian pendek">
                         <label for="sdm_posisi_cariStatus">Saring Status</label>
-                        
+
                         <select id="sdm_posisi_cariStatus" name="posisi_status" class="pil-dasar">
                             <option selected disabled></option>
                             <option @selected($rekRangka->posisi_status == 'AKTIF')>AKTIF</option>
@@ -39,7 +42,8 @@
 
                         <select id="sdm_posisi_cariStatusPenempatanSDM" name="lokasi[]" class="pil-cari" multiple>
                             @foreach ($lokasis as $lokasi)
-                            <option @selected(in_array($lokasi->atur_butir, (array) $rekRangka->lokasi)) @class(['merah' => $lokasi->atur_status == 'NON-AKTIF'])>{{ $lokasi->atur_butir }}</option>                            
+                            <option @selected(in_array($lokasi->atur_butir, (array) $rekRangka->lokasi)) @class(['merah'
+                                => $lokasi->atur_status == 'NON-AKTIF'])>{{ $lokasi->atur_butir }}</option>
                             @endforeach
                         </select>
 
@@ -51,10 +55,12 @@
 
                         <select id="sdm_posisi_StatusKontrakSDM" name="kontrak[]" class="pil-cari" multiple>
                             @foreach ($kontraks as $kontrak)
-                            <option @selected(in_array($kontrak->atur_butir, (array) $rekRangka->kontrak)) @class(['merah' => $kontrak->atur_status == 'NON-AKTIF'])>{{ $kontrak->atur_butir }}</option>                            
+                            <option @selected(in_array($kontrak->atur_butir, (array) $rekRangka->kontrak))
+                                @class(['merah' => $kontrak->atur_status == 'NON-AKTIF'])>{{ $kontrak->atur_butir }}
+                            </option>
                             @endforeach
                         </select>
-                        
+
                         <span class="t-bantu">Pilih satu atau lebih</span>
                     </div>
                 </div>
@@ -62,18 +68,22 @@
         </form>
     </div>
 
-    
+
     <div id="sdm_posisi_tabels" class="kartu scroll-margin">
         @fragment('sdm_posisi_tabels')
-        <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['lokasi', 'kontrak']) ? 'sesuai data penyaringan' : 'global' }}) : Aktif = {{number_format($aktif, 0, ',', '.')}} Personil -> Non-Aktif = {{number_format($nonAktif, 0, ',', '.')}} Personil -> Total = {{number_format($total, 0, ',', '.')}} Personil.</small></i></b>
-        
+        <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['lokasi', 'kontrak']) ? 'sesuai data penyaringan' : 'global'
+                    }}) : Aktif = {{number_format($aktif, 0, ',', '.')}} Personil -> Non-Aktif =
+                    {{number_format($nonAktif, 0, ',', '.')}} Personil -> Total = {{number_format($total, 0, ',', '.')}}
+                    Personil.</small></i></b>
+
         <div id="posisi-sdm_sematan" class="scroll-margin"></div>
-        
+
         <div class="trek-data tcetak">
             <span class="bph">
                 <label for="sdm_posisi_cariPerHalaman">Baris per halaman : </label>
-                
-                <select id="sdm_posisi_cariPerHalaman" name="bph" class="pil-saja" form="form_sdm_posisi_cari" onchange="getElementById('tombol_cari_posisi_sdm').click()">
+
+                <select id="sdm_posisi_cariPerHalaman" name="bph" class="pil-saja" form="form_sdm_posisi_cari"
+                    onchange="getElementById('tombol_cari_posisi_sdm').click()">
                     <option>25</option>
                     <option @selected($tabels->perPage() == 50)>50</option>
                     <option @selected($tabels->perPage() == 75)>75</option>
@@ -81,37 +91,47 @@
                 </select>
 
             </span>
-            
-            <span class="ket">{{number_format($tabels->firstItem(), 0, ',', '.')}} - {{number_format($tabels->lastItem(), 0, ',', '.')}} dari {{number_format($tabels->total(), 0, ',', '.')}} data</span>
+
+            <span class="ket">{{number_format($tabels->firstItem(), 0, ',', '.')}} -
+                {{number_format($tabels->lastItem(), 0, ',', '.')}} dari {{number_format($tabels->total(), 0, ',',
+                '.')}} data</span>
 
             @if($tabels->hasPages())
             <span class="trek">
                 @if($tabels->currentPage() > 1)
-                    <a class="isi-xhr" href="{{ $tabels->url(1) }}" title="Awal" data-tujuan="#sdm_posisi_tabels" data-frag="true">
-                        <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <use xlink:href="{{ $mixRangka('/ikon.svg') . '#awal' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                        </svg>
-                    </a>
+                <a class="isi-xhr" href="{{ $tabels->url(1) }}" title="Awal" data-tujuan="#sdm_posisi_tabels"
+                    data-frag="true">
+                    <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#awal' }}"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                    </svg>
+                </a>
                 @endif
 
                 @if($tabels->previousPageUrl())
-                <a class="isi-xhr" href="{{ $tabels->previousPageUrl() }}" title="Sebelumnya" data-tujuan="#sdm_posisi_tabels" data-frag="true">
+                <a class="isi-xhr" href="{{ $tabels->previousPageUrl() }}" title="Sebelumnya"
+                    data-tujuan="#sdm_posisi_tabels" data-frag="true">
                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ $mixRangka('/ikon.svg') . '#mundur' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#mundur' }}"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                     </svg>
                 </a>
                 @endif
 
                 @if($tabels->nextPageUrl())
-                <a class="isi-xhr" href="{{ $tabels->nextPageUrl() }}" title="Berikutnya" data-tujuan="#sdm_posisi_tabels" data-frag="true">
+                <a class="isi-xhr" href="{{ $tabels->nextPageUrl() }}" title="Berikutnya"
+                    data-tujuan="#sdm_posisi_tabels" data-frag="true">
                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ $mixRangka('/ikon.svg') . '#maju' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#maju' }}"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                     </svg>
                 </a>
 
-                <a class="isi-xhr" href="{{ $tabels->url($tabels->lastPage()) }}" title="Akhir" data-tujuan="#sdm_posisi_tabels" data-frag="true">
+                <a class="isi-xhr" href="{{ $tabels->url($tabels->lastPage()) }}" title="Akhir"
+                    data-tujuan="#sdm_posisi_tabels" data-frag="true">
                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ $mixRangka('/ikon.svg') . '#akhir' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#akhir' }}"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                     </svg>
                 </a>
                 @endif
@@ -123,46 +143,62 @@
 
                 <div class="kartu form" id="sdm_posisi_cariUrut">
                     <div class="isian" data-indeks="{{ $urutPergantian ? $indexPergantian : 'X' }}">
-                        <label for="sdm_posisi_cariUrutPergantian">{{ $urutPergantian ? $indexPergantian.'. ' : '' }}Urut % Pergantian</label>
-                        
-                        <select id="sdm_posisi_cariUrutPergantian" name="urut[]" class="pil-dasar" form="form_sdm_posisi_cari" onchange="getElementById('tombol_cari_posisi_sdm').click()">
+                        <label for="sdm_posisi_cariUrutPergantian">{{ $urutPergantian ? $indexPergantian.'. ' : ''
+                            }}Urut % Pergantian</label>
+
+                        <select id="sdm_posisi_cariUrutPergantian" name="urut[]" class="pil-dasar"
+                            form="form_sdm_posisi_cari" onchange="getElementById('tombol_cari_posisi_sdm').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('pergantian ASC', (array) $rekRangka->urut)) value="pergantian ASC">0 - 9</option>
-                            <option @selected(in_array('pergantian DESC', (array) $rekRangka->urut)) value="pergantian DESC">9 - 0</option>
+                            <option @selected(in_array('pergantian ASC', (array) $rekRangka->urut)) value="pergantian
+                                ASC">0 - 9</option>
+                            <option @selected(in_array('pergantian DESC', (array) $rekRangka->urut)) value="pergantian
+                                DESC">9 - 0</option>
                         </select>
                         <span class="t-bantu">Pilih satu</span>
                     </div>
 
                     <div class="isian" data-indeks="{{ $urutPosisi ? $indexPosisi : 'X' }}">
-                        <label for="sdm_posisi_cariUrutPosisi">{{ $urutPosisi ? $indexPosisi.'. ' : '' }}Urut Jabatan</label>
-                        
-                        <select id="sdm_posisi_cariUrutPosisi" name="urut[]" class="pil-dasar" form="form_sdm_posisi_cari" onchange="getElementById('tombol_cari_posisi_sdm').click()">
+                        <label for="sdm_posisi_cariUrutPosisi">{{ $urutPosisi ? $indexPosisi.'. ' : '' }}Urut
+                            Jabatan</label>
+
+                        <select id="sdm_posisi_cariUrutPosisi" name="urut[]" class="pil-dasar"
+                            form="form_sdm_posisi_cari" onchange="getElementById('tombol_cari_posisi_sdm').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('posisi_nama ASC', (array) $rekRangka->urut)) value="posisi_nama ASC">A - Z</option>
-                            <option @selected(in_array('posisi_nama DESC', (array) $rekRangka->urut)) value="posisi_nama DESC">Z - A</option>
+                            <option @selected(in_array('posisi_nama ASC', (array) $rekRangka->urut)) value="posisi_nama
+                                ASC">A - Z</option>
+                            <option @selected(in_array('posisi_nama DESC', (array) $rekRangka->urut)) value="posisi_nama
+                                DESC">Z - A</option>
                         </select>
 
                         <span class="t-bantu">Pilih satu</span>
                     </div>
                     <div class="isian" data-indeks="{{ $urutAktif ? $indexAktif : 'X' }}">
-                        <label for="sdm_posisi_cariUrutAktif">{{ $urutAktif ? $indexAktif.'. ' : '' }}Urut Jml Aktif</label>
+                        <label for="sdm_posisi_cariUrutAktif">{{ $urutAktif ? $indexAktif.'. ' : '' }}Urut Jml
+                            Aktif</label>
 
-                        <select id="sdm_posisi_cariUrutAktif" name="urut[]" class="pil-dasar" form="form_sdm_posisi_cari" onchange="getElementById('tombol_cari_posisi_sdm').click()">
+                        <select id="sdm_posisi_cariUrutAktif" name="urut[]" class="pil-dasar"
+                            form="form_sdm_posisi_cari" onchange="getElementById('tombol_cari_posisi_sdm').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('jml_aktif ASC', (array) $rekRangka->urut)) value="jml_aktif ASC">0 - 9</option>
-                            <option @selected(in_array('jml_aktif DESC', (array) $rekRangka->urut)) value="jml_aktif DESC">9 - 0</option>
+                            <option @selected(in_array('jml_aktif ASC', (array) $rekRangka->urut)) value="jml_aktif
+                                ASC">0 - 9</option>
+                            <option @selected(in_array('jml_aktif DESC', (array) $rekRangka->urut)) value="jml_aktif
+                                DESC">9 - 0</option>
                         </select>
 
                         <span class="t-bantu">Pilih satu</span>
                     </div>
 
                     <div class="isian" data-indeks="{{ $urutNonAktif ? $indexNonAktif : 'X' }}">
-                        <label for="sdm_posisi_cariUrutNonAktif">{{ $urutNonAktif ? $indexNonAktif.'. ' : '' }}Urut Jml Non-Aktif</label>
+                        <label for="sdm_posisi_cariUrutNonAktif">{{ $urutNonAktif ? $indexNonAktif.'. ' : '' }}Urut Jml
+                            Non-Aktif</label>
 
-                        <select id="sdm_posisi_cariUrutNonAktif" name="urut[]" class="pil-dasar" form="form_sdm_posisi_cari" onchange="getElementById('tombol_cari_posisi_sdm').click()">
+                        <select id="sdm_posisi_cariUrutNonAktif" name="urut[]" class="pil-dasar"
+                            form="form_sdm_posisi_cari" onchange="getElementById('tombol_cari_posisi_sdm').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('jml_nonaktif ASC', (array) $rekRangka->urut)) value="jml_nonaktif ASC">0 - 9</option>
-                            <option @selected(in_array('jml_nonaktif DESC', (array) $rekRangka->urut)) value="jml_nonaktif DESC">9 - 0</option>
+                            <option @selected(in_array('jml_nonaktif ASC', (array) $rekRangka->urut))
+                                value="jml_nonaktif ASC">0 - 9</option>
+                            <option @selected(in_array('jml_nonaktif DESC', (array) $rekRangka->urut))
+                                value="jml_nonaktif DESC">9 - 0</option>
                         </select>
 
                         <span class="t-bantu">Pilih satu</span>
@@ -189,19 +225,25 @@
                 </thead>
                 <tbody>
                     @forelse ($tabels as $nomor => $tabel)
-                    <tr @class(['merah' => $tabel->posisi_status == 'NON-AKTIF'])>
+                    <tr @class(['merah'=> $tabel->posisi_status == 'NON-AKTIF'])>
                         <th>
                             <div class="pil-aksi">
-                                <button id="{{'aksi_posisi_baris_' . $tabels->firstItem() + $nomor}}" title="Pilih Tindakan">
+                                <button id="{{'aksi_posisi_baris_' . $tabels->firstItem() + $nomor}}"
+                                    title="Pilih Tindakan">
                                     <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#menuvert' }}"
+                                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                     </svg>
                                 </button>
-                                
+
                                 <div class="aksi">
-                                    <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan" href="{{ $urlRangka->route('sdm.posisi.lihat', ['uuid' => $tabel->posisi_uuid], false) }}" title="Lihat Data">Lihat Data</a>
-                                    
-                                    <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan" href="{{ $urlRangka->route('sdm.posisi.ubah', ['uuid' => $tabel->posisi_uuid], false) }}" title="Ubah Data">Ubah Data</a>
+                                    <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan"
+                                        href="{{ $urlRangka->route('sdm.posisi.lihat', ['uuid' => $tabel->posisi_uuid]) }}"
+                                        title="Lihat Data">Lihat Data</a>
+
+                                    <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan"
+                                        href="{{ $urlRangka->route('sdm.posisi.ubah', ['uuid' => $tabel->posisi_uuid]) }}"
+                                        title="Ubah Data">Ubah Data</a>
                                 </div>
                             </div>
                         </th>
@@ -209,8 +251,12 @@
                         <td>{{$tabels->firstItem() + $nomor}}</td>
 
                         <td>{{$tabel->posisi_nama}}</td>
-                        <td><u><a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.data-aktif', ['posisi' => $tabel->posisi_nama, ...$rekRangka->only(['lokasi', 'kontrak'])], false) }}">{{number_format($tabel->jml_aktif, 0, ',', '.')}}</a></u></td>
-                        <td><u><a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.data-nonaktif', ['posisi' => $tabel->posisi_nama, ...$rekRangka->only(['lokasi', 'kontrak'])], false) }}">{{number_format($tabel->jml_nonaktif, 0, ',', '.')}}</a></u></td>
+                        <td><u><a class="isi-xhr"
+                                    href="{{ $urlRangka->route('sdm.penempatan.data-aktif', ['posisi' => $tabel->posisi_nama, ...$rekRangka->only(['lokasi', 'kontrak'])]) }}">{{number_format($tabel->jml_aktif,
+                                    0, ',', '.')}}</a></u></td>
+                        <td><u><a class="isi-xhr"
+                                    href="{{ $urlRangka->route('sdm.penempatan.data-nonaktif', ['posisi' => $tabel->posisi_nama, ...$rekRangka->only(['lokasi', 'kontrak'])]) }}">{{number_format($tabel->jml_nonaktif,
+                                    0, ',', '.')}}</a></u></td>
                         <td>{{ number_format($tabel->pergantian, 2, ',', '.') }} %</td>
                         <td>{{$tabel->posisi_atasan}}</td>
                         <td>{{$tabel->posisi_wlkp}}</td>
@@ -252,35 +298,45 @@
 
     @else
     <p class="kartu">Tidak ada data.</p>
-    
+
     @endisset
-    
+
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#panahatas' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#panahatas' }}"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
-        
-        <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan" href="{{ $urlRangka->route('sdm.posisi.unggah', [], false) }}" title="Unggah Data">
+
+        <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan"
+            href="{{ $urlRangka->route('sdm.posisi.unggah') }}" title="Unggah Data">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unggah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unggah' }}"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                </use>
             </svg>
         </a>
-        
-        <a href="#" title="Unduh Data" onclick="event.preventDefault();lemparXHR({tujuan : '#posisi-sdm_sematan', tautan : window.location.search ? window.location.pathname + window.location.search + '&unduh=excel' : window.location.pathname + '?unduh=excel', strim : true})">
+
+        <a href="#" title="Unduh Data"
+            onclick="event.preventDefault();lemparXHR({tujuan : '#posisi-sdm_sematan', tautan : window.location.search ? window.location.pathname + window.location.search + '&unduh=excel' : window.location.pathname + '?unduh=excel', strim : true})">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                </use>
             </svg>
         </a>
-        
-        <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan" href="{{ $urlRangka->route('sdm.posisi.tambah', [], false) }}" title="Tambah Data">
+
+        <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan"
+            href="{{ $urlRangka->route('sdm.posisi.tambah') }}" title="Tambah Data">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tambah' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tambah' }}"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                </use>
             </svg>
         </a>
     </div>
-    
+
     @isset($tabels)
     <script>
         (async() => {

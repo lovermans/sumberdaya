@@ -15,18 +15,19 @@
 <meta content="#d32f2f" name="theme-color">
 <meta content="#d32f2f" name="msapplication-TileColor">
 <meta content="#d32f2f" name="msapplication-navbutton-color">
-<meta content="{{ $urlRangka->route('mulai', [], false) }}" name="msapplication-starturl">
+<meta content="{{ $urlRangka->route('mulai') }}" name="msapplication-starturl">
 <link href="{{ $rekRangka->url() }}" rel="canonical">
 <link href="{{ $confRangka->get('app.author') }}" rel="author">
 <link href="{{ $confRangka->get('app.publisher') }}" rel="publisher">
-<link href="{{ $mixRangka('images/Ikon Aplikasi 192.png') }}" rel="shortcut icon">
-<link href="{{ $mixRangka('images/Ikon Aplikasi 192.png') }}" rel="icon" sizes="192x192">
-<link href="{{ $mixRangka('images/Ikon Aplikasi 512.png') }}" rel="icon" sizes="512x512">
-<link href="{{ $mixRangka('images/Ikon Aplikasi 192.png') }}" rel="apple-touch-icon">
-<meta content="{{ $mixRangka('images/Ikon Aplikasi 192.png') }}" name="msapplication-TileImage">
-<link href="{{ $mixRangka('images/Ikon Aplikasi 192.png') }}" rel="image_src">
-<link href="/favicon.ico" rel="icon" type="image/x-icon">
-<link href="{{ $mixRangka('/tampilan.css') }}" rel="stylesheet">
-<link href="{{ '/pwa-manifest.json?aplikasivalet=' . $confRangka->get('app.aplikasivalet') }}"
+<link href="{{ $urlRangka->asset($mixRangka('/images/Ikon Aplikasi 192.png')) }}" rel="shortcut icon">
+<link href="{{ $urlRangka->asset($mixRangka('/images/Ikon Aplikasi 192.png')) }}" rel="icon" sizes="192x192">
+<link href="{{ $urlRangka->asset($mixRangka('/images/Ikon Aplikasi 512.png')) }}" rel="icon" sizes="512x512">
+<link href="{{ $urlRangka->asset($mixRangka('/images/Ikon Aplikasi 192.png')) }}" rel="apple-touch-icon">
+<meta content="{{ $urlRangka->asset($mixRangka('/images/Ikon Aplikasi 192.png')) }}" name="msapplication-TileImage">
+<link href="{{ $urlRangka->asset($mixRangka('/images/Ikon Aplikasi 192.png')) }}" rel="image_src">
+<link href="{{ $urlRangka->asset('/favicon.ico') }}" rel="icon" type="image/x-icon">
+<link href="{{ $urlRangka->asset($mixRangka('/tampilan.css')) }}" rel="stylesheet">
+<link
+    href="{{ $urlRangka->asset('/pwa-manifest.json') . '?' . 'aplikasivalet=' . $confRangka->get('app.aplikasivalet') }}"
     crossorigin="use-credentials" rel="manifest">
-<script src="{{ $mixRangka('/interaksi.js') }}" defer></script>
+<script src="{{ $urlRangka->asset($mixRangka('/interaksi.js')) }}" defer></script>

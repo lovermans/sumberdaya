@@ -27,7 +27,7 @@
 
                         <td>
                             <a class="isi-xhr taut-akun"
-                                href="{{ $urlRangka->route('sdm.akun', ['uuid' => $ultah->sdm_uuid], false) }}">
+                                href="{{ $urlRangka->route('sdm.akun', ['uuid' => $ultah->sdm_uuid]) }}">
                                 <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
                                 $ultah->sdm_no_absen .
                                 '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $ultah->sdm_no_absen .
@@ -36,7 +36,7 @@
                                 $ultah->sdm_no_absen . '.webp' .
                                 '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $ultah->sdm_no_absen .
                                 '.webp')), false]) :
-                                $mixRangka('/ikon.svg') . '#akun' }}" alt="{{
+                                $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
                                 $ultah->sdm_nama ?? 'foto akun' }}" title="{{ $ultah->sdm_nama ?? 'foto akun' }}"
                                 loading="lazy">
                             </a>

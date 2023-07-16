@@ -12,8 +12,9 @@
                 <img @class(['svg'=> !$storageRangka->exists('sdm/foto-profil/' . $akun->sdm_no_absen . '.webp')])
                 src="{{ $storageRangka->exists('sdm/foto-profil/' . $akun->sdm_no_absen . '.webp') ?
                 $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $akun->sdm_no_absen . '.webp' . '?'
-                . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $akun->sdm_no_absen . '.webp'))], false) :
-                $mixRangka('/ikon.svg') . '#akun' }}" alt="{{ $akun->sdm_nama ?? 'foto akun' }}" title="{{
+                . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $akun->sdm_no_absen . '.webp'))]) :
+                $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{ $akun->sdm_nama ?? 'foto akun' }}"
+                title="{{
                 $akun->sdm_nama ?? 'foto akun' }}" loading="lazy">
             </div>
 
@@ -27,14 +28,14 @@
                 <p @class(['merah'=> $akun->tgl_berhenti_atasan])>
                     @if ($akun->uuid_atasan)
                     <a class="taut-akun isi-xhr"
-                        href="{{ $urlRangka->route('sdm.akun', ['uuid' => $akun->uuid_atasan], false) }}">
+                        href="{{ $urlRangka->route('sdm.akun', ['uuid' => $akun->uuid_atasan]) }}">
                         <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' . $akun->sdm_id_atasan .
                         '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $akun->sdm_id_atasan . '.webp') ?
                         $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $akun->sdm_id_atasan .
                         '.webp' .
                         '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $akun->sdm_id_atasan .
-                        '.webp'))], false) :
-                        $mixRangka('/ikon.svg') . '#akun' }}" alt="{{
+                        '.webp'))]) :
+                        $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
                         $akun->nama_atasan ?? 'foto akun' }}" title="{{ $akun->nama_atasan ?? 'foto akun' }}"
                         loading="lazy">
                     </a>
@@ -54,14 +55,14 @@
                 <h3>No Permintaan SDM</h3>
 
                 <p><u><a class="isi-xhr"
-                            href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $akun->sdm_no_permintaan], false) }}"
+                            href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $akun->sdm_no_permintaan]) }}"
                             aria-label="Permintaan Tambah SDM No {{ $akun->sdm_no_permintaan }}">{{
                             $akun->sdm_no_permintaan }}</a></u></p>
 
                 <h3>Nomor E-KTP/Passport</h3>
 
                 <p><u><a class="isi-xhr"
-                            href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $akun->sdm_no_ktp], false) }}">{{
+                            href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $akun->sdm_no_ktp]) }}">{{
                             $akun->sdm_no_ktp }}</a></u></p>
                 @endif
             </div>
@@ -337,7 +338,7 @@
                     @forelse ($personils as $personil)
                     <li class="bersih">
                         <a class="taut-akun isi-xhr"
-                            href="{{ $urlRangka->route('sdm.akun', ['uuid' => $personil->sdm_uuid], false) }}">
+                            href="{{ $urlRangka->route('sdm.akun', ['uuid' => $personil->sdm_uuid]) }}">
                             <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
                             $personil->sdm_no_absen .
                             '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $personil->sdm_no_absen .
@@ -345,8 +346,8 @@
                             $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $personil->sdm_no_absen
                             . '.webp' .
                             '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $personil->sdm_no_absen .
-                            '.webp'))], false) :
-                            $mixRangka('/ikon.svg') . '#akun' }}" alt="{{
+                            '.webp'))]) :
+                            $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
                             $personil->sdm_nama ?? 'foto akun' }}" title="{{ $personil->sdm_nama ?? 'foto akun' }}"
                             loading="lazy">
                         </a>
@@ -368,14 +369,14 @@
 
                 @if ($storageRangka->exists('sdm/berkas/'.$akun->sdm_no_absen.'.pdf'))
                 <iframe class="tcetak berkas"
-                    src="{{ $urlRangka->route('sdm.berkas', ['berkas' => $akun->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' . $akun->sdm_no_absen . '.pdf'))], false) }}"
+                    src="{{ $urlRangka->route('sdm.berkas', ['berkas' => $akun->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' . $akun->sdm_no_absen . '.pdf'))]) }}"
                     title="Berkas SDM" loading="lazy"
                     onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
                 <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                    href="{{ $urlRangka->route('sdm.berkas', ['berkas' => $akun->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' . $akun->sdm_no_absen . '.pdf'))], false) }}">
+                    href="{{ $urlRangka->route('sdm.berkas', ['berkas' => $akun->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' . $akun->sdm_no_absen . '.pdf'))]) }}">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}"
+                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
                             xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                     </svg>
                     BERKAS
@@ -392,22 +393,18 @@
                     onchange="if (this.value !== '') lemparXHR({tujuan : '#akun-cetakFormulirStatus', tautan : this.value, strim : true})">
                     <option value="">CETAK FORMULIR</option>
                     <option
-                        value="{{$urlRangka->route('sdm.formulir-serah-terima-sdm-baru', ['uuid' => $akun->sdm_uuid], false)}}">
+                        value="{{$urlRangka->route('sdm.formulir-serah-terima-sdm-baru', ['uuid' => $akun->sdm_uuid])}}">
                         SERAH TERIMA SDM BARU</option>
-                    <option
-                        value="{{$urlRangka->route('sdm.formulir-persetujuan-gaji', ['uuid' => $akun->sdm_uuid], false)}}">
+                    <option value="{{$urlRangka->route('sdm.formulir-persetujuan-gaji', ['uuid' => $akun->sdm_uuid])}}">
                         PERSETUJUAN GAJI</option>
                     <option
-                        value="{{$urlRangka->route('sdm.formulir-tt-dokumen-titipan', ['uuid' => $akun->sdm_uuid], false)}}">
+                        value="{{$urlRangka->route('sdm.formulir-tt-dokumen-titipan', ['uuid' => $akun->sdm_uuid])}}">
                         TANDA TERIMA DOKUMEN TITIPAN</option>
-                    <option
-                        value="{{$urlRangka->route('sdm.formulir-tt-inventaris', ['uuid' => $akun->sdm_uuid], false)}}">
+                    <option value="{{$urlRangka->route('sdm.formulir-tt-inventaris', ['uuid' => $akun->sdm_uuid])}}">
                         TANDA TERIMA SERAGAM/SEPATU/INVENTARIS</option>
-                    <option
-                        value="{{$urlRangka->route('sdm.formulir-pelepasan-sdm', ['uuid' => $akun->sdm_uuid], false)}}">
+                    <option value="{{$urlRangka->route('sdm.formulir-pelepasan-sdm', ['uuid' => $akun->sdm_uuid])}}">
                         PELEPASAN KARYAWAN</option>
-                    <option
-                        value="{{$urlRangka->route('sdm.surat-keterangan-sdm', ['uuid' => $akun->sdm_uuid], false)}}">
+                    <option value="{{$urlRangka->route('sdm.surat-keterangan-sdm', ['uuid' => $akun->sdm_uuid])}}">
                         SURAT KETERANGAN KERJA</option>
                 </select>
             </div>
@@ -416,7 +413,7 @@
             <div class="isian gspan-4 scroll-margin" id="akun-cetakFormulirStatus"></div>
 
             <a class="utama isi-xhr tcetak" data-tujuan="#profil-akun"
-                href="{{ $urlRangka->route('sdm.ubah-akun', ['uuid' => $akun->sdm_uuid], false) }}">UBAH</a>
+                href="{{ $urlRangka->route('sdm.ubah-akun', ['uuid' => $akun->sdm_uuid]) }}">UBAH</a>
 
             @else
             <p>Periksa data yang dikirim.</p>
@@ -437,15 +434,16 @@
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#panahatas' }}"
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#panahatas' }}"
                     xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
 
-        <a href="{{ $urlRangka->route('sdm.unduh.kartu-sdm', ['uuid' => $akun->sdm_uuid], false) }}"
+        <a href="{{ $urlRangka->route('sdm.unduh.kartu-sdm', ['uuid' => $akun->sdm_uuid]) }}"
             title="Unduh Kartu Identitas">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#kartuID' }}" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#kartuID' }}"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
                 </use>
             </svg>
         </a>

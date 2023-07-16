@@ -29,22 +29,22 @@
                                     <div class="pil-aksi">
                                         <button id="{{'aksi_pkwt_baris_' . $loop->iteration}}" title="Pilih Tindakan">
                                             <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#menuvert' }}"
+                                                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#menuvert' }}"
                                                     xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                                             </svg>
                                         </button>
 
                                         <div class="aksi">
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_kontrak_sematan"
-                                                href="{{ $urlRangka->route('sdm.penempatan.lihat', ['uuid' => $kontrak->penempatan_uuid], false) }}"
+                                                href="{{ $urlRangka->route('sdm.penempatan.lihat', ['uuid' => $kontrak->penempatan_uuid]) }}"
                                                 title="Lihat Data Penempatan">Lihat Penempatan</a>
 
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_kontrak_sematan"
-                                                href="{{ $urlRangka->route('sdm.penempatan.ubah', ['uuid' => $kontrak->penempatan_uuid], false) }}"
+                                                href="{{ $urlRangka->route('sdm.penempatan.ubah', ['uuid' => $kontrak->penempatan_uuid]) }}"
                                                 title="Ubah Data Penempatan">Ubah Penempatan</a>
 
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_kontrak_sematan"
-                                                href="{{ $urlRangka->route('sdm.penempatan.tambah', ['uuid' => $kontrak->sdm_uuid], false) }}"
+                                                href="{{ $urlRangka->route('sdm.penempatan.tambah', ['uuid' => $kontrak->sdm_uuid]) }}"
                                                 title="Tambah Data Penempatan">Tambah Penempatan</a>
                                         </div>
                                     </div>
@@ -54,7 +54,7 @@
 
                                 <td>
                                     <a class="isi-xhr taut-akun"
-                                        href="{{ $urlRangka->route('sdm.akun', ['uuid' => $kontrak->sdm_uuid], false) }}">
+                                        href="{{ $urlRangka->route('sdm.akun', ['uuid' => $kontrak->sdm_uuid]) }}">
                                         <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/'
                                         .
                                         $kontrak->sdm_no_absen . '.webp')]) src="{{
@@ -64,7 +64,7 @@
                                         ['berkas_foto_profil' => $kontrak->sdm_no_absen . '.webp' . '?' .
                                         filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
                                         $kontrak->sdm_no_absen . '.webp')), false])
-                                        : $mixRangka('/ikon.svg') . '#akun' }}" alt="{{
+                                        : $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
                                         $kontrak->sdm_nama ?? 'foto akun' }}" title="{{ $kontrak->sdm_nama ??
                                         'foto
                                         akun'
@@ -110,13 +110,12 @@
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
 
         @if ($jmlAkanHabis > 0)
-        <a class="isi-xhr utama" href="{{ $urlRangka->route('sdm.penempatan.data-akanhabis', [], false) }}">AKAN
+        <a class="isi-xhr utama" href="{{ $urlRangka->route('sdm.penempatan.data-akanhabis') }}">AKAN
             HABIS</a>&nbsp;
         @endif
 
         @if ($jmlKadaluarsa > 0)
-        <a class="isi-xhr utama"
-            href="{{ $urlRangka->route('sdm.penempatan.data-kadaluarsa', [], false) }}">KADALUARSA</a>
+        <a class="isi-xhr utama" href="{{ $urlRangka->route('sdm.penempatan.data-kadaluarsa') }}">KADALUARSA</a>
         @endif
         @endif
     </div>

@@ -37,7 +37,7 @@
     --tk-4: 0 .25em .313em 0 rgba(0, 0, 0, 0.14), 0 .063em .625em 0 rgba(0, 0, 0, 0.12), 0 .125em .25em -0.063em rgba(0, 0, 0, 0.20);
     --tk-6: 0 .375em .625em 0 rgba(0, 0, 0, 0.14), 0 .063em 1.125em 0 rgba(0, 0, 0, 0.12), 0 .188em .313em -0.063em rgba(0, 0, 0, 0.20);
     --tk-8: 0 .5em .625em .063em rgba(0, 0, 0, 0.14), 0 .188em .875em .125em rgba(0, 0, 0, 0.12), 0 .313em .313em -0.188em rgba(0, 0, 0, 0.20);
-    --tk-12 : 0 0.4375em 0.5em -0.25em rgba(0,0,0,.2), 0 0.75em 1.0625em 0.125em rgba(0,0,0,.14), 0 0.3125em 1.375em 0.25em rgba(0,0,0,.12);
+    --tk-12: 0 0.4375em 0.5em -0.25em rgba(0, 0, 0, .2), 0 0.75em 1.0625em 0.125em rgba(0, 0, 0, .14), 0 0.3125em 1.375em 0.25em rgba(0, 0, 0, .12);
     --tk-16: 0 1em 1.5em .125em rgba(0, 0, 0, 0.14), 0 .375em 1.875em .313em rgba(0, 0, 0, 0.12), 0 .5em .625em -0.313em rgba(0, 0, 0, 0.20);
     --tk-24: 0 1.5em 2.375em .188em rgba(0, 0, 0, 0.14), 0 .563em 2.875em .5em rgba(0, 0, 0, 0.12), 0 .688em .936em -0.438em rgba(0, 0, 0, 0.20);
     --bg-aside: #2d2d2d;
@@ -132,7 +132,7 @@ screen and (min-resolution:480dpi) and (min-width:192rem) {
 body {
     padding: 0;
     margin: 0 auto;
-    background: #121212 url("gambar/Background Badan.webp") center center repeat;
+    background: #121212 url("images/Background Badan.webp") center center repeat;
     background-blend-mode: var(--bg-blend)
 }
 
@@ -299,7 +299,8 @@ svg {
     z-index: 9999;
 }
 
-#sambutan, #sambutan p {
+#sambutan,
+#sambutan p {
     bottom: 0;
     left: 0;
     right: 0;
@@ -307,8 +308,8 @@ svg {
 
 #sambutan {
     top: 0;
-    background: url("gambar/Background Kepala.webp") left top repeat,
-    #121212;
+    background: url("images/Background Kepala.webp") left top repeat,
+        #121212;
     background-blend-mode: var(--bg-blend);
 }
 
@@ -343,7 +344,7 @@ main :is(a:visited, h4) {
     color: var(--oranye)
 }
 
-main :is(a:hover,h2) {
+main :is(a:hover, h2) {
     color: var(--taut-fokus)
 }
 
@@ -360,7 +361,7 @@ header {
     left: 0;
     right: 0;
     height: 3.5em;
-    background: #121212 url("gambar/Background Kepala.webp") left top repeat;
+    background: #121212 url("images/Background Kepala.webp") left top repeat;
     background-blend-mode: var(--bg-blend);
     clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%);
     z-index: 1000;
@@ -544,7 +545,8 @@ aside:not(:empty) {
     padding: 1em;
 }
 
-.aksi a, nav h2 {
+.aksi a,
+nav h2 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -561,7 +563,7 @@ aside:not(:empty) {
 }
 
 .data .pil-aksi:focus-within>.aksi,
-.data .pil-aksi > button {
+.data .pil-aksi>button {
     display: block;
 }
 
@@ -647,7 +649,7 @@ aside .aktif {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('gambar/Logo Brand.webp') 50% center/auto 110% no-repeat;
+    background: url('images/Logo Brand.webp') 50% center/auto 110% no-repeat;
     opacity: var(--brand-op);
     z-index: -1
 }
@@ -659,7 +661,7 @@ aside .aktif {
     left: 1em;
     width: 7.65em;
     height: 3em;
-    background: url('gambar/Logo ISO.webp') center/100% no-repeat;
+    background: url('images/Logo ISO.webp') center/100% no-repeat;
     opacity: .5;
     z-index: -1
 }
@@ -684,9 +686,10 @@ aside .aktif {
 .spanduk,
 .pesan,
 .periksa
+
 /* form.kartu,
 .kartu.form  */
-{
+    {
     display: grid;
 }
 
@@ -728,7 +731,7 @@ aside .aktif {
 }
 
 .spanduk a {
-    border: none!important;
+    border: none !important;
 }
 
 .pesan,
@@ -764,7 +767,7 @@ aside .aktif {
 }
 
 .pesan-internal a.utama {
-    margin:0 0 1em 1em;
+    margin: 0 0 1em 1em;
 }
 
 .pesan-internal a.sekunder {
@@ -809,7 +812,7 @@ h4.form {
     vertical-align: middle;
 }
 
-button.cari-cepat{
+button.cari-cepat {
     border-radius: 50%;
     right: 0.5em;
     padding: 0.5em;
@@ -818,11 +821,11 @@ button.cari-cepat{
     z-index: 20;
 }
 
-button.cari-cepat:hover{
+button.cari-cepat:hover {
     scale: 1.5;
 }
 
-button.cari-cepat svg{
+button.cari-cepat svg {
     fill: var(--taut-umum);
 }
 
@@ -988,7 +991,7 @@ a.sekunder svg {
     max-height: 75vh;
 }
 
-.data + button.sekunder {
+.data+button.sekunder {
     margin: 0.5em 0.5em 0.5em 0;
 }
 
@@ -1015,7 +1018,7 @@ a.sekunder svg {
     background: var(--bg-tabel);
 }
 
-.data .tabel tbody :is(th,td),
+.data .tabel tbody :is(th, td),
 .trek-data .ket,
 nav h2 {
     font-size: .875em;
@@ -1676,7 +1679,7 @@ nav h2 {
     flex-grow: 3;
 } */
 
-.gspan-4{
+.gspan-4 {
     flex-basis: 100%;
     /* flex-grow: 4; */
 }
@@ -1892,6 +1895,7 @@ screen and (min-width:672rem) {
         /* margin: .25em .25em; */
         border-radius: .25em;
     }
+
     .data .tabel td[data-th='No'] {
         flex-basis: min-content;
     }

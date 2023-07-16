@@ -1,32 +1,31 @@
-var CACHE_VERSION = 202307120019;
+var CACHE_VERSION = 202307120021;
 var CURRENT_CACHES = {
     prefetch: 'sumberdaya-cache-v' + CACHE_VERSION
 };
 var offline = [
-    self.location.origin + "/",
-    self.location.origin + "/tentang-aplikasi",
-    self.location.origin + "/perlu-javascript",
-    self.location.origin + "/offline",
-    self.location.origin + "/tampilan.css",
-    self.location.origin + "/interaksi.js",
-    self.location.origin + "/slimselect-es.js",
-    self.location.origin + "/siapkan-foto-es.js",
-    self.location.origin + "/pwa-manifest.json",
-    self.location.origin + "/ikon.svg",
-    self.location.origin + "/images/Logo Perusahaan.webp",
-    self.location.origin + "/images/Lambang Perusahaan.webp",
-    self.location.origin + "/images/Ikon Aplikasi 192.png",
-    self.location.origin + "/images/Ikon Aplikasi 512.png",
-    self.location.origin + "/images/blank.webp",
-    self.location.origin + "/images/Background Badan.webp",
-    self.location.origin + "/images/Background Kepala.webp",
-    self.location.origin + "/images/Brand Utama Putih.webp",
-    self.location.origin + "/images/Brand Utama Warna.webp",
-    self.location.origin + "/images/Budaya Perusahaan.webp",
-    self.location.origin + "/images/Logo Brand.webp",
-    self.location.origin + "/images/Logo ISO.webp",
-    self.location.origin + "/fonts/Roboto400.woff2",
-    self.location.origin + "/fonts/Roboto500.woff2"
+    "tentang-aplikasi",
+    "perlu-javascript",
+    "offline",
+    "tampilan.css",
+    "interaksi.js",
+    "slimselect-es.js",
+    "siapkan-foto-es.js",
+    "pwa-manifest.json",
+    "ikon.svg",
+    "images/Logo Perusahaan.webp",
+    "images/Lambang Perusahaan.webp",
+    "images/Ikon Aplikasi 192.png",
+    "images/Ikon Aplikasi 512.png",
+    "images/blank.webp",
+    "images/Background Badan.webp",
+    "images/Background Kepala.webp",
+    "images/Brand Utama Putih.webp",
+    "images/Brand Utama Warna.webp",
+    "images/Budaya Perusahaan.webp",
+    "images/Logo Brand.webp",
+    "images/Logo ISO.webp",
+    "fonts/Roboto400.woff2",
+    "fonts/Roboto500.woff2"
 ];
 var expectedCacheNames = Object.keys(CURRENT_CACHES).map(function (key) {
     return CURRENT_CACHES[key];
@@ -82,14 +81,14 @@ self.addEventListener('activate', function (event) {
 });
 
 self.addEventListener('fetch', function (event) {
-    var rek = new URL(event.request.url);
-    rek = location.origin + rek.pathname;
+    // var rek = new URL(event.request.url);
+    // rek = location.origin + rek.pathname;
     // if (event.request.method === 'GET') {
     event.respondWith(
         (async () => {
             try {
 
-                const cachedResponse = await caches.match(rek, { ignoreSearch: true, ignoreVary: true });
+                const cachedResponse = await caches.match(event.request, { ignoreSearch: true, ignoreVary: true });
                 if (cachedResponse) return cachedResponse;
                 // First, try to use the navigation preload response if it's supported.
 

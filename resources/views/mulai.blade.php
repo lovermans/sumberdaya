@@ -3,8 +3,7 @@
 @section('isi')
 <div id="mulai-aplikasi">
     @if (!$rekRangka->user())
-    <form id="form-masuk" class="form-xhr kartu" method="POST" data-tn="true"
-        action="{{ $urlRangka->route('login', [], false) }}">
+    <form id="form-masuk" class="form-xhr kartu" method="POST" data-tn="true" action="{{ $urlRangka->route('login') }}">
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
 
         <div class="isian normal">
@@ -34,7 +33,7 @@
         <p>
             Tekan/sentuh tombol
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#aplikasi' }}"
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#aplikasi' }}"
                     xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
             di ujung kanan atas layar untuk memilih aplikasi.
@@ -165,7 +164,7 @@
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $mixRangka('/ikon.svg') . '#panahatas' }}"
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#panahatas' }}"
                     xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>

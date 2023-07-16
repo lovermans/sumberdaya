@@ -6,7 +6,7 @@
         @isset($langgar)
         <div class="gspan-4">
             <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#tutup' }}"
+                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}"
                         xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                 </svg></a>
 
@@ -55,14 +55,14 @@
 
             @if ($storageRangka->exists('sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))
             <iframe class="berkas tcetak"
-                src="{{ $urlRangka->route('sdm.pelanggaran.berkas', ['berkas' => $langgar->langgar_lap_no . '.pdf' . '?' . filemtime(storage_path('app/sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))], false) }}"
+                src="{{ $urlRangka->route('sdm.pelanggaran.berkas', ['berkas' => $langgar->langgar_lap_no . '.pdf' . '?' . filemtime(storage_path('app/sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))]) }}"
                 title="Bukti Pendukung Laporan Pelanggaran SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                href="{{ $urlRangka->route('sdm.pelanggaran.berkas', ['berkas' => $langgar->langgar_lap_no . '.pdf' . '?' . filemtime(storage_path('app/sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))], false) }}">
+                href="{{ $urlRangka->route('sdm.pelanggaran.berkas', ['berkas' => $langgar->langgar_lap_no . '.pdf' . '?' . filemtime(storage_path('app/sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))]) }}">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}"
+                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
                         xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                 </svg>
                 BERKAS
@@ -78,7 +78,7 @@
 
         @unless ($langgar->final_sanksi_jenis)
         <a class="utama isi-xhr" data-rekam="false" data-tujuan="#pelanggaran_sdm_lihat_sematan"
-            href="{{ $urlRangka->route('sdm.pelanggaran.ubah', ['uuid' => $langgar->langgar_uuid], false) }}">UBAH
+            href="{{ $urlRangka->route('sdm.pelanggaran.ubah', ['uuid' => $langgar->langgar_uuid]) }}">UBAH
             LAPORAN PELANGGARAN</a>
         @endunless
 
@@ -106,14 +106,14 @@
             $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf'))
             <iframe class="berkas tcetak"
                 src="{{ $urlRangka->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' .
-                $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf'))], false) }}"
+                $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf'))]) }}"
                 title="Dokumen Sanksi Sebelumnya" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                href="{{ $urlRangka->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' . $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf'))], false) }}">
+                href="{{ $urlRangka->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' . $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf'))]) }}">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}"
+                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
                         xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                 </svg>
                 BERKAS
@@ -152,14 +152,14 @@
             @if ($storageRangka->exists('sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' .
             $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf'))
             <iframe class="berkas tcetak"
-                src="{{ $urlRangka->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf'))], false) }}"
+                src="{{ $urlRangka->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf'))]) }}"
                 title="Dokumen Sanksi SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                href="{{ $urlRangka->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf'))], false) }}">
+                href="{{ $urlRangka->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf'))]) }}">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $mixRangka('/ikon.svg') . '#unduh' }}"
+                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
                         xmlns:xlink="http://www.w3.org/1999/xlink"></use>
                 </svg>
                 BERKAS
@@ -175,12 +175,12 @@
         @if ($langgar->langgar_status == 'DIPROSES')
         @unless ($langgar->final_sanksi_jenis)
         <a class="utama isi-xhr" data-rekam="false" data-tujuan="#pelanggaran_sdm_lihat_sematan"
-            href="{{ $urlRangka->route('sdm.sanksi.tambah', ['lap_uuid' => $langgar->langgar_uuid], false) }}">TAMBAH
+            href="{{ $urlRangka->route('sdm.sanksi.tambah', ['lap_uuid' => $langgar->langgar_uuid]) }}">TAMBAH
             SANKSI</a>
 
         @else
         <a class="utama isi-xhr" data-rekam="false" data-tujuan="#pelanggaran_sdm_lihat_sematan"
-            href="{{ $urlRangka->route('sdm.sanksi.ubah', ['uuid' => $langgar->final_sanksi_uuid], false) }}">UBAH
+            href="{{ $urlRangka->route('sdm.sanksi.ubah', ['uuid' => $langgar->final_sanksi_uuid]) }}">UBAH
             SANKSI</a>
         @endunless
         @endif
