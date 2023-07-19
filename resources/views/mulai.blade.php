@@ -175,7 +175,7 @@
 
     @if($userRangka && $rekRangka->pjax())
     <script>
-        cariElemen("#menu-aplikasi a[href='/']").then((el) => {el.classList.add("aktif");});
+        cariElemen("#menu-aplikasi a[href='{{ $urlRangka->route('mulai') }}']").then((el) => {el.classList.add("aktif");});
     </script>
     @endif
 </div>

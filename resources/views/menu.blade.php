@@ -61,6 +61,11 @@ loading="lazy">
         </a>
     </form>
 </div>
+<script>
+    if ("{{ $urlRangka->route('sdm.akun', ['uuid' => $userRangka->sdm_uuid]) }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('sdm.akun',
+        ['uuid' => $userRangka->sdm_uuid]) }}']").then((el) => {el.classList.add("aktif");});
+    if ("{{$urlRangka->route('sdm.ubah-sandi') }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('sdm.ubah-sandi') }}']").then((el) => {el.classList.add("aktif");});
+</script>
 @endif
 @endfragment
 
@@ -89,7 +94,7 @@ loading="lazy">
     </a>
 
     @if($strRangka->contains($userRangka?->sdm_hak_akses, 'PENGURUS'))
-    <a @class(['menu-xhr', 'aktif'=> $rekRangka->is('atur')]) href="{{ $urlRangka->route('atur.data')
+    <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('atur.*')]) href="{{ $urlRangka->route('atur.data')
         }}">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#pengaturan' }}"
@@ -99,7 +104,10 @@ loading="lazy">
         Pengaturan Umum
     </a>
     @endif
-
 </div>
+<script>
+    if ("{{$urlRangka->route('sdm.mulai') }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('sdm.mulai') }}']").then((el) => {el.classList.add("aktif");});
+    if ("{{ $urlRangka->route('atur.data') }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('atur.data') }}']").then((el) => {el.classList.add("aktif");});
+</script>
 @endif
 @endfragment

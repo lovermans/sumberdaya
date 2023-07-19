@@ -28,9 +28,9 @@ document.addEventListener('click', function (e) {
             tn = b.dataset.tn == 'true' ? true : false,
             nn = b.dataset.nn == 'true' ? true : false,
             simpan = rekam == 'false' ? false : true;
-        if (!alamat.startsWith(location.origin)) {
-            alamat = location.origin + alamat;
-        };
+        // if (!alamat.startsWith(location.origin)) {
+        //     alamat = location.origin + alamat;
+        // };
         if (a) {
             var navAktif = document.querySelectorAll('nav a.aktif, aside a.aktif'),
                 appAktif = document.querySelectorAll('aside#menu-aplikasi a'),
@@ -42,13 +42,13 @@ document.addEventListener('click', function (e) {
 
             a.classList.add('aktif');
 
-            if (appAktif && urlAktif.pathname.length > 1) {
-                for (let m = 0; m < appAktif.length; m++) {
-                    if (urlAktif.href.includes(appAktif[m].href) && appAktif[m].pathname.length > 1) {
-                        appAktif[m].classList.add('aktif');
-                    };
+            // if (appAktif && urlAktif.pathname.length > 1) {
+            for (let m = 0; m < appAktif.length; m++) {
+                if (urlAktif.href == appAktif[m].href) {
+                    appAktif[m].classList.add('aktif');
                 };
             };
+            // };
         };
         // if (location.href == alamat) {
         //     return;
@@ -93,7 +93,7 @@ document.addEventListener('submit', function (e) {
         var alamat = a.dataset.tujuan,
             metode = a.method?.toUpperCase(),
             pesan = a.dataset.pesan,
-            ke = a.dataset.blank == 'true' ? window.location.pathname : a.action,
+            ke = a.dataset.blank == 'true' ? window.location.href : a.action,
             singkat = a.dataset.singkat == 'true' ? true : false,
             prog = a.dataset.laju == 'true' ? true : false,
             frag = a.dataset.frag == 'true' ? true : false,
@@ -101,9 +101,9 @@ document.addEventListener('submit', function (e) {
             nn = a.dataset.nn == 'true' ? true : false,
             data = new FormData(a);
 
-        if (!ke.startsWith(location.origin)) {
-            ke = location.origin + ke;
-        };
+        // if (!ke.startsWith(location.origin)) {
+        //     ke = location.origin + ke;
+        // };
 
         if (metode == 'GET') {
             ke += '?' + new URLSearchParams(data).toString();
@@ -163,9 +163,9 @@ window.lemparXHR = function (data) {
         tanam = data.tanam ?? 'ganti',
         callback = data.callback ?? responUmum;
     var isi = document.querySelector(sisi) ?? document.querySelector('#isi') ?? document.querySelector('body');
-    if (!tautan.startsWith(location.origin)) {
-        tautan = location.origin + tautan;
-    };
+    // if (!tautan.startsWith(location.origin)) {
+    //     tautan = location.origin + tautan;
+    // };
     if (mintajs) {
         isi = document.querySelector('#sematan_javascript');
         pesan = '';

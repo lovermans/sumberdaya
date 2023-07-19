@@ -79,6 +79,7 @@
             <div class="bersih"></div>
         </section>
     </header>
+
     <aside id="menu-avatar" class="tcetak"></aside>
     <aside id="menu-aplikasi" class="tcetak"></aside>
 
@@ -120,8 +121,6 @@
     {{-- <script defer type="module" src="{{ $mixRangka('/interaksi.js') }}"></script> --}}
 
     <script>
-        console.log(navigator.onLine);
-        console.log(location.href);
         window.addEventListener('DOMContentLoaded', function () {
             var tema = document.getElementById('tema'),
                 halaman = document.body,
@@ -190,7 +189,7 @@
             if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
                 let updated = false;
                 let activated = false;
-                navigator.serviceWorker.register("{{ $urlRangka->asset('/service-worker.js') }}")
+                navigator.serviceWorker.register("{{ $urlRangka->route('service-worker') .'?'. filemtime(resource_path('views/service-worker.blade.php')) }}")
                 .then(regitration => {
                     regitration.addEventListener("updatefound", () => {
                         const worker = regitration.installing;
@@ -203,6 +202,7 @@
                         });
                     });
                 });
+                
                 navigator.serviceWorker.addEventListener('controllerchange', () => {
                     console.log({ state: "updated" });
                     updated = true;

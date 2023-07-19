@@ -47,8 +47,10 @@
             });
         };
         @else
-        var NavSDM = ["/atur", "/tentang-aplikasi"];
-        if (!NavSDM.includes(location.pathname)) document.getElementById("navigasi-sdm")?.replaceChildren();
+        (function () {
+            var NavSDM = ["/atur", "/tentang-aplikasi"];
+            if (!NavSDM.includes(location.pathname)) document.getElementById("navigasi-sdm")?.replaceChildren();
+        })();
         @endif
     }
 </script>

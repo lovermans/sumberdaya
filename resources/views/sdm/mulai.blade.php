@@ -150,7 +150,7 @@
 
     @if($userRangka && $rekRangka->pjax())
     <script>
-        cariElemen("#navigasi-sdm a[href='/sdm']").then((el) => {el.classList.add("aktif");});
+        cariElemen("#navigasi-sdm a[href='{{ $urlRangka->route('sdm.mulai') }}']").then((el) => {el.classList.add("aktif");});
     </script>
     @endif
 </div>

@@ -63,7 +63,7 @@
         @endif
 
         <div class="isian normal">
-            <label for="sdm_no_absen_">Nomor Absen</label>
+            <label for="sdm_no_absen">Nomor Absen</label>
 
             <input id="sdm_no_absen" type="text" name="sdm_no_absen"
                 value="{{ $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) }}" pattern="^[0-9]{8}$"

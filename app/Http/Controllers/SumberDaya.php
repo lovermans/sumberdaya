@@ -99,4 +99,18 @@ class SumberDaya
 
         // return 'selesai';
     }
+
+    public function pwaManifest()
+    {
+        $app = app();
+        $HtmlPenuh = $app->view->make('pwa-manifest');
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlPenuh)->withHeaders(['Content-Type' => 'application/json']);
+    }
+
+    public function serviceWorker()
+    {
+        $app = app();
+        $HtmlPenuh = $app->view->make('service-worker');
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlPenuh)->withHeaders(['Content-Type' => 'application/javascript']);
+    }
 }
