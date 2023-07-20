@@ -26,28 +26,28 @@ class AppServiceProvider extends ServiceProvider
         // if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) || !in_array(request()->getHost(), ['localhost', '192.168.113.222'])) {URL::forceScheme('https');}
 
         $appRangka = app();
-        $rekRangka = $appRangka->request;
+        // $rekRangka = $appRangka->request;
         $urlRangka = $appRangka->url;
         $storageRangka = $appRangka->filesystem;
 
-        $data = [
-            'appRangka' => $appRangka,
-            'rekRangka' => $rekRangka,
-            'confRangka' => $appRangka->config,
-            'urlRangka' => $urlRangka,
-            'storageRangka' => $storageRangka,
-            'mixRangka' => $appRangka->make('Illuminate\Foundation\Mix'),
-            'dateRangka' => $appRangka->date,
-            'strRangka' => str(),
-            // 'sesiRangka' => $appRangka->session
-        ];
+        // $data = [
+        //     'appRangka' => $appRangka,
+        //     'rekRangka' => $rekRangka,
+        //     'confRangka' => $appRangka->config,
+        //     'urlRangka' => $urlRangka,
+        //     'storageRangka' => $storageRangka,
+        //     'mixRangka' => $appRangka->make('Illuminate\Foundation\Mix'),
+        //     'dateRangka' => $appRangka->date,
+        //     'strRangka' => str(),
+        //     // 'sesiRangka' => $appRangka->session
+        // ];
 
-        $appRangka->view->composer('*', function ($view) use ($data, $rekRangka) {
-            $view->with($data)
-            ->with('userRangka', $rekRangka->user())
-            // ->with('sesiRangka', $appRangka->session)
-            ;
-        });
+        // $appRangka->view->composer('*', function ($view) use ($data, $rekRangka) {
+        //     $view->with($data)
+        //     ->with('userRangka', $rekRangka->user())
+        //     // ->with('sesiRangka', $appRangka->session)
+        //     ;
+        // });
 
         $storageRangka->disk('local')->buildTemporaryUrlsUsing(function ($berkas, $expiration, $options) use ($urlRangka) {
             return $urlRangka->temporarySignedRoute(

@@ -35,9 +35,10 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \App\Http\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\ShareAppClass::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            // \App\Http\Middleware\RingkasHTML::class,
+            \App\Http\Middleware\RingkasHTML::class,
             \App\Http\Middleware\SecurityHeaders::class,
         ],
 

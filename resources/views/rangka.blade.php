@@ -189,7 +189,7 @@
             if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
                 let updated = false;
                 let activated = false;
-                navigator.serviceWorker.register("{{ $urlRangka->route('service-worker') .'?'. filemtime(resource_path('views/service-worker.blade.php')) }}")
+                navigator.serviceWorker.register("{{ $urlRangka->route('service-worker') . '?' . filemtime(resource_path('views/service-worker.blade.php')) }}")
                 .then(regitration => {
                     regitration.addEventListener("updatefound", () => {
                         const worker = regitration.installing;

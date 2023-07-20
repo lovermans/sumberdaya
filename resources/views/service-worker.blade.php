@@ -1,6 +1,6 @@
-var CACHE_VERSION = 202307120030;
+var CACHE_VERSION = 202307120032;
 var CURRENT_CACHES = {
-    prefetch: 'sumberdaya-cache-v' + CACHE_VERSION
+    prefetch: "{{ $confRangka->get('app.name', 'Laravel') }}-cache-v" + CACHE_VERSION
 };
 var offline = [
     "{{ $rekRangka->getBasePath() !=='' ? $rekRangka->getBasePath() : '/' }}",
@@ -104,7 +104,7 @@ self.addEventListener('fetch', function (event) {
                 console.log('Fetch failed; returning offline page instead.', error);
 
                 const cache = await caches.open(CURRENT_CACHES.prefetch);
-                const cachedResponse = await cache.match("{{ $urlRangka->route('offline') }}");
+                const cachedResponse = await cache.match("offline");
                 return cachedResponse;
             }
         })()
