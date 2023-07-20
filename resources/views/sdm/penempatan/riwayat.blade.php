@@ -433,7 +433,7 @@
                                             title="Ubah Data">Ubah Penempatan</a>
                                         @endisset
 
-                                        @unless ($tabel->sdm_uuid == $userRangka->sdm_uuid)
+                                        @unless ($tabel->sdm_uuid == $rekRangka->user()->sdm_uuid)
                                         <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan"
                                             href="{{ $urlRangka->route('sdm.penempatan.tambah', ['uuid' => $tabel->sdm_uuid]) }}"
                                             title="Tambah Data">Tambah Penempatan</a>

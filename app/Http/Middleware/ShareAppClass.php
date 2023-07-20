@@ -20,7 +20,7 @@ class ShareAppClass extends ShareErrorsFromSession
             'mixRangka' => $appRangka->make('Illuminate\Foundation\Mix'),
             'dateRangka' => $appRangka->date,
             'strRangka' => str(),
-            'userRangka' => $request->user()
+            // 'userRangka' => $request->user()
         ]);
 
         return $next($request);

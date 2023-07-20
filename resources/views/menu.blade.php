@@ -1,5 +1,5 @@
 @fragment('pilih-sumber_daya')
-@if ($userRangka)
+@if ($rekRangka->user())
 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#aplikasi' }}"
         xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -9,22 +9,23 @@
 @endfragment
 
 @fragment('avatar')
-@if($userRangka)
-<img id="akun" @class(['svg'=> !$storageRangka->exists('sdm/foto-profil/' . $userRangka->sdm_no_absen . '.webp')])
-src="{{ $storageRangka->exists('sdm/foto-profil/' . $userRangka->sdm_no_absen . '.webp') ?
-$urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $userRangka?->sdm_no_absen . '.webp' .
-'?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $userRangka->sdm_no_absen . '.webp'))]) :
+@if($rekRangka->user())
+<img id="akun" @class(['svg'=> !$storageRangka->exists('sdm/foto-profil/' . $rekRangka->user()->sdm_no_absen .
+'.webp')])
+src="{{ $storageRangka->exists('sdm/foto-profil/' . $rekRangka->user()->sdm_no_absen . '.webp') ?
+$urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $rekRangka->user()?->sdm_no_absen . '.webp' .
+'?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $rekRangka->user()->sdm_no_absen . '.webp'))]) :
 $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}"
-alt="{{ $userRangka->sdm_nama ?? 'foto akun' }}" title="{{ $userRangka->sdm_nama ?? 'foto akun' }}"
+alt="{{ $rekRangka->user()->sdm_nama ?? 'foto akun' }}" title="{{ $rekRangka->user()->sdm_nama ?? 'foto akun' }}"
 loading="lazy">
 @endif
 @endfragment
 
 @fragment('menu-avatar')
-@if($userRangka)
+@if($rekRangka->user())
 <div class="menu-akun">
     <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('sdm.akun')]) href="{{ $urlRangka->route('sdm.akun',
-        ['uuid' => $userRangka->sdm_uuid]) }}">
+        ['uuid' => $rekRangka->user()->sdm_uuid]) }}">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}"
                 xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -62,8 +63,8 @@ loading="lazy">
     </form>
 </div>
 <script>
-    if ("{{ $urlRangka->route('sdm.akun', ['uuid' => $userRangka->sdm_uuid]) }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('sdm.akun',
-        ['uuid' => $userRangka->sdm_uuid]) }}']").then((el) => {el.classList.add("aktif");});
+    if ("{{ $urlRangka->route('sdm.akun', ['uuid' => $rekRangka->user()->sdm_uuid]) }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('sdm.akun',
+        ['uuid' => $rekRangka->user()->sdm_uuid]) }}']").then((el) => {el.classList.add("aktif");});
     if ("{{$urlRangka->route('sdm.ubah-sandi') }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('sdm.ubah-sandi') }}']").then((el) => {el.classList.add("aktif");});
 </script>
 @endif
@@ -71,7 +72,7 @@ loading="lazy">
 
 
 @fragment('menu-aplikasi')
-@if($userRangka)
+@if($rekRangka->user())
 <div class="menu-akun">
     <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('mulai')]) href="{{ $urlRangka->route('mulai')
         }}">
@@ -93,7 +94,7 @@ loading="lazy">
         Sumber Daya Manusia
     </a>
 
-    @if($strRangka->contains($userRangka?->sdm_hak_akses, 'PENGURUS'))
+    @if($strRangka->contains($rekRangka->user()?->sdm_hak_akses, 'PENGURUS'))
     <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('atur.*')]) href="{{ $urlRangka->route('atur.data')
         }}">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

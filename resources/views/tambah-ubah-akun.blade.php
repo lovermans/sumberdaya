@@ -28,7 +28,7 @@
                 null).'.webp') ? '(berkas yang diunggah akan menindih berkas unggahan lama).' : '' }}</span>
         </div>
 
-        @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS'))
+        @if($strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS'))
         <div class="isian panjang">
             <label for="permintaan_sdm_no">No Permintaan</label>
 
@@ -67,13 +67,14 @@
 
             <input id="sdm_no_absen" type="text" name="sdm_no_absen"
                 value="{{ $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) }}" pattern="^[0-9]{8}$"
-                inputmode="numeric" {{$strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' :
+                inputmode="numeric" {{$strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS') ?
+            'required' :
             'readonly'}}>
 
             <span class="t-bantu">8 digit nomor absen</span>
         </div>
 
-        @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS'))
+        @if($strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS'))
         <div class="isian panjang">
             <label for="sdm_no_absen_atasan">Nomor Absen Atasan</label>
 
@@ -104,7 +105,7 @@
 
             <input id="sdm_tgl_gabung" type="date" name="sdm_tgl_gabung"
                 value="{{ $rekRangka->old('sdm_tgl_gabung', $sdm->sdm_tgl_gabung ?? $dateRangka->today()->toDateString()) }}"
-                {{$strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' : 'readonly'}}>
+                {{$strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' : 'readonly'}}>
 
             <span class="t-bantu">Pilih atau isi tanggal</span>
         </div>
@@ -113,7 +114,7 @@
             <label for="sdm_warganegara">Warganegara</label>
 
             <select id="sdm_warganegara" name="sdm_warganegara" class="pil-cari"
-                {{$strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' : 'readonly'}}>
+                {{$strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' : 'readonly'}}>
                 @if (!in_array($rekRangka->old('sdm_warganegara', $sdm->sdm_warganegara ?? null),
                 $negaras->pluck('atur_butir')->toArray()) && $rekRangka->old('sdm_warganegara', $sdm->sdm_warganegara ??
                 null))
@@ -403,7 +404,7 @@
             <label for="sdm_disabilitas">Disabilitas</label>
 
             <select id="sdm_disabilitas" name="sdm_disabilitas" class="pil-cari"
-                {{$strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' : 'readonly'}}>
+                {{$strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' : 'readonly'}}>
                 @if (!in_array($rekRangka->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null),
                 $disabilitas->pluck('atur_butir')->toArray()) && $rekRangka->old('sdm_disabilitas',
                 $sdm->sdm_disabilitas ?? null))
@@ -419,7 +420,8 @@
                 @endforeach
             </select>
 
-            <span class="t-bantu">{{$strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS') ? 'Disarankan tidak
+            <span class="t-bantu">{{$strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS') ?
+                'Disarankan tidak
                 memilih pilihan berwarna merah' : 'Perubahan tidak akan tersimpan'}}</span>
         </div>
 
@@ -450,7 +452,7 @@
             <span class="t-bantu">Nomor atau keterangan</span>
         </div>
 
-        @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS'))
+        @if($strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS'))
         <div class="isian pendek">
             <label for="sdm_nama_bank">Nama Bank</label>
 
@@ -578,7 +580,7 @@
             <span class="t-bantu">Angka</span>
         </div>
 
-        @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS'))
+        @if($strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS'))
         <div class="isian gspan-4">
             <label for="sdm_ket_kary">Keterangan</label>
 
@@ -590,7 +592,8 @@
         @endif
 
         @if ($rekRangka->routeIs('sdm.ubah-akun'))
-        @if (!$userRangka?->sdm_ijin_akses && $strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS'))
+        @if (!$rekRangka->user()?->sdm_ijin_akses && $strRangka->contains($rekRangka->user()->sdm_hak_akses,
+        'SDM-PENGURUS'))
         <div class="isian normal">
             <label for="sdm_hak_akses">Peran</label>
 
@@ -622,7 +625,7 @@
         </div>
         @endif
 
-        @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS'))
+        @if($strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS'))
         <div class="isian pendek">
             <label for="sdm_tgl_berhenti">Tanggal Berhenti</label>
 
@@ -691,7 +694,7 @@
         @endif
         @endif
 
-        @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS'))
+        @if($strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS'))
         <div class="isian normal">
             <label for="sdm_berkas">Unggah Berkas</label>
 

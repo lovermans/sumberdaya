@@ -1,7 +1,7 @@
 @if ($rekRangka->pjax())
 <script>
     if (navigator.onLine) {
-        @if ($userRangka)
+        @if ($rekRangka->user())
         if (!document.getElementById("tbl-menu")?.innerHTML.trim()) {
             lemparXHR({
             tujuan : "#tbl-menu",
@@ -38,7 +38,7 @@
         
         @endif
 
-        @if($userRangka && $rekRangka->routeIs('sdm.*', 'register'))
+        @if($rekRangka->user() && $rekRangka->routeIs('sdm.*', 'register'))
         if (!document.getElementById("navigasi-sdm")?.innerHTML.trim()) {
             lemparXHR({
             tujuan : "#navigasi-sdm",

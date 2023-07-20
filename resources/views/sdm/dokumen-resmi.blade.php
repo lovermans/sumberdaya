@@ -12,27 +12,29 @@
         validasi tautan dokumen di halaman ini.
     </p>
 
-    @if($strRangka->contains($userRangka->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
+    @if($strRangka->contains($rekRangka->user()->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
     <details class="kartu">
         <summary>Standar Gaji</summary>
 
         <ol>
-            @if ($strRangka->contains($userRangka->sdm_ijin_akses, ['KKA-BM', 'KKA-GG', 'KKA-BKM']) ||
-            blank($userRangka->sdm_ijin_akses))
+            @if ($strRangka->contains($rekRangka->user()->sdm_ijin_akses, ['KKA-BM', 'KKA-GG', 'KKA-BKM']) ||
+            blank($rekRangka->user()->sdm_ijin_akses))
             <li>
                 <a href="{{ $storageRangka->disk('local')->temporaryUrl('sdm/panduan-pengurus/Standar Gaji Harian Mojokerto 2022.pdf', $dateRangka->now()->addMinutes(5)) }}"
                     target="_blank">Standar Gaji Harian Mojokerto 2022.pdf</a>
             </li>
             @endif
 
-            @if ($strRangka->contains($userRangka->sdm_ijin_akses, ['KKA-MKS']) || blank($userRangka->sdm_ijin_akses))
+            @if ($strRangka->contains($rekRangka->user()->sdm_ijin_akses, ['KKA-MKS']) ||
+            blank($rekRangka->user()->sdm_ijin_akses))
             <li>
                 <a href="{{ $storageRangka->disk('local')->temporaryUrl('sdm/panduan-pengurus/Standar Gaji Harian Makassar 2022.pdf', $dateRangka->now()->addMinutes(5)) }}"
                     target="_blank">Standar Gaji Harian Makassar 2022.pdf</a>
             </li>
             @endif
 
-            @if ($strRangka->contains($userRangka->sdm_ijin_akses, ['KKA-SMG']) || blank($userRangka->sdm_ijin_akses))
+            @if ($strRangka->contains($rekRangka->user()->sdm_ijin_akses, ['KKA-SMG']) ||
+            blank($rekRangka->user()->sdm_ijin_akses))
             <li>
                 <a href="{{ $storageRangka->disk('local')->temporaryUrl('sdm/panduan-pengurus/Standar Gaji Harian Semarang 2022.pdf', $dateRangka->now()->addMinutes(5)) }}"
                     target="_blank">Standar Gaji Harian Semarang 2022.pdf</a>

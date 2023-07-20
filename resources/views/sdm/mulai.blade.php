@@ -6,7 +6,7 @@
 
     <div id="sdm_unggah_sematan" class="scroll-margin"></div>
 
-    @if($strRangka->contains($userRangka->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
+    @if($strRangka->contains($rekRangka->user()->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
     <div id="sdmIngatPtsb">
         <p class="kartu">Mengambil data permintaan tambah SDM...</p>
     </div>
@@ -148,7 +148,7 @@
     @include('pemberitahuan')
     @include('komponen')
 
-    @if($userRangka && $rekRangka->pjax())
+    @if($rekRangka->user() && $rekRangka->pjax())
     <script>
         cariElemen("#navigasi-sdm a[href='{{ $urlRangka->route('sdm.mulai') }}']").then((el) => {el.classList.add("aktif");});
     </script>

@@ -1,5 +1,5 @@
-@if($userRangka && $rekRangka->routeIs('sdm.*', 'register', 'komponen'))
-@if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM'))
+@if($rekRangka->user() && $rekRangka->routeIs('sdm.*', 'register', 'komponen'))
+@if($strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM'))
 <h2>Sumber Daya Manusia</h2>
 <div class="menu-t">
     <a @class(['nav-xhr', 'aktif'=> $rekRangka->routeIs('sdm.mulai')]) href="{{ $urlRangka->route('sdm.mulai') }}" >
@@ -24,7 +24,7 @@
 </div>
 @endif
 
-@if($strRangka->contains($userRangka->sdm_hak_akses, ['SDM-MANAJEMEN', 'SDM-PENGURUS']))
+@if($strRangka->contains($rekRangka->user()->sdm_hak_akses, ['SDM-MANAJEMEN', 'SDM-PENGURUS']))
 <div class="menu-t">
     <a @class(['nav-xhr', 'aktif'=> $rekRangka->routeIs('sdm.permintaan-tambah-sdm.*')]) href="{{
         $urlRangka->route('sdm.permintaan-tambah-sdm.data') }}">

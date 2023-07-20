@@ -122,7 +122,7 @@
             @endif
         </div>
 
-        @if($strRangka->contains($userRangka->sdm_hak_akses, 'SDM-PENGURUS'))
+        @if($strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS'))
         <div class="isian" id="penempatan-cetakFormulir">
             <select class="pil-saja tombol"
                 onchange="if (this.value !== '') lemparXHR({tujuan : '#penempatan-cetakFormulirStatus', tautan : this.value, strim : true})">

@@ -173,7 +173,7 @@
     @include('pemberitahuan')
     @include('komponen')
 
-    @if($userRangka && $rekRangka->pjax())
+    @if($rekRangka->user() && $rekRangka->pjax())
     <script>
         cariElemen("#menu-aplikasi a[href='{{ $urlRangka->route('mulai') }}']").then((el) => {el.classList.add("aktif");});
     </script>
