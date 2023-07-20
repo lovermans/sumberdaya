@@ -22,4 +22,3 @@ yarn-error.log
 /resources/views/css.blade.php
 *_old*.json
 *_old*.lock
-!/public/pwa-manifest.json
