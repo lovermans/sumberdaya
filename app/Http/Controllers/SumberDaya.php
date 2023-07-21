@@ -2,27 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Tambahan\FungsiStatis;
+use App\Interaksi\Umum;
 
 class SumberDaya
 {
-    public function obyekLaravel()
-    {
-        $app = app();
-        $reqs = $app->request;
-
-        return [
-            'app' => $app,
-            'reqs' => $app->request,
-            'pengguna' => $reqs->user(),
-            'respon' => $app->make('Illuminate\Contracts\Routing\ResponseFactory'),
-            'view' => $app->view
-        ];
-    }
-
     public function komponen()
     {
-        extract($this->obyekLaravel());
+        extract(Umum::obyekLaravel());
 
         return $reqs->filled('komponen') && $reqs->pjax() ?
             $respon->make(
@@ -32,7 +18,7 @@ class SumberDaya
 
     public function mulai()
     {
-        extract($this->obyekLaravel());
+        extract(Umum::obyekLaravel());
 
         $HtmlPenuh = $view->make('rangka');
         return $respon->make($HtmlPenuh)->withHeaders(['Vary' => 'Accept']);
@@ -40,7 +26,7 @@ class SumberDaya
 
     public function mulaiAplikasi()
     {
-        extract($this->obyekLaravel());
+        extract(Umum::obyekLaravel());
 
         if ($pengguna) {
             $sandi = $pengguna->password;
@@ -63,7 +49,7 @@ class SumberDaya
 
     public function tentangAplikasi()
     {
-        extract($this->obyekLaravel());
+        extract(Umum::obyekLaravel());
 
         $HtmlPenuh = $view->make('tentang-aplikasi');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
@@ -72,17 +58,17 @@ class SumberDaya
 
     public function unduh($berkas = null)
     {
-        extract($this->obyekLaravel());
+        extract(Umum::obyekLaravel());
 
         abort_unless($berkas && $app->filesystem->exists("unduh/{$berkas}"), 404, 'Berkas Tidak Ditemukan.');
         return $respon->download($app->storagePath("app/unduh/{$berkas}"));
     }
 
-    public function unduhPanduan(FungsiStatis $fungsiStatis, $berkas)
+    public function unduhPanduan($berkas)
     {
-        extract($this->obyekLaravel());
+        extract(Umum::obyekLaravel());
 
-        $fungsiStatis->hapusBerkasLama();
+        Umum::hapusBerkasUnduhanLama();
 
         abort_unless($berkas && $app->filesystem->exists("{$berkas}"), 404, 'Berkas Tidak Ditemukan.');
 
@@ -99,7 +85,7 @@ class SumberDaya
 
     public function periksaPengguna()
     {
-        extract($this->obyekLaravel());
+        extract(Umum::obyekLaravel());
 
         $reqs->user() ? $respon->make('true')->withHeaders(['Vary' => 'Accept']) : $respon->make('false')->withHeaders(['Vary' => 'Accept']);
     }
@@ -115,7 +101,7 @@ class SumberDaya
 
     public function pwaManifest()
     {
-        extract($this->obyekLaravel());
+        extract(Umum::obyekLaravel());
 
         $HtmlPenuh = $view->make('pwa-manifest');
         return $respon->make($HtmlPenuh)->withHeaders(['Content-Type' => 'application/json']);
@@ -123,7 +109,7 @@ class SumberDaya
 
     public function serviceWorker()
     {
-        extract($this->obyekLaravel());
+        extract(Umum::obyekLaravel());
 
         $HtmlPenuh = $view->make('service-worker');
         return $respon->make($HtmlPenuh)->withHeaders(['Content-Type' => 'application/javascript', 'Cache-Control' => 'no-cache']);
