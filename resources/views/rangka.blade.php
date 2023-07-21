@@ -182,14 +182,14 @@
         function ringkasTabel (el) {
             el.previousElementSibling.classList.toggle('ringkas');
         };
-        if (!navigator.onLine) {
-            document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Coba periksa koneksi internet lalu muat ulang halaman <a href='/'>Beranda</a>.</p>";
+        if (location.href == "{{ $urlRangka->route('mulai').'/' }}" && !navigator.onLine) {
+            document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $urlRangka->route('mulai') }}'>Hubungkan Aplikasi</a>.</p>";
         };
-        window.onload = function () {
+        (function () { 
             if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
                 let updated = false;
                 let activated = false;
-                navigator.serviceWorker.register("{{ $urlRangka->route('service-worker') . '?' . filemtime(resource_path('views/service-worker.blade.php')) }}")
+                navigator.serviceWorker.register("{{ $rekRangka->getBasePath() . '/service-worker.js' }}")
                 .then(regitration => {
                     regitration.addEventListener("updatefound", () => {
                         const worker = regitration.installing;
@@ -216,7 +216,7 @@
                     }
                 }
             };
-        }
+        })();
     </script>
 </body>
 

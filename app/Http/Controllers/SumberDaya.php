@@ -111,6 +111,6 @@ class SumberDaya
     {
         $app = app();
         $HtmlPenuh = $app->view->make('service-worker');
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlPenuh)->withHeaders(['Content-Type' => 'application/javascript']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlPenuh)->withHeaders(['Content-Type' => 'application/javascript', 'Cache-Control' => 'no-cache']);
     }
 }

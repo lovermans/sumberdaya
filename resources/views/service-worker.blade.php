@@ -1,4 +1,4 @@
-var CACHE_VERSION = 202307120032;
+var CACHE_VERSION = 202307211545;
 var CURRENT_CACHES = {
     prefetch: "{{ $confRangka->get('app.name', 'Laravel') }}-cache-v" + CACHE_VERSION
 };
@@ -38,7 +38,7 @@ async function onInstall(event) {
         cache.add(new Request(aset), { cache: 'reload', credentials: 'include' });
         }); */
         offline.forEach(function (aset) {
-            cache.add(new Request(aset), { cache: 'reload', credentials: 'include' });
+            cache.add(new Request(aset), { cache: 'default', credentials: 'include' });
         });
         console.log('All resources have been fetched and cached.');
         /* skipWaiting() allows this service worker to become active
