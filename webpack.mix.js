@@ -18,7 +18,7 @@ mix.disableNotifications();
 mix.scripts('resources/js/js.js', 'public/interaksi.js').version();
 mix.scripts('resources/js/slimselect-es.js', 'public/slimselect-es.js').version();
 mix.scripts('resources/js/siapkan-foto-es.js', 'public/siapkan-foto-es.js').version();
-mix.scripts('resources/js/service-worker.js', 'public/service-worker.js').version();
+// mix.scripts('resources/js/service-worker.js', 'public/service-worker.js').version();
 // mix.combine(['resources/js/js.js', 'resources/js/slimselect.js'], 'public/interaksi.js', true).version();
 mix.css('resources/css/app.css', 'public/tampilan.css').options({
     processCssUrls: false
