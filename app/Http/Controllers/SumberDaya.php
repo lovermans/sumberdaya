@@ -21,6 +21,7 @@ class SumberDaya
         extract(Umum::obyekLaravel());
 
         $HtmlPenuh = $view->make('rangka');
+
         return $respon->make($HtmlPenuh)->withHeaders(['Vary' => 'Accept']);
     }
 
@@ -44,6 +45,7 @@ class SumberDaya
 
         $HtmlPenuh = $view->make('mulai');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
         return $reqs->pjax() ? $respon->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlPenuh;
     }
 
@@ -53,6 +55,7 @@ class SumberDaya
 
         $HtmlPenuh = $view->make('tentang-aplikasi');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
         return $reqs->pjax() ? $respon->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
     }
 
@@ -61,6 +64,7 @@ class SumberDaya
         extract(Umum::obyekLaravel());
 
         abort_unless($berkas && $app->filesystem->exists("unduh/{$berkas}"), 404, 'Berkas Tidak Ditemukan.');
+
         return $respon->download($app->storagePath("app/unduh/{$berkas}"));
     }
 
@@ -103,15 +107,13 @@ class SumberDaya
     {
         extract(Umum::obyekLaravel());
 
-        $HtmlPenuh = $view->make('pwa-manifest');
-        return $respon->make($HtmlPenuh)->withHeaders(['Content-Type' => 'application/json']);
+        return $respon->make($view->make('pwa-manifest'))->withHeaders(['Content-Type' => 'application/json']);
     }
 
     public function serviceWorker()
     {
         extract(Umum::obyekLaravel());
 
-        $HtmlPenuh = $view->make('service-worker');
-        return $respon->make($HtmlPenuh)->withHeaders(['Content-Type' => 'application/javascript', 'Cache-Control' => 'no-cache']);
+        return $respon->make($view->make('service-worker'))->withHeaders(['Content-Type' => 'application/javascript', 'Cache-Control' => 'no-cache']);
     }
 }

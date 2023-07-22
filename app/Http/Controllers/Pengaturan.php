@@ -10,43 +10,20 @@ use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ExcelReader;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as ExcelWriter;
+use App\Interaksi\Umum;
 
 
 class Pengaturan
 {
-    public function index(Rule $rule)
+    public function index()
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
+        extract(Umum::obyekLaravel());
 
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
         $cacheAturs = FungsiStatis::ambilCacheAtur();
 
-        $validator = $app->validator->make(
-            $reqs->all(),
-            [
-                'kata_kunci' => ['sometimes', 'nullable', 'string'],
-                'atur_jenis.*' => ['sometimes', 'nullable', 'string', 'max:20',],
-                'atur_butir.*' => ['sometimes', 'nullable', 'string', 'max:40'],
-                'atur_status.*' => ['sometimes', 'nullable', 'string', $rule->in(['', 'AKTIF', 'NON-AKTIF'])],
-                'bph' => ['sometimes', 'nullable', 'numeric', $rule->in([25, 50, 75, 100])],
-                'urut.*' => ['sometimes', 'nullable', 'string']
-            ],
-            [
-                'atur_status.*.string' => 'Status Pengaturan urutan #:position wajib berupa karakter.',
-                'atur_status.*.in' => 'Status Pengaturan urutan #:position tidak sesuai daftar.',
-                'atur_butir.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
-                'atur_butir.*.max' => 'Butir Pengaturan urutan #:position maksimal 40 karakter.',
-                'atur_jenis.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
-                'atur_jenis.*.max' => 'Butir Pengaturan urutan #:position maksimal 20 karakter.',
-                'kata_kunci.*' => 'Kata Kunci Pencarian harus berupa karakter',
-                'bph.*' => 'Baris Per halaman tidak sesuai daftar.',
-                'urut.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.'
-            ]
-        );
+        $validator = $this->validasiPermintaanDataPengaturan($app->validator, $reqs->all());
 
         if ($validator->fails()) {
             return $app->redirect->route('atur.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
@@ -81,74 +58,10 @@ class Pengaturan
         $indexStatus = (head(array_keys($kunciUrut, 'atur_status ASC')) + head(array_keys($kunciUrut, 'atur_status DESC')) + 1);
 
 
-        $cari = $this->dataDasar()->clone()->addSelect('atur_uuid')
-            ->when($reqs->atur_status, function ($query) use ($reqs) {
-                $query->whereIn('atur_status', $reqs->atur_status);
-            })
-            ->when($reqs->atur_jenis, function ($query) use ($reqs) {
-                $query->whereIn('atur_jenis', $reqs->atur_jenis);
-            })
-            ->when($reqs->atur_butir, function ($query) use ($reqs) {
-                $query->whereIn('atur_butir', $reqs->atur_butir);
-            })
-            ->when($reqs->kata_kunci, function ($query) use ($reqs) {
-                $query->where(function ($group) use ($reqs) {
-                    $group->where('atur_jenis', 'like', '%' . $reqs->kata_kunci . '%')
-                        ->orWhere('atur_butir', 'like', '%' . $reqs->kata_kunci . '%')
-                        ->orWhere('atur_detail', 'like', '%' . $reqs->kata_kunci . '%');
-                });
-            })
-            ->when(
-                $uruts,
-                function ($query, $uruts) {
-                    $query->orderByRaw($uruts);
-                },
-                function ($query) {
-                    $query->latest('atur_dibuat');
-                }
-            );
+        $cari = $this->ambilDatabasePengaturan($reqs, $uruts);
 
         if ($reqs->unduh == 'excel') {
-            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
-
-            set_time_limit(0);
-            ob_implicit_flush();
-            ob_end_flush();
-            header('X-Accel-Buffering: no');
-
-            $spreadsheet = new Spreadsheet();
-            $filename = 'eksporpengaturan-' . date('YmdHis') . '.xlsx';
-            Cell::setValueBinder(new CustomValueBinder());
-            $worksheet = $spreadsheet->getActiveSheet();
-            $x = 1;
-
-            $cari->clone()->chunk(100, function ($hasil) use (&$x, $worksheet) {
-                if ($x == 1) {
-                    $list = $hasil->map(function ($x) {
-                        return collect($x)->except(['atur_uuid']);
-                    })->toArray();
-                    array_unshift($list, array_keys($list[0]));
-                    $worksheet->fromArray($list, NULL, 'A' . $x);
-                    $x++;
-                } else {
-                    $list = $hasil->map(function ($x) {
-                        return collect($x)->except(['atur_uuid']);
-                    })->toArray();
-                    $worksheet->fromArray($list, NULL, 'A' . $x);
-                };
-                $x += count($hasil);
-                echo '<p>Status : Memproses ' . ($x - 2) . ' data pengaturan.</p>';
-            });
-
-            echo '<p>Status : Menyiapkan berkas excel.</p>';
-
-            $writer = new ExcelWriter($spreadsheet);
-            $writer->setPreCalculateFormulas(false);
-            $writer->save($app->storagePath("app/unduh/{$filename}"));
-            $spreadsheet->disconnectWorksheets();
-            unset($spreadsheet);
-
-            return $app->redirect->to($app->filesystem->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
+            return $this->eksporExcelDatabasePengaturan($app, $reqs, $cari);
         }
 
         $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'atur_tabels']);
@@ -168,11 +81,11 @@ class Pengaturan
 
         $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
 
-        $HtmlPenuh = $app->view->make('pengaturan.data', $data);
-        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+        $HtmlPenuh = $view->make('pengaturan.data', $data);
+
         return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
-            ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
-            : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
+            ? $respon->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
+            : $respon->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function atributInput()
@@ -543,5 +456,110 @@ class Pengaturan
         $HtmlPenuh = $halaman->make('pengaturan.unggah');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']);
+    }
+
+    public function validasiPermintaanDataPengaturan($validator, $permintaan)
+    {
+        return $validator->make(
+            $permintaan,
+            [
+                'kata_kunci' => ['sometimes', 'nullable', 'string'],
+                'atur_jenis.*' => ['sometimes', 'nullable', 'string', 'max:20',],
+                'atur_butir.*' => ['sometimes', 'nullable', 'string', 'max:40'],
+                'atur_status.*' => ['sometimes', 'nullable', 'string', Rule::in(['', 'AKTIF', 'NON-AKTIF'])],
+                'bph' => ['sometimes', 'nullable', 'numeric', Rule::in([25, 50, 75, 100])],
+                'urut.*' => ['sometimes', 'nullable', 'string']
+            ],
+            [
+                'atur_status.*.string' => 'Status Pengaturan urutan #:position wajib berupa karakter.',
+                'atur_status.*.in' => 'Status Pengaturan urutan #:position tidak sesuai daftar.',
+                'atur_butir.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
+                'atur_butir.*.max' => 'Butir Pengaturan urutan #:position maksimal 40 karakter.',
+                'atur_jenis.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
+                'atur_jenis.*.max' => 'Butir Pengaturan urutan #:position maksimal 20 karakter.',
+                'kata_kunci.*' => 'Kata Kunci Pencarian harus berupa karakter',
+                'bph.*' => 'Baris Per halaman tidak sesuai daftar.',
+                'urut.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.'
+            ]
+        );
+    }
+
+    public function ambilDatabasePengaturan($reqs, $uruts)
+    {
+        return $this->dataDasar()->clone()->addSelect('atur_uuid')
+            ->when($reqs->atur_status, function ($query) use ($reqs) {
+                $query->whereIn('atur_status', $reqs->atur_status);
+            })
+            ->when($reqs->atur_jenis, function ($query) use ($reqs) {
+                $query->whereIn('atur_jenis', $reqs->atur_jenis);
+            })
+            ->when($reqs->atur_butir, function ($query) use ($reqs) {
+                $query->whereIn('atur_butir', $reqs->atur_butir);
+            })
+            ->when($reqs->kata_kunci, function ($query) use ($reqs) {
+                $query->where(function ($group) use ($reqs) {
+                    $group->where('atur_jenis', 'like', '%' . $reqs->kata_kunci . '%')
+                        ->orWhere('atur_butir', 'like', '%' . $reqs->kata_kunci . '%')
+                        ->orWhere('atur_detail', 'like', '%' . $reqs->kata_kunci . '%');
+                });
+            })
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->latest('atur_dibuat');
+                }
+            );
+    }
+
+    public function eksporExcelDatabasePengaturan($app, $reqs, $data)
+    {
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+
+        $this->setelResponStream();
+
+        $spreadsheet = new Spreadsheet();
+        $filename = 'eksporpengaturan-' . date('YmdHis') . '.xlsx';
+        Cell::setValueBinder(new CustomValueBinder());
+        $worksheet = $spreadsheet->getActiveSheet();
+        $x = 1;
+
+        $data->clone()->chunk(100, function ($hasil) use (&$x, $worksheet) {
+            if ($x == 1) {
+                $list = $hasil->map(function ($x) {
+                    return collect($x)->except(['atur_uuid']);
+                })->toArray();
+                array_unshift($list, array_keys($list[0]));
+                $worksheet->fromArray($list, NULL, 'A' . $x);
+                $x++;
+            } else {
+                $list = $hasil->map(function ($x) {
+                    return collect($x)->except(['atur_uuid']);
+                })->toArray();
+                $worksheet->fromArray($list, NULL, 'A' . $x);
+            };
+            $x += count($hasil);
+            echo '<p>Status : Memproses ' . ($x - 2) . ' data pengaturan.</p>';
+        });
+
+        echo '<p>Status : Menyiapkan berkas excel.</p>';
+
+        $writer = new ExcelWriter($spreadsheet);
+        $writer->setPreCalculateFormulas(false);
+        $writer->save($app->storagePath("app/unduh/{$filename}"));
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
+
+        return $app->redirect->to($app->filesystem->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
+    }
+
+    public function setelResponStream()
+    {
+        set_time_limit(0);
+        ob_implicit_flush();
+        ob_end_flush();
+        header('X-Accel-Buffering: no');
     }
 }
