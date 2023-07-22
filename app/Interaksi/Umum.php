@@ -4,7 +4,7 @@ namespace App\Interaksi;
 
 class Umum
 {
-    public static function obyekLaravel()
+    public static function obyekPermintaanUmum()
     {
         $app = app();
         $reqs = $app->request;
@@ -13,15 +13,13 @@ class Umum
             'app' => $app,
             'reqs' => $reqs,
             'pengguna' => $reqs->user(),
-            'respon' => $app->make('Illuminate\Contracts\Routing\ResponseFactory'),
-            'view' => $app->view,
             'str' => str()
         ];
     }
 
     public static function hapusBerkasUnduhanLama()
     {
-        extract(static::obyekLaravel());
+        extract(static::obyekPermintaanUmum());
 
         $storage = $app->filesystem;
 

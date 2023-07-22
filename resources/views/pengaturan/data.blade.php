@@ -158,10 +158,10 @@
                         <select id="atur_data_cariUrutJenis" name="urut[]" class="pil-dasar" form="form_atur_data_cari"
                             onchange="getElementById('tombol_cari_atur').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('atur_jenis ASC', (array) $rekRangka->urut)) value="atur_jenis
-                                ASC">A - Z</option>
-                            <option @selected(in_array('atur_jenis DESC', (array) $rekRangka->urut)) value="atur_jenis
-                                DESC">Z - A</option>
+                            <option @selected(in_array('atur_jenis ASC', (array) $rekRangka->urut))
+                                value="atur_jenis ASC">A - Z</option>
+                            <option @selected(in_array('atur_jenis DESC', (array) $rekRangka->urut))
+                                value="atur_jenis DESC">Z - A</option>
                         </select>
 
                         <span class="t-bantu">Pilih satu</span>
@@ -173,10 +173,10 @@
                         <select id="atur_data_cariUrutButir" name="urut[]" class="pil-dasar" form="form_atur_data_cari"
                             onchange="getElementById('tombol_cari_atur').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('atur_butir ASC', (array) $rekRangka->urut)) value="atur_butir
-                                ASC">A - Z</option>
-                            <option @selected(in_array('atur_butir DESC', (array) $rekRangka->urut)) value="atur_butir
-                                DESC">Z - A</option>
+                            <option @selected(in_array('atur_butir ASC', (array) $rekRangka->urut))
+                                value="atur_butir ASC">A - Z</option>
+                            <option @selected(in_array('atur_butir DESC', (array) $rekRangka->urut))
+                                value="atur_butir DESC">Z - A</option>
                         </select>
 
                         <span class="t-bantu">Pilih satu</span>
@@ -189,10 +189,10 @@
                         <select id="atur_data_cariUrutStatus" name="urut[]" class="pil-dasar" form="form_atur_data_cari"
                             onchange="getElementById('tombol_cari_atur').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('atur_status ASC', (array) $rekRangka->urut)) value="atur_status
-                                ASC">A - Z</option>
-                            <option @selected(in_array('atur_status DESC', (array) $rekRangka->urut)) value="atur_status
-                                DESC">Z - A</option>
+                            <option @selected(in_array('atur_status ASC', (array) $rekRangka->urut))
+                                value="atur_status ASC">A - Z</option>
+                            <option @selected(in_array('atur_status DESC', (array) $rekRangka->urut))
+                                value="atur_status DESC">Z - A</option>
                         </select>
 
                         <span class="t-bantu">Pilih satu</span>

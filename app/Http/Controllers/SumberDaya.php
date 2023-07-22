@@ -8,26 +8,26 @@ class SumberDaya
 {
     public function komponen()
     {
-        extract(Umum::obyekLaravel());
+        extract(Umum::obyekPermintaanUmum());
 
         return $reqs->filled('komponen') && $reqs->pjax() ?
-            $respon->make(
-                $view->make($reqs->komponen)->fragmentIf($reqs->filled('fragment'), $reqs->fragment)
+            $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(
+                $app->view->make($reqs->komponen)->fragmentIf($reqs->filled('fragment'), $reqs->fragment)
             )->withHeaders(['Vary' => 'Accept']) : '';
     }
 
     public function mulai()
     {
-        extract(Umum::obyekLaravel());
+        extract(Umum::obyekPermintaanUmum());
 
-        $HtmlPenuh = $view->make('rangka');
+        $HtmlPenuh = $app->view->make('rangka');
 
-        return $respon->make($HtmlPenuh)->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlPenuh)->withHeaders(['Vary' => 'Accept']);
     }
 
     public function mulaiAplikasi()
     {
-        extract(Umum::obyekLaravel());
+        extract(Umum::obyekPermintaanUmum());
 
         if ($pengguna) {
             $sandi = $pengguna->password;
@@ -43,34 +43,34 @@ class SumberDaya
             $sesi->now('pesan', 'Berhasil masuk aplikasi.');
         }
 
-        $HtmlPenuh = $view->make('mulai');
+        $HtmlPenuh = $app->view->make('mulai');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
 
-        return $reqs->pjax() ? $respon->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlPenuh;
+        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlPenuh;
     }
 
     public function tentangAplikasi()
     {
-        extract(Umum::obyekLaravel());
+        extract(Umum::obyekPermintaanUmum());
 
-        $HtmlPenuh = $view->make('tentang-aplikasi');
+        $HtmlPenuh = $app->view->make('tentang-aplikasi');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
 
-        return $reqs->pjax() ? $respon->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
     }
 
     public function unduh($berkas = null)
     {
-        extract(Umum::obyekLaravel());
+        extract(Umum::obyekPermintaanUmum());
 
         abort_unless($berkas && $app->filesystem->exists("unduh/{$berkas}"), 404, 'Berkas Tidak Ditemukan.');
 
-        return $respon->download($app->storagePath("app/unduh/{$berkas}"));
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->download($app->storagePath("app/unduh/{$berkas}"));
     }
 
     public function unduhPanduan($berkas)
     {
-        extract(Umum::obyekLaravel());
+        extract(Umum::obyekPermintaanUmum());
 
         Umum::hapusBerkasUnduhanLama();
 
@@ -78,7 +78,7 @@ class SumberDaya
 
         $jalur = $app->storagePath("app/{$berkas}");
 
-        return $respon->file($jalur, [
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->file($jalur, [
             'Cache-Control' => 'no-cache, no-store, must-revalidate',
             'Expires' => '0',
             'Pragma' => 'no-cache',
@@ -89,9 +89,11 @@ class SumberDaya
 
     public function periksaPengguna()
     {
-        extract(Umum::obyekLaravel());
+        extract(Umum::obyekPermintaanUmum());
 
-        $reqs->user() ? $respon->make('true')->withHeaders(['Vary' => 'Accept']) : $respon->make('false')->withHeaders(['Vary' => 'Accept']);
+        $respon = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+
+        return $reqs->user() ? $respon->make('true')->withHeaders(['Vary' => 'Accept']) : $respon->make('false')->withHeaders(['Vary' => 'Accept']);
     }
 
     public function formatFoto()
@@ -105,15 +107,15 @@ class SumberDaya
 
     public function pwaManifest()
     {
-        extract(Umum::obyekLaravel());
+        extract(Umum::obyekPermintaanUmum());
 
-        return $respon->make($view->make('pwa-manifest'))->withHeaders(['Content-Type' => 'application/json']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('pwa-manifest'))->withHeaders(['Content-Type' => 'application/json']);
     }
 
     public function serviceWorker()
     {
-        extract(Umum::obyekLaravel());
+        extract(Umum::obyekPermintaanUmum());
 
-        return $respon->make($view->make('service-worker'))->withHeaders(['Content-Type' => 'application/javascript', 'Cache-Control' => 'no-cache']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('service-worker'))->withHeaders(['Content-Type' => 'application/javascript', 'Cache-Control' => 'no-cache']);
     }
 }

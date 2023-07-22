@@ -2,28 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Interaksi\Umum;
+use App\Interaksi\Cache;
 use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
+use App\Interaksi\DatabaseQuery;
+use App\Interaksi\ValidasiPermintaan;
 use App\Tambahan\ChunkReadFilter;
 use App\Tambahan\CustomValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ExcelReader;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as ExcelWriter;
-use App\Interaksi\Umum;
 
 
 class Pengaturan
 {
     public function index()
     {
-        extract(Umum::obyekLaravel());
+        extract(Umum::obyekPermintaanUmum());
 
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
-        $cacheAturs = FungsiStatis::ambilCacheAtur();
+        $cacheAturs = Cache::ambilCacheAtur();
 
-        $validator = $this->validasiPermintaanDataPengaturan($app->validator, $reqs->all());
+        $validator = ValidasiPermintaan::validasiPermintaanDataPengaturan($reqs->all());
 
         if ($validator->fails()) {
             return $app->redirect->route('atur.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
@@ -36,15 +39,15 @@ class Pengaturan
         $statuses = $cacheAturs->unique('atur_status')->pluck('atur_status')->merge($reqs->atur_status)->unique()->sort();
 
         $jenises = $cacheAturs
-            ->when($reqs->filled('atur_status'), function ($cacheAturs, $value) use ($reqs) {
+            ->when($reqs->filled('atur_status'), function ($cacheAturs) use ($reqs) {
                 return $cacheAturs->whereIn('atur_status', $reqs->atur_status);
             })->unique('atur_jenis')->pluck('atur_jenis')->merge($reqs->atur_jenis)->unique()->sort();
 
         $butirs = $cacheAturs
-            ->when($reqs->filled('atur_status'), function ($cacheAturs, $value) use ($reqs) {
+            ->when($reqs->filled('atur_status'), function ($cacheAturs) use ($reqs) {
                 return $cacheAturs->whereIn('atur_status', $reqs->atur_status);
             })
-            ->when($reqs->filled('atur_jenis'), function ($cacheAturs, $value) use ($reqs) {
+            ->when($reqs->filled('atur_jenis'), function ($cacheAturs) use ($reqs) {
                 return $cacheAturs->whereIn('atur_jenis', $reqs->atur_jenis);
             })->unique('atur_butir')->pluck('atur_butir')->merge($reqs->atur_butir)->unique()->sort();
 
@@ -58,7 +61,7 @@ class Pengaturan
         $indexStatus = (head(array_keys($kunciUrut, 'atur_status ASC')) + head(array_keys($kunciUrut, 'atur_status DESC')) + 1);
 
 
-        $cari = $this->ambilDatabasePengaturan($reqs, $uruts);
+        $cari = $this->saringDatabasePengaturan($reqs, $uruts);
 
         if ($reqs->unduh == 'excel') {
             return $this->eksporExcelDatabasePengaturan($app, $reqs, $cari);
@@ -81,7 +84,8 @@ class Pengaturan
 
         $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
 
-        $HtmlPenuh = $view->make('pengaturan.data', $data);
+        $HtmlPenuh = $app->view->make('pengaturan.data', $data);
+        $respon = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
 
         return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
             ? $respon->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
@@ -158,7 +162,7 @@ class Pengaturan
 
     public function dataDasar()
     {
-        return app('db')->query()->select('atur_jenis', 'atur_butir', 'atur_detail', 'atur_status')->from('aturs');
+        return DatabaseQuery::ambilDatabasePengaturan();
     }
 
 
@@ -458,35 +462,10 @@ class Pengaturan
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']);
     }
 
-    public function validasiPermintaanDataPengaturan($validator, $permintaan)
+    public function saringDatabasePengaturan($reqs, $uruts)
     {
-        return $validator->make(
-            $permintaan,
-            [
-                'kata_kunci' => ['sometimes', 'nullable', 'string'],
-                'atur_jenis.*' => ['sometimes', 'nullable', 'string', 'max:20',],
-                'atur_butir.*' => ['sometimes', 'nullable', 'string', 'max:40'],
-                'atur_status.*' => ['sometimes', 'nullable', 'string', Rule::in(['', 'AKTIF', 'NON-AKTIF'])],
-                'bph' => ['sometimes', 'nullable', 'numeric', Rule::in([25, 50, 75, 100])],
-                'urut.*' => ['sometimes', 'nullable', 'string']
-            ],
-            [
-                'atur_status.*.string' => 'Status Pengaturan urutan #:position wajib berupa karakter.',
-                'atur_status.*.in' => 'Status Pengaturan urutan #:position tidak sesuai daftar.',
-                'atur_butir.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
-                'atur_butir.*.max' => 'Butir Pengaturan urutan #:position maksimal 40 karakter.',
-                'atur_jenis.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
-                'atur_jenis.*.max' => 'Butir Pengaturan urutan #:position maksimal 20 karakter.',
-                'kata_kunci.*' => 'Kata Kunci Pencarian harus berupa karakter',
-                'bph.*' => 'Baris Per halaman tidak sesuai daftar.',
-                'urut.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.'
-            ]
-        );
-    }
-
-    public function ambilDatabasePengaturan($reqs, $uruts)
-    {
-        return $this->dataDasar()->clone()->addSelect('atur_uuid')
+        return DatabaseQuery::ambilDatabasePengaturan()
+            ->addSelect('atur_uuid')
             ->when($reqs->atur_status, function ($query) use ($reqs) {
                 $query->whereIn('atur_status', $reqs->atur_status);
             })
@@ -526,7 +505,7 @@ class Pengaturan
         $worksheet = $spreadsheet->getActiveSheet();
         $x = 1;
 
-        $data->clone()->chunk(100, function ($hasil) use (&$x, $worksheet) {
+        $data->chunk(100, function ($hasil) use (&$x, $worksheet) {
             if ($x == 1) {
                 $list = $hasil->map(function ($x) {
                     return collect($x)->except(['atur_uuid']);
