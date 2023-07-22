@@ -62,13 +62,11 @@ loading="lazy">
         </a>
     </form>
 </div>
-@if(!$rekRangka->pjax())
 <script>
     if ("{{ $urlRangka->route('sdm.akun', ['uuid' => $rekRangka->user()->sdm_uuid]) }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('sdm.akun',
         ['uuid' => $rekRangka->user()->sdm_uuid]) }}']").then((el) => {el.classList.add("aktif");});
     if ("{{$urlRangka->route('sdm.ubah-sandi') }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('sdm.ubah-sandi') }}']").then((el) => {el.classList.add("aktif");});
 </script>
-@endif
 @endif
 @endfragment
 
@@ -108,11 +106,9 @@ loading="lazy">
     </a>
     @endif
 </div>
-@if(!$rekRangka->pjax())
 <script>
     if ("{{$urlRangka->route('sdm.mulai') }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('sdm.mulai') }}']").then((el) => {el.classList.add("aktif");});
     if ("{{ $urlRangka->route('atur.data') }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('atur.data') }}']").then((el) => {el.classList.add("aktif");});
 </script>
-@endif
 @endif
 @endfragment
