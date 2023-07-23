@@ -2,32 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Interaksi\Berkas;
 use App\Interaksi\Umum;
 
 class SumberDaya
 {
+    use Umum, Berkas;
+
     public function komponen()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract($this->obyekPermintaanUmum());
 
-        return $reqs->filled('komponen') && $reqs->pjax() ?
-            $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(
-                $app->view->make($reqs->komponen)->fragmentIf($reqs->filled('fragment'), $reqs->fragment)
-            )->withHeaders(['Vary' => 'Accept']) : '';
+        return $reqs->filled('komponen') && $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make($reqs->komponen)->fragmentIf($reqs->filled('fragment'), $reqs->fragment))->withHeaders(['Vary' => 'Accept'])
+            : '';
     }
 
     public function mulai()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract($this->obyekPermintaanUmum());
 
-        $HtmlPenuh = $app->view->make('rangka');
-
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlPenuh)->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('rangka'))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function mulaiAplikasi()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract($this->obyekPermintaanUmum());
 
         if ($pengguna) {
             $sandi = $pengguna->password;
@@ -46,54 +46,42 @@ class SumberDaya
         $HtmlPenuh = $app->view->make('mulai');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
 
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlPenuh;
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
+            : $HtmlPenuh;
     }
 
     public function tentangAplikasi()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract($this->obyekPermintaanUmum());
 
         $HtmlPenuh = $app->view->make('tentang-aplikasi');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
 
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 
     public function unduh($berkas = null)
     {
-        extract(Umum::obyekPermintaanUmum());
-
-        abort_unless($berkas && $app->filesystem->exists("unduh/{$berkas}"), 404, 'Berkas Tidak Ditemukan.');
-
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->download($app->storagePath("app/unduh/{$berkas}"));
+        return $this->unduhBerkasUmum($berkas);
     }
 
-    public function unduhPanduan($berkas)
+    public function unduhPanduan($berkas = null)
     {
-        extract(Umum::obyekPermintaanUmum());
-
-        Umum::hapusBerkasUnduhanLama();
-
-        abort_unless($berkas && $app->filesystem->exists("{$berkas}"), 404, 'Berkas Tidak Ditemukan.');
-
-        $jalur = $app->storagePath("app/{$berkas}");
-
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->file($jalur, [
-            'Cache-Control' => 'no-cache, no-store, must-revalidate',
-            'Expires' => '0',
-            'Pragma' => 'no-cache',
-            'Content-Disposition' => 'inline',
-            'Content-Type' => $app->files->mimeType($jalur),
-        ]);
+        return $this->unduhBerkasTerbatas($berkas);
     }
 
     public function periksaPengguna()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract($this->obyekPermintaanUmum());
 
         $respon = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
 
-        return $reqs->user() ? $respon->make('true')->withHeaders(['Vary' => 'Accept']) : $respon->make('false')->withHeaders(['Vary' => 'Accept']);
+        return $reqs->user()
+            ? $respon->make('true')->withHeaders(['Vary' => 'Accept'])
+            : $respon->make('false')->withHeaders(['Vary' => 'Accept']);
     }
 
     public function formatFoto()
@@ -107,14 +95,14 @@ class SumberDaya
 
     public function pwaManifest()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract($this->obyekPermintaanUmum());
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('pwa-manifest'))->withHeaders(['Content-Type' => 'application/json']);
     }
 
     public function serviceWorker()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract($this->obyekPermintaanUmum());
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('service-worker'))->withHeaders(['Content-Type' => 'application/javascript', 'Cache-Control' => 'no-cache']);
     }

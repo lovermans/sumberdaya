@@ -2,14 +2,21 @@
 
 namespace App\Interaksi;
 
-class Cache
+trait Cache
 {
     public static function ambilCacheAtur()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka());
 
         return $app->cache->rememberForever('SetelanAtur', function () {
-            return DatabaseQuery::ambilDatabasePengaturan()->get();
+            return DBQuery::ambilDatabasePengaturan()->get();
         });
+    }
+
+    public static function hapusCacheAtur()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('SetelanAtur');
     }
 }
