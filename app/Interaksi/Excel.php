@@ -59,7 +59,10 @@ trait Excel
 
         $argumen = [
             'reader' => $reader,
-            'fileexcel' => $fileexcel
+            'fileexcel' => $fileexcel,
+            'validasiImpor' => 'validasiImporDataPengaturan',
+            'databaseImpor' => 'imporDatabasePengaturan',
+            'cacheImpor' => 'hapusCacheAtur'
         ];
 
         return $this->imporExcelStream(...$argumen);

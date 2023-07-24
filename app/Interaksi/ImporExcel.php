@@ -8,7 +8,7 @@ trait ImporExcel
 {
     use Umum, Cache, Validasi, DBQuery;
 
-    public function imporExcelStream($reader, $fileexcel)
+    public function imporExcelStream($reader, $fileexcel, $validasiImpor, $databaseImpor, $cacheImpor, $chunkSize = 25)
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -20,7 +20,6 @@ trait ImporExcel
         header('X-Accel-Buffering: no');
 
         $spreadsheetInfo = $reader->listWorksheetInfo($fileexcel);
-        $chunkSize = 25;
         $chunkFilter = new ChunkReadFilter();
         $reader->setReadFilter($chunkFilter);
         $reader->setReadDataOnly(true);
@@ -52,18 +51,16 @@ trait ImporExcel
             $dataexcel = array_map(function ($x) use ($idPengunggah) {
                 return $x
                     + ['atur_id_pengunggah' => $idPengunggah]
-                    + ['atur_id_pembuat' => $idPengunggah]
-                    + ['atur_id_pengubah' => $idPengunggah]
                     + ['atur_diunggah' => date('Y-m-d H:i:s')];
             }, $datas);
 
             $data = array_combine(range(($startRow - 1), count($dataexcel) + ($startRow - 2)), array_values($dataexcel));
 
-            $validasi = $this->validasiImporDataPengaturan($data);
+            $validasi = $this->$validasiImpor($data);
 
             $validasi->validate();
 
-            $this->imporDatabasePengaturan($validasi->validated());
+            $this->$databaseImpor($validasi->validated());
 
             echo $pesansimpan;
         }
@@ -74,7 +71,7 @@ trait ImporExcel
 
         $app->filesystem->delete($fileexcel);
 
-        $this->hapusCacheAtur();
+        $this->$cacheImpor();
 
         return $app->redirect->route('atur.data')->with('pesan', $this->statusBerhasil());
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\SDM;
 
+use App\Interaksi\Umum as InteraksiUmum;
 use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -10,11 +11,12 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ExcelReader;
 
 class Umum
 {
+    use InteraksiUmum;
+
     public function mulai()
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
+        extract($this->obyekPermintaanUmum());
+
         $str = str();
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
         $halaman = $app->view;
@@ -435,9 +437,7 @@ class Umum
 
     public function akun(FungsiStatis $fungsiStatis, $uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
+        extract($this->obyekPermintaanUmum());
 
         abort_unless($pengguna, 401);
 
@@ -503,9 +503,8 @@ class Umum
 
     public function ubahAkun(FungsiStatis $fungsiStatis, $uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
+        extract($this->obyekPermintaanUmum());
+
         abort_unless($pengguna && $uuid, 401);
         $database = $app->db;
 
@@ -741,9 +740,7 @@ class Umum
 
     public function ubahSandi()
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
+        extract($this->obyekPermintaanUmum());
         abort_unless($pengguna, 401);
 
         $database = $app->db;
@@ -792,9 +789,8 @@ class Umum
 
     public function unggah(Rule $rule, FungsiStatis $fungsiStatis)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
+        extract($this->obyekPermintaanUmum());
+
         $str = str();
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
@@ -981,13 +977,12 @@ class Umum
                         '*.sdm_uk_seragam.*' => 'Ukuran Seragam baris ke-:position maksimal 10 karakter dan wajib terdaftar Pengaturan Umum.',
                         '*.sdm_uk_sepatu.*' => 'Ukuran Sepatu baris ke-:position wajib berupa angka lebih dari 0.',
                         '*.sdm_ket_kary.*' => 'Keterangan SDM baris ke-:position wajib berupa karakter.',
-                        '*.sdm_id_pengunggah.*' => 'ID Pengunggah baris ke-:position maksimal 10 karakter dan wajib terdaftar Pengaturan Umum.',
                         '*.sdm_tgl_berhenti.*' => 'ID Pengunggah baris ke-:position wajib berupa tanggal jika Jenis Berhenti terisi.',
                         '*.sdm_jenis_berhenti.*' => 'ID Pengunggah baris ke-:position wajib berupa tanggal jika Jenis Berhenti terisi.',
                         '*.sdm_ket_berhenti.*' => 'Keterangan Berhenti baris ke-:position wajib berupa karakter.',
                         '*.sdm_id_atasan.*' => 'ID Atasan baris ke-:position maksimal 10 karakter, berbeda dengan No Absen SDM dan terdaftar di data SDM.',
-                        '*.sdm_id_pengunggah.*' => 'ID Pengunggah baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
                         '*.sdm_id_pembuat.*' => 'ID Pembuat baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+                        '*.sdm_id_pengunggah.*' => 'ID Pengunggah baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
                         '*.sdm_id_pengubah.*' => 'ID Pengubah baris ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
                         '*.sdm_diunggah.*' => 'Waktu Unggah baris ke-:position wajib berupa tanggal.',
                     ]
