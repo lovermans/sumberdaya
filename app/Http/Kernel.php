@@ -38,7 +38,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\ShareAppClass::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            // \App\Http\Middleware\RingkasHTML::class,
+            \App\Http\Middleware\RingkasHTML::class,
             \App\Http\Middleware\SecurityHeaders::class,
         ],
 

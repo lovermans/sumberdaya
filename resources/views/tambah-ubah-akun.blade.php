@@ -734,7 +734,7 @@
         })();
         function siapkanFoto(berkas) {
             if (!window.SiapkanFoto) {
-                import(location.origin + '/siapkan-foto-es.js?id=202304042113').then(({default : SF}) => {
+                import('./siapkan-foto-es.js?id=202304042113').then(({default : SF}) => {
                     window.SiapkanFoto = SF; 
                     new SiapkanFoto(berkas);
                 });
