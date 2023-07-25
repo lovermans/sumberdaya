@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Interaksi\Berkas;
 use App\Interaksi\Umum;
 use App\Interaksi\Cache;
 use App\Interaksi\Excel;
@@ -10,7 +11,7 @@ use App\Interaksi\Validasi;
 
 class Pengaturan
 {
-    use Umum, Cache, Validasi, DBQuery, Excel;
+    use Umum, Cache, Validasi, DBQuery, Excel, Berkas;
 
     public function index()
     {
@@ -205,8 +206,6 @@ class Pengaturan
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
-        $halaman = $app->view;
-
         if ($reqs->isMethod('post')) {
 
             $validasifile = $this->validasiBerkasImporDataPengaturan($reqs->all());
@@ -217,44 +216,13 @@ class Pengaturan
 
             $namafile = 'unggahpengaturan-' . date('YmdHis') . '.xlsx';
 
-            $app->filesystem->putFileAs('unggah', $file, $namafile);
+            $this->simpanBerkasImporExcelSementara($file, $namafile);
 
-            $fileexcel = $app->storagePath("app/unggah/{$namafile}");
+            $fileexcel = $this->ambilBerkasImporExcelSementara($namafile);
 
             return $this->imporExcelDataPengaturan($fileexcel);
         };
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('pengaturan.unggah')->renderSections()))->withHeaders(['Vary' => 'Accept']);
-    }
-
-    public function saringDatabasePengaturan($reqs, $uruts)
-    {
-        return $this->ambilDatabasePengaturan()
-            ->addSelect('atur_uuid')
-            ->when($reqs->atur_status, function ($query) use ($reqs) {
-                $query->whereIn('atur_status', $reqs->atur_status);
-            })
-            ->when($reqs->atur_jenis, function ($query) use ($reqs) {
-                $query->whereIn('atur_jenis', $reqs->atur_jenis);
-            })
-            ->when($reqs->atur_butir, function ($query) use ($reqs) {
-                $query->whereIn('atur_butir', $reqs->atur_butir);
-            })
-            ->when($reqs->kata_kunci, function ($query) use ($reqs) {
-                $query->where(function ($group) use ($reqs) {
-                    $group->where('atur_jenis', 'like', '%' . $reqs->kata_kunci . '%')
-                        ->orWhere('atur_butir', 'like', '%' . $reqs->kata_kunci . '%')
-                        ->orWhere('atur_detail', 'like', '%' . $reqs->kata_kunci . '%');
-                });
-            })
-            ->when(
-                $uruts,
-                function ($query, $uruts) {
-                    $query->orderByRaw($uruts);
-                },
-                function ($query) {
-                    $query->orderBy('aturs.id', 'desc');
-                }
-            );
     }
 }

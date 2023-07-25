@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Interaksi;
+namespace App\Interaksi\SDM;
 
+use App\Interaksi\Umum;
+use App\Interaksi\Rangka;
 use App\Tambahan\ChunkReadFilter;
 
-trait ImporExcel
+trait SDMImporExcel
 {
-    use Umum, Cache, Validasi, DBQuery;
+    use Umum, SDMCache, SDMValidasi, SDMDBQuery;
 
     public function imporExcelStream(
         $reader,

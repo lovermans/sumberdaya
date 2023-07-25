@@ -53,16 +53,15 @@ trait Excel
 
     public function imporExcelDataPengaturan($fileexcel)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        $reader = new ExcelReader();
-
         $argumen = [
-            'reader' => $reader,
+            'reader' => new ExcelReader(),
             'fileexcel' => $fileexcel,
             'validasiImpor' => 'validasiImporDataPengaturan',
             'databaseImpor' => 'imporDatabasePengaturan',
-            'cacheImpor' => 'hapusCacheAtur'
+            'cacheImpor' => 'hapusCacheAtur',
+            'rute' => 'atur.data',
+            'kolomPengunggah' => 'atur_id_pengunggah',
+            'waktuUnggah' => 'atur_diunggah'
         ];
 
         return $this->imporExcelStream(...$argumen);

@@ -75,15 +75,15 @@ class RegisteredUserController
 
         $validasi->validate();
 
-        $valid = $validasi->safe();
+        $valid = $validasi->safe()->all()[0];
 
-        $data = Arr::except($valid->all()[0], ['foto_profil', 'sdm_berkas']);
+        $data = Arr::except($valid, ['foto_profil', 'sdm_berkas']);
 
         $this->tambahDataSDM($data);
 
-        $foto = Arr::only($valid->all()[0], ['foto_profil'])['foto_profil'] ?? false;
-        $berkas = Arr::only($valid->all()[0], ['sdm_berkas'])['sdm_berkas'] ?? false;
-        $no_absen = Arr::only($valid->all()[0], ['sdm_no_absen'])['sdm_no_absen'];
+        $foto = Arr::only($valid, ['foto_profil'])['foto_profil'] ?? false;
+        $berkas = Arr::only($valid, ['sdm_berkas'])['sdm_berkas'] ?? false;
+        $no_absen = Arr::only($valid, ['sdm_no_absen'])['sdm_no_absen'];
 
         if ($foto) {
             $this->simpanFotoSDM($foto, $no_absen);

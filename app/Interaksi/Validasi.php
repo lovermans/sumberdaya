@@ -94,7 +94,7 @@ trait Validasi
                 'atur_unggah' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
             ],
             [
-                'atur_unggah' => 'Berkas yang diunggah wajin berupa file excel (.xlsx).'
+                'atur_unggah' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).'
             ]
         );
     }

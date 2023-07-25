@@ -57,7 +57,7 @@ trait Berkas
         }
     }
 
-    public static function hapusBerkasUnnggahanLama()
+    public static function hapusBerkasUnggahanLama()
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -78,5 +78,21 @@ trait Berkas
                 }
             }
         }
+    }
+
+    public static function simpanBerkasImporExcelSementara($file, $namafile)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        static::hapusBerkasUnggahanLama();
+
+        $app->filesystem->putFileAs('unggah', $file, $namafile);
+    }
+
+    public static function ambilBerkasImporExcelSementara($namafile)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->storagePath("app/unggah/{$namafile}");
     }
 }
