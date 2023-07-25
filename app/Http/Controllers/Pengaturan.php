@@ -207,7 +207,6 @@ class Pengaturan
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         if ($reqs->isMethod('post')) {
-
             $validasifile = $this->validasiBerkasImporDataPengaturan($reqs->all());
 
             $validasifile->validate();

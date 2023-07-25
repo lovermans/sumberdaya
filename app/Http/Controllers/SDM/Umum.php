@@ -652,14 +652,9 @@ class Umum
 
         abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+
         if ($reqs->isMethod('post')) {
-            abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
-
-            set_time_limit(0);
-            ob_implicit_flush();
-            ob_end_flush();
-            header('X-Accel-Buffering: no');
-
             $validasifile = $this->validasiBerkasImporDataSDM($reqs->all());
 
             $validasifile->validate();
@@ -675,11 +670,6 @@ class Umum
             return $this->imporExcelDataSDM($fileexcel);
         }
 
-        $HtmlPenuh = $app->view->make('unggah');
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-
-        return $reqs->pjax()
-            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
-            : $HtmlPenuh;
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('unggah')->renderSections()))->withHeaders(['Vary' => 'Accept']);
     }
 }
