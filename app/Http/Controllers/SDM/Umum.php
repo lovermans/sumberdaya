@@ -6,7 +6,6 @@ use App\Interaksi\Cache;
 use App\Interaksi\Berkas;
 use App\Interaksi\Rangka;
 use Illuminate\Support\Arr;
-use App\Tambahan\FungsiStatis;
 use App\Interaksi\SDM\SDMCache;
 use App\Interaksi\SDM\SDMExcel;
 use App\Interaksi\SDM\SDMBerkas;
