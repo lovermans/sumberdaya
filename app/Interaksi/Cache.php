@@ -2,7 +2,7 @@
 
 namespace App\Interaksi;
 
-trait Cache
+class Cache
 {
     public static function ambilCacheAtur()
     {

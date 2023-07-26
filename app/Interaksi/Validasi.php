@@ -4,9 +4,9 @@ namespace App\Interaksi;
 
 use Illuminate\Validation\Rule;
 
-trait Validasi
+class Validasi
 {
-    public function validasiPermintaanDataPengaturan($permintaan)
+    public static function validasiPermintaanDataPengaturan($permintaan)
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -20,11 +20,11 @@ trait Validasi
                 '*.bph' => ['sometimes', 'nullable', 'numeric', Rule::in([25, 50, 75, 100])],
                 '*.urut.*' => ['sometimes', 'nullable', 'string']
             ],
-            $this->pesanValidasiArrayPengaturan()
+            static::pesanValidasiArrayPengaturan()
         );
     }
 
-    public function validasiTambahDataPengaturan($permintaan)
+    public static function validasiTambahDataPengaturan($permintaan)
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -35,13 +35,13 @@ trait Validasi
                     $query->where('atur_jenis', $reqs->atur_jenis);
                 })],
                 '*.atur_id_pembuat' => ['reqquired', 'string', 'exists:sdms,sdm_no_absen'],
-                ...$this->dasarValidasiPengaturan()
+                ...static::dasarValidasiPengaturan()
             ],
-            $this->pesanValidasiArrayPengaturan()
+            static::pesanValidasiArrayPengaturan()
         );
     }
 
-    public function validasiUbahDataPengaturan($uuid, $permintaan)
+    public static function validasiUbahDataPengaturan($uuid, $permintaan)
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -52,13 +52,13 @@ trait Validasi
                     $query->where('atur_jenis', $reqs->atur_jenis)->whereNot('atur_uuid', $uuid);
                 })],
                 '*.atur_id_pengubah.*' => ['required', 'string', 'exists:sdms,sdm_no_absen'],
-                ...$this->dasarValidasiPengaturan()
+                ...static::dasarValidasiPengaturan()
             ],
-            $this->pesanValidasiArrayPengaturan()
+            static::pesanValidasiArrayPengaturan()
         );
     }
 
-    public function pesanValidasiArrayPengaturan()
+    public static function pesanValidasiArrayPengaturan()
     {
         return [
             '*.atur_jenis.*' => 'Jenis Pengaturan urutan ke-:position wajib berupa karakter maksimal 20 karakter.',
@@ -75,7 +75,7 @@ trait Validasi
         ];
     }
 
-    public function dasarValidasiPengaturan()
+    public static function dasarValidasiPengaturan()
     {
         return [
             '*.atur_jenis' => ['required', 'string', 'max:20'],
@@ -84,7 +84,7 @@ trait Validasi
         ];
     }
 
-    public function validasiBerkasImporDataPengaturan($permintaan)
+    public static function validasiBerkasImporDataPengaturan($permintaan)
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -99,7 +99,7 @@ trait Validasi
         );
     }
 
-    public function validasiImporDataPengaturan($permintaan)
+    public static function validasiImporDataPengaturan($permintaan)
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -109,9 +109,9 @@ trait Validasi
                 '*.atur_butir' => ['required', 'string', 'max:40'],
                 '*.atur_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 '*.atur_diunggah' => ['sometimes', 'nullable', 'date'],
-                ...$this->dasarValidasiPengaturan()
+                ...static::dasarValidasiPengaturan()
             ],
-            $this->pesanValidasiArrayPengaturan()
+            static::pesanValidasiArrayPengaturan()
         );
     }
 }

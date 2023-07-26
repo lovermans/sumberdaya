@@ -2,7 +2,7 @@
 
 namespace App\Interaksi;
 
-trait DBQuery
+class DBQuery
 {
     public static function ambilDatabasePengaturan()
     {
@@ -43,9 +43,9 @@ trait DBQuery
         );
     }
 
-    public function saringDatabasePengaturan($reqs, $uruts)
+    public static function saringDatabasePengaturan($reqs, $uruts)
     {
-        return $this->ambilDatabasePengaturan()
+        return static::ambilDatabasePengaturan()
             ->addSelect('atur_uuid')
             ->when($reqs->atur_status, function ($query) use ($reqs) {
                 $query->whereIn('atur_status', $reqs->atur_status);

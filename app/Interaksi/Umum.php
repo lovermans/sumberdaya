@@ -2,7 +2,7 @@
 
 namespace App\Interaksi;
 
-trait Umum
+class Umum
 {
     public static function obyekPermintaanUmum()
     {

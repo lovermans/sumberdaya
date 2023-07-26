@@ -4,11 +4,9 @@ namespace App\Interaksi;
 
 use App\Tambahan\ChunkReadFilter;
 
-trait ImporExcel
+class ImporExcel
 {
-    use Umum, Cache, Validasi, DBQuery;
-
-    public function imporExcelStream(
+    public static function imporExcelStream(
         $reader,
         $fileexcel,
         $validasiImpor,
@@ -65,11 +63,11 @@ trait ImporExcel
 
             $data = array_combine(range(($startRow - 1), count($dataexcel) + ($startRow - 2)), array_values($dataexcel));
 
-            $validasi = $this->$validasiImpor($data);
+            $validasi = Validasi::$validasiImpor($data);
 
             $validasi->validate();
 
-            $this->$databaseImpor($validasi->validated());
+            DBQuery::$databaseImpor($validasi->validated());
 
             echo $pesansimpan;
         }
@@ -80,9 +78,9 @@ trait ImporExcel
 
         $app->filesystem->delete($fileexcel);
 
-        $this->$cacheImpor();
+        Cache::$cacheImpor();
 
-        return $app->redirect->route($rute)->with('pesan', $this->statusBerhasil());
+        return $app->redirect->route($rute)->with('pesan', Umum::statusBerhasil());
 
         exit();
     }

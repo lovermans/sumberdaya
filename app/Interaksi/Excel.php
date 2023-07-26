@@ -6,11 +6,9 @@ use App\Tambahan\CustomValueBinder;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ExcelReader;
 
-trait Excel
+class Excel
 {
-    use EksporExcel, ImporExcel;
-
-    public function eksporExcelDatabasePengaturan($data)
+    public static function eksporExcelDatabasePengaturan($data)
     {
         $spreadsheet = new Spreadsheet();
         $binder = new CustomValueBinder();
@@ -26,10 +24,10 @@ trait Excel
             'worksheet' => $worksheet
         ];
 
-        return $this->eksporExcelStream(...$argumen);
+        return EksporExcel::eksporExcelStream(...$argumen);
     }
 
-    public function eksporExcelContohUnggahPengaturan($data)
+    public static function eksporExcelContohUnggahPengaturan($data)
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -48,10 +46,10 @@ trait Excel
             'worksheet' => $worksheet
         ];
 
-        return $this->eksporExcelStream(...$argumen);
+        return EksporExcel::eksporExcelStream(...$argumen);
     }
 
-    public function imporExcelDataPengaturan($fileexcel)
+    public static function imporExcelDataPengaturan($fileexcel)
     {
         $argumen = [
             'reader' => new ExcelReader(),
@@ -64,6 +62,6 @@ trait Excel
             'waktuUnggah' => 'atur_diunggah'
         ];
 
-        return $this->imporExcelStream(...$argumen);
+        return ImporExcel::imporExcelStream(...$argumen);
     }
 }

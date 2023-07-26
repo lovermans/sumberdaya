@@ -11,18 +11,16 @@ use App\Interaksi\Validasi;
 
 class Pengaturan
 {
-    use Umum, Cache, Validasi, DBQuery, Excel, Berkas;
-
     public function index()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Umum::obyekPermintaanUmum());
         $str = str();
 
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
-        $cacheAturs = $this->ambilCacheAtur();
+        $cacheAturs = Cache::ambilCacheAtur();
 
-        $validator = $this->validasiPermintaanDataPengaturan([$reqs->all()]);
+        $validator = Validasi::validasiPermintaanDataPengaturan([$reqs->all()]);
 
         if ($validator->fails()) {
             return $app->redirect->route('atur.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
@@ -57,10 +55,10 @@ class Pengaturan
         $indexStatus = (head(array_keys($kunciUrut, 'atur_status ASC')) + head(array_keys($kunciUrut, 'atur_status DESC')) + 1);
 
 
-        $cari = $this->saringDatabasePengaturan($reqs, $uruts);
+        $cari = DBQuery::saringDatabasePengaturan($reqs, $uruts);
 
         if ($reqs->unduh == 'excel') {
-            return $this->eksporExcelDatabasePengaturan($cari);
+            return Excel::eksporExcelDatabasePengaturan($cari);
         }
 
         $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'atur_tabels']);
@@ -90,24 +88,24 @@ class Pengaturan
 
     public function contohUnggah()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Umum::obyekPermintaanUmum());
 
         abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
         abort_unless($app->filesystem->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
 
-        return $this->eksporExcelContohUnggahPengaturan($this->ambilDatabasePengaturan()->orderBy('aturs.id', 'desc'));
+        return Excel::eksporExcelContohUnggahPengaturan(DBQuery::ambilDatabasePengaturan()->orderBy('aturs.id', 'desc'));
     }
 
     public function lihat($uuid)
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Umum::obyekPermintaanUmum());
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
-        $atur = $this->ambilDatabasePengaturan()->addSelect('atur_uuid')->where('atur_uuid', $uuid)->first();
+        $atur = DBQuery::ambilDatabasePengaturan()->addSelect('atur_uuid')->where('atur_uuid', $uuid)->first();
 
         abort_unless($atur, 404, 'Data Pengaturan tidak ditemukan.');
 
@@ -116,7 +114,7 @@ class Pengaturan
 
     public function tambah()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Umum::obyekPermintaanUmum());
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
@@ -126,17 +124,17 @@ class Pengaturan
 
             $reqs->merge(['atur_id_pembuat' => $pengguna->sdm_no_absen]);
 
-            $validasi = $this->validasiTambahDataPengaturan([$reqs->all()]);
+            $validasi = Validasi::validasiTambahDataPengaturan([$reqs->all()]);
 
             $validasi->validate();
 
             $data = $validasi->safe()->all();
 
-            $this->tambahDatabasePengaturan($data[0]);
+            DBQuery::tambahDatabasePengaturan($data[0]);
 
-            $this->hapusCacheAtur();
+            Cache::hapusCacheAtur();
 
-            return $app->redirect->route('atur.data')->with('pesan', $this->statusBerhasil());
+            return $app->redirect->route('atur.data')->with('pesan', Umum::statusBerhasil());
         }
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('pengaturan.tambah-ubah')->renderSections()))->withHeaders(['Vary' => 'Accept']);
@@ -144,13 +142,13 @@ class Pengaturan
 
     public function ubah($uuid)
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Umum::obyekPermintaanUmum());
 
         abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
-        $atur = $this->ambilDatabasePengaturan()->addSelect('atur_uuid')->where('atur_uuid', $uuid)->first();
+        $atur = DBQuery::ambilDatabasePengaturan()->addSelect('atur_uuid')->where('atur_uuid', $uuid)->first();
 
         abort_unless($atur, 404, 'Data Pengaturan tidak ditemukan.');
 
@@ -161,17 +159,17 @@ class Pengaturan
 
             $reqs->merge(['atur_id_pengubah' => $pengguna->sdm_no_absen]);
 
-            $validasi = $this->validasiUbahDataPengaturan($uuid, [$reqs->all()]);
+            $validasi = Validasi::validasiUbahDataPengaturan($uuid, [$reqs->all()]);
 
             $validasi->validate();
 
             $data = $validasi->safe()->all();
 
-            $this->ubahDatabasePengaturan($uuid, $data[0]);
+            DBQuery::ubahDatabasePengaturan($uuid, $data[0]);
 
-            $this->hapusCacheAtur();
+            Cache::hapusCacheAtur();
 
-            $pesan = $this->statusBerhasil();
+            $pesan = Umum::statusBerhasil();
             $session = $reqs->session();
             $redirect = $app->redirect;
 
@@ -200,14 +198,14 @@ class Pengaturan
 
     public function unggah()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Umum::obyekPermintaanUmum());
 
         abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         if ($reqs->isMethod('post')) {
-            $validasifile = $this->validasiBerkasImporDataPengaturan($reqs->all());
+            $validasifile = Validasi::validasiBerkasImporDataPengaturan($reqs->all());
 
             $validasifile->validate();
 
@@ -215,11 +213,11 @@ class Pengaturan
 
             $namafile = 'unggahpengaturan-' . date('YmdHis') . '.xlsx';
 
-            $this->simpanBerkasImporExcelSementara($file, $namafile);
+            Berkas::simpanBerkasImporExcelSementara($file, $namafile);
 
-            $fileexcel = $this->ambilBerkasImporExcelSementara($namafile);
+            $fileexcel = Berkas::ambilBerkasImporExcelSementara($namafile);
 
-            return $this->imporExcelDataPengaturan($fileexcel);
+            return Excel::imporExcelDataPengaturan($fileexcel);
         };
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('pengaturan.unggah')->renderSections()))->withHeaders(['Vary' => 'Accept']);

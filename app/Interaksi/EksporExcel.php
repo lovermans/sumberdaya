@@ -6,9 +6,9 @@ use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as ExcelWriter;
 use PhpOffice\PhpSpreadsheet\Worksheet\Table;
 
-trait EksporExcel
+class EksporExcel
 {
-    public function eksporExcelStream(
+    public static function eksporExcelStream(
         $namaBerkas,
         $dataEkspor,
         $pengecualian,

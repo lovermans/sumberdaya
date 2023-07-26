@@ -7,11 +7,9 @@ use App\Interaksi\Umum;
 
 class SumberDaya
 {
-    use Umum, Berkas;
-
     public function komponen()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Umum::obyekPermintaanUmum());
 
         return $reqs->filled('komponen') && $reqs->pjax()
             ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make($reqs->komponen)->fragmentIf($reqs->filled('fragment'), $reqs->fragment))->withHeaders(['Vary' => 'Accept'])
@@ -20,14 +18,14 @@ class SumberDaya
 
     public function mulai()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Umum::obyekPermintaanUmum());
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('rangka'))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function mulaiAplikasi()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Umum::obyekPermintaanUmum());
 
         if ($pengguna) {
             $sandi = $pengguna->password;
@@ -53,7 +51,7 @@ class SumberDaya
 
     public function tentangAplikasi()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Umum::obyekPermintaanUmum());
 
         $HtmlPenuh = $app->view->make('tentang-aplikasi');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
@@ -65,17 +63,17 @@ class SumberDaya
 
     public function unduh($berkas = null)
     {
-        return $this->unduhBerkasUmum($berkas);
+        return Berkas::unduhBerkasUmum($berkas);
     }
 
     public function unduhPanduan($berkas = null)
     {
-        return $this->unduhBerkasTerbatas($berkas);
+        return Berkas::unduhBerkasTerbatas($berkas);
     }
 
     public function periksaPengguna()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Umum::obyekPermintaanUmum());
 
         $respon = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
 
@@ -95,14 +93,14 @@ class SumberDaya
 
     public function pwaManifest()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Umum::obyekPermintaanUmum());
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('pwa-manifest'))->withHeaders(['Content-Type' => 'application/json']);
     }
 
     public function serviceWorker()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Umum::obyekPermintaanUmum());
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('service-worker'))->withHeaders(['Content-Type' => 'application/javascript', 'Cache-Control' => 'no-cache']);
     }

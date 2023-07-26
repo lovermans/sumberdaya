@@ -2,24 +2,24 @@
 
 namespace App\Interaksi;
 
-trait Berkas
+class Berkas
 {
-    public function unduhBerkasUmum($berkas = null)
+    public static function unduhBerkasUmum($berkas = null)
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $this->hapusBerkasUnduhanLama();
+        static::hapusBerkasUnduhanLama();
 
         abort_unless($berkas && $app->filesystem->exists("unduh/{$berkas}"), 404, 'Berkas Tidak Ditemukan.');
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->download($app->storagePath("app/unduh/{$berkas}"));
     }
 
-    public function unduhBerkasTerbatas($berkas = null)
+    public static function unduhBerkasTerbatas($berkas = null)
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $this->hapusBerkasUnduhanLama();
+        static::hapusBerkasUnduhanLama();
 
         abort_unless($berkas && $app->filesystem->exists("{$berkas}"), 404, 'Berkas Tidak Ditemukan.');
 
