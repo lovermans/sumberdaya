@@ -275,4 +275,44 @@ class SDMDBQuery
                 return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
             });
     }
+
+    public static function ambilDBSDMUltah()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $date = $app->date;
+
+        return $app->db->query()
+            ->select(
+                'sdm_uuid',
+                'sdm_no_absen',
+                'sdm_nama',
+                'sdm_tgl_lahir',
+                'penempatan_lokasi',
+                'penempatan_kontrak',
+                'penempatan_posisi'
+            )
+            ->from('sdms')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
+                $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            })
+            ->whereNull('sdm_tgl_berhenti')
+            ->where(function ($query) use ($date) {
+                $query->whereMonth('sdm_tgl_lahir', $date->today()->format('m'))
+                    ->orWhereMonth('sdm_tgl_lahir', $date->today()->addMonth()->format('m'));
+            })->orderByRaw('DAYOFYEAR(sdm_tgl_lahir), sdm_tgl_lahir');
+    }
+
+    public static function ambilLokasiPenempatanSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        return $app->db->query()
+            ->select('penempatan_lokasi')
+            ->from('sdms')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
+                $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            })
+            ->where('kontrak.penempatan_no_absen', $pengguna->sdm_no_absen);
+    }
 }

@@ -12,7 +12,6 @@ use App\Interaksi\SDM\SDMExcel;
 use App\Interaksi\SDM\SDMBerkas;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMValidasi;
-use App\Interaksi\Umum as InteraksiUmum;
 
 class Umum
 {
@@ -47,9 +46,9 @@ class Umum
         $fragmen = $reqs->fragment;
 
         $respon = match (true) {
-            $fragmen == 'navigasi' => $this->halamanNavigasi($halaman, $tanggapan),
-            $fragmen == 'sdmIngatUltah' => $this->halamanUltah($cache, $date, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan, $pengguna, $str),
-            $pengurus && $fragmen == 'sdmIngatPtsb' => $this->halamanPermintaanTambahSDM($linkupIjin, $lingkup, $halaman, $tanggapan),
+            $fragmen == 'navigasi' => $this->halamanNavigasi(),
+            $fragmen == 'sdmIngatUltah' => $this->halamanUltah(),
+            $pengurus && $fragmen == 'sdmIngatPtsb' => $this->halamanPermintaanTambahSDM(),
             $pengurus && $fragmen == 'sdmIngatPkpd' => $this->halamanPKWTHabis($cache, $kemarin, $hariIni, $kontrak, $database, $bulanDepan, $linkupIjin, $lingkup, $halaman, $tanggapan, $date),
             $pengurus && $fragmen == 'sdmIngatPstatus' => $this->halamanPerubahanStatusSDMTerbaru($cache, $kemarin, $hariIni, $database, $bulanLalu, $linkupIjin, $lingkup, $halaman, $tanggapan),
             $pengurus && $fragmen == 'sdmIngatBaru' => $this->halamanSDMGabungTerbaru($cache, $kemarin, $hariIni, $kontrak, $database, $bulanLalu, $linkupIjin, $lingkup, $halaman, $tanggapan),
@@ -57,52 +56,51 @@ class Umum
             $pengurus && $fragmen == 'sdmIngatPelanggaran' => $this->halamanPelanggaran($cache, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan),
             $pengurus && $fragmen == 'sdmIngatSanksi' => $this->halamanSanksi($cache, $kemarin, $hariIni, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan),
             $pengurus && $fragmen == 'sdmIngatNilai' => $this->halamanNilai($cache, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan, $date),
-            default => $this->halamanAwal($reqs, $halaman, $tanggapan),
+            default => $this->halamanAwal(),
         };
 
         return $respon;
     }
 
-    public function halamanNavigasi($halaman, $tanggapan)
+    public function halamanNavigasi()
     {
-        $navigasi = $halaman->make('sdm.navigasi');
+        extract(Rangka::obyekPermintaanRangka());
 
-        return $tanggapan->make($navigasi)->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.navigasi'))->withHeaders(['Vary' => 'Accept']);
     }
 
-    public function halamanAwal($reqs, $halaman, $tanggapan)
+    public function halamanAwal()
     {
+        extract(Rangka::obyekPermintaanRangka());
+
         $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
 
-        $HtmlPenuh = $halaman->make('sdm.mulai');
+        $HtmlPenuh = $app->view->make('sdm.mulai');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
 
-        return $reqs->pjax() ? $tanggapan->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlPenuh;
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
+            : $HtmlPenuh;
     }
 
-    public function halamanUltah($cache, $date, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan, $pengguna, $str)
+    public function halamanUltah()
     {
-        $cache->forget('SDMUlangTahun - ' . $date->today()->subMonth()->format('Y-m'));
+        extract(Rangka::obyekPermintaanRangka(true));
 
-        $cache_ulangTahuns = $cache->rememberForever('SDMUlangTahun - ' . $date->today()->format('Y-m'), function () use ($kontrak, $database, $date) {
-            return $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_nama', 'sdm_tgl_lahir', 'penempatan_lokasi', 'penempatan_kontrak', 'penempatan_posisi')->from('sdms')
-                ->leftJoinSub($kontrak, 'kontrak', function ($join) {
-                    $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
-                })
-                ->whereNull('sdm_tgl_berhenti')
-                ->where(function ($query) use ($date) {
-                    $query->whereMonth('sdm_tgl_lahir', $date->today()->format('m'))->orWhereMonth('sdm_tgl_lahir', $date->today()->addMonth()->format('m'));
-                })->orderByRaw('DAYOFYEAR(sdm_tgl_lahir), sdm_tgl_lahir')->get();
-        });
+        abort_unless($pengguna, 401);
 
-        $penemPengguna = $database->query()->select('penempatan_lokasi')->from('sdms')
-            ->leftJoinSub($kontrak, 'kontrak', function ($join) {
-                $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
-            })->where('kontrak.penempatan_no_absen', $pengguna->sdm_no_absen)->first();
+        SDMCache::hapusCacheSDMUltah();
+
+        $cache_ulangTahuns = SDMCache::ambilCacheSDMUltah();
+
+        $linkupIjin = $pengguna->sdm_ijin_akses;
+        $lingkup = array_filter(explode(',', $linkupIjin));
+
+        $penemPengguna = SDMDBQuery::ambilLokasiPenempatanSDM()->first();
 
         $ulangTahuns = $cache_ulangTahuns->when($linkupIjin, function ($c) use ($lingkup) {
             return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
-        })->when($str->contains($pengguna->sdm_hak_akses, 'SDM-PENGGUNA'), function ($c) use ($penemPengguna) {
+        })->when(str()->contains($pengguna->sdm_hak_akses, 'SDM-PENGGUNA'), function ($c) use ($penemPengguna) {
             return $c->whereIn('penempatan_lokasi', [$penemPengguna->penempatan_lokasi]);
         });
 
@@ -120,15 +118,19 @@ class Umum
             'jumlahOrganik' => $jumlahOrganik
         ];
 
-
-        $sdmIngatUltah = $halaman->make('sdm.pengingat.sdm-ultah', $data);
-
-        return $tanggapan->make($sdmIngatUltah)->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.sdm-ultah', $data))->withHeaders(['Vary' => 'Accept']);
     }
 
-    public function halamanPermintaanTambahSDM($linkupIjin, $lingkup, $halaman, $tanggapan)
+    public function halamanPermintaanTambahSDM()
     {
-        $perminSDMS = FungsiStatis::ambilCachePermintaanTambahSDM()
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna, 401);
+
+        $linkupIjin = $pengguna->sdm_ijin_akses;
+        $lingkup = array_filter(explode(',', $linkupIjin));
+
+        $perminSDMS = SDMCache::ambilCachePermintaanTambahSDM()
             ->filter(function ($item) {
                 return $item->tambahsdm_jumlah > $item->tambahsdm_terpenuhi;
             })
@@ -136,9 +138,7 @@ class Umum
                 return $c->whereIn('tambahsdm_penempatan', [...$lingkup]);
             });
 
-        $sdmIngatPtsb = $halaman->make('sdm.pengingat.permintaan-tambah-sdm', ['perminSDMS' => $perminSDMS ?? null]);
-
-        return $tanggapan->make($sdmIngatPtsb)->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.permintaan-tambah-sdm', ['perminSDMS' => $perminSDMS ?? null]))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function halamanPKWTHabis($cache, $kemarin, $hariIni, $kontrak, $database, $bulanDepan, $linkupIjin, $lingkup, $halaman, $tanggapan, $date)

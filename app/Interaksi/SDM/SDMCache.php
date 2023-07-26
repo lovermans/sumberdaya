@@ -42,4 +42,20 @@ class SDMCache
         $cache->forget('PengingatSanksi - ' . $hariIni->format('Y-m-d'));
         $cache->forget('PengingatNilai - ' . $hariIni->format('Y'));
     }
+
+    public static function hapusCacheSDMUltah()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('SDMUlangTahun - ' . $app->date->today()->subMonth()->format('Y-m'));
+    }
+
+    public static function ambilCacheSDMUltah()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->cache->rememberForever('SDMUlangTahun - ' . $app->date->today()->format('Y-m'), function () {
+            return SDMDBQuery::ambilDBSDMUltah()->get();
+        });
+    }
 }
