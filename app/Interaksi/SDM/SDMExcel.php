@@ -2,15 +2,16 @@
 
 namespace App\Interaksi\SDM;
 
+use App\Interaksi\Rangka;
+use App\Interaksi\EksporExcel;
 use App\Tambahan\CustomValueBinder;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Cell\StringValueBinder;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ExcelReader;
 
-trait SDMExcel
+class SDMExcel
 {
-    use SDMImporExcel;
-
-    public function imporExcelDataSDM($fileexcel)
+    public static function imporExcelDataSDM($fileexcel)
     {
         $argumen = [
             'reader' => new ExcelReader(),
@@ -23,6 +24,28 @@ trait SDMExcel
             'waktuUnggah' => 'sdm_diunggah'
         ];
 
-        return $this->imporExcelStream(...$argumen);
+        return SDMImporExcel::imporExcelStream(...$argumen);
+    }
+
+    public static function eksporExcelContohUnggahSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $reader = new ExcelReader();
+        $spreadsheet = $reader->load($app->storagePath('app/contoh/unggah-umum.xlsx'));
+        $binder = new StringValueBinder();
+        $worksheet = $spreadsheet->getSheet(1);
+
+        $argumen = [
+            'namaBerkas' => 'unggahprofilsdm-',
+            'dataEkspor' => $data,
+            'pengecualian' => ['penempatan_lokasi'],
+            'pesanData' =>  ' data profil SDM',
+            'binder' => $binder,
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
     }
 }

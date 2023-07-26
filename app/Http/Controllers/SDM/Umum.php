@@ -2,24 +2,23 @@
 
 namespace App\Http\Controllers\SDM;
 
-use App\Interaksi\Berkas;
 use App\Interaksi\Cache;
-use App\Interaksi\SDM\SDMBerkas;
+use App\Interaksi\Berkas;
+use App\Interaksi\Rangka;
+use Illuminate\Support\Arr;
+use App\Tambahan\FungsiStatis;
 use App\Interaksi\SDM\SDMCache;
-use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMExcel;
+use App\Interaksi\SDM\SDMBerkas;
+use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMValidasi;
 use App\Interaksi\Umum as InteraksiUmum;
-use App\Tambahan\FungsiStatis;
-use Illuminate\Support\Arr;
 
 class Umum
 {
-    use InteraksiUmum, SDMDBQuery, SDMValidasi, Cache, SDMCache, SDMBerkas, Berkas, SDMExcel;
-
     public function mulai()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         $str = str();
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
@@ -441,11 +440,11 @@ class Umum
 
     public function akun($uuid = null)
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($pengguna, 401);
 
-        $akun = $this->ambilDataAkunLengkap($uuid)->first();
+        $akun = SDMDBQuery::ambilDataAkunLengkap($uuid)->first();
 
         abort_unless($akun, 404, 'Profil yang dicari tidak ada.');
 
@@ -467,7 +466,7 @@ class Umum
             default => $no_wa_tst
         };
 
-        $cacheSDM = $this->ambilCacheSDM();
+        $cacheSDM = SDMCache::ambilCacheSDM();
 
         $data = [
             'akun' => $akun,
@@ -486,14 +485,14 @@ class Umum
 
     public function ubahAkun($uuid = null)
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($pengguna && $uuid, 401);
 
         $ijin_akses = $pengguna->sdm_ijin_akses;
         $lingkup = array_filter(explode(',', $ijin_akses));
 
-        $akun = $this->ambilDataAkun($uuid)->first();
+        $akun = SDMDBQuery::ambilDataAkun($uuid)->first();
 
         $no_absen_sdm = $pengguna->sdm_no_absen;
         $lingkup_lokasi = $akun->penempatan_lokasi;
@@ -528,7 +527,7 @@ class Umum
 
             $reqs->merge(['sdm_id_pengubah' => $pengguna->sdm_no_absen]);
 
-            $validasi = $this->validasiUbahDataSDM($uuid, [$reqs->all()]);
+            $validasi = SDMValidasi::validasiUbahDataSDM($uuid, [$reqs->all()]);
 
             $validasi->validate();
 
@@ -546,7 +545,7 @@ class Umum
                 ])
             };
 
-            $this->ubahDataSDM($uuid, $data);
+            SDMDBQuery::ubahDataSDM($uuid, $data);
 
             $foto = Arr::only($valid, ['foto_profil'])['foto_profil'] ?? false;
             $berkas = Arr::only($valid, ['sdm_berkas'])['sdm_berkas'] ?? false;
@@ -554,11 +553,11 @@ class Umum
             $session = $reqs->session();
 
             if ($foto) {
-                $this->simpanFotoSDM($foto, $no_absen);
+                SDMBerkas::simpanFotoSDM($foto, $no_absen);
             }
 
             if ($berkas && $pengurus && (blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0) || ($no_absen_sdm == $akun->sdm_no_absen))) {
-                $this->simpanBerkasSDM($berkas, $no_absen);
+                SDMBerkas::simpanBerkasSDM($berkas, $no_absen);
             }
 
             if ($foto && $no_absen == $no_absen_sdm) {
@@ -570,9 +569,9 @@ class Umum
                 $session->flash('sesiJS', $sesiJS);
             }
 
-            $this->hapusCacheSDMUmum();
+            SDMCache::hapusCacheSDMUmum();
 
-            $pesan = $this->statusBerhasil();
+            $pesan = Rangka::statusBerhasil();
 
             $perujuk = $session->get('tautan_perujuk');
 
@@ -581,9 +580,9 @@ class Umum
             return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.mulai')->with('pesan', $pesan);
         }
 
-        $aturs = $this->ambilCacheAtur();
-        $permintaanSdms = $this->ambilCachePermintaanTambahSDM();
-        $atasan = $this->ambilCacheSDM();
+        $aturs = Cache::ambilCacheAtur();
+        $permintaanSdms = SDMCache::ambilCachePermintaanTambahSDM();
+        $atasan = SDMCache::ambilCacheSDM();
 
         $data = [
             'sdm' => $akun,
@@ -613,25 +612,25 @@ class Umum
 
     public function ubahSandi()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($pengguna, 401);
 
         $idPenguna = $pengguna->id;
-        $akun = $this->ambilIDPengguna($idPenguna)->first();
+        $akun = SDMDBQuery::ambilIDPengguna($idPenguna)->first();
 
         abort_unless($idPenguna == $akun->id, 403, 'Identitas pengguna berbeda.');
 
         if ($reqs->isMethod('post')) {
             abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
-            $validasiSandi = $this->validasiUbahSandi($reqs->all());
+            $validasiSandi = SDMValidasi::validasiUbahSandi($reqs->all());
 
             $validasiSandi->validate();
 
             $sandiBaru = $app->hash->make($validasiSandi->safe()->only('password')['password']);
 
-            $this->ubahSandiPengguna($idPenguna, $sandiBaru);
+            SDMDBQuery::ubahSandiPengguna($idPenguna, $sandiBaru);
 
             $reqs->session()->forget('spanduk');
 
@@ -646,16 +645,29 @@ class Umum
             : $HtmlPenuh;
     }
 
+    public function contohUnggah()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
+
+        abort_unless($app->filesystem->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
+
+        $lingkup = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+
+        return SDMExcel::eksporExcelContohUnggahSDM(SDMDBQuery::contohImporDatabaseSDM($lingkup)->orderBy('id', 'desc'));
+    }
+
     public function unggah()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         if ($reqs->isMethod('post')) {
-            $validasifile = $this->validasiBerkasImporDataSDM($reqs->all());
+            $validasifile = SDMValidasi::validasiBerkasImporDataSDM($reqs->all());
 
             $validasifile->validate();
 
@@ -663,11 +675,11 @@ class Umum
 
             $namafile = 'unggahprofilsdm-' . date('YmdHis') . '.xlsx';
 
-            $this->simpanBerkasImporExcelSementara($file, $namafile);
+            Berkas::simpanBerkasImporExcelSementara($file, $namafile);
 
-            $fileexcel = $this->ambilBerkasImporExcelSementara($namafile);
+            $fileexcel = Berkas::ambilBerkasImporExcelSementara($namafile);
 
-            return $this->imporExcelDataSDM($fileexcel);
+            return SDMExcel::imporExcelDataSDM($fileexcel);
         }
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('unggah')->renderSections()))->withHeaders(['Vary' => 'Accept']);

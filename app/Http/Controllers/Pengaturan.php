@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Interaksi\Berkas;
-use App\Interaksi\Umum;
 use App\Interaksi\Cache;
 use App\Interaksi\Excel;
+use App\Interaksi\Berkas;
+use App\Interaksi\Rangka;
 use App\Interaksi\DBQuery;
 use App\Interaksi\Validasi;
 
@@ -13,7 +13,7 @@ class Pengaturan
 {
     public function index()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
         $str = str();
 
         abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
@@ -88,7 +88,7 @@ class Pengaturan
 
     public function contohUnggah()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
@@ -99,7 +99,7 @@ class Pengaturan
 
     public function lihat($uuid)
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
@@ -114,7 +114,7 @@ class Pengaturan
 
     public function tambah()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
@@ -134,7 +134,7 @@ class Pengaturan
 
             Cache::hapusCacheAtur();
 
-            return $app->redirect->route('atur.data')->with('pesan', Umum::statusBerhasil());
+            return $app->redirect->route('atur.data')->with('pesan', Rangka::statusBerhasil());
         }
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('pengaturan.tambah-ubah')->renderSections()))->withHeaders(['Vary' => 'Accept']);
@@ -142,7 +142,7 @@ class Pengaturan
 
     public function ubah($uuid)
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
 
@@ -169,7 +169,7 @@ class Pengaturan
 
             Cache::hapusCacheAtur();
 
-            $pesan = Umum::statusBerhasil();
+            $pesan = Rangka::statusBerhasil();
             $session = $reqs->session();
             $redirect = $app->redirect;
 
@@ -198,7 +198,7 @@ class Pengaturan
 
     public function unggah()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
 

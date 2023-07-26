@@ -93,7 +93,7 @@ document.addEventListener('submit', function (e) {
         var alamat = a.dataset.tujuan,
             metode = a.method?.toUpperCase(),
             pesan = a.dataset.pesan,
-            ke = a.dataset.blank == 'true' ? window.location.href : a.action,
+            ke = a.dataset.blank == 'true' ? window.location.pathname : a.action,
             singkat = a.dataset.singkat == 'true' ? true : false,
             prog = a.dataset.laju == 'true' ? true : false,
             frag = a.dataset.frag == 'true' ? true : false,
@@ -315,6 +315,9 @@ function responUmum(data) {
 };
 
 function rekamTautan(data) {
+    if (!data.tautan.startsWith(location.origin)) {
+        data.tautan = location.origin + data.tautan;
+    };
     var segmen = new URL(data.tautan).pathname.split('/');
     var judul = segmen[1] ? judulHal + ' - ' + segmen.join(' ') : judulHal;
     document.title = judul;

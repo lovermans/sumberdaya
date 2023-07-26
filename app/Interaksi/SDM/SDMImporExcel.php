@@ -2,15 +2,12 @@
 
 namespace App\Interaksi\SDM;
 
-use App\Interaksi\Umum;
 use App\Interaksi\Rangka;
 use App\Tambahan\ChunkReadFilter;
 
-trait SDMImporExcel
+class SDMImporExcel
 {
-    use Umum, SDMCache, SDMValidasi, SDMDBQuery;
-
-    public function imporExcelStream(
+    public static function imporExcelStream(
         $reader,
         $fileexcel,
         $validasiImpor,
@@ -21,7 +18,7 @@ trait SDMImporExcel
         $waktuUnggah,
         $chunkSize = 25
     ) {
-        extract(Rangka::obyekPermintaanRangka());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
@@ -67,11 +64,11 @@ trait SDMImporExcel
 
             $data = array_combine(range(($startRow - 1), count($dataexcel) + ($startRow - 2)), array_values($dataexcel));
 
-            $validasi = $this->$validasiImpor($data);
+            $validasi = SDMValidasi::$validasiImpor($data);
 
             $validasi->validate();
 
-            $this->$databaseImpor($validasi->validated());
+            SDMDBQuery::$databaseImpor($validasi->validated());
 
             echo $pesansimpan;
         }
@@ -82,9 +79,9 @@ trait SDMImporExcel
 
         $app->filesystem->delete($fileexcel);
 
-        $this->$cacheImpor();
+        SDMCache::$cacheImpor();
 
-        return $app->redirect->route($rute)->with('pesan', $this->statusBerhasil());
+        return $app->redirect->route($rute)->with('pesan', Rangka::statusBerhasil());
 
         exit();
     }

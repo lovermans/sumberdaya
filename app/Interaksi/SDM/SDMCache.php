@@ -4,7 +4,7 @@ namespace App\Interaksi\SDM;
 
 use App\Interaksi\Rangka;
 
-trait SDMCache
+class SDMCache
 {
     public static function ambilCachePermintaanTambahSDM()
     {

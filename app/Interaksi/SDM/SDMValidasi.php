@@ -7,9 +7,9 @@ use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
-trait SDMValidasi
+class SDMValidasi
 {
-    public function validasiTambahDataSDM($permintaan)
+    public static function validasiTambahDataSDM($permintaan)
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -19,13 +19,13 @@ trait SDMValidasi
                 '*.sdm_no_absen' => ['required', 'string', 'max:10', 'unique:sdms,sdm_no_absen'],
                 '*.password' => ['required', 'string'],
                 '*.sdm_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...Arr::except($this->dasarValidasiPengaturan(), ['*.sdm_tgl_berhenti', '*.sdm_jenis_berhenti', '*.sdm_ket_berhenti'])
+                ...Arr::except(static::dasarValidasiSDM(), ['*.sdm_tgl_berhenti', '*.sdm_jenis_berhenti', '*.sdm_ket_berhenti'])
             ],
-            $this->pesanKesalahanValidasiSDM()
+            static::pesanKesalahanValidasiSDM()
         );
     }
 
-    public function validasiUbahDataSDM($uuid, $permintaan)
+    public static function validasiUbahDataSDM($uuid, $permintaan)
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -36,13 +36,13 @@ trait SDMValidasi
                 '*.sdm_hak_akses' => ['sometimes', 'nullable', 'string'],
                 '*.sdm_ijin_akses' => ['sometimes', 'nullable', 'string'],
                 '*.sdm_id_pengubah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...$this->dasarValidasiPengaturan()
+                ...static::dasarValidasiSDM()
             ],
-            $this->pesanKesalahanValidasiSDM()
+            static::pesanKesalahanValidasiSDM()
         );
     }
 
-    public function validasiUbahSandi($permintaan)
+    public static function validasiUbahSandi($permintaan)
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -59,7 +59,7 @@ trait SDMValidasi
         );
     }
 
-    public function validasiImporDataSDM($permintaan)
+    public static function validasiImporDataSDM($permintaan)
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -69,13 +69,13 @@ trait SDMValidasi
                 '*.sdm_no_absen' => ['required', 'string', 'max:10'],
                 '*.sdm_diunggah' => ['required', 'date'],
                 '*.sdm_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...Arr::except($this->dasarValidasiPengaturan(), ['*.foto_profil', '*.sdm_berkas'])
+                ...Arr::except(static::dasarValidasiSDM(), ['*.foto_profil', '*.sdm_berkas'])
             ],
-            $this->pesanValidasiArrayPengaturan()
+            static::pesanKesalahanValidasiSDM()
         );
     }
 
-    public function validasiBerkasImporDataSDM($permintaan)
+    public static function validasiBerkasImporDataSDM($permintaan)
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -90,7 +90,7 @@ trait SDMValidasi
         );
     }
 
-    public function dasarValidasiSDM()
+    public static function dasarValidasiSDM()
     {
         return [
             '*.foto_profil' => ['sometimes', 'image'],
@@ -160,7 +160,7 @@ trait SDMValidasi
         ];
     }
 
-    public function pesanKesalahanValidasiSDM()
+    public static function pesanKesalahanValidasiSDM()
     {
         return [
             '*.foto_profil.*' => 'Foto Profil wajib brupa berkas gambar atau hasil tangkap kamera.',

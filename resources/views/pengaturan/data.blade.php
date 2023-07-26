@@ -267,15 +267,15 @@
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
 
         <script>
-            (async() => {
-                while(!window.aplikasiSiap) {
-                    await new Promise((resolve,reject) =>
-                    setTimeout(resolve, 1000));
+            (async () => {
+                while (!window.aplikasiSiap) {
+                    await new Promise((resolve, reject) =>
+                        setTimeout(resolve, 1000));
                 }
-                
+
                 pilDasar('.trek-data .pil-dasar');
                 pilSaja('.trek-data .pil-saja');
-                urutData('#atur_data_cariUrut','#atur_data_cariUrut [data-indeks]');
+                urutData('#atur_data_cariUrut', '#atur_data_cariUrut [data-indeks]');
                 formatTabel('#atur_tabel thead th', '#atur_tabel tbody tr');
             })();
         </script>
@@ -327,12 +327,12 @@
 
     @isset($tabels)
     <script>
-        (async() => {
-            while(!window.aplikasiSiap) {
-                await new Promise((resolve,reject) =>
-                setTimeout(resolve, 1000));
+        (async () => {
+            while (!window.aplikasiSiap) {
+                await new Promise((resolve, reject) =>
+                    setTimeout(resolve, 1000));
             }
-            
+
             pilDasar('#form_atur_data_cari .pil-dasar');
             pilCari('#form_atur_data_cari .pil-cari');
             pilSaja('#form_atur_data_cari .pil-saja');

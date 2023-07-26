@@ -3,16 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Interaksi\Cache;
-use App\Interaksi\SDM\SDMBerkas;
+use App\Interaksi\Rangka;
+use Illuminate\Support\Arr;
 use App\Interaksi\SDM\SDMCache;
+use App\Interaksi\SDM\SDMBerkas;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMValidasi;
-use App\Interaksi\Umum;
-use Illuminate\Support\Arr;
 
 class RegisteredUserController
 {
-    use Umum, Cache, SDMCache, SDMValidasi, SDMDBQuery, SDMBerkas;
     /**, 
      * Display the registration view.
      *
@@ -20,13 +19,13 @@ class RegisteredUserController
      */
     public function create()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($pengguna && str($pengguna?->sdm_hak_akses)->contains('SDM-PENGURUS'), 403);
 
-        $aturs = $this->ambilCacheAtur();
-        $permintaanSdms = $this->ambilCachePermintaanTambahSDM();
-        $atasan = $this->ambilCacheSDM();
+        $aturs = Cache::ambilCacheAtur();
+        $permintaanSdms = SDMCache::ambilCachePermintaanTambahSDM();
+        $atasan = SDMCache::ambilCacheSDM();
 
         $data = [
             'permintaanSdms' => $permintaanSdms,
@@ -63,7 +62,7 @@ class RegisteredUserController
      */
     public function store()
     {
-        extract($this->obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($pengguna && str($pengguna?->sdm_hak_akses)->contains('SDM-PENGURUS'), 403);
 
@@ -71,7 +70,7 @@ class RegisteredUserController
 
         $reqs->merge(['sdm_id_pembuat' => $pengguna->sdm_no_absen, 'password' => $app->hash->make($reqs->sdm_no_ktp) ?? null]);
 
-        $validasi = $this->validasiTambahDataSDM([$reqs->all()]);
+        $validasi = SDMValidasi::validasiTambahDataSDM([$reqs->all()]);
 
         $validasi->validate();
 
@@ -79,23 +78,23 @@ class RegisteredUserController
 
         $data = Arr::except($valid, ['foto_profil', 'sdm_berkas']);
 
-        $this->tambahDataSDM($data);
+        SDMDBQuery::tambahDataSDM($data);
 
         $foto = Arr::only($valid, ['foto_profil'])['foto_profil'] ?? false;
         $berkas = Arr::only($valid, ['sdm_berkas'])['sdm_berkas'] ?? false;
         $no_absen = Arr::only($valid, ['sdm_no_absen'])['sdm_no_absen'];
 
         if ($foto) {
-            $this->simpanFotoSDM($foto, $no_absen);
+            SDMBerkas::simpanFotoSDM($foto, $no_absen);
         }
 
         if ($berkas) {
-            $this->simpanBerkasSDM($berkas, $no_absen);
+            SDMBerkas::simpanBerkasSDM($berkas, $no_absen);
         }
 
-        $this->hapusCacheSDMUmum();
+        SDMCache::hapusCacheSDMUmum();
 
-        $pesan = $this->statusBerhasil();
+        $pesan = Rangka::statusBerhasil();
 
         $perujuk = $reqs->session()->get('tautan_perujuk');
 

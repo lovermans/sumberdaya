@@ -17,7 +17,7 @@ class ImporExcel
         $waktuUnggah,
         $chunkSize = 25
     ) {
-        extract(Rangka::obyekPermintaanRangka());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 

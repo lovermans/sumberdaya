@@ -4,7 +4,7 @@ namespace App\Interaksi\SDM;
 
 use App\Interaksi\Rangka;
 
-trait SDMDBQuery
+class SDMDBQuery
 {
     public static function ambilDBPermintaanTambahSDM()
     {
@@ -211,5 +211,68 @@ trait SDMDBQuery
             ['sdm_no_absen'],
             ['sdm_no_permintaan', 'sdm_tgl_gabung', 'sdm_warganegara', 'sdm_no_ktp', 'sdm_nama', 'sdm_tempat_lahir', 'sdm_tgl_lahir', 'sdm_kelamin', 'sdm_gol_darah', 'sdm_alamat', 'sdm_alamat_rt', 'sdm_alamat_rw', 'sdm_alamat_kelurahan', 'sdm_alamat_kecamatan', 'sdm_alamat_kota', 'sdm_alamat_provinsi', 'sdm_alamat_kodepos', 'sdm_agama', 'sdm_no_kk', 'sdm_status_kawin', 'sdm_jml_anak', 'sdm_pendidikan', 'sdm_jurusan', 'sdm_telepon', 'email', 'sdm_disabilitas', 'sdm_no_bpjs', 'sdm_no_jamsostek', 'sdm_no_npwp', 'sdm_nama_bank', 'sdm_cabang_bank', 'sdm_rek_bank', 'sdm_an_rek', 'sdm_nama_dok', 'sdm_nomor_dok', 'sdm_penerbit_dok', 'sdm_an_dok', 'sdm_kadaluarsa_dok', 'sdm_uk_seragam', 'sdm_uk_sepatu', 'sdm_ket_kary', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_berhenti', 'sdm_id_atasan', 'sdm_id_pengunggah', 'sdm_id_pengubah', 'sdm_diunggah']
         );
+    }
+
+    public static function contohImporDatabaseSDM($lingkup)
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        return $app->db->query()
+            ->select(
+                'sdm_no_permintaan',
+                'sdm_no_absen',
+                'sdm_tgl_gabung',
+                'sdm_warganegara',
+                'sdm_no_ktp',
+                'sdm_nama',
+                'sdm_tempat_lahir',
+                'sdm_tgl_lahir',
+                'sdm_kelamin',
+                'sdm_gol_darah',
+                'sdm_alamat',
+                'sdm_alamat_rt',
+                'sdm_alamat_rw',
+                'sdm_alamat_kelurahan',
+                'sdm_alamat_kecamatan',
+                'sdm_alamat_kota',
+                'sdm_alamat_provinsi',
+                'sdm_alamat_kodepos',
+                'sdm_agama',
+                'sdm_no_kk',
+                'sdm_status_kawin',
+                'sdm_jml_anak',
+                'sdm_pendidikan',
+                'sdm_jurusan',
+                'sdm_telepon',
+                'email',
+                'sdm_disabilitas',
+                'sdm_no_bpjs',
+                'sdm_no_jamsostek',
+                'sdm_no_npwp',
+                'sdm_nama_bank',
+                'sdm_cabang_bank',
+                'sdm_rek_bank',
+                'sdm_an_rek',
+                'sdm_nama_dok',
+                'sdm_nomor_dok',
+                'sdm_penerbit_dok',
+                'sdm_an_dok',
+                'sdm_kadaluarsa_dok',
+                'sdm_uk_seragam',
+                'sdm_uk_sepatu',
+                'sdm_ket_kary',
+                'sdm_tgl_berhenti',
+                'sdm_jenis_berhenti',
+                'sdm_ket_berhenti',
+                'sdm_id_atasan'
+            )
+            ->from('sdms')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
+                $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            })
+            ->whereNull('sdm_tgl_berhenti')
+            ->when($lingkup, function ($c) use ($lingkup) {
+                return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
+            });
     }
 }

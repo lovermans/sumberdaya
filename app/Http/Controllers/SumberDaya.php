@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Interaksi\Berkas;
-use App\Interaksi\Umum;
+use App\Interaksi\Rangka;
 
 class SumberDaya
 {
     public function komponen()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka());
 
         return $reqs->filled('komponen') && $reqs->pjax()
             ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make($reqs->komponen)->fragmentIf($reqs->filled('fragment'), $reqs->fragment))->withHeaders(['Vary' => 'Accept'])
@@ -18,14 +18,14 @@ class SumberDaya
 
     public function mulai()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka());
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('rangka'))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function mulaiAplikasi()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         if ($pengguna) {
             $sandi = $pengguna->password;
@@ -51,7 +51,7 @@ class SumberDaya
 
     public function tentangAplikasi()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka());
 
         $HtmlPenuh = $app->view->make('tentang-aplikasi');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
@@ -73,11 +73,11 @@ class SumberDaya
 
     public function periksaPengguna()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka(true));
 
         $respon = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
 
-        return $reqs->user()
+        return $pengguna
             ? $respon->make('true')->withHeaders(['Vary' => 'Accept'])
             : $respon->make('false')->withHeaders(['Vary' => 'Accept']);
     }
@@ -93,14 +93,14 @@ class SumberDaya
 
     public function pwaManifest()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka());
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('pwa-manifest'))->withHeaders(['Content-Type' => 'application/json']);
     }
 
     public function serviceWorker()
     {
-        extract(Umum::obyekPermintaanUmum());
+        extract(Rangka::obyekPermintaanRangka());
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('service-worker'))->withHeaders(['Content-Type' => 'application/javascript', 'Cache-Control' => 'no-cache']);
     }

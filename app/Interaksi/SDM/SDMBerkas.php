@@ -4,16 +4,16 @@ namespace App\Interaksi\SDM;
 
 use App\Interaksi\Rangka;
 
-trait SDMBerkas
+class SDMBerkas
 {
-    public function simpanFotoSDM($foto, $no_absen)
+    public static function simpanFotoSDM($foto, $no_absen)
     {
         extract(Rangka::obyekPermintaanRangka());
 
         $foto->storeAs('sdm/foto-profil', $no_absen . '.webp');
     }
 
-    public function simpanBerkasSDM($berkas, $no_absen)
+    public static function simpanBerkasSDM($berkas, $no_absen)
     {
         extract(Rangka::obyekPermintaanRangka());
 
