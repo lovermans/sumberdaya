@@ -58,4 +58,36 @@ class SDMCache
             return SDMDBQuery::ambilDBSDMUltah()->get();
         });
     }
+
+    public static function hapusCachePKWTHabis()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('PengingatKontrak - ' . $app->date->today()->subDay()->format('Y-m-d'));
+    }
+
+    public static function ambilCachePKWTHabis()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->cache->rememberForever('PengingatKontrak - ' . $app->date->today()->format('Y-m-d'), function () {
+            return SDMDBQuery::ambilPKWTAkanHabis()->get();
+        });
+    }
+
+    public static function hapusCachePerubahanStatusKontrakTerbaru()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('PerubahanStatus - ' . $app->date->today()->subDay()->format('Y-m-d'));
+    }
+
+    public static function ambilCachePerubahanStatusKontrakTerbaru()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->cache->rememberForever('PerubahanStatus - ' . $app->date->today()->subDay()->format('Y-m-d'), function () {
+            return SDMDBQuery::ambilPerubahanStatusKontrakTerbaru()->get();
+        });
+    }
 }

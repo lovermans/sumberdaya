@@ -315,4 +315,60 @@ class SDMDBQuery
             })
             ->where('kontrak.penempatan_no_absen', $pengguna->sdm_no_absen);
     }
+
+    public static function ambilPKWTAkanHabis()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->select(
+                'sdm_uuid',
+                'sdm_no_absen',
+                'sdm_nama',
+                'penempatan_uuid',
+                'penempatan_posisi',
+                'penempatan_lokasi',
+                'penempatan_kontrak',
+                'penempatan_mulai',
+                'penempatan_selesai',
+                'penempatan_ke'
+            )
+            ->from('sdms')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
+                $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            })
+            ->whereNull('sdm_tgl_berhenti')
+            ->where('penempatan_kontrak', 'not like', 'OS-%')
+            ->where('penempatan_selesai', '<=', $app->date->today()->addDays(40)->toDateString())
+            ->latest('penempatan_selesai');
+    }
+
+    public static function ambilPerubahanStatusKontrakTerbaru()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->select(
+                'penempatan_uuid',
+                'penempatan_no_absen',
+                'penempatan_mulai',
+                'penempatan_selesai',
+                'penempatan_ke',
+                'penempatan_lokasi',
+                'penempatan_posisi',
+                'penempatan_kategori',
+                'penempatan_kontrak',
+                'penempatan_pangkat',
+                'penempatan_golongan',
+                'penempatan_grup',
+                'penempatan_keterangan',
+                'sdm_uuid',
+                'sdm_no_absen',
+                'sdm_nama'
+            )
+            ->from('penempatans')
+            ->join('sdms', 'sdm_no_absen', '=', 'penempatan_no_absen')
+            ->where('penempatan_mulai', '>=', $app->date->today()->addDays(40)->toDateString())
+            ->latest('penempatan_mulai');
+    }
 }
