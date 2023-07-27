@@ -191,13 +191,17 @@ class SDMDBQuery
                 'b.sdm_uuid as uuid_atasan',
                 'b.sdm_nama as nama_atasan',
                 'b.sdm_tgl_berhenti as tgl_berhenti_atasan',
-                'penempatan_lokasi',
-                'penempatan_posisi'
+                'kontrakakun.penempatan_lokasi as lokasi_akun',
+                'kontrakatasan.penempatan_lokasi as lokasi_atasan',
+                'kontrakatasan.penempatan_posisi as posisi_atasan'
             )
             ->from('sdms', 'a')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrakakun', function ($join) {
+                $join->on('a.sdm_no_absen', '=', 'kontrakakun.penempatan_no_absen');
+            })
             ->leftJoin('sdms as b', 'a.sdm_id_atasan', '=', 'b.sdm_no_absen')
-            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
-                $join->on('b.sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrakatasan', function ($join) {
+                $join->on('b.sdm_no_absen', '=', 'kontrakatasan.penempatan_no_absen');
             })
             ->where('a.sdm_uuid', $uuid);
     }

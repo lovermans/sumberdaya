@@ -444,7 +444,7 @@ class Umum
         $no_absen_sdm = $pengguna->sdm_no_absen;
         $no_absen_atasan = $pengguna->sdm_id_atasan;
         $lingkup = array_filter(explode(',', $ijin_akses));
-        $lingkup_lokasi = collect($akun->penempatan_lokasi);
+        $lingkup_lokasi = collect($akun->lokasi_akun);
         $lingkup_akses = $lingkup_lokasi->unique()->intersect($lingkup)->count();
         $str = str();
 

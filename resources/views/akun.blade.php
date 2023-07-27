@@ -40,8 +40,8 @@
                         loading="lazy">
                     </a>
 
-                    {{ $akun->sdm_id_atasan }} - {{ $akun->nama_atasan }} - {{ $akun->penempatan_lokasi }} - {{
-                    $akun->penempatan_posisi }} {{ $akun->tgl_berhenti_atasan ? '(NON-AKTIF)' : '' }}
+                    {{ $akun->sdm_id_atasan }} - {{ $akun->nama_atasan }} - {{ $akun->lokasi_atasan }} - {{
+                    $akun->posisi_atasan }} {{ $akun->tgl_berhenti_atasan ? '(NON-AKTIF)' : '' }}
                     @endif
                 </p>
             </div>
