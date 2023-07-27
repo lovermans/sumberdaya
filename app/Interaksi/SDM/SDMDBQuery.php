@@ -55,10 +55,14 @@ class SDMDBQuery
 
         return $database->query()
             ->select(
+                'penempatan_uuid',
                 'penempatan_no_absen',
                 'penempatan_lokasi',
                 'penempatan_posisi',
-                'penempatan_kontrak'
+                'penempatan_kontrak',
+                'penempatan_mulai',
+                'penempatan_selesai',
+                'penempatan_ke'
             )
             ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
                 $query->select($database->raw('MAX(penempatan_mulai)'))
