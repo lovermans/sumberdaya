@@ -734,7 +734,7 @@
         })();
         function siapkanFoto(berkas) {
             if (!window.SiapkanFoto) {
-                import('./siapkan-foto-es.js?id=202304042113').then(({default : SF}) => {
+                import("{{ $urlRangka->asset($mixRangka('/siapkan-foto-es.js')) }}").then(({default : SF}) => {
                     window.SiapkanFoto = SF; 
                     new SiapkanFoto(berkas);
                 });
