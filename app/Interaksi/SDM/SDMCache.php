@@ -86,7 +86,7 @@ class SDMCache
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        return $app->cache->rememberForever('PerubahanStatus - ' . $app->date->today()->subDay()->format('Y-m-d'), function () {
+        return $app->cache->rememberForever('PerubahanStatus - ' . $app->date->today()->format('Y-m-d'), function () {
             return SDMDBQuery::ambilPerubahanStatusKontrakTerbaru()->get();
         });
     }
