@@ -55,14 +55,10 @@ class SDMDBQuery
 
         return $database->query()
             ->select(
-                'penempatan_uuid',
                 'penempatan_no_absen',
                 'penempatan_lokasi',
                 'penempatan_posisi',
-                'penempatan_kontrak',
-                'penempatan_mulai',
-                'penempatan_selesai',
-                'penempatan_ke'
+                'penempatan_kontrak'
             )
             ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
                 $query->select($database->raw('MAX(penempatan_mulai)'))
@@ -342,7 +338,13 @@ class SDMDBQuery
                 'penempatan_ke'
             )
             ->from('sdms')
-            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini()
+                ->addSelect(
+                    'penempatan_uuid',
+                    'penempatan_mulai',
+                    'penempatan_selesai',
+                    'penempatan_ke'
+                ), 'kontrak', function ($join) {
                 $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
             })
             ->whereNull('sdm_tgl_berhenti')
