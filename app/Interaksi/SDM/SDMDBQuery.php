@@ -378,7 +378,7 @@ class SDMDBQuery
             )
             ->from('penempatans')
             ->join('sdms', 'sdm_no_absen', '=', 'penempatan_no_absen')
-            ->where('penempatan_mulai', '>=', $app->date->today()->addDays(40)->toDateString())
+            ->where('penempatan_mulai', '>=', $app->date->today()->subDays(40)->toDateString())
             ->latest('penempatan_mulai');
     }
 }
