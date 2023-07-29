@@ -122,4 +122,20 @@ class SDMCache
             return SDMDBQuery::ambilSDMKeluarTerkini()->get();
         });
     }
+
+    public static function hapusCachePelanggaranSDMTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('PengingatPelanggaran');
+    }
+
+    public static function ambilCachePelanggaranSDMTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->cache->rememberForever('PengingatPelanggaran', function () {
+            return SDMDBQuery::ambilLaporanPelanggaranSDM()->get();
+        });
+    }
 }
