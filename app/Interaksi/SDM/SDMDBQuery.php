@@ -381,4 +381,61 @@ class SDMDBQuery
             ->where('penempatan_mulai', '>=', $app->date->today()->subDays(40)->toDateString())
             ->latest('penempatan_mulai');
     }
+
+    public static function ambilSDMBaruGabung()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->select(
+                'sdm_uuid',
+                'sdm_no_absen',
+                'sdm_nama',
+                'sdm_no_permintaan',
+                'sdm_no_ktp',
+                'sdm_tgl_gabung',
+                'penempatan_uuid',
+                'penempatan_posisi',
+                'penempatan_lokasi',
+                'penempatan_kontrak'
+            )
+            ->from('sdms')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini()
+                ->addSelect('penempatan_uuid'), 'kontrak', function ($join) {
+                $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            })
+            // ->whereNull('sdm_tgl_berhenti')
+            ->where('sdm_tgl_gabung', '>=', $app->date->today()->subDays(40)->toDateString())
+            ->latest('sdm_tgl_gabung');
+    }
+
+    public static function ambilSDMKeluarTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->select(
+                'sdm_uuid',
+                'sdm_no_absen',
+                'sdm_nama',
+                'sdm_jenis_berhenti',
+                'sdm_tgl_berhenti',
+                'sdm_ket_berhenti',
+                'penempatan_uuid',
+                'penempatan_posisi',
+                'penempatan_lokasi',
+                'penempatan_kontrak'
+            )
+            ->from('sdms')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini()
+                ->addSelect('penempatan_uuid'), 'kontrak', function ($join) {
+                $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            })
+            ->where(function ($query) {
+                $query->whereNotNull('sdm_tgl_berhenti')
+                    ->orWhereNull('penempatan_kontrak');
+            })
+            ->where('sdm_tgl_berhenti', '>=', $app->date->today()->subDays(40)->toDateString())
+            ->latest('sdm_tgl_berhenti');
+    }
 }

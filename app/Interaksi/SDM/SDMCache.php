@@ -90,4 +90,36 @@ class SDMCache
             return SDMDBQuery::ambilPerubahanStatusKontrakTerbaru()->get();
         });
     }
+
+    public static function hapusCacheSDMBaru()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('PengingatAkunBaru - ' . $app->date->today()->subDay()->format('Y-m-d'));
+    }
+
+    public static function ambilCacheSDMBaru()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->cache->rememberForever('PengingatAkunBaru - ' . $app->date->today()->format('Y-m-d'), function () {
+            return SDMDBQuery::ambilSDMBaruGabung()->get();
+        });
+    }
+
+    public static function hapusCacheSDMKeluarTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('PengingatNon-Aktif - ' . $app->date->today()->subDay()->format('Y-m-d'));
+    }
+
+    public static function ambilCacheSDMKeluarTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->cache->rememberForever('PengingatNon-Aktif - ' . $app->date->today()->format('Y-m-d'), function () {
+            return SDMDBQuery::ambilSDMKeluarTerkini()->get();
+        });
+    }
 }
