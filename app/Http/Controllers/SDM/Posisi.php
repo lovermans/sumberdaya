@@ -7,6 +7,7 @@ use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
 use App\Interaksi\SDM\SDMValidasi;
 use App\Interaksi\Cache;
+use App\Interaksi\SDM\SDMCache;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMExcel;
 
@@ -122,7 +123,14 @@ class Posisi
 
         abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $pos = SDMDBQuery::ambilDBPosisiSDM()->addSelect('posisi_uuid')->where('posisi_uuid', $uuid)->first();
+        $pos = SDMDBQuery::ambilDBPosisiSDM()
+            ->addSelect(
+                'posisi_uuid',
+                'posisi_atasan',
+                'posisi_wlkp',
+                'posisi_keterangan',
+            )
+            ->where('posisi_uuid', $uuid)->first();
 
         abort_unless($pos, 404);
 
@@ -134,52 +142,39 @@ class Posisi
             : $HtmlPenuh;
     }
 
-    public function tambah(FungsiStatis $fungsiStatis)
+    public function tambah()
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
+        extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         if ($reqs->isMethod('post')) {
 
             $reqs->merge(['posisi_id_pembuat' => $pengguna->sdm_no_absen]);
 
-            $validasi = $app->validator->make(
-                $reqs->all(),
-                [
-                    'posisi_nama' => ['required', 'string', 'unique:posisis,posisi_nama'],
-                    'posisi_atasan' => ['nullable', 'string', 'max:40', 'different:posisi_nama'],
-                    'posisi_id_pembuat' => ['sometimes', 'nullable', 'string'],
-                    ...$this->dasarValidasi()
-                ],
-                [],
-                $this->atributInput()
-            );
+            $validasi = SDMValidasi::validasiTambahDataPosisiSDM([$reqs->all()]);
 
             $validasi->validate();
 
             $data = $validasi->safe()->all();
 
-            $app->db->table('posisis')->insert($data);
+            SDMDBQuery::tambahDataPosisiSDM($data[0]);
 
-            $fungsiStatis->hapusCacheSDMUmum();
-            $perujuk = $reqs->session()->get('tautan_perujuk');
-            $pesan = $fungsiStatis->statusBerhasil();
-            $redirect = $app->redirect;
+            SDMCache::hapusCacheSDMUmum();
 
-            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.posisi.data')->with('pesan', $pesan);
+            return $app->redirect->route('sdm.posisi.data')->with('pesan', Rangka::statusBerhasil());
         }
 
         $data = [
-            'posisis' => $fungsiStatis->ambilCachePosisiSDM(),
+            'posisis' => SDMCache::ambilCachePosisiSDM(),
         ];
 
         $HtmlPenuh = $app->view->make('sdm.posisi.tambah-ubah', $data);
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 
     public function ubah(FungsiStatis $fungsiStatis, $uuid = null)
@@ -191,7 +186,14 @@ class Posisi
 
         abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-        $pos = SDMDBQuery::ambilDBPosisiSDM()->addSelect('posisi_uuid')->where('posisi_uuid', $uuid)->first();
+        $pos = SDMDBQuery::ambilDBPosisiSDM()
+            ->addSelect(
+                'posisi_uuid',
+                'posisi_atasan',
+                'posisi_wlkp',
+                'posisi_keterangan',
+            )
+            ->where('posisi_uuid', $uuid)->first();
 
         abort_unless($pos, 404, 'Data Jabatan tidak ditemukan.');
 

@@ -170,4 +170,13 @@ class SDMCache
             return SDMDBQuery::ambilPengingatPenilaianSDMTerkini()->get();
         });
     }
+
+    public static function ambilCachePosisiSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->cache->rememberForever('PosisiSDM', function () {
+            return SDMDBQuery::ambilDBPosisiSDM()->orderBy('posisi_nama')->get();
+        });
+    }
 }

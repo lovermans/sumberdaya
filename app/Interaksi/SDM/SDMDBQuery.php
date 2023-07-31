@@ -626,10 +626,7 @@ class SDMDBQuery
         return $app->db->query()
             ->select(
                 'posisi_nama',
-                'posisi_atasan',
-                'posisi_wlkp',
-                'posisi_status',
-                'posisi_keterangan'
+                'posisi_status'
             )
             ->from('posisis');
     }
@@ -641,6 +638,9 @@ class SDMDBQuery
         return static::ambilDBPosisiSDM()
             ->addSelect(
                 'posisi_uuid',
+                'posisi_atasan',
+                'posisi_wlkp',
+                'posisi_keterangan',
                 'posisi_dibuat',
                 $app->db->raw('COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NULL THEN sdm_no_absen END) jml_aktif, COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NOT NULL THEN sdm_no_absen END) jml_nonaktif')
             )
@@ -661,10 +661,12 @@ class SDMDBQuery
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        return $app->db->query()
+        $database = $app->db;
+
+        return $database->query()
             ->addSelect(
                 'tsdm.*',
-                $app->db->raw('IF((jml_aktif + jml_nonaktif) > 0, (jml_nonaktif / (jml_nonaktif + jml_aktif)) * 100, 0) as pergantian')
+                $database->raw('IF((jml_aktif + jml_nonaktif) > 0, (jml_nonaktif / (jml_nonaktif + jml_aktif)) * 100, 0) as pergantian')
             )
             ->fromSub(static::saringKeluarMasukPosisiSDM(), 'tsdm')
             ->when($reqs->posisi_status, function ($query) use ($reqs) {
@@ -687,5 +689,12 @@ class SDMDBQuery
                     $query->latest('posisi_dibuat');
                 }
             );
+    }
+
+    public static function tambahDataPosisiSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('posisis')->insert($data);
     }
 }

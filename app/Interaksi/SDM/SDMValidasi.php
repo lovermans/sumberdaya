@@ -221,6 +221,49 @@ class SDMValidasi
         ];
     }
 
+    public static function dasarValidasiPencarianSDM()
+    {
+        return [
+            '*.kata_kunci' => ['sometimes', 'nullable', 'string'],
+            '*.bph' => ['sometimes', 'nullable', 'numeric', Rule::in([25, 50, 75, 100])],
+            '*.urut.*' => ['sometimes', 'nullable', 'string']
+        ];
+    }
+
+    public static function pesanKesalahanValidasiPencarianSDM()
+    {
+        return [
+            '*.kata_kunci.*' => 'Kata Kunci Pencarian wajib berupa karakter.',
+            '*.bph.*' => 'Baris Per halaman wajib sesuai daftar.',
+            '*.urut.*' => 'Butir Pengaturan urutan ke-:position wajib berupa karakter.'
+        ];
+    }
+
+    public static function dasarValidasiPosisiSDM()
+    {
+        return [
+            '*.posisi_nama' => ['required', 'string', 'unique:posisis,posisi_nama'],
+            '*.posisi_atasan' => ['sometimes', 'nullable', 'string', 'max:40', 'different:posisi_nama'],
+            '*.posisi_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+            '*.posisi_wlkp' => ['sometimes', 'nullable', 'string', 'max:40'],
+            '*.posisi_keterangan' => ['sometimes', 'nullable', 'string', 'max:40'],
+            '*.posisi_status' => ['required', 'string', Rule::in(['AKTIF', 'NON-AKTIF'])],
+        ];
+    }
+
+    public static function pesanKesalahanValidasiPosisiSDM()
+    {
+        return [
+            '*.posisi_status.*' => 'Status Jabatan urutan ke-:position wajib sesuai daftar.',
+            '*.posisi_nama.*' => 'Nama Jabatan urutan ke-:position kosong atau sudah terpakai sebelumnya.',
+            '*.posisi_atasan.*' => 'Jabatan Atasan urutan ke-:position wajib berupa karakter dan berbeda dengan kolom Nama Jabatan.',
+            '*.posisi_id_pembuat.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.posisi_wlkp.*' => 'Kode WLKP Jabatan urutan ke-:position wajib berupa karakter panjang maksimal 40 karakter.',
+            '*.posisi_keterangan.*' => 'Keterangan Jabatan urutan ke-:position wajib berupa karakter panjang maksimal 40 karakter.',
+            '*.posisi_status.*' => 'Status Jabatan urutan ke-:position wajib berupa karakter terdaftar.',
+        ];
+    }
+
     public static function validasiPencarianPosisiSDM($permintaan)
     {
         extract(Rangka::obyekPermintaanRangka());
@@ -228,21 +271,28 @@ class SDMValidasi
         return $app->validator->make(
             $permintaan,
             [
-                '*.kata_kunci' => ['sometimes', 'nullable', 'string'],
-                '*.bph' => ['sometimes', 'nullable', 'numeric', Rule::in([25, 50, 75, 100])],
-                '*.urut.*' => ['sometimes', 'nullable', 'string'],
-                '*.posisi_status' => ['sometimes', 'nullable', 'string', Rule::in(['AKTIF', 'NON-AKTIF'])],
+                ...static::dasarValidasiPencarianSDM(),
+                '*.posisi_status.*' => ['sometimes', 'nullable', 'string', Rule::in(['AKTIF', 'NON-AKTIF'])],
                 '*.penempatan_lokasi.*' => ['sometimes', 'nullable', 'string'],
                 '*.penempatan_kontrak.*' => ['sometimes', 'nullable', 'string']
             ],
             [
-                '*.kata_kunci.*' => 'Kata Kunci Pencarian wajib berupa karakter.',
-                '*.bph.*' => 'Baris Per halaman wajib sesuai daftar.',
-                '*.urut.*' => 'Butir Pengaturan urutan ke-:position wajib berupa karakter.',
-                '*.posisi_status.*' => 'Status Jabatan wajib sesuai daftar.',
+                ...static::pesanKesalahanValidasiPencarianSDM(),
+                ...static::pesanKesalahanValidasiPosisiSDM(),
                 '*.penempatan_lokasi.*' => 'Butir Pengaturan urutan ke-:position wajib berupa karakter.',
                 '*.penempatan_kontrak.*' => 'Butir Pengaturan urutan ke-:position wajib berupa karakter.',
             ]
+        );
+    }
+
+    public static function validasiTambahDataPosisiSDM($permintaan)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            static::dasarValidasiPosisiSDM(),
+            static::pesanKesalahanValidasiPosisiSDM()
         );
     }
 }
