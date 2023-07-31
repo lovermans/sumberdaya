@@ -1,9 +1,9 @@
-var CACHE_VERSION = 202307262223;
+var CACHE_VERSION = 202307310923;
 var CURRENT_CACHES = {
     prefetch: "{{ $confRangka->get('app.name', 'Laravel') }}-cache-v" + CACHE_VERSION
 };
 var offline = [
-    "{{ $rekRangka->getBasePath() !=='' ? $rekRangka->getBasePath() : '/' }}",
+    "{{ $rekRangka->getBasePath() . '/' }}",
     "tentang-aplikasi",
     "perlu-javascript",
     "offline",

@@ -135,7 +135,7 @@ class SDMCache
         extract(Rangka::obyekPermintaanRangka());
 
         return $app->cache->rememberForever('PengingatPelanggaran', function () {
-            return SDMDBQuery::ambilLaporanPelanggaranSDM()->get();
+            return SDMDBQuery::ambilPelanggaranSDMTerkini()->get();
         });
     }
 }

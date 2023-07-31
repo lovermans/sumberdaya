@@ -14,8 +14,8 @@
             "purpose": "any maskable"
         }
     ],
-    "id": "{{ $rekRangka->getBasePath() !=='' ? $rekRangka->getBasePath() : '/' }}",
-    "start_url": "{{ $rekRangka->getBasePath() !=='' ? $rekRangka->getBasePath() : '/' }}",
+    "id": "{{ $rekRangka->getBasePath() . '/' }}",
+    "start_url": "{{ $rekRangka->getBasePath() . '/' }}",
     "background_color": "#d32f2f",
     "display": "standalone",
     "theme_color": "#d32f2f",
