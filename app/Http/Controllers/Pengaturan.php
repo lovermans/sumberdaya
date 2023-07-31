@@ -186,7 +186,9 @@ class Pengaturan
 
             $perujuk = $session->get('tautan_perujuk');
 
-            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('atur.data')->with('pesan', $pesan);
+            return $perujuk
+                ? $redirect->to($perujuk)->with('pesan', $pesan)
+                : $redirect->route('atur.data')->with('pesan', $pesan);
         }
 
         $data = [
