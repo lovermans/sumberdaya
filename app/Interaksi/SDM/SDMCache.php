@@ -138,4 +138,36 @@ class SDMCache
             return SDMDBQuery::ambilPelanggaranSDMTerkini()->get();
         });
     }
+
+    public static function hapusCacheSanksiSDMTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('PengingatSanksi - ' . $app->date->today()->subDay()->format('Y-m-d'));
+    }
+
+    public static function ambilCacheSanksiSDMTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->cache->rememberForever('PengingatSanksi - ' . $app->date->today()->format('Y-m-d'), function () {
+            return SDMDBQuery::ambilPengingatSanksiSDMTerkini()->get();
+        });
+    }
+
+    public static function hapusCachePenilaianSDMTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('PengingatNilai - ' . $app->date->today()->subYear()->format('Y'));
+    }
+
+    public static function ambilCachePenilaianSDMTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->cache->rememberForever('PengingatNilai - ' . $app->date->today()->format('Y'), function () {
+            return SDMDBQuery::ambilPengingatPenilaianSDMTerkini()->get();
+        });
+    }
 }

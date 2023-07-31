@@ -19,27 +19,10 @@ class Umum
         extract(Rangka::obyekPermintaanRangka(true));
 
         $str = str();
-        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
-        $halaman = $app->view;
 
         abort_unless($str->contains($pengguna?->sdm_hak_akses, 'SDM'), 403, 'Akses dibatasi hanya untuk Pengguna Aplikasi SDM.');
 
-        $linkupIjin = $pengguna->sdm_ijin_akses;
-        $lingkup = array_filter(explode(',', $linkupIjin));
-        $cache = $app->cache;
-        $date = $app->date;
-        $database = $app->db;
-
-        $kemarin = $date->today()->subDay()->format('Y-m-d');
-        $hariIni = $date->today()->format('Y-m-d');
-
-        $kontrak = $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_keterangan')
-            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
-                $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
-            });
-
         $pengurus = $str->contains($pengguna->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']);
-
         $fragmen = $reqs->fragment;
 
         $respon = match (true) {
@@ -51,8 +34,8 @@ class Umum
             $pengurus && $fragmen == 'sdmIngatBaru' => $this->halamanSDMGabungTerbaru(),
             $pengurus && $fragmen == 'sdmIngatKeluar' => $this->halamanSDMKeluarTerbaru(),
             $pengurus && $fragmen == 'sdmIngatPelanggaran' => $this->halamanPelanggaran(),
-            $pengurus && $fragmen == 'sdmIngatSanksi' => $this->halamanSanksi($cache, $kemarin, $hariIni, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan),
-            $pengurus && $fragmen == 'sdmIngatNilai' => $this->halamanNilai($cache, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan, $date),
+            $pengurus && $fragmen == 'sdmIngatSanksi' => $this->halamanSanksi(),
+            $pengurus && $fragmen == 'sdmIngatNilai' => $this->halamanNilai(),
             default => $this->halamanAwal(),
         };
 
@@ -61,14 +44,18 @@ class Umum
 
     public function halamanNavigasi()
     {
-        extract(Rangka::obyekPermintaanRangka());
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless(str()->contains($pengguna?->sdm_hak_akses, 'SDM'), 403, 'Akses dibatasi hanya untuk Pengguna Aplikasi SDM.');
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.navigasi'))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function halamanAwal()
     {
-        extract(Rangka::obyekPermintaanRangka());
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless(str()->contains($pengguna?->sdm_hak_akses, 'SDM'), 403, 'Akses dibatasi hanya untuk Pengguna Aplikasi SDM.');
 
         $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrl()]);
 
@@ -84,7 +71,7 @@ class Umum
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna, 401);
+        abort_unless(str()->contains($pengguna?->sdm_hak_akses, 'SDM'), 403, 'Akses dibatasi hanya untuk Pengguna Aplikasi SDM.');
 
         $linkupIjin = $pengguna->sdm_ijin_akses;
         $lingkup = array_filter(explode(',', $linkupIjin));
@@ -122,7 +109,7 @@ class Umum
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna, 401);
+        abort_unless(str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $linkupIjin = $pengguna->sdm_ijin_akses;
         $lingkup = array_filter(explode(',', $linkupIjin));
@@ -142,7 +129,7 @@ class Umum
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna, 401);
+        abort_unless(str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $linkupIjin = $pengguna->sdm_ijin_akses;
         $lingkup = array_filter(explode(',', $linkupIjin));
@@ -177,7 +164,7 @@ class Umum
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna, 401);
+        abort_unless(str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $linkupIjin = $pengguna->sdm_ijin_akses;
         $lingkup = array_filter(explode(',', $linkupIjin));
@@ -211,7 +198,7 @@ class Umum
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna, 401);
+        abort_unless(str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $linkupIjin = $pengguna->sdm_ijin_akses;
         $lingkup = array_filter(explode(',', $linkupIjin));
@@ -248,7 +235,7 @@ class Umum
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna, 401);
+        abort_unless(str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $linkupIjin = $pengguna->sdm_ijin_akses;
         $lingkup = array_filter(explode(',', $linkupIjin));
@@ -282,7 +269,7 @@ class Umum
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna, 401);
+        abort_unless(str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $linkupIjin = $pengguna->sdm_ijin_akses;
         $lingkup = array_filter(explode(',', $linkupIjin));
@@ -312,28 +299,18 @@ class Umum
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.pelanggaran', $data))->withHeaders(['Vary' => 'Accept']);
     }
 
-    public function halamanSanksi($cache, $kemarin, $hariIni, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan)
+    public function halamanSanksi()
     {
-        $cache->forget('PengingatSanksi - ' . $kemarin);
+        extract(Rangka::obyekPermintaanRangka(true));
 
-        $dataDasar = $database->query()->select('sanksi_uuid', 'sanksi_no_absen', 'sanksi_jenis', 'sanksi_mulai', 'sanksi_selesai', 'sanksi_lap_no', 'sanksi_tambahan', 'sanksi_keterangan')->from('sanksisdms');
+        abort_unless(str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $cache_sanksis = $cache->rememberForever('PengingatSanksi - ' . $hariIni, function () use ($kontrak, $dataDasar, $hariIni) {
-            return $dataDasar->addSelect('a.sdm_uuid as langgar_tsdm_uuid', 'a.sdm_nama as langgar_tsdm_nama', 'a.sdm_tgl_berhenti as langgar_tsdm_tgl_berhenti', 'kontrak_t.penempatan_lokasi as langgar_tlokasi', 'kontrak_t.penempatan_posisi as langgar_tposisi', 'kontrak_t.penempatan_kontrak as langgar_tkontrak', 'langgar_isi', 'langgar_tanggal', 'langgar_status', 'langgar_pelapor', 'b.sdm_uuid as langgar_psdm_uuid', 'b.sdm_nama as langgar_psdm_nama', 'b.sdm_tgl_berhenti as langgar_psdm_tgl_berhenti', 'kontrak_p.penempatan_lokasi as langgar_plokasi', 'kontrak_p.penempatan_posisi as langgar_pposisi', 'kontrak_p.penempatan_kontrak as langgar_pkontrak')
-                ->join('sdms as a', 'sanksi_no_absen', '=', 'a.sdm_no_absen')
-                ->leftJoinSub($kontrak, 'kontrak_t', function ($join) {
-                    $join->on('sanksi_no_absen', '=', 'kontrak_t.penempatan_no_absen');
-                })
-                ->leftJoin('pelanggaransdms', 'sanksi_lap_no', '=', 'langgar_lap_no')
-                ->leftJoin('sdms as b', 'langgar_pelapor', '=', 'b.sdm_no_absen')
-                ->leftJoinSub($kontrak, 'kontrak_p', function ($join) {
-                    $join->on('langgar_pelapor', '=', 'kontrak_p.penempatan_no_absen');
-                })
-                ->whereNull('a.sdm_tgl_berhenti')
-                ->where('sanksi_selesai', '>=', $hariIni)
-                ->latest('sanksi_selesai')
-                ->get();
-        });
+        $linkupIjin = $pengguna->sdm_ijin_akses;
+        $lingkup = array_filter(explode(',', $linkupIjin));
+
+        SDMCache::hapusCacheSanksiSDMTerkini();
+
+        $cache_sanksis = SDMCache::ambilCacheSanksiSDMTerkini();
 
         $sanksis = $cache_sanksis->when($linkupIjin, function ($c) use ($lingkup) {
             return $c->whereIn('langgar_tlokasi', [null, ...$lingkup]);
@@ -353,38 +330,30 @@ class Umum
             'jumlahOrganik' => $jumlahOrganik
         ];
 
-        $sdmIngatSanksi = $halaman->make('sdm.pengingat.sanksi', $data);
-
-        return $tanggapan->make($sdmIngatSanksi)->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.sanksi', $data))->withHeaders(['Vary' => 'Accept']);
     }
 
-    public function halamanNilai($cache, $kontrak, $database, $linkupIjin, $lingkup, $halaman, $tanggapan, $date)
+    public function halamanNilai()
     {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless(str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+
+        $linkupIjin = $pengguna->sdm_ijin_akses;
+        $lingkup = array_filter(explode(',', $linkupIjin));
+
         $tahunIni = $date->today()->format('Y');
         $tahunLalu = $date->today()->subYear()->format('Y');
-        $rentang = [
-            $tahunIni, $tahunLalu
-        ];
 
-        $cache->forget('PengingatNilai - ' . $tahunLalu);
+        SDMCache::hapusCachePenilaianSDMTerkini();
 
-        $dataDasar = $database->query()->select('nilaisdm_uuid', 'nilaisdm_no_absen', 'nilaisdm_tahun', 'nilaisdm_periode', 'nilaisdm_bobot_hadir', 'nilaisdm_bobot_sikap', 'nilaisdm_bobot_target', 'nilaisdm_tindak_lanjut', 'nilaisdm_keterangan')->from('penilaiansdms');
-
-        $cache_nilais = $cache->rememberForever('PengingatNilai - ' . $tahunIni, function () use ($kontrak, $dataDasar, $rentang, $database) {
-            return $dataDasar->addSelect('penempatan_lokasi', 'penempatan_kontrak', $database->raw('(IFNULL(nilaisdm_bobot_hadir, 0) + IFNULL(nilaisdm_bobot_sikap, 0) + IFNULL(nilaisdm_bobot_target, 0)) as nilaisdm_total'))
-                ->leftJoinSub($kontrak, 'kontrak_t', function ($join) {
-                    $join->on('nilaisdm_no_absen', '=', 'kontrak_t.penempatan_no_absen');
-                })
-                ->whereIn('nilaisdm_tahun', $rentang)
-                ->get();
-        });
+        $cache_nilais = SDMCache::ambilCachePenilaianSDMTerkini();
 
         $nilais = $cache_nilais->when($linkupIjin, function ($c) use ($lingkup) {
             return $c->whereIn('langgar_tlokasi', [null, ...$lingkup]);
         });
 
         $rataTahunLalu = $nilais->where('nilaisdm_tahun', $tahunLalu)->avg('nilaisdm_total');
-
         $rataTahunIni = $nilais->where('nilaisdm_tahun', $tahunIni)->avg('nilaisdm_total');
 
         $data = [
@@ -392,9 +361,7 @@ class Umum
             'rataTahunIni' => $rataTahunIni ?? 0
         ];
 
-        $sdmIngatSanksi = $halaman->make('sdm.pengingat.nilai', $data);
-
-        return $tanggapan->make($sdmIngatSanksi)->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.nilai', $data))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function akun($uuid = null)

@@ -481,8 +481,6 @@ class SDMDBQuery
 
     public static function ambilPelanggaranSDMTerkini()
     {
-        extract(Rangka::obyekPermintaanRangka());
-
         return static::ambilLaporanPelanggaranSDM()
             ->addSelect(
                 'a.sdm_uuid as langgar_tsdm_uuid',
@@ -527,5 +525,97 @@ class SDMDBQuery
             ->whereNull('sanksisdms.sanksi_jenis')
             ->where('langgar_status', '=', 'DIPROSES')
             ->orderBy('langgar_lap_no', 'desc');
+    }
+
+    public static function ambilSanksiSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->select(
+                'sanksi_uuid',
+                'sanksi_no_absen',
+                'sanksi_jenis',
+                'sanksi_mulai',
+                'sanksi_selesai',
+                'sanksi_lap_no',
+                'sanksi_tambahan',
+                'sanksi_keterangan'
+            )
+            ->from('sanksisdms');
+    }
+
+    public static function ambilPengingatSanksiSDMTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return static::ambilSanksiSDM()
+            ->addSelect(
+                'a.sdm_uuid as langgar_tsdm_uuid',
+                'a.sdm_nama as langgar_tsdm_nama',
+                'a.sdm_tgl_berhenti as langgar_tsdm_tgl_berhenti',
+                'kontrak_t.penempatan_lokasi as langgar_tlokasi',
+                'kontrak_t.penempatan_posisi as langgar_tposisi',
+                'kontrak_t.penempatan_kontrak as langgar_tkontrak',
+                'langgar_isi',
+                'langgar_tanggal',
+                'langgar_status',
+                'langgar_pelapor',
+                'b.sdm_uuid as langgar_psdm_uuid',
+                'b.sdm_nama as langgar_psdm_nama',
+                'b.sdm_tgl_berhenti as langgar_psdm_tgl_berhenti',
+                'kontrak_p.penempatan_lokasi as langgar_plokasi',
+                'kontrak_p.penempatan_posisi as langgar_pposisi',
+                'kontrak_p.penempatan_kontrak as langgar_pkontrak'
+            )
+            ->join('sdms as a', 'sanksi_no_absen', '=', 'a.sdm_no_absen')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak_t', function ($join) {
+                $join->on('sanksi_no_absen', '=', 'kontrak_t.penempatan_no_absen');
+            })
+            ->leftJoin('pelanggaransdms', 'sanksi_lap_no', '=', 'langgar_lap_no')
+            ->leftJoin('sdms as b', 'langgar_pelapor', '=', 'b.sdm_no_absen')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak_p', function ($join) {
+                $join->on('langgar_pelapor', '=', 'kontrak_p.penempatan_no_absen');
+            })
+            ->whereNull('a.sdm_tgl_berhenti')
+            ->where('sanksi_selesai', '>=', $app->date->today()->format('Y-m-d'))
+            ->latest('sanksi_selesai');
+    }
+
+    public static function ambilPenilaianSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->select(
+                'nilaisdm_uuid',
+                'nilaisdm_no_absen',
+                'nilaisdm_tahun',
+                'nilaisdm_periode',
+                'nilaisdm_bobot_hadir',
+                'nilaisdm_bobot_sikap',
+                'nilaisdm_bobot_target',
+                'nilaisdm_tindak_lanjut',
+                'nilaisdm_keterangan'
+            )
+            ->from('penilaiansdms');
+    }
+
+    public static function ambilPengingatPenilaianSDMTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $date = $app->date;
+
+        return static::ambilPenilaianSDM()
+            ->addSelect(
+                'penempatan_lokasi',
+                'penempatan_kontrak',
+                $app->db->raw('(IFNULL(nilaisdm_bobot_hadir, 0) + IFNULL(nilaisdm_bobot_sikap, 0) + IFNULL(nilaisdm_bobot_target, 0)) as nilaisdm_total')
+            )
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak_t', function ($join) {
+                $join->on('nilaisdm_no_absen', '=', 'kontrak_t.penempatan_no_absen');
+            })
+            ->whereIn('nilaisdm_tahun', [$date->today()->format('Y'), $date->today()->subYear()->format('Y')]);
     }
 }
