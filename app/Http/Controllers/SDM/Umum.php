@@ -342,8 +342,8 @@ class Umum
         $linkupIjin = $pengguna->sdm_ijin_akses;
         $lingkup = array_filter(explode(',', $linkupIjin));
 
-        $tahunIni = $date->today()->format('Y');
-        $tahunLalu = $date->today()->subYear()->format('Y');
+        $tahunIni = $app->date->today()->format('Y');
+        $tahunLalu = $app->date->today()->subYear()->format('Y');
 
         SDMCache::hapusCachePenilaianSDMTerkini();
 
