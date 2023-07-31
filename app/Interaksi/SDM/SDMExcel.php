@@ -48,4 +48,23 @@ class SDMExcel
 
         return EksporExcel::eksporExcelStream(...$argumen);
     }
+
+    public static function eksporExcelPencarianPosisiSDM($data)
+    {
+        $spreadsheet = new Spreadsheet();
+        $binder = new CustomValueBinder();
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $argumen = [
+            'namaBerkas' => 'eksporjabatansdm-',
+            'dataEkspor' => $data,
+            'pengecualian' => ['posisi_uuid'],
+            'pesanData' =>  ' data jabatan SDM',
+            'binder' => $binder,
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
+    }
 }

@@ -2,40 +2,25 @@
 
 namespace App\Http\Controllers\SDM;
 
+use App\Interaksi\Rangka;
 use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
-use App\Http\Controllers\SDM\Berkas;
+use App\Interaksi\SDM\SDMValidasi;
+use App\Interaksi\Cache;
+use App\Interaksi\SDM\SDMDBQuery;
+use App\Interaksi\SDM\SDMExcel;
 
 class Posisi
 {
-    public function index(Rule $rule, Berkas $berkas)
+    public function index()
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
+        extract(Rangka::obyekPermintaanRangka(true));
+
         $str = str();
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $validator = $app->validator->make(
-            $reqs->all(),
-            [
-                'posisi_status' => ['sometimes', 'nullable', 'string', $rule->in(['AKTIF', 'NON-AKTIF'])],
-                'kata_kunci' => ['sometimes', 'nullable', 'string'],
-                'bph' => ['sometimes', 'nullable', 'numeric', $rule->in([25, 50, 75, 100])],
-                'urut.*' => ['sometimes', 'nullable', 'string'],
-                'penempatan_lokasi.*' => ['sometimes', 'nullable', 'string'],
-                'penempatan_kontrak.*' => ['sometimes', 'nullable', 'string']
-            ],
-            [
-                'posisi_status.*' => 'Status Jabatan harus sesuai daftar.',
-                'kata_kunci.*' => 'Kata Kunci Pencarian harus berupa karakter.',
-                'bph.*' => 'Baris Per halaman tidak sesuai daftar.',
-                'urut.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
-                'penempatan_lokasi.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
-                'penempatan_kontrak.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.',
-            ]
-        );
+        $validator = SDMValidasi::validasiPencarianPosisiSDM([$reqs->all()]);
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.posisi.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
@@ -45,7 +30,7 @@ class Posisi
         $uruts = $urutArray ? implode(',', array_filter($urutArray)) : null;
         $kataKunci = $reqs->kata_kunci;
 
-        $ijin_akses = $pengguna->sdm_ijin_akses;
+        $ijin_akses = $pengguna?->sdm_ijin_akses;
         $lingkupIjin = array_filter(explode(',', $ijin_akses));
         $lingkup_lokasi = collect($reqs->lokasi);
         $lingkup_akses = $lingkup_lokasi->intersect($lingkupIjin)->count();
@@ -54,26 +39,20 @@ class Posisi
 
         abort_unless(blank($ijin_akses) || ($lingkup_akses <= $maks_akses && $maks_akses >= $permin_akses), 403, 'Akses lokasi lain dibatasi.');
 
-        $database = $app->db;
-
-        $kontrak = $database->query()->select('penempatan_posisi', 'penempatan_no_absen', 'penempatan_lokasi', 'penempatan_kontrak')
-            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
-                $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
-            });
-
-        $cariSub = $this->dataDasar()->clone()->addSelect('posisi_uuid', 'posisi_dibuat', $database->raw('COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NULL THEN sdm_no_absen END) jml_aktif, COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NOT NULL THEN sdm_no_absen END) jml_nonaktif'))
-            ->leftJoinSub($kontrak, 'kontrak', function ($join) {
-                $join->on('posisi_nama', '=', 'kontrak.penempatan_posisi');
-            })
-            ->leftJoin('sdms', 'sdm_no_absen', '=', 'penempatan_no_absen')
-            ->groupBy('posisi_nama')->when($reqs->lokasi, function ($query) use ($reqs) {
+        $cariSub = SDMDBQuery::ambilKeluarMasukPosisiSDM()
+            ->when($reqs->lokasi, function ($query) use ($reqs) {
                 $query->whereIn('penempatan_lokasi', $reqs->lokasi);
             })
             ->when($reqs->kontrak, function ($query) use ($reqs) {
                 $query->whereIn('penempatan_kontrak', $reqs->kontrak);
             });
 
-        $cari = $database->query()->addSelect('tsdm.*', $app->db->raw('IF((jml_aktif + jml_nonaktif) > 0, (jml_nonaktif / (jml_nonaktif + jml_aktif)) * 100, 0) as pergantian'))->fromSub($cariSub, 'tsdm')
+        $cari = $app->db->query()
+            ->addSelect(
+                'tsdm.*',
+                $app->db->raw('IF((jml_aktif + jml_nonaktif) > 0, (jml_nonaktif / (jml_nonaktif + jml_aktif)) * 100, 0) as pergantian')
+            )
+            ->fromSub($cariSub, 'tsdm')
             ->when($reqs->posisi_status, function ($query) use ($reqs) {
                 $query->where('posisi_status', $reqs->posisi_status);
             })
@@ -95,12 +74,9 @@ class Posisi
                 }
             );
 
-
         if ($reqs->unduh == 'excel') {
-            return $berkas->unduhIndexPosisiSDMExcel($cari, $app);
+            return SDMExcel::eksporExcelPencarianPosisiSDM($cari);
         }
-
-        // dd($cari->get());
 
         $aktif = $cari->clone()->sum('jml_aktif');
         $nonAktif = $cari->clone()->sum('jml_nonaktif');
@@ -108,9 +84,9 @@ class Posisi
 
         $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'sdm_posisi_tabels']);
 
-        $kunciUrut = array_filter((array) $urutArray);
+        $cacheAtur = Cache::ambilCacheAtur();
 
-        $cacheAtur = FungsiStatis::ambilCacheAtur();
+        $kunciUrut = array_filter((array) $urutArray);
 
         $urutPergantian = $str->contains($uruts, 'pergantian');
         $indexPergantian = (head(array_keys($kunciUrut, 'pergantian ASC')) + head(array_keys(array_filter((array)  $urutArray), 'pergantian DESC')) + 1);
@@ -144,6 +120,7 @@ class Posisi
 
         $HtmlPenuh = $app->view->make('sdm.posisi.data', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+
         return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
             ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
             : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);

@@ -618,4 +618,36 @@ class SDMDBQuery
             })
             ->whereIn('nilaisdm_tahun', [$date->today()->format('Y'), $date->today()->subYear()->format('Y')]);
     }
+
+    public static function ambilDBPosisiSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->select(
+                'posisi_nama',
+                'posisi_atasan',
+                'posisi_wlkp',
+                'posisi_status',
+                'posisi_keterangan'
+            )
+            ->from('posisis');
+    }
+
+    public static function ambilKeluarMasukPosisiSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return static::ambilDBPosisiSDM()
+            ->addSelect(
+                'posisi_uuid',
+                'posisi_dibuat',
+                $app->db->raw('COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NULL THEN sdm_no_absen END) jml_aktif, COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NOT NULL THEN sdm_no_absen END) jml_nonaktif')
+            )
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
+                $join->on('posisi_nama', '=', 'kontrak.penempatan_posisi');
+            })
+            ->leftJoin('sdms', 'sdm_no_absen', '=', 'penempatan_no_absen')
+            ->groupBy('posisi_nama');
+    }
 }
