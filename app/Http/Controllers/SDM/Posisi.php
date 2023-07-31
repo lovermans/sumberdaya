@@ -39,40 +39,7 @@ class Posisi
 
         abort_unless(blank($ijin_akses) || ($lingkup_akses <= $maks_akses && $maks_akses >= $permin_akses), 403, 'Akses lokasi lain dibatasi.');
 
-        $cariSub = SDMDBQuery::ambilKeluarMasukPosisiSDM()
-            ->when($reqs->lokasi, function ($query) use ($reqs) {
-                $query->whereIn('penempatan_lokasi', $reqs->lokasi);
-            })
-            ->when($reqs->kontrak, function ($query) use ($reqs) {
-                $query->whereIn('penempatan_kontrak', $reqs->kontrak);
-            });
-
-        $cari = $app->db->query()
-            ->addSelect(
-                'tsdm.*',
-                $app->db->raw('IF((jml_aktif + jml_nonaktif) > 0, (jml_nonaktif / (jml_nonaktif + jml_aktif)) * 100, 0) as pergantian')
-            )
-            ->fromSub($cariSub, 'tsdm')
-            ->when($reqs->posisi_status, function ($query) use ($reqs) {
-                $query->where('posisi_status', $reqs->posisi_status);
-            })
-            ->when($kataKunci, function ($query, $kataKunci) {
-                $query->where(function ($group) use ($kataKunci) {
-                    $group->where('posisi_nama', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('posisi_atasan', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('posisi_wlkp', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('posisi_keterangan', 'like', '%' . $kataKunci . '%');
-                });
-            })
-            ->when(
-                $uruts,
-                function ($query, $uruts) {
-                    $query->orderByRaw($uruts);
-                },
-                function ($query) {
-                    $query->latest('posisi_dibuat');
-                }
-            );
+        $cari = SDMDBQuery::saringPosisiSDM($kataKunci, $uruts);
 
         if ($reqs->unduh == 'excel') {
             return SDMExcel::eksporExcelPencarianPosisiSDM($cari);

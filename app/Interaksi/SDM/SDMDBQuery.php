@@ -634,7 +634,7 @@ class SDMDBQuery
             ->from('posisis');
     }
 
-    public static function ambilKeluarMasukPosisiSDM()
+    public static function saringKeluarMasukPosisiSDM()
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -648,6 +648,44 @@ class SDMDBQuery
                 $join->on('posisi_nama', '=', 'kontrak.penempatan_posisi');
             })
             ->leftJoin('sdms', 'sdm_no_absen', '=', 'penempatan_no_absen')
-            ->groupBy('posisi_nama');
+            ->groupBy('posisi_nama')
+            ->when($reqs->lokasi, function ($query) use ($reqs) {
+                $query->whereIn('penempatan_lokasi', $reqs->lokasi);
+            })
+            ->when($reqs->kontrak, function ($query) use ($reqs) {
+                $query->whereIn('penempatan_kontrak', $reqs->kontrak);
+            });
+    }
+
+    public static function saringPosisiSDM($kataKunci, $uruts)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->addSelect(
+                'tsdm.*',
+                $app->db->raw('IF((jml_aktif + jml_nonaktif) > 0, (jml_nonaktif / (jml_nonaktif + jml_aktif)) * 100, 0) as pergantian')
+            )
+            ->fromSub(static::saringKeluarMasukPosisiSDM(), 'tsdm')
+            ->when($reqs->posisi_status, function ($query) use ($reqs) {
+                $query->where('posisi_status', $reqs->posisi_status);
+            })
+            ->when($kataKunci, function ($query, $kataKunci) {
+                $query->where(function ($group) use ($kataKunci) {
+                    $group->where('posisi_nama', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('posisi_atasan', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('posisi_wlkp', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('posisi_keterangan', 'like', '%' . $kataKunci . '%');
+                });
+            })
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->latest('posisi_dibuat');
+                }
+            );
     }
 }
