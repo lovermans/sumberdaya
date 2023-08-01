@@ -167,7 +167,6 @@ class Umum
             $validasi->validate();
 
             $valid = $validasi->safe()->all()[0];
-
             $pengurus = str()->contains($pengguna->sdm_hak_akses, 'SDM-PENGURUS');
 
             $data = match (true) {
@@ -207,9 +206,7 @@ class Umum
             SDMCache::hapusCacheSDMUmum();
 
             $pesan = Rangka::statusBerhasil();
-
             $perujuk = $session->get('tautan_perujuk');
-
             $redirect = $app->redirect;
 
             return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.mulai')->with('pesan', $pesan);
@@ -307,7 +304,6 @@ class Umum
             $validasifile->validate();
 
             $file = $validasifile->safe()->only('unggah_profil_sdm')['unggah_profil_sdm'];
-
             $namafile = 'unggahprofilsdm-' . date('YmdHis') . '.xlsx';
 
             Berkas::simpanBerkasImporExcelSementara($file, $namafile);
