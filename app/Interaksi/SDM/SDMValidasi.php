@@ -242,9 +242,7 @@ class SDMValidasi
     public static function dasarValidasiPosisiSDM()
     {
         return [
-            '*.posisi_nama' => ['required', 'string', 'unique:posisis,posisi_nama'],
             '*.posisi_atasan' => ['sometimes', 'nullable', 'string', 'max:40', 'different:posisi_nama'],
-            '*.posisi_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
             '*.posisi_wlkp' => ['sometimes', 'nullable', 'string', 'max:40'],
             '*.posisi_keterangan' => ['sometimes', 'nullable', 'string', 'max:40'],
             '*.posisi_status' => ['required', 'string', Rule::in(['AKTIF', 'NON-AKTIF'])],
@@ -258,6 +256,7 @@ class SDMValidasi
             '*.posisi_nama.*' => 'Nama Jabatan urutan ke-:position kosong atau sudah terpakai sebelumnya.',
             '*.posisi_atasan.*' => 'Jabatan Atasan urutan ke-:position wajib berupa karakter dan berbeda dengan kolom Nama Jabatan.',
             '*.posisi_id_pembuat.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.posisi_id_pembuat.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.posisi_wlkp.*' => 'Kode WLKP Jabatan urutan ke-:position wajib berupa karakter panjang maksimal 40 karakter.',
             '*.posisi_keterangan.*' => 'Keterangan Jabatan urutan ke-:position wajib berupa karakter panjang maksimal 40 karakter.',
             '*.posisi_status.*' => 'Status Jabatan urutan ke-:position wajib berupa karakter terdaftar.',
@@ -291,7 +290,26 @@ class SDMValidasi
 
         return $app->validator->make(
             $permintaan,
-            static::dasarValidasiPosisiSDM(),
+            [
+                '*.posisi_nama' => ['required', 'string', 'unique:posisis,posisi_nama'],
+                '*.posisi_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                ...static::dasarValidasiPosisiSDM()
+            ],
+            static::pesanKesalahanValidasiPosisiSDM()
+        );
+    }
+
+    public static function validasiUbahDataPosisiSDM($permintaan, $uuid)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            [
+                '*.posisi_nama' => ['required', 'string', 'max:40', Rule::unique('posisis')->where(fn ($query) => $query->whereNot('posisi_uuid', $uuid))],
+                '*.posisi_id_pengubah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                ...static::dasarValidasiPosisiSDM()
+            ],
             static::pesanKesalahanValidasiPosisiSDM()
         );
     }

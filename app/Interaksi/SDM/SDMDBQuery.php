@@ -697,4 +697,11 @@ class SDMDBQuery
 
         $app->db->table('posisis')->insert($data);
     }
+
+    public static function ubahDataPosisiSDM($data, $uuid)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('posisis')->where('posisi_uuid', $uuid)->update($data);
+    }
 }

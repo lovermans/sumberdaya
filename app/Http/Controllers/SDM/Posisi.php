@@ -132,7 +132,7 @@ class Posisi
             )
             ->where('posisi_uuid', $uuid)->first();
 
-        abort_unless($pos, 404);
+        abort_unless($pos, 404, 'Data Jabatan tidak ditemukan.');
 
         $HtmlPenuh = $app->view->make('sdm.posisi.lihat', compact('pos'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
@@ -177,14 +177,11 @@ class Posisi
             : $HtmlPenuh;
     }
 
-    public function ubah(FungsiStatis $fungsiStatis, $uuid = null)
+    public function ubah($uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
+        extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $pos = SDMDBQuery::ambilDBPosisiSDM()
             ->addSelect(
@@ -201,39 +198,35 @@ class Posisi
 
             $reqs->merge(['posisi_id_pengubah' => $pengguna->sdm_no_absen]);
 
-            $validasi = $app->validator->make(
-                $reqs->all(),
-                [
-                    'posisi_nama' => ['required', 'string', 'max:40', Rule::unique('posisis')->where(fn ($query) => $query->whereNot('posisi_uuid', $uuid))],
-                    'posisi_atasan' => ['nullable', 'string', 'max:40', 'different:posisi_nama'],
-                    'posisi_id_pengunggah' => ['sometimes', 'nullable', 'string'],
-                    ...$this->dasarValidasi()
-                ],
-                [],
-                $this->atributInput()
-            );
+            $validasi = SDMValidasi::validasiUbahDataPosisiSDM([$reqs->all()], $uuid);
 
             $validasi->validate();
 
             $data = $validasi->safe()->all();
 
-            $app->db->table('posisis')->where('posisi_uuid', $uuid)->update($data);
+            SDMDBQuery::ubahDataPosisiSDM($data[0], $uuid);
 
-            $fungsiStatis->hapusCacheSDMUmum();
+            SDMCache::hapusCacheSDMUmum();
+
             $perujuk = $reqs->session()->get('tautan_perujuk');
-            $pesan = $fungsiStatis->statusBerhasil();
+            $pesan = Rangka::statusBerhasil();
             $redirect = $app->redirect;
 
-            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.posisi.data')->with('pesan', $pesan);
+            return $perujuk
+                ? $redirect->to($perujuk)->with('pesan', $pesan)
+                : $redirect->route('sdm.posisi.data')->with('pesan', $pesan);
         }
 
         $data = [
-            'posisis' => $fungsiStatis->ambilCachePosisiSDM(),
+            'posisis' => SDMCache::ambilCachePosisiSDM(),
             'pos' => $pos
         ];
 
         $HtmlPenuh = $app->view->make('sdm.posisi.tambah-ubah', $data);
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 }
