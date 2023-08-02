@@ -6,7 +6,8 @@
     <p><span class="merah">Tidak Ditemukan.</span></p>
     <p>
         <small>
-            {{ $exception->getMessage() ?: 'Permintaan Halaman/Data tidak ditemukan. Coba periksa permintaan.' }}
+            {{ $exception->getMessage() ? $exception->getMessage() . ' Coba periksa permintaan.' : 'Coba periksa
+            permintaan.' }}
         </small>
     </p>
     <a class="utama" href="{{ $urlRangka->route('mulai') }}">OKE</a>

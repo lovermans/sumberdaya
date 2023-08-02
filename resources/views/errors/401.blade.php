@@ -6,7 +6,8 @@
     <p><span class="merah">Perlu Akses Masuk.</span></p>
     <p>
         <small>
-            {{ $exception->getMessage() ?: 'Bisa jadi durasi sesi masuk sudah habis.
+            {{ $exception->getMessage() ? $exception->getMessage() . ' Bisa jadi durasi sesi masuk sudah habis.
+            Cobalah masuk kembali.' : 'Bisa jadi durasi sesi masuk sudah habis.
             Cobalah masuk kembali.' }}
         </small>
     </p>
