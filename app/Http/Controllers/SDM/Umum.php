@@ -12,6 +12,7 @@ use App\Interaksi\SDM\SDMBerkas;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMValidasi;
 use App\Interaksi\SDM\SDMPapanInformasi;
+use App\Interaksi\SDM\SDMWord;
 
 class Umum
 {
@@ -372,5 +373,10 @@ class Umum
         return $reqs->pjax()
             ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
             : $HtmlPenuh;
+    }
+
+    public function formulirSerahTerimaSDMBaru($uuid = null)
+    {
+        return SDMWord::formulirSerahTerimaSDMBaru($uuid);
     }
 }
