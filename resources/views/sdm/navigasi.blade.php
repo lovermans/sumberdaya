@@ -4,11 +4,11 @@
 <div class="menu-t">
     <a @class(['nav-xhr', 'aktif'=> $rekRangka->routeIs('sdm.mulai')]) href="{{ $urlRangka->route('sdm.mulai') }}" >
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#bolalampu' }}"
+            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#papaninformasi' }}"
                 xmlns:xlink="http://www.w3.org/1999/xlink">
             </use>
         </svg>
-        Ringkasan
+        Papan Informasi
     </a>
 </div>
 
