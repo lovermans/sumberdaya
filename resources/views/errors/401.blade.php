@@ -3,8 +3,13 @@
 @section('isi')
 <div class="pesan-internal">
     {{-- <p>{{__('Unauthorized')}}.</p> --}}
-    <p>{{ $exception->getMessage() ?: 'Bisa jadi belum mendapat akses masuk atau durasi akses masuk sudah habis. Cobalah
-        masuk kembali.' }}</p>
+    <p><span class="merah">Perlu Akses Masuk.</span></p>
+    <p>
+        <small>
+            {{ $exception->getMessage() ?: 'Bisa jadi durasi sesi masuk sudah habis.
+            Cobalah masuk kembali.' }}
+        </small>
+    </p>
     <a class="utama" href="{{ $urlRangka->route('mulai') }}">OKE</a>
     <a class="sekunder" href="#" onclick="event.preventDefault();this.parentElement.remove()">TUTUP</a>
     <div class="bersih"></div>
