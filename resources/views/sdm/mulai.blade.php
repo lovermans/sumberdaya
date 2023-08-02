@@ -2,7 +2,7 @@
 
 @section('isi')
 <div id="sdm_mulai">
-    <h4>Ringkasan</h4>
+    <h4>Papan Informasi</h4>
 
     <div id="sdm_unggah_sematan" class="scroll-margin"></div>
 
