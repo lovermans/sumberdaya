@@ -704,4 +704,25 @@ class SDMDBQuery
 
         $app->db->table('posisis')->where('posisi_uuid', $uuid)->update($data);
     }
+
+    public static function ambilDBSDMUtkKartuID($uuid)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->select(
+                'sdm_uuid',
+                'sdm_no_absen',
+                'sdm_nama',
+                'sdm_telepon',
+                'email',
+                'penempatan_lokasi'
+            )
+            ->from('sdms')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
+                $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            })
+            ->where('sdm_uuid', $uuid)
+            ->first();
+    }
 }

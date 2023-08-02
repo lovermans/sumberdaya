@@ -73,6 +73,31 @@ class Umum
         return SDMBerkas::ambilFotoSDM($berkas_foto_profil);
     }
 
+    public function unduhKartuSDM($uuid = null)
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && $uuid, 401);
+
+        $storage = $app->filesystem;
+
+        $ijin_akses = $pengguna->sdm_ijin_akses;
+        $lingkup = array_filter(explode(',', $ijin_akses));
+
+        $akun = SDMDBQuery::ambilDBSDMUtkKartuID($uuid);
+
+        abort_unless($akun, 404, 'Data SDM tidak ditemukan.');
+
+        $no_absen_sdm = $pengguna->sdm_no_absen;
+        $no_absen = $akun->sdm_no_absen;
+        $lingkup_lokasi = collect($akun->penempatan_lokasi);
+        $lingkup_akses = $lingkup_lokasi->intersect($lingkup)->count();
+
+        abort_unless(blank($ijin_akses) || blank($lingkup_lokasi) || ($lingkup_akses > 0) || ($no_absen_sdm == $no_absen), 403, 'Akses pengguna dibatasi.');
+
+        return SDMBerkas::buatKartuIDSDM($akun);
+    }
+
     public function akun($uuid = null)
     {
         extract(Rangka::obyekPermintaanRangka(true));
