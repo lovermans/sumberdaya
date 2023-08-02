@@ -121,6 +121,15 @@
     {{-- <script defer type="module" src="{{ $mixRangka('/interaksi.js') }}"></script> --}}
 
     <script>
+        async function cariElemen(el) {
+            while ( document.querySelector(el) === null) {
+                await new Promise(resolve => requestAnimationFrame(resolve));
+            };
+            return document.querySelector(el);
+        };
+        function ringkasTabel (el) {
+            el.previousElementSibling.classList.toggle('ringkas');
+        };
         window.addEventListener('DOMContentLoaded', function () {
             var tema = document.getElementById('tema'),
                 halaman = document.body,
@@ -131,61 +140,11 @@
                 localStorage.setItem('tematerang', e.currentTarget.checked);
                 halaman.setAttribute('data-tematerang', e.currentTarget.checked);
             }));
-            
-            (async() => {
-                while(!window.aplikasiSiap) {
-                    await new Promise((resolve,reject) =>
-                    setTimeout(resolve, 1000));
-                }
 
-                document.getElementById('sambutan').remove();
-            
-                
-                /* lemparXHR({
-                    tujuan : "#pilih-sumber_daya",
-                    tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'pilih-sumber_daya']) !!}",
-                    normalview : true
-                });
-                lemparXHR({
-                    tujuan : "#tbl-menu",
-                    tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'avatar']) !!}",
-                    normalview : true
-                });
-                lemparXHR({
-                    tujuan : "#menu-avatar",
-                    tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-avatar']) !!}",
-                    normalview : true
-                });
-                lemparXHR({
-                    tujuan : "#menu-aplikasi",
-                    tautan : "{!! $urlRangka->route('komponen', ['komponen' => 'menu', 'fragment' => 'menu-aplikasi']) !!}",
-                    normalview : true
-                }); */
-
-                
-                if (location.href == "{{ $urlRangka->route('mulai').'/' }}" && navigator.onLine) {
-                    lemparXHR({
-                        tujuan : "#isi",
-                        tautan : "{!! $urlRangka->route('mulai-aplikasi', [ 'aplikasivalet' => $confRangka->get('app.aplikasivalet')]) !!}",
-                        normalview : true
-                    });
-                };
-                
-            })();
-        });
-        async function cariElemen(el) {
-            while ( document.querySelector(el) === null) {
-                await new Promise(resolve => requestAnimationFrame(resolve));
+            if (location.href == "{{ $urlRangka->route('mulai').'/' }}" && !navigator.onLine) {
+                document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $urlRangka->route('mulai') }}'>Hubungkan Aplikasi</a>.</p>";
             };
-            return document.querySelector(el);
-        };
-        function ringkasTabel (el) {
-            el.previousElementSibling.classList.toggle('ringkas');
-        };
-        if (location.href == "{{ $urlRangka->route('mulai').'/' }}" && !navigator.onLine) {
-            document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $urlRangka->route('mulai') }}'>Hubungkan Aplikasi</a>.</p>";
-        };
-        (function () { 
+
             if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
                 let updated = false;
                 let activated = false;
@@ -216,7 +175,24 @@
                     }
                 }
             };
-        })();
+            
+            (async() => {
+                while(!window.aplikasiSiap) {
+                    await new Promise((resolve,reject) =>
+                    setTimeout(resolve, 1000));
+                }
+                
+                if (location.href == "{{ $urlRangka->route('mulai').'/' }}" && navigator.onLine) {
+                    lemparXHR({
+                        tujuan : "#isi",
+                        tautan : "{!! $urlRangka->route('mulai-aplikasi', [ 'aplikasivalet' => $confRangka->get('app.aplikasivalet')]) !!}",
+                        normalview : true
+                    });
+                };
+                
+                document.getElementById('sambutan').remove();
+            })();
+        });
     </script>
 </body>
 

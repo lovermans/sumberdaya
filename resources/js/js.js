@@ -19,6 +19,7 @@ document.addEventListener('click', function (e) {
             pesan = b.dataset.pesan,
             metode = b.dataset.metode?.toUpperCase(),
             alamat = b.href,
+            tanam = b.dataset.tanam,
             data = b.dataset.kirim,
             laju = b.dataset.laju,
             enkode = b.dataset.enkode == 'true' ? true : false,
@@ -68,7 +69,8 @@ document.addEventListener('click', function (e) {
             mintajs: singkat,
             topview: tn,
             normalview: nn,
-            fragmen: frag
+            fragmen: frag,
+            tanam: tanam
         });
     }
     if (e.target.matches('.menu-j')) {
@@ -93,6 +95,7 @@ document.addEventListener('submit', function (e) {
         var alamat = a.dataset.tujuan,
             metode = a.method?.toUpperCase(),
             pesan = a.dataset.pesan,
+            tanam = a.dataset.tanam,
             ke = a.dataset.blank == 'true' ? window.location.pathname : a.action,
             singkat = a.dataset.singkat == 'true' ? true : false,
             prog = a.dataset.laju == 'true' ? true : false,
@@ -119,7 +122,8 @@ document.addEventListener('submit', function (e) {
                 mintajs: singkat,
                 topview: tn,
                 normalview: nn,
-                fragmen: frag
+                fragmen: frag,
+                tanam: tanam
             });
         };
 
@@ -137,7 +141,8 @@ document.addEventListener('submit', function (e) {
                 mintajs: singkat,
                 topview: tn,
                 normalview: nn,
-                fragmen: frag
+                fragmen: frag,
+                tanam: tanam
             });
         };
 
@@ -171,7 +176,7 @@ window.lemparXHR = function (data) {
         pesan = '';
     };
     if (rekam) {
-        rekamTautan({ tujuan: sisi, tautan: tautan, method: metode, pesan: pesan, enkod: enkod, topview: topview, normalview: normalview });
+        rekamTautan({ tujuan: sisi, tautan: tautan, method: metode, pesan: pesan, enkod: enkod, topview: topview, normalview: normalview, tanam: tanam });
     };
     // g ? isi.prepend(range.createContextualFragment('')) : isi.prepend(range.createContextualFragment(pesan));
     topview ? scrollTo(0, 0) :
@@ -301,7 +306,13 @@ function responUmum(data) {
             data.isi = document.getElementById(data.responTujuan) ?? document.querySelector('#isi') ?? document.querySelector('body');
         };
 
-        data.tanam == 'append' ? data.isi.append(range.createContextualFragment(data.responXHR)) : (data.tanam == 'prepend' ? data.isi.prepend(range.createContextualFragment(data.responXHR)) : data.isi.replaceChildren(range.createContextualFragment(data.responXHR)));
+        data.tanam == 'append'
+            ? data.isi.append(range.createContextualFragment(data.responXHR))
+            : (
+                data.tanam == 'prepend'
+                    ? data.isi.prepend(range.createContextualFragment(data.responXHR))
+                    : data.isi.replaceChildren(range.createContextualFragment(data.responXHR))
+            );
 
         data.muat.classList.add('mati');
 
@@ -328,7 +339,8 @@ function rekamTautan(data) {
         'pesan': data.pesan ?? null,
         'enkode': data.enkod ?? null,
         'topview': data.topview ?? false,
-        'normalview': data.normalview ?? false
+        'normalview': data.normalview ?? false,
+        'tanam': data.tanam ?? null
     }, judul, data.tautan);
 };
 
@@ -341,7 +353,8 @@ window.onpopstate = function (p) {
             pesanmuat: p.state.pesan,
             enkod: p.state.enkode,
             topview: p.state.topview,
-            normalview: p.state.normalview
+            normalview: p.state.normalview,
+            tanam: p.state.tanam
         });
     } else {
         location.reload();
