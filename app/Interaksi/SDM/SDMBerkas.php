@@ -135,4 +135,22 @@ class SDMBerkas
 
         exit();
     }
+
+    public static function unduhBerkasTerbatasSDM($berkas = null)
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        $permintaanBerkas = urldecode($reqs->path());
+
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        abort_unless($berkas && $app->filesystem->exists("{$permintaanBerkas}"), 404, 'Berkas tidak ditemukan.');
+
+        $jalur = $app->storagePath("app/{$permintaanBerkas}");
+
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->file($jalur, [
+            'Content-Disposition' => 'inline',
+            'Content-Type' => $app->files->mimeType($jalur),
+        ]);
+    }
 }

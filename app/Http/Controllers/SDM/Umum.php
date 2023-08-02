@@ -340,4 +340,33 @@ class Umum
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('unggah')->renderSections()))->withHeaders(['Vary' => 'Accept']);
     }
+
+    public function berkas($berkas = null)
+    {
+        SDMBerkas::unduhBerkasTerbatasSDM($berkas);
+    }
+
+    public function panduan()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM'), 403, 'Akses dibatasi hanya untuk Pengguna Aplikasi SDM.');
+
+        $storage = $app->filesystem;
+
+        $data = [
+            'dokumenUmum' => $storage->directories('sdm/panduan-umum'),
+            'dokumenPengurus' => match ($pengguna->sdm_hak_akses) {
+                'SDM-PENGURUS', 'SDM-MANAJEMEN' => $storage->directories('sdm/panduan-pengurus'),
+                default => null
+            },
+        ];
+
+        $HtmlPenuh = $app->view->make('sdm.dokumen-resmi', $data);
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
+    }
 }
