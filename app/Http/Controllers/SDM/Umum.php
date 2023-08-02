@@ -343,7 +343,7 @@ class Umum
 
     public function berkas($berkas = null)
     {
-        SDMBerkas::unduhBerkasTerbatasSDM($berkas);
+        return SDMBerkas::unduhBerkasProfilSDM($berkas);
     }
 
     public function panduan()
@@ -360,6 +360,10 @@ class Umum
                 'SDM-PENGURUS', 'SDM-MANAJEMEN' => $storage->directories('sdm/panduan-pengurus'),
                 default => null
             },
+            'dokumenPengurusCabang' => match ($pengguna->sdm_hak_akses) {
+                'SDM-PENGURUS', 'SDM-MANAJEMEN' => $storage->directories('sdm/panduan-pengurus-cabang'),
+                default => null
+            }
         ];
 
         $HtmlPenuh = $app->view->make('sdm.dokumen-resmi', $data);

@@ -8,45 +8,33 @@
                 xmlns:xlink="http://www.w3.org/1999/xlink">
             </use>
         </svg>
-        Semua tautan dokumen di halaman ini hanya valid selama 5 (lima) menit. Muat ulang halaman untuk memperbarui
-        validasi tautan dokumen di halaman ini.
+        Semua tautan dokumen di halaman ini hanya berlaku selama 5 (lima) menit. Muat ulang halaman untuk memperbarui
+        masa berlaku tautan dokumen di halaman ini.
     </p>
 
-    @if($strRangka->contains($rekRangka->user()->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
+    @isset($dokumenPengurusCabang)
+    @forelse ($dokumenPengurusCabang as $jalur)
+    @if (blank($rekRangka->user()->sdm_ijin_akses) || $rekRangka->user()->sdm_ijin_akses == substr($jalur,28))
     <details class="kartu">
-        <summary>Standar Gaji</summary>
+        <summary>Panduan Pengurus Cabang {{ substr($jalur,28) }}</summary>
 
         <ol>
-            @if ($strRangka->contains($rekRangka->user()->sdm_ijin_akses, ['KKA-BM', 'KKA-GG', 'KKA-BKM']) ||
-            blank($rekRangka->user()->sdm_ijin_akses))
+            @forelse ($storageRangka->files($jalur) as $berkas)
             <li>
-                <a href="{{ $storageRangka->disk('local')->temporaryUrl('sdm/panduan-pengurus/Standar Gaji Harian Mojokerto 2022.pdf', $dateRangka->now()->addMinutes(5)) }}"
-                    target="_blank">Standar Gaji Harian Mojokerto 2022.pdf</a>
+                <a href="{{ $storageRangka->disk('local')->temporaryUrl($berkas, $dateRangka->now()->addMinutes(5)) }}"
+                    target="_blank">{{ $appRangka->files->name($berkas).'.'.$appRangka->files->extension($berkas) }}</a>
             </li>
-            @endif
-
-            @if ($strRangka->contains($rekRangka->user()->sdm_ijin_akses, ['KKA-MKS']) ||
-            blank($rekRangka->user()->sdm_ijin_akses))
-            <li>
-                <a href="{{ $storageRangka->disk('local')->temporaryUrl('sdm/panduan-pengurus/Standar Gaji Harian Makassar 2022.pdf', $dateRangka->now()->addMinutes(5)) }}"
-                    target="_blank">Standar Gaji Harian Makassar 2022.pdf</a>
-            </li>
-            @endif
-
-            @if ($strRangka->contains($rekRangka->user()->sdm_ijin_akses, ['KKA-SMG']) ||
-            blank($rekRangka->user()->sdm_ijin_akses))
-            <li>
-                <a href="{{ $storageRangka->disk('local')->temporaryUrl('sdm/panduan-pengurus/Standar Gaji Harian Semarang 2022.pdf', $dateRangka->now()->addMinutes(5)) }}"
-                    target="_blank">Standar Gaji Harian Semarang 2022.pdf</a>
-            </li>
-            <li>
-                <a href="{{ $storageRangka->disk('local')->temporaryUrl('sdm/panduan-pengurus/Standar Gaji Harian Semarang 2023.pdf', $dateRangka->now()->addMinutes(5)) }}"
-                    target="_blank">Standar Gaji Harian Semarang 2023.pdf</a>
-            </li>
-            @endif
+            @empty Panduan Belum Tersedia.
+            @endforelse
         </ol>
     </details>
     @endif
+
+    @empty
+    <p class="kartu">Panduan Pengurus Cabang belum tersedia.</p>
+
+    @endforelse
+    @endisset
 
     @isset($dokumenPengurus)
     @forelse ($dokumenPengurus as $jalur)
@@ -54,12 +42,13 @@
         <summary>{{ substr($jalur,21) }}</summary>
 
         <ol>
-            @foreach ($storageRangka->files($jalur) as $berkas)
+            @forelse ($storageRangka->files($jalur) as $berkas)
             <li>
                 <a href="{{ $storageRangka->disk('local')->temporaryUrl($berkas, $dateRangka->now()->addMinutes(5)) }}"
                     target="_blank">{{ $appRangka->files->name($berkas).'.'.$appRangka->files->extension($berkas) }}</a>
             </li>
-            @endforeach
+            @empty Panduan Belum Tersedia.
+            @endforelse
         </ol>
     </details>
 
@@ -75,12 +64,13 @@
         <summary>{{ substr($jalur,17) }}</summary>
 
         <ol>
-            @foreach ($storageRangka->files($jalur) as $berkas)
+            @forelse ($storageRangka->files($jalur) as $berkas)
             <li>
                 <a href="{{ $storageRangka->disk('local')->temporaryUrl($berkas, $dateRangka->now()->addMinutes(5)) }}"
                     target="_blank">{{ $appRangka->files->name($berkas).'.'.$appRangka->files->extension($berkas) }}</a>
             </li>
-            @endforeach
+            @empty Panduan Belum Tersedia.
+            @endforelse
         </ol>
     </details>
 

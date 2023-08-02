@@ -136,7 +136,7 @@ class SDMBerkas
         exit();
     }
 
-    public static function unduhBerkasTerbatasSDM($berkas = null)
+    public static function unduhBerkasProfilSDM($berkas = null)
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
