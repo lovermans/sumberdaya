@@ -6,7 +6,7 @@
 
     <div id="sdm_unggah_sematan" class="scroll-margin"></div>
 
-    @if($strRangka->contains($rekRangka->user()->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
+    @if($strRangka->contains($rekRangka->user()?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
     <div id="sdmIngatPtsb">
         <p class="kartu">Mengambil data permintaan tambah SDM...</p>
     </div>
@@ -119,6 +119,7 @@
             </svg>
         </a>
 
+        @if($strRangka->contains($rekRangka->user()?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
         <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_unggah_sematan"
             href="{{ $urlRangka->route('sdm.unggah') }}" title="Unggah Data Profil SDM">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -143,6 +144,7 @@
                     xmlns:xlink="http://www.w3.org/1999/xlink"></use>
             </svg>
         </a>
+        @endif
     </div>
 
     @include('pemberitahuan')
