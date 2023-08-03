@@ -5,10 +5,8 @@ namespace App\Http\Controllers\SDM;
 use App\Interaksi\Cache;
 use App\Interaksi\Berkas;
 use App\Interaksi\Rangka;
-use App\Tambahan\FungsiStatis;
 use App\Interaksi\SDM\SDMCache;
 use App\Interaksi\SDM\SDMExcel;
-use Illuminate\Validation\Rule;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMValidasi;
 
@@ -93,29 +91,6 @@ class Posisi
         return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
             ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
             : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
-    }
-
-    public function atributInput()
-    {
-        return [
-            'posisi_nama' => 'Jabatan',
-            'posisi_wlkp' => 'Kode Jabatan WLKP',
-            'posisi_atasan' => 'Jabatan Atasan',
-            'posisi_keterangan' => 'Keterangan',
-            'posisi_status' => 'Status Jabatan',
-            'posisi_id_pengunggah' => 'ID Pengunggah',
-            'posisi_id_pembuat' => 'ID Pembuat',
-            'posisi_id_pengubah' => 'ID Pengubah',
-        ];
-    }
-
-    public function dasarValidasi()
-    {
-        return [
-            'posisi_wlkp' => ['nullable', 'string', 'max:40'],
-            'posisi_keterangan' => ['nullable', 'string', 'max:40'],
-            'posisi_status' => ['required', 'string', Rule::in(['AKTIF', 'NON-AKTIF'])],
-        ];
     }
 
     public function lihat($uuid = null)
