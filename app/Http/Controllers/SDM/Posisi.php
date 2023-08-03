@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\SDM;
 
+use App\Interaksi\Cache;
+use App\Interaksi\Berkas;
 use App\Interaksi\Rangka;
 use App\Tambahan\FungsiStatis;
-use Illuminate\Validation\Rule;
-use App\Interaksi\SDM\SDMValidasi;
-use App\Interaksi\Cache;
 use App\Interaksi\SDM\SDMCache;
-use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMExcel;
+use Illuminate\Validation\Rule;
+use App\Interaksi\SDM\SDMDBQuery;
+use App\Interaksi\SDM\SDMValidasi;
 
 class Posisi
 {
@@ -223,6 +224,54 @@ class Posisi
         ];
 
         $HtmlPenuh = $app->view->make('sdm.posisi.tambah-ubah', $data);
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
+    }
+
+    public function contohUnggahPosisiSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        abort_unless($app->filesystem->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
+
+        return SDMExcel::eksporExcelContohUnggahPosisiSDM(
+            SDMDBQuery::ambilDBPosisiSDM()
+                ->addSelect(
+                    'posisi_atasan',
+                    'posisi_wlkp',
+                    'posisi_keterangan'
+                )
+                ->orderBy('posisis.id', 'desc')
+        );
+    }
+
+    public function unggahPosisiSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        if ($reqs->isMethod('post')) {
+            $validasifile = SDMValidasi::validasiBerkasImporDataPosisiSDM($reqs->all());
+
+            $validasifile->validate();
+
+            $file = $validasifile->safe()->only('posisi_unggah')['posisi_unggah'];
+            $namafile = 'unggahjabatansdm-' . date('YmdHis') . '.xlsx';
+
+            Berkas::simpanBerkasImporExcelSementara($file, $namafile);
+
+            $fileexcel = Berkas::ambilBerkasImporExcelSementara($namafile);
+
+            return SDMExcel::imporExcelDataPosisiSDM($fileexcel);
+        }
+
+        $HtmlPenuh = $app->view->make('sdm.posisi.unggah');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
 
         return $reqs->pjax()

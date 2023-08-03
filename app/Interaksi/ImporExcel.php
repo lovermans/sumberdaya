@@ -69,6 +69,8 @@ class ImporExcel
 
             DBQuery::$databaseImpor($validasi->validated());
 
+            Cache::$cacheImpor();
+
             echo $pesansimpan;
         }
 
@@ -78,9 +80,7 @@ class ImporExcel
 
         $app->filesystem->delete($fileexcel);
 
-        Cache::$cacheImpor();
-
-        return $app->redirect->route($rute)->with('pesan', Umum::statusBerhasil());
+        return $app->redirect->route($rute)->with('pesan', Rangka::statusBerhasil());
 
         exit();
     }

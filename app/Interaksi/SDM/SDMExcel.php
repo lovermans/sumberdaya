@@ -27,6 +27,22 @@ class SDMExcel
         return SDMImporExcel::imporExcelStream(...$argumen);
     }
 
+    public static function imporExcelDataPosisiSDM($fileexcel)
+    {
+        $argumen = [
+            'reader' => new ExcelReader(),
+            'fileexcel' => $fileexcel,
+            'validasiImpor' => 'validasiImporDataPosisiSDM',
+            'databaseImpor' => 'imporPosisiSDM',
+            'cacheImpor' => 'hapusCacheSDMUmum',
+            'rute' => 'sdm.posisi.data',
+            'kolomPengunggah' => 'posisi_id_pengunggah',
+            'waktuUnggah' => 'posisi_diunggah'
+        ];
+
+        return SDMImporExcel::imporExcelStream(...$argumen);
+    }
+
     public static function eksporExcelContohUnggahSDM($data)
     {
         extract(Rangka::obyekPermintaanRangka());
@@ -57,6 +73,28 @@ class SDMExcel
 
         $argumen = [
             'namaBerkas' => 'eksporjabatansdm-',
+            'dataEkspor' => $data,
+            'pengecualian' => ['posisi_uuid'],
+            'pesanData' =>  ' data jabatan SDM',
+            'binder' => $binder,
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
+    }
+
+    public static function eksporExcelContohUnggahPosisiSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $reader = new ExcelReader();
+        $spreadsheet = $reader->load($app->storagePath('app/contoh/unggah-umum.xlsx'));
+        $binder = new CustomValueBinder();
+        $worksheet = $spreadsheet->getSheet(1);
+
+        $argumen = [
+            'namaBerkas' => 'unggahjabatansdm-',
             'dataEkspor' => $data,
             'pengecualian' => ['posisi_uuid'],
             'pesanData' =>  ' data jabatan SDM',

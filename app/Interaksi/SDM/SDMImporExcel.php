@@ -70,6 +70,8 @@ class SDMImporExcel
 
             SDMDBQuery::$databaseImpor($validasi->validated());
 
+            SDMCache::$cacheImpor();
+
             echo $pesansimpan;
         }
 
@@ -78,8 +80,6 @@ class SDMImporExcel
         unset($spreadsheet);
 
         $app->filesystem->delete($fileexcel);
-
-        SDMCache::$cacheImpor();
 
         return $app->redirect->route($rute)->with('pesan', Rangka::statusBerhasil());
 

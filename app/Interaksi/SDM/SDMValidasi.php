@@ -85,7 +85,7 @@ class SDMValidasi
                 'unggah_profil_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
             ],
             [
-                'unggah_profil_sdm' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).'
+                'unggah_profil_sdm.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).'
             ]
         );
     }
@@ -256,10 +256,12 @@ class SDMValidasi
             '*.posisi_nama.*' => 'Nama Jabatan urutan ke-:position kosong atau sudah terpakai sebelumnya.',
             '*.posisi_atasan.*' => 'Jabatan Atasan urutan ke-:position wajib berupa karakter dan berbeda dengan kolom Nama Jabatan.',
             '*.posisi_id_pembuat.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
-            '*.posisi_id_pembuat.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.posisi_id_pengubah.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.posisi_id_pengunggah.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.posisi_wlkp.*' => 'Kode WLKP Jabatan urutan ke-:position wajib berupa karakter panjang maksimal 40 karakter.',
             '*.posisi_keterangan.*' => 'Keterangan Jabatan urutan ke-:position wajib berupa karakter panjang maksimal 40 karakter.',
             '*.posisi_status.*' => 'Status Jabatan urutan ke-:position wajib berupa karakter terdaftar.',
+            '*.posisi_diunggah.*' => 'Waktu Unggah baris ke-:position wajib berupa tanggal.'
         ];
     }
 
@@ -311,6 +313,37 @@ class SDMValidasi
                 ...static::dasarValidasiPosisiSDM()
             ],
             static::pesanKesalahanValidasiPosisiSDM()
+        );
+    }
+
+    public static function validasiBerkasImporDataPosisiSDM($permintaan)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            [
+                'posisi_unggah' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+            ],
+            [
+                'posisi_unggah.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).'
+            ]
+        );
+    }
+
+    public static function validasiImporDataPosisiSDM($permintaan)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            [
+                '*.posisi_nama' => ['required', 'string', 'max:40'],
+                '*.posisi_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                '*.posisi_diunggah' => ['sometimes', 'nullable', 'date'],
+                ...static::dasarValidasiPosisiSDM()
+            ],
+            static::pesanKesalahanValidasiSDM()
         );
     }
 }

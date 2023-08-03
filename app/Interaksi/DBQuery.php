@@ -36,11 +36,15 @@ class DBQuery
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $app->db->table('aturs')->upsert(
-            $data,
-            ['atur_jenis', 'atur_butir'],
-            ['atur_detail', 'atur_status', 'atur_id_pengunggah', 'atur_diunggah', 'atur_id_pengubah']
-        );
+        $database = $app->db;
+
+        $database->transaction(function () use ($database, $data) {
+            $database->table('aturs')->upsert(
+                $data,
+                ['atur_jenis', 'atur_butir'],
+                ['atur_detail', 'atur_status', 'atur_id_pengunggah', 'atur_diunggah', 'atur_id_pengubah']
+            );
+        });
     }
 
     public static function saringDatabasePengaturan($reqs, $uruts)
