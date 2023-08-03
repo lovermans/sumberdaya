@@ -8,6 +8,7 @@ use Whoops\Exception\ErrorException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class Handler extends ExceptionHandler
 {
@@ -50,28 +51,36 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
         $this->renderable(function (ErrorException $e) {
-        
+
             $app = app();
+
             $HtmlPenuh = $app->view->make('errors.lain', ['kesalahan' => $e->getMessage()]);
-            $HtmlIsi = implode('',$HtmlPenuh->renderSections());
-            $HtmlHeader = ['Vary' => 'Accept', 'X-Tujuan' => 'sematan_kesalahan'];
+            $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+            $HtmlHeader = ['Vary' => 'Accept', 'X-Tujuan' => 'sematan_umum'];
             $res = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
-            return $app->request->pjax() ? $res->make($HtmlIsi, 500, $HtmlHeader) : $res->make($HtmlPenuh, 500);
-            
+
+            return $app->request->pjax()
+                ? $res->make($HtmlIsi, 500, $HtmlHeader)
+                : $res->make($HtmlPenuh, 500);
         });
-        $this->renderable(function (ValidationException $exception)
-        {
+
+        $this->renderable(function (ValidationException $exception) {
             // return response()->json([
             //     'message' => $exception->getMessage(),
             //     'errors' => $exception->errors(),
             // ], $exception->status);
             $app = app();
+
             $HtmlPenuh = $app->view->make('errors.422')->withErrors($exception->errors());
-            $HtmlIsi = implode('',$HtmlPenuh->renderSections());
+            $HtmlIsi = implode('', $HtmlPenuh->renderSections());
             $HtmlHeader = ['Vary' => 'Accept', 'X-Tujuan' => 'sematan_javascript'];
             $res = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
-            return $app->request->pjax() ? $res->make($HtmlIsi, $exception->status, $HtmlHeader) : $res->make($HtmlPenuh, $exception->status);
+
+            return $app->request->pjax()
+                ? $res->make($HtmlIsi, $exception->status, $HtmlHeader)
+                : $res->make($HtmlPenuh, $exception->status);
         });
     }
 
@@ -81,11 +90,15 @@ class Handler extends ExceptionHandler
 
         if ($view = parent::getHttpExceptionView($e)) {
             $app = app();
+
             $HtmlPenuh = $app->view->make($view, ['errors' => new ViewErrorBag, 'exception' => $e]);
-            $HtmlIsi = implode('',$HtmlPenuh->renderSections());
-            $HtmlHeader = ['Vary' => 'Accept', 'X-Tujuan' => 'sematan_kesalahan'];
+            $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+            $HtmlHeader = ['Vary' => 'Accept', 'X-Tujuan' => 'sematan_umum'];
             $res = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
-            return $app->request->pjax() ? $res->make($HtmlIsi, $e->getStatusCode(), array_merge($e->getHeaders(), $HtmlHeader)) : $res->make($HtmlPenuh, $e->getStatusCode(), $e->getHeaders());
+
+            return $app->request->pjax()
+                ? $res->make($HtmlIsi, $e->getStatusCode(), array_merge($e->getHeaders(), $HtmlHeader))
+                : $res->make($HtmlPenuh, $e->getStatusCode(), $e->getHeaders());
         }
 
         return parent::convertExceptionToResponse($e);
