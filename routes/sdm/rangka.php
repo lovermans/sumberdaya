@@ -12,11 +12,11 @@ $route->match(['get', 'post'], '/unggah', 'Umum@unggah')->name('unggah');
 $route->get('/contoh-unggah', 'Umum@contohUnggah')->name('contoh-unggah');
 $route->get('/unduh-kartu-sdm/{uuid?}', 'Umum@unduhKartuSDM')->name('unduh.kartu-sdm');
 $route->get('/formulir-serahterimasdm/{uuid?}', 'Umum@formulirSerahTerimaSDMBaru')->name('formulir-serah-terima-sdm-baru');
-$route->get('/formulir-persetujuangaji/{uuid?}', 'Berkas@formulirPersetujuanGaji')->name('formulir-persetujuan-gaji');
-$route->get('/formulir-ttdokumentitipan/{uuid?}', 'Berkas@formulirTTDokumenTitipan')->name('formulir-tt-dokumen-titipan');
-$route->get('/formulir-ttinventaris/{uuid?}', 'Berkas@formulirTTInventaris')->name('formulir-tt-inventaris');
-$route->get('/formulir-pelepasan-sdm/{uuid?}', 'Berkas@formulirPelepasanSDM')->name('formulir-pelepasan-sdm');
-$route->get('/surat-keterangan-sdm/{uuid?}', 'Berkas@suratKeteranganSDM')->name('surat-keterangan-sdm');
+$route->get('/formulir-persetujuangaji/{uuid?}', 'Umum@formulirPersetujuanGaji')->name('formulir-persetujuan-gaji');
+$route->get('/formulir-ttdokumentitipan/{uuid?}', 'Umum@formulirTTDokumenTitipan')->name('formulir-tt-dokumen-titipan');
+$route->get('/formulir-ttinventaris/{uuid?}', 'Umum@formulirTTInventaris')->name('formulir-tt-inventaris');
+$route->get('/formulir-pelepasan-sdm/{uuid?}', 'Umum@formulirPelepasanSDM')->name('formulir-pelepasan-sdm');
+$route->get('/surat-keterangan-sdm/{uuid?}', 'Umum@suratKeteranganSDM')->name('surat-keterangan-sdm');
 
 
 $route->group(['prefix' => 'permintaan-tambah-sdm', 'as' => 'permintaan-tambah-sdm.'], base_path('routes/sdm/permintaan-tambah-sdm.php'));

@@ -342,11 +342,6 @@ class Umum
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('unggah')->renderSections()))->withHeaders(['Vary' => 'Accept']);
     }
 
-    public function berkas($berkas = null)
-    {
-        return SDMBerkas::unduhBerkasProfilSDM($berkas);
-    }
-
     public function panduan()
     {
         extract(Rangka::obyekPermintaanRangka(true));
@@ -375,8 +370,38 @@ class Umum
             : $HtmlPenuh;
     }
 
+    public function berkas($berkas = null)
+    {
+        return SDMBerkas::unduhBerkasProfilSDM($berkas);
+    }
+
     public function formulirSerahTerimaSDMBaru($uuid = null)
     {
         return SDMWord::formulirSerahTerimaSDMBaru($uuid);
+    }
+
+    public function formulirPersetujuanGaji($uuid = null)
+    {
+        return SDMWord::formulirPersetujuanGaji($uuid);
+    }
+
+    public function formulirTTDokumenTitipan($uuid = null)
+    {
+        return SDMWord::formulirTTDokumenTitipan($uuid);
+    }
+
+    public function formulirTTInventaris($uuid = null)
+    {
+        return SDMWord::formulirTTInventaris($uuid);
+    }
+
+    public function formulirPelepasanSDM($uuid = null)
+    {
+        return SDMWord::formulirPelepasanSDM($uuid);
+    }
+
+    public function suratKeteranganSDM($uuid = null)
+    {
+        return SDMWord::formulirPelepasanSDM($uuid);
     }
 }
