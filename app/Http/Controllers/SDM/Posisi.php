@@ -30,7 +30,7 @@ class Posisi
         $uruts = $urutArray ? implode(',', array_filter($urutArray)) : null;
         $kataKunci = $reqs->kata_kunci;
 
-        $ijin_akses = $pengguna?->sdm_ijin_akses;
+        $ijin_akses = $pengguna->sdm_ijin_akses;
         $lingkupIjin = array_filter(explode(',', $ijin_akses));
         $lingkup_lokasi = collect($reqs->lokasi);
         $lingkup_akses = $lingkup_lokasi->intersect($lingkupIjin)->count();
@@ -229,7 +229,7 @@ class Posisi
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         if ($reqs->isMethod('post')) {
             $validasifile = SDMValidasi::validasiBerkasImporDataPosisiSDM($reqs->all());

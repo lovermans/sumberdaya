@@ -16,7 +16,7 @@ class Pengaturan
         extract(Rangka::obyekPermintaanRangka(true));
         $str = str();
 
-        abort_unless($pengguna && $str->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
+        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
         $cacheAturs = Cache::ambilCacheAtur();
 
@@ -90,7 +90,7 @@ class Pengaturan
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
         abort_unless($app->filesystem->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
 
@@ -103,7 +103,7 @@ class Pengaturan
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
-        abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
         $atur = DBQuery::ambilDatabasePengaturan()->addSelect('atur_uuid')->where('atur_uuid', $uuid)->first();
 
@@ -118,7 +118,7 @@ class Pengaturan
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
-        abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
 
         if ($reqs->isMethod('post')) {
 
@@ -144,7 +144,7 @@ class Pengaturan
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
@@ -202,7 +202,7 @@ class Pengaturan
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus Aplikasi.');
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 

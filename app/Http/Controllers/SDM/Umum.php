@@ -307,11 +307,11 @@ class Umum
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && str()->contains($pengguna->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
         abort_unless($app->filesystem->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
 
-        $lingkup = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+        $lingkup = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
 
         return SDMExcel::eksporExcelContohUnggahSDM(SDMDBQuery::contohImporDatabaseSDM($lingkup)->orderBy('id', 'desc'));
     }

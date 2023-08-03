@@ -20,7 +20,7 @@ class SDMImporExcel
     ) {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+        abort_unless($reqs->pjax() && $pengguna, 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         set_time_limit(0);
         ob_implicit_flush();
@@ -32,7 +32,7 @@ class SDMImporExcel
         $reader->setReadFilter($chunkFilter);
         $reader->setReadDataOnly(true);
         $totalRows = $spreadsheetInfo[1]['totalRows'];
-        $idPengunggah = $pengguna->sdm_no_absen;
+        $idPengunggah = $pengguna?->sdm_no_absen;
 
         for ($startRow = 2; $startRow <= $totalRows; $startRow += $chunkSize) {
             $chunkFilter->setRows($startRow, $chunkSize);

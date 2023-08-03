@@ -110,12 +110,16 @@ class SDMDBQuery
     {
         extract(Rangka::obyekPermintaanRangka());
 
+        abort_unless($idPenguna, 404, 'Pengguna Tidak Ditemukan.');
+
         return $app->db->query()->select('id')->from('sdms')->where('id', $idPenguna);
     }
 
     public static function ubahSandiPengguna($idPenguna, $sandiBaru)
     {
         extract(Rangka::obyekPermintaanRangka());
+
+        abort_unless($idPenguna, 404, 'Pengguna Tidak Ditemukan.');
 
         $app->db->table('sdms')->where('id', $idPenguna)->update(['password' => $sandiBaru]);
     }
@@ -315,13 +319,15 @@ class SDMDBQuery
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
+        abort_unless($pengguna, 401);
+
         return $app->db->query()
             ->select('penempatan_lokasi')
             ->from('sdms')
             ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
                 $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
             })
-            ->where('kontrak.penempatan_no_absen', $pengguna->sdm_no_absen);
+            ->where('kontrak.penempatan_no_absen', $pengguna?->sdm_no_absen);
     }
 
     public static function ambilPKWTAkanHabis()
