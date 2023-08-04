@@ -15,7 +15,7 @@
 }
 
 :root {
-    font: normal normal 400 1em/normal Roboto, arial, sans-serif;
+    font: normal normal 400 .875em/normal Roboto, arial, sans-serif;
     --putih-1: rgba(255, 255, 255, .87);
     --putih-2: rgba(255, 255, 255, .6);
     --putih-3: rgba(255, 255, 255, .38);
