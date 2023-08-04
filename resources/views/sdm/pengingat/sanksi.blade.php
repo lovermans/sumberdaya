@@ -18,7 +18,7 @@
                         <th>Identitas</th>
                         <th>Sanksi</th>
                         <th>Laporan</th>
-                        <th>Keterangan</th>
+                        <th>Pelapor</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,7 +75,8 @@
                             }} s.d {{
                             strtoupper($dateRangka->make($sanksi->sanksi_selesai)?->translatedFormat('d F Y'))
                             }}<br />
-                            <b>Tambahan</b> : {!! nl2br($sanksi->sanksi_tambahan) !!}
+                            <b>Tambahan</b> : {!! nl2br($sanksi->sanksi_tambahan) !!}<br />
+                            <b>Keterangan</b> : {!! nl2br($sanksi->sanksi_keterangan) !!}
                         </td>
 
                         <td>
@@ -87,7 +88,10 @@
                             strtoupper($dateRangka->make($sanksi->langgar_tanggal)?->translatedFormat('d F Y'))
                             }}<br />
                             <b>Aduan</b> : {!! nl2br($sanksi->langgar_isi) !!}
-                            @if ($sanksi->sanksi_lap_no)
+
+                        </td>
+                        <td>
+                            @if ($sanksi->langgar_psdm_uuid)
                             <div @class(['merah'=> $sanksi->langgar_psdm_tgl_berhenti])>
                                 <b><i><u>Pelapor</u></i></b> :<br />
                                 <a class="isi-xhr taut-akun"
@@ -112,9 +116,6 @@
                                 '' }}
                             </div>
                             @endif
-                        </td>
-                        <td>
-                            {!! nl2br($sanksi->sanksi_keterangan) !!}
                         </td>
                     </tr>
 
