@@ -226,7 +226,7 @@
                         @endunless
                         <th>Sanksi</th>
                         <th>Laporan</th>
-                        <th>Keterangan</th>
+                        <th>Pelapor</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -282,7 +282,8 @@
                                 }} s.d {{
                                 strtoupper($dateRangka->make($tabel->sanksi_selesai)?->translatedFormat('d F Y'))
                                 }}<br />
-                                <b>Tambahan</b> : {!! nl2br($tabel->sanksi_tambahan) !!}
+                                <b>Tambahan</b> : {!! nl2br($tabel->sanksi_tambahan) !!}<br />
+                                <b>Keterangan</b> : {!! nl2br($tabel->sanksi_keterangan) !!}
                             </td>
                             <td>
                                 <b>Nomor</b> : <u><a class="isi-xhr"
@@ -293,7 +294,9 @@
                                 strtoupper($dateRangka->make($tabel->langgar_tanggal)?->translatedFormat('d F Y'))
                                 }}<br />
                                 <b>Aduan</b> : {!! nl2br($tabel->langgar_isi) !!}
-                                @if ($tabel->sanksi_lap_no)
+                            </td>
+                            <td>
+                                @if ($tabel->langgar_psdm_uuid)
                                 <div @class(['merah'=> $tabel->langgar_psdm_tgl_berhenti])>
                                     <b><i><u>Pelapor</u></i></b> :<br />
                                     <a class="isi-xhr taut-akun"
@@ -318,9 +321,6 @@
                                     '' }}
                                 </div>
                                 @endif
-                            </td>
-                            <td>
-                                {!! nl2br($tabel->sanksi_keterangan) !!}
                             </td>
                     </tr>
                     @empty
