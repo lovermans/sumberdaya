@@ -9,16 +9,17 @@ class SDMBerkas
 {
     public static function simpanFotoSDM($foto, $no_absen)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
         $foto->storeAs('sdm/foto-profil', $no_absen . '.webp');
     }
 
     public static function simpanBerkasSDM($berkas, $no_absen)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
         $berkas->storeAs('sdm/berkas', $no_absen . '.pdf');
+    }
+
+    public static function simpanBerkasPermintaanTambahSDM($berkas, $nomorPermintaan)
+    {
+        $berkas->storeAs('sdm/permintaan-tambah-sdm/berkas', $nomorPermintaan . '.pdf');
     }
 
     public static function ambilFotoSDM($berkas_foto_profil)

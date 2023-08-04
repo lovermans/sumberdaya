@@ -257,7 +257,7 @@ class SDMValidasi
             '*.posisi_atasan.*' => 'Jabatan Atasan urutan ke-:position wajib berupa karakter dan berbeda dengan kolom Nama Jabatan.',
             '*.posisi_id_pembuat.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.posisi_id_pengubah.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
-            '*.posisi_id_pengunggah.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.posisi_id_pengunggah.*' => 'ID Pengunggah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.posisi_wlkp.*' => 'Kode WLKP Jabatan urutan ke-:position wajib berupa karakter panjang maksimal 40 karakter.',
             '*.posisi_keterangan.*' => 'Keterangan Jabatan urutan ke-:position wajib berupa karakter panjang maksimal 40 karakter.',
             '*.posisi_status.*' => 'Status Jabatan urutan ke-:position wajib berupa karakter terdaftar.',
@@ -343,7 +343,96 @@ class SDMValidasi
                 '*.posisi_diunggah' => ['sometimes', 'nullable', 'date'],
                 ...static::dasarValidasiPosisiSDM()
             ],
-            static::pesanKesalahanValidasiSDM()
+            static::pesanKesalahanValidasiPosisiSDM()
+        );
+    }
+
+    public static function dasarValidasiPermintaanTambahSDM()
+    {
+        return [
+            '*.tambahsdm_penempatan' => ['required', 'string', 'max:20'],
+            '*.tambahsdm_posisi' => ['required', 'string', 'max:40'],
+            '*.tambahsdm_jumlah' => ['required', 'numeric', 'min:1'],
+            '*.tambahsdm_tgl_diusulkan' => ['required', 'date'],
+            '*.tambahsdm_tgl_dibutuhkan' => ['required', 'date', 'after:tambahsdm_tgl_diusulkan'],
+            '*.tambahsdm_sdm_id' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+            '*.tambahsdm_alasan' => ['required', 'string'],
+            '*.tambahsdm_keterangan' => ['sometimes', 'nullable', 'string'],
+            '*.tambahsdm_status' => ['sometimes', 'nullable', 'string', Rule::in(['DIUSULKAN', 'DISETUJUI', 'DITOLAK', 'DITUNDA', 'DIBATALKAN'])],
+            '*.tambahsdm_berkas' => ['sometimes', 'file', 'mimetypes:application/pdf'],
+        ];
+    }
+
+    public static function pesanKesalahanValidasiPermintaanTambahSDM()
+    {
+        return [
+            '*.tambahsdm_no.*' => 'Nomor Permintaan urutan ke-:position sudah terpakai.',
+            '*.tgl_diusulkan_mulai.*' => 'Tanggal Mulai Diusulkan wajib berupa tanggal valid.',
+            '*.tgl_diusulkan_sampai.*' => 'Tanggal Akhir Diusulkan wajib berupa tanggal valid dan lebih lama dari Tanggal Mulai.',
+            '*.tambahsdm_status.*' => 'Status Permohonan urutan ke-:position wajib berupa karakter dan terdaftar.',
+            '*.tambahsdm_penempatan.*' => 'Lokasi urutan ke-:position wajib berupa karakter panjang maksimal 20 karakter.',
+            '*.tambahsdm_posisi.*' => 'Posisi/Jabatan urutan ke-:position wajib berupa karakter panjang maksimal 40 karakter.',
+            '*.tambahsdm_jumlah.*' => 'Jumlah Kebutuhan urutan ke-:position wajib berupa angka lebih dari nol.',
+            '*.tambahsdm_tgl_diusulkan.*' => 'Tanggal Diusulkan urutan ke-:position wajib berupa tanggal.',
+            '*.tambahsdm_tgl_dibutuhkan.*' => 'Tanggal Dibutuhkan urutan ke-:position wajib berupa tanggal dan lebih lama dari Tanggal Diusulkan.',
+            '*.tambahsdm_alasan.*' => 'Alasan Penambahan urutan ke-:position wajib berupa karakter.',
+            '*.tambahsdm_keterangan.*' => 'Keterangan Penambahan urutan ke-:position wajib berupa karakter.',
+            '*.tambahsdm_sdm_id.*' => 'ID Pemohon urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.tambahsdm_id_pembuat.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.tambahsdm_id_pengubah.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.tambahsdm_id_pengunggah.*' => 'ID Pengunggah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.tambahsdm_berkas.*' => 'Berkas Permintaan wajib berupa berkas format PDF.',
+        ];
+    }
+
+    public static function validasiPencarianPermintaanTambahSDM($permintaan)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            [
+                ...static::dasarValidasiPencarianSDM(),
+                '*.tgl_diusulkan_mulai' => ['sometimes', 'nullable', 'date'],
+                '*.tgl_diusulkan_sampai' => ['sometimes', 'nullable', 'required_with:tgl_diusulkan_mulai', 'date', 'after:tgl_diusulkan_mulai'],
+                '*.tambahsdm_status.*' => ['sometimes', 'nullable', 'string', Rule::in(['DIUSULKAN', 'DISETUJUI', 'DITOLAK', 'DITUNDA', 'DIBATALKAN'])],
+                '*.tambahsdm_laju' => ['sometimes', 'nullable', 'string', Rule::in(['BELUM TERPENUHI', 'SUDAH TERPENUHI', 'KELEBIHAN'])],
+                '*.tambahsdm_penempatan.*' => ['sometimes', 'nullable', 'string'],
+                '*.posisi.*' => ['sometimes', 'nullable', 'string'],
+            ],
+            [
+                ...static::pesanKesalahanValidasiPencarianSDM(),
+                ...static::pesanKesalahanValidasiPermintaanTambahSDM(),
+                '*.tambahsdm_laju.*' => 'Status Terpenuhi tidak sesuai daftar.',
+                '*.posisi.*' => 'Jabatan harus berupa karakter.',
+
+            ]
+        );
+    }
+
+    public static function validasiTambahDataPermintaanTambahSDM($permintaan)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            [
+                '*.tambahsdm_no' => ['required', 'string', 'max:20', 'unique:tambahsdms,tambahsdm_no'],
+                '*.tambahsdm_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                ...static::dasarValidasiPermintaanTambahSDM()
+            ],
+            static::pesanKesalahanValidasiPermintaanTambahSDM()
+        );
+    }
+
+    public static function validasiUbahDataPermintaanTambahSDM($permintaan, $aturan)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            $aturan,
+            static::pesanKesalahanValidasiPermintaanTambahSDM()
         );
     }
 }

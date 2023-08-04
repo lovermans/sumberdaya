@@ -47,6 +47,70 @@ class SDMDBQuery
             ->latest('tambahsdm_tgl_diusulkan');
     }
 
+    public static function ambilPencarianPermintaanTambahSDM($permintaan, $kataKunci, $uruts, $lingkupIjin)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->addSelect('tsdm.*')
+            ->fromSub(static::ambilDBPermintaanTambahSDM(), 'tsdm')
+            ->when($permintaan->tambahsdm_status, function ($query) use ($permintaan) {
+                $query->whereIn('tambahsdm_status', (array) $permintaan->tambahsdm_status);
+            })
+            ->when($permintaan->tambahsdm_penempatan, function ($query) use ($permintaan) {
+                $query->whereIn('tambahsdm_penempatan', (array) $permintaan->tambahsdm_penempatan);
+            })
+            ->when($kataKunci, function ($query) use ($kataKunci) {
+                $query->where(function ($group) use ($kataKunci) {
+                    $group->where('tambahsdm_no', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('tambahsdm_posisi', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('tambahsdm_sdm_id', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('sdm_nama', 'like', '%' . $kataKunci . '%');
+                });
+            })
+            ->when($permintaan->tgl_diusulkan_mulai && $permintaan->tgl_diusulkan_sampai, function ($query) use ($permintaan) {
+                $query->whereBetween('tambahsdm_tgl_diusulkan', [$permintaan->tgl_diusulkan_mulai, $permintaan->tgl_diusulkan_sampai]);
+            })
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
+            })
+            ->when($permintaan->posisi, function ($query) use ($permintaan) {
+                $query->whereIn('tambahsdm_posisi', (array) $permintaan->posisi);
+            })
+            ->when($permintaan->tambahsdm_laju == 'BELUM TERPENUHI', function ($query) {
+                $query->whereColumn('tambahsdm_jumlah', '>', 'tambahsdm_terpenuhi');
+            })
+            ->when($permintaan->tambahsdm_laju == 'SUDAH TERPENUHI', function ($query) {
+                $query->whereColumn('tambahsdm_jumlah', 'tambahsdm_terpenuhi');
+            })
+            ->when($permintaan->tambahsdm_laju == 'KELEBIHAN', function ($query) {
+                $query->whereColumn('tambahsdm_jumlah', '<', 'tambahsdm_terpenuhi');
+            })
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->orderBy('tambahsdm_no', 'desc');
+                }
+            );
+    }
+
+    public static function tambahDataPermintaanTambahSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('tambahsdms')->insert($data);
+    }
+
+    public static function ubahDataPermintaanTambahSDM($data, $uuid)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('tambahsdms')->where('tambahsdm_uuid', $uuid)->update($data);
+    }
+
     public static function ambilDBPenempatanSDMTerkini()
     {
         extract(Rangka::obyekPermintaanRangka());

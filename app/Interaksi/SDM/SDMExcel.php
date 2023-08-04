@@ -84,6 +84,25 @@ class SDMExcel
         return EksporExcel::eksporExcelStream(...$argumen);
     }
 
+    public static function eksporExcelPencarianPermintaanTambahSDM($data)
+    {
+        $spreadsheet = new Spreadsheet();
+        $binder = new CustomValueBinder();
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $argumen = [
+            'namaBerkas' => 'eksporpermintaansdm-',
+            'dataEkspor' => $data,
+            'pengecualian' => ['sdm_uuid', 'tambahsdm_uuid'],
+            'pesanData' =>  ' data permintaan tambah SDM',
+            'binder' => $binder,
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
+    }
+
     public static function eksporExcelContohUnggahPosisiSDM($data)
     {
         extract(Rangka::obyekPermintaanRangka());
