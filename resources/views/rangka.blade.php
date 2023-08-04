@@ -45,58 +45,58 @@
     </div>
 
     <header id="header-rangka" class="tcetak">
-        <section>
-            <label for="nav" id="tbl-nav" title="Menu">
-                <svg class="on" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#menu' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink">
-                    </use>
-                </svg>
+        <label for="nav" id="tbl-nav" title="Menu">
+            <svg class="on" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#menu' }}"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                </use>
+            </svg>
 
-                <svg class="off" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink">
-                    </use>
-                </svg>
-            </label>
+            <svg class="off" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                </use>
+            </svg>
+        </label>
 
-            <a class="isi-xhr" href="{{ $urlRangka->route('mulai')
+        <a class="isi-xhr" href="{{ $urlRangka->route('mulai')
                 }}">
-                <img id="logo" src="{{ $urlRangka->asset($mixRangka('/images/Logo Perusahaan.webp')) }}"
-                    title="{{ $confRangka->get('app.usaha') }}" alt="{{ $confRangka->get('app.usaha') }}"
-                    loading="lazy"></a>
+            <img id="logo" src="{{ $urlRangka->asset($mixRangka('/images/Logo Perusahaan.webp')) }}"
+                title="{{ $confRangka->get('app.usaha') }}" alt="{{ $confRangka->get('app.usaha') }}"
+                loading="lazy"></a>
 
-            <label for="pilih-aplikasi" id="pilih-sumber_daya" onclick="" title="Pilih Aplikasi"></label>
-            <label for="menu" id="tbl-menu" onclick="" title="Akun"></label>
-            <label for="tema" id="tbl-tema" onclick="" title="Ubah Tema">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tema' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink">
-                    </use>
-                </svg>
-            </label>
+        <label for="pilih-aplikasi" id="pilih-sumber_daya" onclick="" title="Pilih Aplikasi"></label>
+        <label for="menu" id="tbl-menu" onclick="" title="Akun"></label>
+        <label for="tema" id="tbl-tema" onclick="" title="Ubah Tema">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tema' }}"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                </use>
+            </svg>
+        </label>
 
-            <div class="bersih"></div>
-        </section>
+        <div class="bersih"></div>
     </header>
 
     <aside id="menu-avatar" class="tcetak"></aside>
     <aside id="menu-aplikasi" class="tcetak"></aside>
 
-    <nav id="nav-rangka" class="tcetak">
-        <div id="navigasi-sdm">
-            @includeWhen(!$rekRangka->pjax(), 'sdm.navigasi')
-        </div>
+    <nav class="tcetak">
+        <div id="nav-rangka">
+            <div id="navigasi-sdm">
+                @includeWhen(!$rekRangka->pjax(), 'sdm.navigasi')
+            </div>
 
-        <div class="menu-t">
-            <a @class(['nav-xhr', 'aktif'=> $rekRangka->routeIs('tentang-aplikasi')]) href="{{
-                $urlRangka->route('tentang-aplikasi') }}">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#informasi' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                </svg>
-                Tentang Aplikasi
-            </a>
+            <div class="menu-t">
+                <a @class(['nav-xhr', 'aktif'=> $rekRangka->routeIs('tentang-aplikasi')]) href="{{
+                    $urlRangka->route('tentang-aplikasi') }}">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#informasi' }}"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                    </svg>
+                    Tentang Aplikasi
+                </a>
+            </div>
         </div>
     </nav>
 

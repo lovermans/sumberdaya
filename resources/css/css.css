@@ -15,7 +15,7 @@
 }
 
 :root {
-    font: normal normal 400 .875em/normal Roboto, arial, sans-serif;
+    font: normal normal 400 1em/normal Roboto, arial, sans-serif;
     --putih-1: rgba(255, 255, 255, .87);
     --putih-2: rgba(255, 255, 255, .6);
     --putih-3: rgba(255, 255, 255, .38);
@@ -84,7 +84,7 @@
 }
 
 * {
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-style: revert;
     font-weight: revert;
     letter-spacing: .03125em;
@@ -99,31 +99,38 @@
     box-sizing: border-box
 }
 
+@media screen and (max-resolution:120dpi) and (min-width:90rem),
+screen and (min-resolution:120dpi) and (min-width:108rem) {
+    * {
+        font-size: 1.1428rem
+    }
+}
+
 @media screen and (max-resolution:160dpi) and (min-width:120rem),
 screen and (min-resolution:160dpi) and (min-width:144rem) {
     * {
-        font-size: 1.5rem
+        font-size: 1.3125rem
     }
 }
 
 @media screen and (max-resolution:240dpi) and (min-width:240rem),
 screen and (min-resolution:240dpi) and (min-width:192rem) {
     * {
-        font-size: 2rem
+        font-size: 1.75rem
     }
 }
 
 @media screen and (max-resolution:302dpi) and (min-width:360rem),
 screen and (min-resolution:320dpi) and (min-width:288rem) {
     * {
-        font-size: 3rem
+        font-size: 2.625rem
     }
 }
 
 @media screen and (max-resolution:480dpi) and (min-width:600rem),
 screen and (min-resolution:480dpi) and (min-width:384rem) {
     * {
-        font-size: 4rem
+        font-size: 3.5rem
     }
 }
 
@@ -369,7 +376,6 @@ header {
 }
 
 section {
-    max-width: 55em;
     margin: 0 auto
 }
 
@@ -1766,6 +1772,10 @@ screen and (min-width:672rem) {
 
     main section {
         padding: 1em 1em 4em
+    }
+
+    section {
+        max-width: 64em;
     }
 
     .pintasan {
