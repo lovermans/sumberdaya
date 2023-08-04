@@ -145,36 +145,36 @@
                 document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $urlRangka->route('mulai') }}'>Hubungkan Aplikasi</a>.</p>";
             };
 
-            if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
-                let updated = false;
-                let activated = false;
-                navigator.serviceWorker.register("{{ $rekRangka->getBasePath() . '/service-worker.js' }}")
-                .then(regitration => {
-                    regitration.addEventListener("updatefound", () => {
-                        const worker = regitration.installing;
-                        worker.addEventListener('statechange', () => {
-                            console.log({ state: worker.state });
-                            if (worker.state === "activated") {
-                                activated = true;
-                                checkUpdate();
-                            }
+            (function () {
+                if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
+                    let updated = false;
+                    let activated = false;
+                    navigator.serviceWorker.register("{{ $rekRangka->getBasePath() . '/service-worker.js' }}")
+                    .then(registration => {
+                        registration.addEventListener("updatefound", () => {
+                            const worker = registration.installing;
+                            worker.addEventListener('statechange', () => {
+                                console.log({ state: worker.state });
+                                if (worker.state === "activated") {
+                                    activated = true;
+                                    checkUpdate();
+                                }
+                            });
                         });
                     });
-                });
-                
-                navigator.serviceWorker.addEventListener('controllerchange', () => {
-                    console.log({ state: "updated" });
-                    updated = true;
-                    checkUpdate();
-                });
+                    
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        updated = true;
+                        checkUpdate();
+                    });
 
-                function checkUpdate() {
-                    if (activated && updated) {
-                        console.log("Application was updated refreshing the page...");
-                        window.location.reload();
+                    function checkUpdate() {
+                        if (activated && updated) {
+                            window.location.reload();
+                        }
                     }
-                }
-            };
+                };
+            })();
             
             (async() => {
                 while(!window.aplikasiSiap) {
