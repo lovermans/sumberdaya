@@ -111,6 +111,13 @@ class SDMDBQuery
         $app->db->table('tambahsdms')->where('tambahsdm_uuid', $uuid)->update($data);
     }
 
+    public static function hapusDataPermintaanTambahSDM($uuid)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('tambahsdms')->where('tambahsdm_uuid', $uuid)->delete();
+    }
+
     public static function ambilDBPenempatanSDMTerkini()
     {
         extract(Rangka::obyekPermintaanRangka());

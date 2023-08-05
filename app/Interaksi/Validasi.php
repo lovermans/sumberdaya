@@ -114,4 +114,23 @@ class Validasi
             static::pesanValidasiArrayPengaturan()
         );
     }
+
+    public static function validasiHapusDataDB($permintaan)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            [
+                'alasan' => ['required', 'string'],
+                'id_penghapus' => ['required', 'string'],
+                'waktu_dihapus' => ['required', 'date'],
+            ],
+            [
+                'alasan' => 'Alasan Penghapusan',
+                'id_penghapus' => 'ID Penghapus',
+                'waktu_dihapus' => 'Waktu Dihapus',
+            ]
+        );
+    }
 }

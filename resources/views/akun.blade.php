@@ -367,14 +367,14 @@
             <div class="isian gspan-4">
                 <h3>Berkas SDM</h3>
 
-                @if ($storageRangka->exists('sdm/berkas/'.$akun->sdm_no_absen.'.pdf'))
+                @if ($storageRangka->exists($berkasSDM = 'sdm/berkas/'.$akun->sdm_no_absen.'.pdf'))
                 <iframe class="tcetak berkas"
-                    src="{{ $urlRangka->route('sdm.berkas', ['berkas' => $akun->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' . $akun->sdm_no_absen . '.pdf'))]) }}"
+                    src="{{ $urlRangka->route('sdm.berkas', ['berkas' => $berkasSDM . '?' . filemtime($appRangka->storagePath('app/' . $berkasSDM))]) }}"
                     title="Berkas SDM" loading="lazy"
                     onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
                 <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                    href="{{ $urlRangka->route('sdm.berkas', ['berkas' => $akun->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' . $akun->sdm_no_absen . '.pdf'))]) }}">
+                    href="{{ $urlRangka->route('sdm.berkas', ['berkas' => $berkasSDM . '.pdf' . '?' . filemtime($appRangka->storagePath('app/' . $berkasSDM))]) }}">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
                             xmlns:xlink="http://www.w3.org/1999/xlink"></use>

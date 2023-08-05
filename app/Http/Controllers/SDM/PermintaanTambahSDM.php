@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\SDM;
 
 use App\Interaksi\Cache;
+use App\Interaksi\Excel;
 use App\Interaksi\Rangka;
+use App\Interaksi\Validasi;
 use Illuminate\Support\Arr;
-use App\Tambahan\FungsiStatis;
 use App\Interaksi\SDM\SDMCache;
 use App\Interaksi\SDM\SDMExcel;
 use Illuminate\Validation\Rule;
+use App\Interaksi\SDM\SDMBerkas;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMValidasi;
-use App\Http\Controllers\SDM\Berkas;
-use App\Interaksi\SDM\SDMBerkas;
+use App\Interaksi\SDM\SDMWord;
 
 class PermintaanTambahSDM
 {
@@ -92,46 +93,6 @@ class PermintaanTambahSDM
             : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 
-    public function atributInput()
-    {
-        return [
-            'tambahsdm_penempatan' => 'Penempatan',
-            'tambahsdm_posisi' => 'Jabatan',
-            'tambahsdm_jumlah' => 'Jumlah Dibutuhkan',
-            'tambahsdm_tgl_diusulkan' => 'Tanggal Diusulkan',
-            'tambahsdm_tgl_dibutuhkan' => 'Tanggal Dibutuhkan',
-            'tambahsdm_sdm_id' => 'Pemohon',
-            'tambahsdm_alasan' => 'Alasan Permohonan',
-            'tambahsdm_keterangan' => 'Keterangan Permohonan',
-            'tambahsdm_status' => 'Status Permohonan',
-            'tambahsdm_berkas' => 'Berkas Permohonan',
-            'tambahsdm_id_pengunggah' => 'ID Pengunggah',
-            'tambahsdm_id_pembuat' => 'ID Pembuat',
-            'tambahsdm_id_pengubah' => 'ID Pengubah',
-        ];
-    }
-
-    public function dataDasar()
-    {
-        return app('db')->query()->select('tambahsdm_no', 'tambahsdm_penempatan', 'tambahsdm_posisi', 'tambahsdm_jumlah', 'tambahsdm_tgl_diusulkan', 'tambahsdm_tgl_dibutuhkan', 'tambahsdm_alasan', 'tambahsdm_keterangan', 'tambahsdm_status', 'tambahsdm_sdm_id')->from('tambahsdms');
-    }
-
-    public function dasarValidasi()
-    {
-        return [
-            'tambahsdm_penempatan' => ['required', 'string', 'max:20'],
-            'tambahsdm_posisi' => ['required', 'string', 'max:40'],
-            'tambahsdm_jumlah' => ['required', 'numeric', 'min:1'],
-            'tambahsdm_tgl_diusulkan' => ['required', 'date'],
-            'tambahsdm_tgl_dibutuhkan' => ['required', 'date', 'after:tambahsdm_tgl_diusulkan'],
-            'tambahsdm_sdm_id' => ['required', 'string'],
-            'tambahsdm_alasan' => ['required', 'string'],
-            'tambahsdm_keterangan' => ['nullable', 'string'],
-            'tambahsdm_status' => ['sometimes', 'nullable', 'string', Rule::in(['DIUSULKAN', 'DISETUJUI', 'DITOLAK', 'DITUNDA', 'DIBATALKAN'])],
-            'tambahsdm_berkas' => ['sometimes', 'file', 'mimetypes:application/pdf'],
-        ];
-    }
-
     public function lihat($uuid = null)
     {
         extract(Rangka::obyekPermintaanRangka(true));
@@ -165,7 +126,10 @@ class PermintaanTambahSDM
 
         if ($reqs->isMethod('post')) {
 
-            $hitungPermintaan = $this->dataDasar()->whereYear('tambahsdm_dibuat', date('Y'))->whereMonth('tambahsdm_dibuat', date('m'))->count();
+            $hitungPermintaan = SDMDBQuery::ambilDBPermintaanTambahSDM()
+                ->whereYear('tambahsdm_dibuat', date('Y'))
+                ->whereMonth('tambahsdm_dibuat', date('m'))
+                ->count();
 
             $urutanPermintaan = $hitungPermintaan + 1;
 
@@ -314,49 +278,37 @@ class PermintaanTambahSDM
             : $HtmlPenuh;
     }
 
-    public function hapus(FungsiStatis $fungsiStatis, Berkas $berkas, $uuid = null)
+    public function hapus($uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
+        extract(Rangka::obyekPermintaanRangka(true));
+
         $str = str();
 
         abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-        $database = $app->db;
-
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
-        $permin = $this->dataDasar()->clone()->addSelect('tambahsdm_uuid')->where('tambahsdm_uuid', $uuid)->when($lingkupIjin, function ($query, $lingkupIjin) {
-            $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
-        })->first();
+        $permin = SDMDBQuery::ambilDBPermintaanTambahSDM()
+            ->when($lingkupIjin, function ($query, $lingkupIjin) {
+                $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
+            })
+            ->where('tambahsdm_uuid', $uuid)
+            ->first();
 
         abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
 
         if ($reqs->isMethod('post')) {
+            abort_unless($app->filesystem->exists('contoh/data-dihapus.xlsx'), 404, 'Berkas riwayat penghapusan tidak ditemukan.');
+
             $reqs->merge(['id_penghapus' => $pengguna->sdm_no_absen, 'waktu_dihapus' => $app->date->now()]);
-            $validasi = $app->validator->make(
-                $reqs->all(),
-                [
-                    'alasan' => ['required', 'string'],
-                    'id_penghapus' => ['required', 'string'],
-                    'waktu_dihapus' => ['required', 'date'],
-                ],
-                [],
-                [
-                    'alasan' => 'Alasan Penghapusan',
-                    'id_penghapus' => 'ID Penghapus',
-                    'waktu_dihapus' => 'Waktu Dihapus',
-                ]
-            );
+
+            $validasi = Validasi::validasiHapusDataDB($reqs->all());
 
             $validasi->validate();
 
-            abort_unless($app->filesystem->exists('contoh/data-dihapus.xlsx'), 404, 'Berkas riwayat penghapusan tidak ditemukan.');
-
             $dataValid = $validasi->validated();
 
-            $jenisHapus = 'Penempatan SDM';
+            $jenisHapus = 'Permintaan Tambah SDM';
             $idHapus = $dataValid['id_penghapus'];
             $alasanHapus = $dataValid['alasan'];
             $waktuHapus = $dataValid['waktu_dihapus']->format('Y-m-d H:i:s');
@@ -366,26 +318,21 @@ class PermintaanTambahSDM
                 $jenisHapus, $hapus, $idHapus, $waktuHapus, $alasanHapus
             ];
 
+            SDMDBQuery::hapusDataPermintaanTambahSDM($uuid);
 
-            $database->table('tambahsdms')->where('tambahsdm_uuid', $uuid)->delete();
+            Excel::cadangkanPenghapusanDatabase($dataHapus);
 
-            $berkas->rekamHapusDataSDM($app, $dataHapus);
+            SDMBerkas::hapusBerkasPermintaanTambahSDM($permin->tambahsdm_no);
 
-            $namaBerkas = 'sdm/permintaan-tambah-sdm/berkas/' . $permin->tambahsdm_no . '.pdf';
-
-            $storage = $app->filesystem;
-
-            if ($storage->exists($namaBerkas)) {
-                $storage->delete($namaBerkas);
-            }
-
-            $fungsiStatis->hapusCacheSDMUmum();
+            SDMCache::hapusCacheSDMUmum();
 
             $perujuk = $reqs->session()->get('tautan_perujuk');
             $pesan = 'Data berhasil dihapus';
             $redirect = $app->redirect;
 
-            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.permintaan-tambah-sdm.data')->with('pesan', $pesan);
+            return $perujuk
+                ? $redirect->to($perujuk)->with('pesan', $pesan)
+                : $redirect->route('sdm.permintaan-tambah-sdm.data')->with('pesan', $pesan);
         }
 
         $data = [
@@ -394,6 +341,14 @@ class PermintaanTambahSDM
 
         $HtmlPenuh = $app->view->make('sdm.permintaan-tambah-sdm.hapus', $data);
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
+    }
+
+    public function formulirPermintaanTambahSDM($uuid = null)
+    {
+        return SDMWord::formulirPermintaanTambahSDM($uuid);
     }
 }

@@ -64,4 +64,17 @@ class Excel
 
         return ImporExcel::imporExcelStream(...$argumen);
     }
+
+    public static function cadangkanPenghapusanDatabase($dataHapus)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $fileexcel = $app->storagePath('app/contoh/data-dihapus.xlsx');
+
+        $reader = new ExcelReader();
+        $spreadsheet = $reader->load($fileexcel);
+        $binder = new CustomValueBinder();
+
+        EksporExcel::simpanRiwayatHapusDatabase($spreadsheet, $dataHapus, $fileexcel, $binder);
+    }
 }

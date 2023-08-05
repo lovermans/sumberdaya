@@ -372,7 +372,7 @@ class Umum
 
     public function berkas($berkas = null)
     {
-        return SDMBerkas::unduhBerkasProfilSDM($berkas);
+        return SDMBerkas::unduhBerkas($berkas);
     }
 
     public function formulirSerahTerimaSDMBaru($uuid = null)

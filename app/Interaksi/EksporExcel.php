@@ -78,4 +78,18 @@ class EksporExcel
 
         exit();
     }
+
+    public static function simpanRiwayatHapusDatabase($spreadsheet, $dataHapus, $fileexcel, $binder)
+    {
+        Cell::setValueBinder($binder);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $barisAkhir = $worksheet->getHighestRow() + 1;
+        $worksheet->fromArray($dataHapus, NULL, 'A' . $barisAkhir);
+
+        $writer = new ExcelWriter($spreadsheet);
+        $writer->setPreCalculateFormulas(false);
+        $writer->save($fileexcel);
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
+    }
 }

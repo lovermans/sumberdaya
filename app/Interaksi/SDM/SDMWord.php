@@ -221,4 +221,45 @@ class SDMWord
 
         return EksporWord::eksporWordStream(...$argumen);
     }
+
+    public static function formulirPermintaanTambahSDM($uuid = null)
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && $uuid, 401);
+
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+
+        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+
+        $permin = SDMDBQuery::ambilDBPermintaanTambahSDM()
+            ->when($lingkupIjin, function ($query, $lingkupIjin) {
+                $query->whereIn('tambahsdm_penempatan', $lingkupIjin);
+            })->where('tambahsdm_uuid', $uuid)->first();
+
+        abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
+
+        $no_permin = $permin->tambahsdm_no;
+        $date = $app->date;
+        $str = str();
+
+        $data = [
+            'tambahsdm_no' => $no_permin,
+            'sdm_nama' => $str->limit($permin->sdm_nama, 30),
+            'tambahsdm_sdm_id' => $permin->tambahsdm_sdm_id,
+            'tambahsdm_posisi' => $str->limit($permin->tambahsdm_posisi, 30),
+            'tambahsdm_jumlah' => $permin->tambahsdm_jumlah,
+            'tambahsdm_alasan' => $str->limit($permin->tambahsdm_alasan, 100),
+            'tambahsdm_tgl_diusulkan' => strtoupper($date->make($permin->tambahsdm_tgl_diusulkan)?->translatedFormat('d F Y')),
+            'tambahsdm_tgl_dibutuhkan' => strtoupper($date->make($permin->tambahsdm_tgl_dibutuhkan)?->translatedFormat('d F Y'))
+        ];
+
+        $argumen = [
+            'contoh' => 'permintaan-tambah-sdm.docx',
+            'data' => $data,
+            'filename' => 'permintaan-tambah-sdm-' . $no_permin . '.docx'
+        ];
+
+        return EksporWord::eksporWordStream(...$argumen);
+    }
 }

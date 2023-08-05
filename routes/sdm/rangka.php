@@ -3,7 +3,7 @@ $route = app('router');
 
 $route->get('/', 'Umum@mulai')->name('mulai');
 $route->get('/foto-profil/{berkas_foto_profil?}', 'Umum@fotoProfil')->name('tautan-foto-profil');
-$route->get('/berkas/{berkas?}', 'Umum@berkas')->name('berkas');
+$route->get('/berkas/{berkas?}', 'Umum@berkas')->where('berkas', '.*')->name('berkas');
 $route->get('/panduan', 'Umum@panduan')->name('panduan');
 $route->get('/akun/{uuid?}', 'Umum@akun')->name('akun');
 $route->match(['get', 'post'], '/ubah-akun/{uuid?}', 'Umum@ubahAkun')->name('ubah-akun');
