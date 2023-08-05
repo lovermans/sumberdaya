@@ -1,4 +1,4 @@
-var CACHE_VERSION = 202308051005;
+var CACHE_VERSION = 202308051452;
 var CURRENT_CACHES = {
     prefetch: "{{ $confRangka->get('app.name', 'Laravel') }}-cache-v" + CACHE_VERSION
 };

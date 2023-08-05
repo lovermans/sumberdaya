@@ -143,6 +143,12 @@ small {
     color: inherit;
 }
 
+button {
+    border: none;
+    padding: 0;
+    font: inherit;
+}
+
 b,
 button,
 .menu-j,
@@ -168,11 +174,6 @@ button,
 .periksa :is(summary,
     li) {
     color: var(--hitam);
-}
-
-button {
-    border: none;
-    padding: 0;
 }
 
 #menu-kanvas,
@@ -853,6 +854,7 @@ button.cari-cepat svg {
     width: 100%;
     background-color: var(--bg-label);
     min-width: 0;
+    font: inherit;
 }
 
 .isian :is(input[type="text"],
