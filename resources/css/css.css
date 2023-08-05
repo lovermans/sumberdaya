@@ -1846,6 +1846,7 @@ screen and (min-width:672rem) {
     }
 
     :root {
+        font: normal normal 400 10pt/normal Roboto, arial, sans-serif;
         --putih-1: rgba(0, 0, 0, .87);
         --putih-2: rgba(0, 0, 0, .6);
         --putih-3: rgba(0, 0, 0, .38);

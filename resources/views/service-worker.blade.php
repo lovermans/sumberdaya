@@ -1,4 +1,4 @@
-var CACHE_VERSION = 202308050810;
+var CACHE_VERSION = 202308051005;
 var CURRENT_CACHES = {
     prefetch: "{{ $confRangka->get('app.name', 'Laravel') }}-cache-v" + CACHE_VERSION
 };
@@ -55,8 +55,8 @@ async function onActivate(event) {
 };
 
 self.addEventListener('install', function (event) {
-    event.waitUntil(onInstall(event));
     self.skipWaiting();
+    event.waitUntil(onInstall(event));
 });
 
 self.addEventListener('activate', function (event) {
