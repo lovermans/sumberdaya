@@ -93,6 +93,15 @@
                             value="{{ $rekRangka->old('tgl_langgar_sampai', $rekRangka->tgl_langgar_sampai ?? null) }}">
                         <span class="t-bantu">Isi tanggal</span>
                     </div>
+
+                    <div class="gspan-4"></div>
+
+                    <button id="tombol_saring_pelanggaran" class="utama pelengkap" type="submit" title="Saring Data">
+                        <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cari' }}"
+                                xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                        </svg> Saring
+                    </button>
                 </div>
             </details>
         </form>

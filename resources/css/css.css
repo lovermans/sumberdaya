@@ -1800,9 +1800,43 @@ screen and (min-width:672rem) {
     }
 }
 
-/* @media screen and (max-resolution:160dpi) and (max-width:119.9375rem) and (min-width:85.375rem),screen and (max-resolution:160dpi) and (max-width:159.9375rem) and (min-width:128.0625rem),screen and (max-resolution:160dpi) and (max-width:239.9375rem) and (min-width:170.75rem),screen and (max-resolution:160dpi) and (max-width:319.9375rem) and (min-width:256.125rem),screen and (min-width:341.5rem) {
-    
-} */
+@media screen and (max-resolution:160dpi) and (min-width:85.375rem) and (max-width:119.9375rem),
+screen and (max-resolution:240dpi) and (min-width:128.0625rem) and (max-width:159.9375rem),
+screen and (max-resolution:320dpi) and (min-width:170.75rem) and (max-width:239.9375rem),
+screen and (max-resolution:480dpi) and (min-width:256.125rem) and (max-width:319.9375rem),
+screen and (max-resolution:640dpi) and (min-width:341.5rem) and (max-width:479.9375rem),
+screen and (min-width:672rem) {
+    nav {
+        width: 20%;
+        max-width: 100%
+    }
+
+    nav,
+    header {
+        left: 80%
+    }
+
+    .pesan-internal {
+        transform: translate(-50%, -50%);
+    }
+
+    main {
+        margin: 0 20%
+    }
+
+    .pintasan {
+        right: 20%
+    }
+
+    .cari-data {
+        position: fixed;
+        left: 0;
+        right: 80%;
+        bottom: 0;
+        top: 1em;
+        overflow-y: auto;
+    }
+}
 
 .cari-data summary::-webkit-details-marker,
 .cari-data details>summary.cari:before,
