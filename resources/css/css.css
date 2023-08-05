@@ -99,13 +99,6 @@
     box-sizing: border-box
 }
 
-@media screen and (max-resolution:120dpi) and (min-width:90rem),
-screen and (min-resolution:120dpi) and (min-width:108rem) {
-    * {
-        font-size: 1.1428rem
-    }
-}
-
 @media screen and (max-resolution:160dpi) and (min-width:120rem),
 screen and (min-resolution:160dpi) and (min-width:144rem) {
     * {
