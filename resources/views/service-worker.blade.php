@@ -1,4 +1,4 @@
-var CACHE_VERSION = 202308062142;
+var CACHE_VERSION = 202308070003;
 var CURRENT_CACHES = {
     prefetch: "{{ $confRangka->get('app.name', 'Laravel') }}-cache-v" + CACHE_VERSION
 };
@@ -35,7 +35,7 @@ var expectedCacheNames = Object.keys(CURRENT_CACHES).map(function (key) {
 async function onInstall(event) {
     caches.open(CURRENT_CACHES.prefetch).then(function (cache) {
         offline.forEach(function (aset) {
-            cache.add(new Request(aset), { cache: 'default', credentials: 'include' });
+            cache.add(new Request(aset), { cache: 'reload', credentials: 'include' });
         });
     }).catch(function (error) {
         console.error('Gagal Mengambil Aset', error);
