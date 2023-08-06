@@ -32,9 +32,8 @@
     <div id="mengerti-mulai-aplikasi" class="pesan-internal">
         <p>
             Tekan/sentuh tombol
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#aplikasi' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonaplikasi"></use>
             </svg>
             di ujung kanan atas layar untuk memilih aplikasi.
         </p>
@@ -163,9 +162,8 @@
 
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#panahatas' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonpanahatas"></use>
             </svg>
         </a>
     </div>

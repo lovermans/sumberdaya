@@ -36,7 +36,7 @@
                                 $ultah->sdm_no_absen . '.webp' .
                                 '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $ultah->sdm_no_absen .
                                 '.webp')), false]) :
-                                $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
+                                $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
                                 $ultah->sdm_nama ?? 'foto akun' }}" title="{{ $ultah->sdm_nama ?? 'foto akun' }}"
                                 loading="lazy">
                             </a>

@@ -5,9 +5,8 @@
     <div class="kartu form">
         @isset($sanksi)
         <div class="gspan-4">
-            <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <a class="tutup-i"><svg viewbox="0 0 24 24">
+                    <use href="#ikontutup"></use>
                 </svg></a>
 
             <h4 class="form">Data Sanksi SDM</h4>
@@ -66,9 +65,8 @@
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
                 href="{{ $urlRangka->route('sdm.pelanggaran.berkas', ['berkas' => $sanksi->sanksi_lap_no . '.pdf' . '?' . filemtime(storage_path('app/sdm/pelanggaran/berkas/' . $sanksi->sanksi_lap_no . '.pdf'))]) }}">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <svg viewBox="0 0 24 24">
+                    <use href="#ikonunduh"></use>
                 </svg>
                 BERKAS
             </a>
@@ -106,9 +104,8 @@
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
                 href="{{ $urlRangka->route('sdm.sanksi.berkas', ['berkas' => $sanksi->sanksi_no_absen . ' - ' . $sanksi->sanksi_jenis . ' - ' . $sanksi->sanksi_mulai . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $sanksi->sanksi_no_absen . ' - ' . $sanksi->sanksi_jenis . ' - ' . $sanksi->sanksi_mulai . '.pdf'))]) }}">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <svg viewBox="0 0 24 24">
+                    <use href="#ikonunduh"></use>
                 </svg>
                 BERKAS
             </a>

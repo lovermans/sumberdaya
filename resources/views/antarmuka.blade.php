@@ -1,16 +1,15 @@
-@extends('rangka') 
+@extends('rangka')
 @section('isi')
 <div id="pemberitahuan" class="tcetak">
     <div class="spanduk tcetak">
-        <p><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ asset(mix('/ikon.svg')) . '#informasi' }}" xmlns:xlink="http://www.w3.org/1999/xlink">
-                </use>
+        <p><svg viewbox="0 0 24 24">
+                <use href="{{ asset(mix('/ikon.svg')) . '#ikoninformasi"></use>
             </svg> Sandi Anda kurang aman.</p><a class="isi-xhr sekunder" href="">AMANKAN</a>
     </div>
     <div class="pesan tcetak">
-        <p>Selamat Anda mendapat pesan kilat. <a href="/">Tautan</a></p><button class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ asset(mix('/ikon.svg')) . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink">
-                </use>
+        <p>Selamat Anda mendapat pesan kilat. <a href="/">Tautan</a></p><button class="tutup-i"><svg
+                viewbox="0 0 24 24">
+                <use href="{{ asset(mix('/ikon.svg')) . '#ikontutup"></use>
             </svg></button>
     </div>
     <div class="periksa tcetak">
@@ -21,7 +20,9 @@
                 <li>Kesalahan 2.</li>
             </ul>
         </details>
-        <button class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><use xlink:href="{{ asset(mix('/ikon.svg')) . '#tutup' }}" xmlns:xlink="http://www.w3.org/1999/xlink"></use></svg></button>
+        <button class="tutup-i"><svg viewbox="0 0 24 24">
+                <use href="{{ asset(mix('/ikon.svg')) . '#ikontutup"></use>
+            </svg></button>
     </div>
 </div>
 <h2>Sejarah {{ str(1)->padLeft(5,'0') }}</h2>
@@ -69,8 +70,8 @@
                     </select>
                     <span class="t-bantu">Pilih satu</span>
                 </div>
-                <div class="isian"> <label for="jenis2">Negara</label> <select name="negara2[]" id="jenis2"
-                        class="pil" multiple required>
+                <div class="isian"> <label for="jenis2">Negara</label> <select name="negara2[]" id="jenis2" class="pil"
+                        multiple required>
                         <option value=""></option>
                         <option value="VALUE 2">VALUE 2</option>
                         <option value="VALUE 3">VALUE 3</option>
@@ -94,21 +95,20 @@
         </span>
         <span class="ket">baris/halaman.</span>
         <span class="trek">
-            <a class="isi-xhr" href="/"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ asset(mix('/ikon.svg')) . '#awal' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <a class="isi-xhr" href="/"><svg viewbox="0 0 24 24">
+                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonawal' }}">
+                    </use>
                 </svg></a>
-            <a class="isi-xhr" href="/"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ asset(mix('/ikon.svg')) . '#mundur' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <a class="isi-xhr" href="/"><svg viewbox="0 0 24 24">
+                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmundur"></use>
                 </svg></a>
-            <a class="isi-xhr" href="/"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ asset(mix('/ikon.svg')) . '#maju' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <a class="isi-xhr" href="/"><svg viewbox="0 0 24 24">
+                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmaju' }}">
+                    </use>
                 </svg></a>
-            <a class="isi-xhr" href="/"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ asset(mix('/ikon.svg')) . '#akhir' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <a class="isi-xhr" href="/"><svg viewbox="0 0 24 24">
+                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonakhir' }}">
+                    </use>
                 </svg></a>
         </span>
     </div>
@@ -131,12 +131,13 @@
             </thead>
             <tbody>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Chrome</td>
                     <td>9,562</td>
@@ -150,12 +151,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Firefox</td>
                     <td>2,403</td>
@@ -169,12 +171,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Safari</td>
                     <td>1,089</td>
@@ -188,12 +191,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Internet Explorer</td>
                     <td>366</td>
@@ -207,12 +211,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Safari (in-app)</td>
                     <td>162</td>
@@ -226,12 +231,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Opera</td>
                     <td>103</td>
@@ -245,12 +251,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Edge</td>
                     <td>98</td>
@@ -264,12 +271,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Other</td>
                     <td>275</td>
@@ -283,12 +291,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Other</td>
                     <td>275</td>
@@ -302,12 +311,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Other</td>
                     <td>275</td>
@@ -321,12 +331,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Other</td>
                     <td>275</td>
@@ -340,12 +351,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Other</td>
                     <td>275</td>
@@ -359,12 +371,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Other</td>
                     <td>275</td>
@@ -378,12 +391,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Other</td>
                     <td>275</td>
@@ -397,12 +411,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                    </svg></button>
-                <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                        href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Other</td>
                     <td>275</td>
@@ -416,12 +431,13 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <div class="pil-aksi"><button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-                            </svg></button>
-                        <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
-                                href="{{ route('login') }}">Lihat</a> </div></div>
+                    <th>
+                        <div class="pil-aksi"><button><svg viewbox="0 0 24 24">
+                                    <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
+                                </svg></button>
+                            <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a
+                                    class="isi-xhr" href="{{ route('login') }}">Lihat</a> </div>
+                        </div>
                     </th>
                     <td>Other</td>
                     <td>275</td>
@@ -435,9 +451,8 @@
                     <td>Keterangan 5</td>
                 </tr>
                 <tr>
-                    <th> <button><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <use xlink:href="{{ asset(mix('/ikon.svg')) . '#menuvert' }}"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                    <th> <button><svg viewbox="0 0 24 24">
+                                <use href="{{ asset(mix('/ikon.svg')) . '#ikonmenuvert"></use>
                             </svg></button>
                         <div class="aksi"> <a class="isi-xhr" href="{{ route('login') }}">Ubah</a> <a class="isi-xhr"
                                 href="{{ route('login') }}">Lihat</a> </div>
@@ -460,22 +475,22 @@
 <p><b><u>Informasi</u></b> : Aplikasi ini hanya menyajikan fitur informasi data SDM. Aplikasi ini tidak menyajikan fitur
     perhitungan kehadiran maupun gaji dan kompensasi lainnya.</p>
 <div class="pintasan tcetak">
-    <a class="isi-xhr" href="{{ route('login') }}"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#tambah' }}"
-            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-    </svg></a>
-    <a class="isi-xhr" href="{{ route('login') }}"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#unduh' }}"
-            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-    </svg></a>
-    <button class="isi-xhr" data-href="{{ route('login') }}"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#unggah' }}"
-            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-    </svg></button>
-    <a class="isi-xhr" href="{{ route('login') }}"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <use xlink:href="{{ asset(mix('/ikon.svg')) . '#unggah' }}"
-            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
-    </svg></a>
+    <a class="isi-xhr" href="{{ route('login') }}"><svg viewBox="0 0 24 24">
+            <use href="{{ asset(mix('/ikon.svg')) . '#ikontambah' }}">
+            </use>
+        </svg></a>
+    <a class="isi-xhr" href="{{ route('login') }}"><svg viewBox="0 0 24 24">
+            <use href="{{ asset(mix('/ikon.svg')) . '#ikonunduh' }}">
+            </use>
+        </svg></a>
+    <button class="isi-xhr" data-href="{{ route('login') }}"><svg viewBox="0 0 24 24">
+            <use href="{{ asset(mix('/ikon.svg')) . '#ikonunggah' }}">
+            </use>
+        </svg></button>
+    <a class="isi-xhr" href="{{ route('login') }}"><svg viewBox="0 0 24 24">
+            <use href="{{ asset(mix('/ikon.svg')) . '#ikonunggah' }}">
+            </use>
+        </svg></a>
 </div>
 <div>{{ filemtime(resource_path('css/css.css')) }}</div>
 <script>

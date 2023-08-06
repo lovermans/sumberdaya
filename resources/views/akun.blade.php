@@ -13,7 +13,7 @@
                 src="{{ $storageRangka->exists('sdm/foto-profil/' . $akun->sdm_no_absen . '.webp') ?
                 $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $akun->sdm_no_absen . '.webp' . '?'
                 . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $akun->sdm_no_absen . '.webp'))]) :
-                $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{ $akun->sdm_nama ?? 'foto akun' }}"
+                $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{ $akun->sdm_nama ?? 'foto akun' }}"
                 title="{{
                 $akun->sdm_nama ?? 'foto akun' }}" loading="lazy">
             </div>
@@ -35,7 +35,7 @@
                         '.webp' .
                         '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $akun->sdm_id_atasan .
                         '.webp'))]) :
-                        $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
+                        $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
                         $akun->nama_atasan ?? 'foto akun' }}" title="{{ $akun->nama_atasan ?? 'foto akun' }}"
                         loading="lazy">
                     </a>
@@ -347,7 +347,7 @@
                             . '.webp' .
                             '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $personil->sdm_no_absen .
                             '.webp'))]) :
-                            $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
+                            $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
                             $personil->sdm_nama ?? 'foto akun' }}" title="{{ $personil->sdm_nama ?? 'foto akun' }}"
                             loading="lazy">
                         </a>
@@ -374,10 +374,9 @@
                     onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
                 <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                    href="{{ $urlRangka->route('sdm.berkas', ['berkas' => $berkasSDM . '.pdf' . '?' . filemtime($appRangka->storagePath('app/' . $berkasSDM))]) }}">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                    href="{{ $urlRangka->route('sdm.berkas', ['berkas' => $berkasSDM . '?' . filemtime($appRangka->storagePath('app/' . $berkasSDM))]) }}">
+                    <svg viewBox="0 0 24 24">
+                        <use href="#ikonunduh"></use>
                     </svg>
                     BERKAS
                 </a>
@@ -433,18 +432,15 @@
 
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#panahatas' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonpanahatas"></use>
             </svg>
         </a>
 
         <a href="{{ $urlRangka->route('sdm.unduh.kartu-sdm', ['uuid' => $akun->sdm_uuid]) }}"
             title="Unduh Kartu Identitas">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#kartuID' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                </use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonkartuID"></use>
             </svg>
         </a>
     </div>

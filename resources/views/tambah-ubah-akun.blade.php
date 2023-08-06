@@ -12,7 +12,8 @@
             null) . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
             $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp' . '?' .
             filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $rekRangka->old('sdm_no_absen',
-            $sdm->sdm_no_absen ?? null) . '.webp'))]) : $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
+            $sdm->sdm_no_absen ?? null) . '.webp'))]) : $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}"
+            alt="{{
             $rekRangka->old('sdm_no_absen', $sdm->sdm_nama ?? 'foto akun') }}" title="{{ $rekRangka->old('sdm_no_absen',
             $sdm->sdm_nama ?? 'foto akun') }}" loading="lazy">
         </div>
@@ -671,17 +672,16 @@
         <div class="isian gspan-4">
             <label>Berkas SDM</label>
 
-            @if ($storageRangka->exists('sdm/berkas/'. $sdm->sdm_no_absen.'.pdf'))
+            @if ($storageRangka->exists($berkasSDM = 'sdm/berkas/'. $sdm->sdm_no_absen.'.pdf'))
             <iframe class="berkas tcetak"
-                src="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $sdm->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' .  $sdm->sdm_no_absen . '.pdf'))]) }}"
+                src="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $berkasSDM . '?' . filemtime($appRangka->storagePath('app/' . $berkasSDM))]) }}"
                 title="Berkas SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                href="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $sdm->sdm_no_absen . '.pdf' . '?' . filemtime($appRangka->storagePath('app/sdm/berkas/' .  $sdm->sdm_no_absen . '.pdf'))]) }}">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                href="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $berkasSDM . '?' . filemtime($appRangka->storagePath('app/' . $berkasSDM))]) }}">
+                <svg viewBox="0 0 24 24">
+                    <use href="#ikonunduh"></use>
                 </svg>
                 BERKAS
             </a>

@@ -413,7 +413,8 @@ header .off,
     display: none
 }
 
-#nav:checked~header .off {
+#nav:checked~header .off,
+#ikonSVG .sprite {
     display: block
 }
 
@@ -1838,7 +1839,8 @@ screen and (min-width:672rem) {
 .cari-data details[open]>summary.cari:before,
 #sematan_javascript,
 #memuat.mati,
-[sembunyikan] {
+[sembunyikan],
+#ikonSVG {
     display: none;
 }
 

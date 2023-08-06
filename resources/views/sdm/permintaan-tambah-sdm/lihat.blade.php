@@ -5,9 +5,8 @@
     <div class="kartu form">
         @isset($permin)
         <div class="gspan-4">
-            <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <a class="tutup-i"><svg viewbox="0 0 24 24">
+                    <use href="#ikontutup"></use>
                 </svg></a>
             <h4 class="form">Data Permintaan Tambah SDM</h4>
         </div>
@@ -78,9 +77,8 @@
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
                 href="{{ $urlRangka->route('sdm.berkas', ['berkas' => $berkasPerminTambahSDM . '?' . filemtime($appRangka->storagePath('app/' . $berkasPerminTambahSDM))]) }}">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <svg viewBox="0 0 24 24">
+                    <use href="#ikonunduh"></use>
                 </svg>
                 BERKAS
             </a>
@@ -93,10 +91,8 @@
 
         <a class="isi-xhr utama tcetak" data-rekam="false" data-laju="true" data-tujuan="#permintaan-sdm_sematan_lihat"
             href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.formulir', ['uuid' => $permin->tambahsdm_uuid]) }}">
-            <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cetak' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                </use>
+            <svg viewbox="0 0 24 24">
+                <use href="#ikoncetak"></use>
             </svg>
             FORMULIR
         </a>

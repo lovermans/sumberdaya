@@ -113,35 +113,29 @@
 
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#panahatas' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonpanahatas"></use>
             </svg>
         </a>
 
         @if($strRangka->contains($rekRangka->user()?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
         <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_unggah_sematan"
             href="{{ $urlRangka->route('sdm.unggah') }}" title="Unggah Data Profil SDM">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unggah' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                </use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonunggah"></use>
             </svg>
         </a>
 
         <a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.riwayat') }}"
             title="Cari Semua Riwayat Penempatan SDM">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cari' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                </use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikoncari"></use>
             </svg>
         </a>
 
         <a class="isi-xhr" href="{{ $urlRangka->route('register') }}" title="Tambah Data SDM">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tambahorang' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikontambahorang"></use>
             </svg>
         </a>
         @endif

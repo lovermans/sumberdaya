@@ -1,9 +1,7 @@
 @fragment('pilih-sumber_daya')
 @if ($rekRangka->user())
-<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#aplikasi' }}"
-        xmlns:xlink="http://www.w3.org/1999/xlink">
-    </use>
+<svg viewBox="0 0 24 24">
+    <use href="#ikonaplikasi"></use>
 </svg>
 @endif
 @endfragment
@@ -15,7 +13,7 @@
 src="{{ $storageRangka->exists('sdm/foto-profil/' . $rekRangka->user()->sdm_no_absen . '.webp') ?
 $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $rekRangka->user()?->sdm_no_absen . '.webp' .
 '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $rekRangka->user()->sdm_no_absen . '.webp'))]) :
-$urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}"
+$urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}"
 alt="{{ $rekRangka->user()->sdm_nama ?? 'foto akun' }}" title="{{ $rekRangka->user()->sdm_nama ?? 'foto akun' }}"
 loading="lazy">
 @endif
@@ -26,20 +24,16 @@ loading="lazy">
 <div class="menu-akun">
     <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('sdm.akun')]) href="{{ $urlRangka->route('sdm.akun',
         ['uuid' => $rekRangka->user()->sdm_uuid]) }}">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}"
-                xmlns:xlink="http://www.w3.org/1999/xlink">
-            </use>
+        <svg viewBox="0 0 24 24">
+            <use href="#ikonakun"></use>
         </svg>
         Profil
     </a>
 
     <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('sdm.ubah-sandi')]) href="{{
         $urlRangka->route('sdm.ubah-sandi') }}">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#kunci' }}"
-                xmlns:xlink="http://www.w3.org/1999/xlink">
-            </use>
+        <svg viewBox="0 0 24 24">
+            <use href="#ikonkunci"></use>
         </svg>
         Ubah Sandi
     </a>
@@ -53,10 +47,8 @@ loading="lazy">
                 document.getElementById('menu').checked = false;
                 document.getElementById('pilih-aplikasi').checked = false;
                 document.getElementById('keluar-aplikasi').click()">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#keluar' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                </use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonkeluar"></use>
             </svg>
             Keluar
         </a>
@@ -76,20 +68,16 @@ loading="lazy">
 <div class="menu-akun">
     <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('mulai')]) href="{{ $urlRangka->route('mulai')
         }}">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#rumah' }}"
-                xmlns:xlink="http://www.w3.org/1999/xlink">
-            </use>
+        <svg viewBox="0 0 24 24">
+            <use href="#ikonrumah"></use>
         </svg>
         Beranda
     </a>
 
     <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('sdm.*', 'register')]) href="{{
         $urlRangka->route('sdm.mulai') }}">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#personil' }}"
-                xmlns:xlink="http://www.w3.org/1999/xlink">
-            </use>
+        <svg viewBox="0 0 24 24">
+            <use href="#ikonpersonil"></use>
         </svg>
         Sumber Daya Manusia
     </a>
@@ -97,10 +85,8 @@ loading="lazy">
     @if($strRangka->contains($rekRangka->user()?->sdm_hak_akses, 'PENGURUS'))
     <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('atur.*')]) href="{{ $urlRangka->route('atur.data')
         }}">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#pengaturan' }}"
-                xmlns:xlink="http://www.w3.org/1999/xlink">
-            </use>
+        <svg viewBox="0 0 24 24">
+            <use href="#ikonpengaturan"></use>
         </svg>
         Pengaturan Umum
     </a>

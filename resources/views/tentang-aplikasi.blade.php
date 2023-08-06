@@ -79,17 +79,14 @@
 
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#panahatas' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonpanahatas"></use>
             </svg>
         </a>
 
         <a class="isi-xhr" data-tn="true" href="{{ $urlRangka->route('mulai') }}">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#rumah' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                </use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonrumah"></use>
             </svg>
         </a>
     </div>

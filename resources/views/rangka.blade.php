@@ -12,6 +12,7 @@
 </head>
 
 <body data-tematerang="" id="badan-dokumen">
+    <div id="ikonSVG"></div>
     <div id="sambutan">
         <img src="{{ $urlRangka->asset($mixRangka('/images/Lambang Perusahaan.webp')) }}"
             alt="{{ $confRangka->get('app.usaha') }}" title="{{ $confRangka->get('app.usaha') }}">
@@ -46,16 +47,12 @@
 
     <header id="header-rangka" class="tcetak">
         <label for="nav" id="tbl-nav" title="Menu">
-            <svg class="on" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#menu' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                </use>
+            <svg class="on" viewBox="0 0 24 24">
+                <use href="#ikonmenu"></use>
             </svg>
 
-            <svg class="off" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                </use>
+            <svg class="off" viewBox="0 0 24 24">
+                <use href="#ikontutup"></use>
             </svg>
         </label>
 
@@ -68,10 +65,8 @@
         <label for="pilih-aplikasi" id="pilih-sumber_daya" onclick="" title="Pilih Aplikasi"></label>
         <label for="menu" id="tbl-menu" onclick="" title="Akun"></label>
         <label for="tema" id="tbl-tema" onclick="" title="Ubah Tema">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tema' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                </use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikontema"></use>
             </svg>
         </label>
 
@@ -90,9 +85,8 @@
             <div class="menu-t">
                 <a @class(['nav-xhr', 'aktif'=> $rekRangka->routeIs('tentang-aplikasi')]) href="{{
                     $urlRangka->route('tentang-aplikasi') }}">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#informasi' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                    <svg viewBox="0 0 24 24">
+                        <use href="#ikoninformasi"></use>
                     </svg>
                     Tentang Aplikasi
                 </a>
@@ -144,43 +138,18 @@
             if (location.href == "{{ $urlRangka->route('mulai').'/' }}" && !navigator.onLine) {
                 document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $urlRangka->route('mulai') }}'>Hubungkan Aplikasi</a>.</p>";
             };
-
-            (function () {
-                if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
-                    let updated = false;
-                    let activated = false;
-                    navigator.serviceWorker.register("{{ $rekRangka->getBasePath() . '/service-worker.js' }}")
-                    .then(registration => {
-                        registration.addEventListener("updatefound", () => {
-                            const worker = registration.installing;
-                            worker.addEventListener('statechange', () => {
-                                console.log({ state: worker.state });
-                                if (worker.state === "activated") {
-                                    activated = true;
-                                    checkUpdate();
-                                }
-                            });
-                        });
-                    });
-                    
-                    navigator.serviceWorker.addEventListener('controllerchange', () => {
-                        updated = true;
-                        checkUpdate();
-                    });
-
-                    function checkUpdate() {
-                        if (activated && updated) {
-                            window.location.reload();
-                        }
-                    }
-                };
-            })();
             
             (async() => {
                 while(!window.aplikasiSiap) {
                     await new Promise((resolve,reject) =>
                     setTimeout(resolve, 1000));
                 }
+
+                lemparXHR({
+                    tujuan : "#ikonSVG",
+                    tautan : "{!! $urlRangka->asset($mixRangka('/ikon.svg')) !!}",
+                    normalview : true
+                });
                 
                 if (location.href == "{{ $urlRangka->route('mulai').'/' }}" && navigator.onLine) {
                     lemparXHR({

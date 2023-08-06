@@ -18,9 +18,8 @@
                             value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
 
                         <button id="tombol_cari_status_penempatan" class="cari-cepat" type="submit" title="Cari Data">
-                            <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cari' }}"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                            <svg viewbox="0 0 24 24">
+                                <use href="#ikoncari"></use>
                             </svg>
                         </button>
                     </div>
@@ -191,9 +190,8 @@
 
                     <button id="tombol_saring_status_penempatan" class="utama pelengkap" type="submit"
                         title="Saring Data">
-                        <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#cari' }}"
-                                xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                        <svg viewbox="0 0 24 24">
+                            <use href="#ikoncari"></use>
                         </svg> Saring
                     </button>
                 </div>
@@ -278,9 +276,8 @@
                 @if($tabels->currentPage() > 1)
                 <a class="isi-xhr" data-tujuan="#riwa-penem-sdm_tabels" data-frag="true" href="{{ $tabels->url(1) }}"
                     title="Awal">
-                    <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#awal' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                    <svg viewbox="0 0 24 24">
+                        <use href="#ikonawal"></use>
                     </svg>
                 </a>
                 @endif
@@ -288,9 +285,8 @@
                 @if($tabels->previousPageUrl())
                 <a class="isi-xhr" data-tujuan="#riwa-penem-sdm_tabels" data-frag="true"
                     href="{{ $tabels->previousPageUrl() }}" title="Sebelumnya">
-                    <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#mundur' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                    <svg viewbox="0 0 24 24">
+                        <use href="#ikonmundur"></use>
                     </svg>
                 </a>
                 @endif
@@ -298,17 +294,15 @@
                 @if($tabels->nextPageUrl())
                 <a class="isi-xhr" data-tujuan="#riwa-penem-sdm_tabels" data-frag="true"
                     href="{{ $tabels->nextPageUrl() }}" title="Berikutnya">
-                    <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#maju' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                    <svg viewbox="0 0 24 24">
+                        <use href="#ikonmaju"></use>
                     </svg>
                 </a>
 
                 <a class="isi-xhr" data-tujuan="#riwa-penem-sdm_tabels" data-frag="true"
                     href="{{ $tabels->url($tabels->lastPage()) }}" title="Akhir">
-                    <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#akhir' }}"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                    <svg viewbox="0 0 24 24">
+                        <use href="#ikonakhir"></use>
                     </svg>
                 </a>
                 @endif
@@ -426,9 +420,10 @@
                                     <button
                                         id="{{'aksi_penempatan_baris_' . rescue(function () use ($tabels, $nomor) { return ($tabels->firstItem() + $nomor);}, $loop->iteration, false) }}"
                                         title="Pilih Tindakan">
-                                        <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#menuvert' }}"
-                                                xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                                        <svg viewbox="0 0 24 24">
+                                            <use
+                                                href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonmenuvert' }}">
+                                            </use>
                                         </svg>
                                     </button>
 
@@ -463,7 +458,7 @@
                                     . $tabel->sdm_no_absen . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil',
                                     ['berkas_foto_profil' => $tabel->sdm_no_absen . '.webp' . '?' .
                                     filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $tabel->sdm_no_absen .
-                                    '.webp'))]) : $urlRangka->asset($mixRangka('/ikon.svg')) . '#akun' }}" alt="{{
+                                    '.webp'))]) : $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
                                     $tabel->sdm_nama
                                     ?? 'foto akun' }}" title="{{ $tabel->sdm_nama ?? 'foto akun' }}" loading="lazy">
                                 </a>
@@ -578,42 +573,35 @@
 
     <div class="pintasan tcetak">
         <a href="#" onclick="event.preventDefault();window.scrollTo(0,0)" title="Kembali Ke Atas">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#panahatas' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonpanahatas"></use>
             </svg>
         </a>
 
         <a class="isi-xhr" data-rekam="false" href="{{ $urlRangka->route('sdm.penempatan.unggah') }}"
             data-tujuan="#sdm_penem_riwa_sematan" title="Unggah Data Penempatan SDM">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unggah' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                </use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonunggah"></use>
             </svg>
         </a>
 
         <a href="#" title="Unduh Data"
             onclick="event.preventDefault();lemparXHR({tujuan : '#sdm_penem_riwa_sematan', tautan : window.location.search ? window.location.pathname + window.location.search + '&unduh=excel' : window.location.pathname + '?unduh=excel', strim : true})">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink">
-                </use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonunduh"></use>
             </svg>
         </a>
 
         <a class="isi-xhr" href="{{ $urlRangka->route('register') }}" title="Tambah Data SDM">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tambahorang' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikontambahorang"></use>
             </svg>
         </a>
 
         <a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.statistik') }}" data-rekam="false"
             data-laju="true" data-tujuan="#sdm_penem_riwa_sematan" title="Unduh Statistik Penempatan SDM ">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#statistik' }}"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonstatistik"></use>
             </svg>
         </a>
     </div>

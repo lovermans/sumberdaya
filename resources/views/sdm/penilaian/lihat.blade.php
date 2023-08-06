@@ -5,9 +5,8 @@
     <div class="kartu form">
         @isset($nilai)
         <div class="gspan-4">
-            <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <a class="tutup-i"><svg viewbox="0 0 24 24">
+                    <use href="#ikontutup"></use>
                 </svg></a>
 
             <h4 class="form">Data Penilaian SDM</h4>
@@ -73,9 +72,8 @@
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $urlRangka->route('sdm.penilaian.berkas', ['berkas' => $nilai->nilaisdm_no_absen . ' - ' .
                 $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf' . '?' . filemtime(storage_path('app/sdm/penilaian/berkas/' . $nilai->nilaisdm_no_absen . ' - ' .
             $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf'))]) }}">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#unduh' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                <svg viewBox="0 0 24 24">
+                    <use href="#ikonunduh"></use>
                 </svg>
                 BERKAS
             </a>

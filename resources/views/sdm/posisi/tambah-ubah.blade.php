@@ -6,9 +6,8 @@
         <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
 
         <div class="gspan-4">
-            <a class="tutup-i"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <use xlink:href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#tutup' }}"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            <a class="tutup-i"><svg viewbox="0 0 24 24">
+                    <use href="#ikontutup"></use>
                 </svg></a>
             <h4 class="form">{{$rekRangka->routeIs('sdm.posisi.tambah') ? 'Tambah' : 'Ubah'}} Data Pengaturan Jabatan
             </h4>

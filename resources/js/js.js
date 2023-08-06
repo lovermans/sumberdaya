@@ -229,7 +229,8 @@ window.lemparXHR = function (data) {
                 responUrl: xhr.responseURL,
                 responXHR: xhr.responseText,
                 responTujuan: xhr.getResponseHeader('X-Tujuan'),
-                responHtml: xhr.getResponseHeader('Content-Type')?.startsWith('text/html')
+                responHtml: xhr.getResponseHeader('Content-Type')?.startsWith('text/html'),
+                responSVG: xhr.getResponseHeader('Content-Type')?.startsWith('image/svg+xml')
             };
 
             var dataReq = {
@@ -285,7 +286,7 @@ window.lemparXHR = function (data) {
 };
 
 function responUmum(data) {
-    if (data.tautan !== data.responUrl) {
+    if (data.tautan !== data.responUrl && !data.responSVG) {
         if (data.responHtml) {
             rekamTautan({ tautan: data.responUrl });
         } else {
@@ -476,3 +477,34 @@ window.urutData = function (a, b) {
         document.querySelector(a).appendChild(e)
     );
 };
+
+(function () {
+    if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
+        let updated = false;
+        let activated = false;
+        navigator.serviceWorker.register('service-worker.js')
+            .then(registration => {
+                registration.addEventListener("updatefound", () => {
+                    const worker = registration.installing;
+                    worker.addEventListener('statechange', () => {
+                        console.log({ state: worker.state });
+                        if (worker.state === "activated") {
+                            activated = true;
+                            checkUpdate();
+                        }
+                    });
+                });
+            });
+
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            updated = true;
+            checkUpdate();
+        });
+
+        function checkUpdate() {
+            if (activated && updated) {
+                window.location.reload();
+            }
+        }
+    };
+})();
