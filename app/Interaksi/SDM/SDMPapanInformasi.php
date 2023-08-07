@@ -43,7 +43,7 @@ class SDMPapanInformasi
             'jumlahOrganik' => $jumlahOrganik
         ];
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.sdm-ultah', $data))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.papan-informasi.sdm-ultah', $data))->withHeaders(['Vary' => 'Accept']);
     }
 
     public static function pengingatPermintaanTambahSDM()
@@ -63,7 +63,7 @@ class SDMPapanInformasi
                 return $c->whereIn('tambahsdm_penempatan', [...$lingkup]);
             });
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.permintaan-tambah-sdm', ['perminSDMS' => $perminSDMS ?? null]))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.papan-informasi.permintaan-tambah-sdm', ['perminSDMS' => $perminSDMS ?? null]))->withHeaders(['Vary' => 'Accept']);
     }
 
     public static function pengingatPKWTHabis()
@@ -98,7 +98,7 @@ class SDMPapanInformasi
             'jmlKadaluarsa' => $jmlKadaluarsa,
         ];
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.pkwt-perlu-ditinjau', $data))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.papan-informasi.pkwt-perlu-ditinjau', $data))->withHeaders(['Vary' => 'Accept']);
     }
 
     public static function pengingatPerubahanStatusSDMTerbaru()
@@ -132,7 +132,7 @@ class SDMPapanInformasi
             'jumlahOrganik' => $jumlahOrganik
         ];
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.perubahan-status', $data))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.papan-informasi.perubahan-status', $data))->withHeaders(['Vary' => 'Accept']);
     }
 
     public static function pengingatSDMGabungTerbaru()
@@ -169,7 +169,7 @@ class SDMPapanInformasi
             'belumDitempatkan' => $belumDitempatkan
         ];
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.sdm-baru', $data))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.papan-informasi.sdm-baru', $data))->withHeaders(['Vary' => 'Accept']);
     }
 
     public static function pengingatSDMKeluarTerbaru()
@@ -203,7 +203,7 @@ class SDMPapanInformasi
             'jumlahOrganik' => $jumlahOrganik
         ];
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.sdm-keluar', $data))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.papan-informasi.sdm-keluar', $data))->withHeaders(['Vary' => 'Accept']);
     }
 
     public static function pengingatPelanggaran()
@@ -237,7 +237,7 @@ class SDMPapanInformasi
             'jumlahOrganik' => $jumlahOrganik
         ];
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.pelanggaran', $data))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.papan-informasi.pelanggaran', $data))->withHeaders(['Vary' => 'Accept']);
     }
 
     public static function pengingatSanksi()
@@ -271,7 +271,7 @@ class SDMPapanInformasi
             'jumlahOrganik' => $jumlahOrganik
         ];
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.sanksi', $data))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.papan-informasi.sanksi', $data))->withHeaders(['Vary' => 'Accept']);
     }
 
     public static function pengingatNilai()
@@ -302,6 +302,6 @@ class SDMPapanInformasi
             'rataTahunIni' => $rataTahunIni ?? 0
         ];
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.pengingat.nilai', $data))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('sdm.papan-informasi.nilai', $data))->withHeaders(['Vary' => 'Accept']);
     }
 }
