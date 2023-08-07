@@ -3,30 +3,33 @@
 @section('isi')
 <div id="mulai-aplikasi">
     @if (!$rekRangka->user())
-    <form id="form-masuk" class="form-xhr kartu" method="POST" data-tn="true" action="{{ $urlRangka->route('login') }}">
-        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+    <div class="mini-aside">
+        <form id="form-masuk" class="form-xhr kartu" method="POST" data-tn="true"
+            action="{{ $urlRangka->route('login') }}">
+            <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
 
-        <div class="isian normal">
-            <label for="idAbsen">Nomor Absen</label>
+            <div class="isian normal">
+                <label for="idAbsen">Nomor Absen</label>
 
-            <input id="idAbsen" type="text" name="sdm_no_absen" value="{{ $rekRangka->old('sdm_no_absen') }}"
-                pattern="^[0-9]{8}$" inputmode="numeric" required>
+                <input id="idAbsen" type="text" name="sdm_no_absen" value="{{ $rekRangka->old('sdm_no_absen') }}"
+                    pattern="^[0-9]{8}$" inputmode="numeric" required>
 
-            <span class="t-bantu">8 digit nomor absen</span>
-        </div>
+                <span class="t-bantu">8 digit nomor absen</span>
+            </div>
 
-        <div class="isian normal">
-            <label for="password">Sandi</label>
+            <div class="isian normal">
+                <label for="password">Sandi</label>
 
-            <input id="password" type="password" name="password" required>
+                <input id="password" type="password" name="password" required>
 
-            <span class="t-bantu">Sandi akun</span>
-        </div>
+                <span class="t-bantu">Sandi akun</span>
+            </div>
 
-        <div class="gspan-4"></div>
+            <div class="gspan-4"></div>
 
-        <button class="utama pelengkap" type="submit">MASUK</button>
-    </form>
+            <button class="utama pelengkap" type="submit">MASUK</button>
+        </form>
+    </div>
 
     @else
     <div id="mengerti-mulai-aplikasi" class="pesan-internal">

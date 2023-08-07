@@ -1824,7 +1824,8 @@ screen and (min-width:672rem) {
         right: 20%
     }
 
-    .cari-data {
+    .cari-data,
+    .mini-aside {
         position: fixed;
         left: 0;
         right: 80%;
