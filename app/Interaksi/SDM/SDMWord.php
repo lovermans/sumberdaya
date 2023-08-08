@@ -183,7 +183,7 @@ class SDMWord
         return EksporWord::eksporWordStream(...$argumen);
     }
 
-    public function suratKeteranganSDM($uuid = null)
+    public static function suratKeteranganSDM($uuid = null)
     {
         extract(Rangka::obyekPermintaanRangka(true));
 

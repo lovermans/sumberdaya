@@ -402,6 +402,6 @@ class Umum
 
     public function suratKeteranganSDM($uuid = null)
     {
-        return SDMWord::formulirPelepasanSDM($uuid);
+        return SDMWord::suratKeteranganSDM($uuid);
     }
 }
