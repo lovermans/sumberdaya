@@ -3,12 +3,12 @@
     "name": "{{ $confRangka->get('app.description') }}",
     "icons": [
         {
-            "src": "images/Ikon Aplikasi 192.png",
+            "src": "{{ $urlRangka->asset($mixRangka('/images/Ikon Aplikasi 192.png')) }}",
             "type": "image/png",
             "sizes": "192x192"
         },
         {
-            "src": "images/Ikon Aplikasi 512.png",
+            "src": "{{ $urlRangka->asset($mixRangka('/images/Ikon Aplikasi 512.png')) }}",
             "type": "image/png",
             "sizes": "512x512",
             "purpose": "any maskable"
