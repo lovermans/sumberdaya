@@ -126,10 +126,9 @@ class PermintaanTambahSDM
 
         if ($reqs->isMethod('post')) {
 
-            $hitungPermintaan = SDMDBQuery::ambilDBPermintaanTambahSDM()
-                ->whereYear('tambahsdm_dibuat', date('Y'))
-                ->whereMonth('tambahsdm_dibuat', date('m'))
-                ->count();
+            $hitungPermintaan = SDMDBQuery::ambilUrutanPermintaanTambahSDM();
+
+            dd($hitungPermintaan);
 
             $urutanPermintaan = $hitungPermintaan + 1;
 

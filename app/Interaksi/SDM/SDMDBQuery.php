@@ -27,12 +27,25 @@ class SDMDBQuery
                 'tambahsdm_tgl_diusulkan',
                 'tambahsdm_tgl_dibutuhkan',
                 'tambahsdm_alasan',
-                'tambahsdm_keterangan'
+                'tambahsdm_keterangan',
+                'tambahsdm_dibuat',
             )
             ->from('tambahsdms')
             ->leftJoin('sdms as a', 'tambahsdm_no', '=', 'a.sdm_no_permintaan')
             ->join('sdms as b', 'tambahsdm_sdm_id', '=', 'b.sdm_no_absen')
             ->groupBy('tambahsdm_no');
+    }
+
+    public static function ambilUrutanPermintaanTambahSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->addSelect('tsdm.*')
+            ->fromSub(static::ambilDBPermintaanTambahSDM(), 'tsdm')
+            ->whereYear('tsdm.tambahsdm_dibuat', date('Y'))
+            ->whereMonth('tsdm.tambahsdm_dibuat', date('m'))
+            ->count();
     }
 
     public static function ambilDBPengingatPermintaanTambahSDM()
