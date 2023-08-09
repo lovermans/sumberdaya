@@ -55,7 +55,7 @@
                                     $sanksi->sanksi_no_absen . '.webp' . '?' .
                                     filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
                                     $sanksi->sanksi_no_absen . '.webp'))]) :
-                                    $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                                    $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                                     $sanksi->langgar_tsdm_nama ?? 'foto akun' }}" title="{{
                                     $sanksi->langgar_tsdm_nama
                                     ?? 'foto akun' }}" loading="lazy">
@@ -104,7 +104,7 @@
                                     $sanksi->langgar_pelapor . '.webp' . '?' .
                                     filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
                                     $sanksi->langgar_pelapor . '.webp'))]) :
-                                    $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                                    $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                                     $sanksi->langgar_psdm_nama ?? 'foto akun' }}" title="{{
                                     $sanksi->langgar_psdm_nama
                                     ?? 'foto akun' }}" loading="lazy">

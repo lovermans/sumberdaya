@@ -1,4 +1,4 @@
-var CACHE_VERSION = 202308090112;
+var CACHE_VERSION = "{{ filemtime($appRangka->publicPath('mix-manifest.json')) }}";
 var CURRENT_CACHES = {
     prefetch: "{{ $confRangka->get('app.name', 'Laravel') }}-cache-v" + CACHE_VERSION
 };

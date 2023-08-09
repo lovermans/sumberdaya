@@ -239,9 +239,7 @@
                                     <button id="{{ 'aksi_sanksi_baris_' .$tabels->firstItem() + $nomor}}"
                                         title="Pilih Tindakan">
                                         <svg viewbox="0 0 24 24">
-                                            <use
-                                                href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonmenuvert' }}">
-                                            </use>
+                                            <use href="#ikonmenuvert"></use>
                                         </svg>
                                     </button>
                                     <div class="aksi">
@@ -265,7 +263,7 @@
                                         $tabel->sanksi_no_absen . '.webp' . '?' .
                                         filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
                                         $tabel->sanksi_no_absen . '.webp'))]) :
-                                        $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                                        $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                                         $tabel->langgar_tsdm_nama ?? 'foto akun' }}" title="{{
                                         $tabel->langgar_tsdm_nama
                                         ?? 'foto akun' }}" loading="lazy">
@@ -312,7 +310,7 @@
                                         $tabel->langgar_pelapor . '.webp' . '?' .
                                         filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
                                         $tabel->langgar_pelapor . '.webp'))]) :
-                                        $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                                        $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                                         $tabel->langgar_psdm_nama ?? 'foto akun' }}" title="{{
                                         $tabel->langgar_psdm_nama
                                         ?? 'foto akun' }}" loading="lazy">

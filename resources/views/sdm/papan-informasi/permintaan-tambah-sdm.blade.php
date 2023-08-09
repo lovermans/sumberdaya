@@ -56,7 +56,7 @@
                                 ['berkas_foto_profil' => $perminSDM->tambahsdm_sdm_id . '.webp' . '?' .
                                 filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $perminSDM->tambahsdm_sdm_id
                                 . '.webp')), false]) :
-                                $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                                $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                                 $perminSDM->sdm_nama ?? 'foto akun' }}" title="{{ $perminSDM->sdm_nama ?? 'foto akun'
                                 }}"
                                 loading="lazy">

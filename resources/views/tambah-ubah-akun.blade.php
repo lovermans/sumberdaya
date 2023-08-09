@@ -12,7 +12,7 @@
             null) . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
             $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp' . '?' .
             filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $rekRangka->old('sdm_no_absen',
-            $sdm->sdm_no_absen ?? null) . '.webp'))]) : $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}"
+            $sdm->sdm_no_absen ?? null) . '.webp'))]) : $urlRangka->asset($mixRangka('/images/blank.webp')) }}"
             alt="{{
             $rekRangka->old('sdm_no_absen', $sdm->sdm_nama ?? 'foto akun') }}" title="{{ $rekRangka->old('sdm_no_absen',
             $sdm->sdm_nama ?? 'foto akun') }}" loading="lazy">

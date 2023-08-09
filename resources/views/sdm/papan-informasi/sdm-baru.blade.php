@@ -66,7 +66,7 @@
                                 . '.webp' . '?'
                                 . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $baru->sdm_no_absen .
                                 '.webp')), false]) :
-                                $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                                $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                                 $baru->sdm_nama ?? 'foto akun' }}" title="{{ $baru->sdm_nama ?? 'foto akun' }}"
                                 loading="lazy">
                             </a>

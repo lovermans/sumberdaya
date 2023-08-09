@@ -260,7 +260,7 @@
                                     $tabel->nilaisdm_no_absen . '.webp' . '?' .
                                     filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
                                     $tabel->nilaisdm_no_absen . '.webp'))]) :
-                                    $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                                    $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                                     $tabel->sdm_nama ?? 'foto akun' }}" title="{{
                                     $tabel->sdm_nama
                                     ?? 'foto akun' }}" loading="lazy">

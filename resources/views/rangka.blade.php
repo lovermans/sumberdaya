@@ -124,6 +124,16 @@
         function ringkasTabel (el) {
             el.previousElementSibling.classList.toggle('ringkas');
         };
+        function muatSlimSelect (data) {
+            if (!window.SlimSelect) {
+                import('{{ $urlRangka->asset($mixRangka('/slimselect-es.js')) }}').then(({ default: SS }) => {
+                    window.SlimSelect = SS;
+                    new SlimSelect(data);
+                });
+            } else {
+                new SlimSelect(data);
+            };
+        };
         window.addEventListener('DOMContentLoaded', function () {
             var tema = document.getElementById('tema'),
                 halaman = document.body,
@@ -138,6 +148,37 @@
             if (location.href == "{{ $urlRangka->route('mulai').'/' }}" && !navigator.onLine) {
                 document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $urlRangka->route('mulai') }}'>Hubungkan Aplikasi</a>.</p>";
             };
+
+            (function () {
+                if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
+                    let updated = false;
+                    let activated = false;
+                    navigator.serviceWorker.register('{{ $rekRangka->getBasePath() . '/service-worker.js' }}')
+                        .then(registration => {
+                            registration.addEventListener("updatefound", () => {
+                                const worker = registration.installing;
+                                worker.addEventListener('statechange', () => {
+                                    console.log({ state: worker.state });
+                                    if (worker.state === "activated") {
+                                        activated = true;
+                                        checkUpdate();
+                                    }
+                                });
+                            });
+                        });
+
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        updated = true;
+                        checkUpdate();
+                    });
+
+                    function checkUpdate() {
+                        if (activated && updated) {
+                            window.location.reload();
+                        }
+                    }
+                };
+            })();
             
             (async() => {
                 while(!window.aplikasiSiap) {

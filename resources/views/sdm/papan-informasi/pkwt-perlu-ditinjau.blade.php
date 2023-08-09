@@ -29,9 +29,7 @@
                                     <div class="pil-aksi">
                                         <button id="{{'aksi_pkwt_baris_' . $loop->iteration}}" title="Pilih Tindakan">
                                             <svg viewbox="0 0 24 24">
-                                                <use
-                                                    href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonmenuvert' }}">
-                                                </use>
+                                                <use href="#ikonmenuvert"></use>
                                             </svg>
                                         </button>
 
@@ -65,7 +63,7 @@
                                         ['berkas_foto_profil' => $kontrak->sdm_no_absen . '.webp' . '?' .
                                         filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
                                         $kontrak->sdm_no_absen . '.webp')), false])
-                                        : $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                                        : $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                                         $kontrak->sdm_nama ?? 'foto akun' }}" title="{{ $kontrak->sdm_nama ??
                                         'foto
                                         akun'

@@ -13,7 +13,7 @@
                 src="{{ $storageRangka->exists('sdm/foto-profil/' . $akun->sdm_no_absen . '.webp') ?
                 $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $akun->sdm_no_absen . '.webp' . '?'
                 . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $akun->sdm_no_absen . '.webp'))]) :
-                $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{ $akun->sdm_nama ?? 'foto akun' }}"
+                $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{ $akun->sdm_nama ?? 'foto akun' }}"
                 title="{{
                 $akun->sdm_nama ?? 'foto akun' }}" loading="lazy">
             </div>
@@ -35,7 +35,7 @@
                         '.webp' .
                         '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $akun->sdm_id_atasan .
                         '.webp'))]) :
-                        $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                        $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                         $akun->nama_atasan ?? 'foto akun' }}" title="{{ $akun->nama_atasan ?? 'foto akun' }}"
                         loading="lazy">
                     </a>
@@ -347,7 +347,7 @@
                             . '.webp' .
                             '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $personil->sdm_no_absen .
                             '.webp'))]) :
-                            $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                            $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                             $personil->sdm_nama ?? 'foto akun' }}" title="{{ $personil->sdm_nama ?? 'foto akun' }}"
                             loading="lazy">
                         </a>

@@ -421,9 +421,7 @@
                                         id="{{'aksi_penempatan_baris_' . rescue(function () use ($tabels, $nomor) { return ($tabels->firstItem() + $nomor);}, $loop->iteration, false) }}"
                                         title="Pilih Tindakan">
                                         <svg viewbox="0 0 24 24">
-                                            <use
-                                                href="{{ $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonmenuvert' }}">
-                                            </use>
+                                            <use href="#ikonmenuvert"></use>
                                         </svg>
                                     </button>
 
@@ -458,7 +456,7 @@
                                     . $tabel->sdm_no_absen . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil',
                                     ['berkas_foto_profil' => $tabel->sdm_no_absen . '.webp' . '?' .
                                     filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $tabel->sdm_no_absen .
-                                    '.webp'))]) : $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                                    '.webp'))]) : $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                                     $tabel->sdm_nama
                                     ?? 'foto akun' }}" title="{{ $tabel->sdm_nama ?? 'foto akun' }}" loading="lazy">
                                 </a>

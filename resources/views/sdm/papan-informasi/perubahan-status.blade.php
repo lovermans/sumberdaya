@@ -57,7 +57,7 @@
                                 ['berkas_foto_profil' => $status->sdm_no_absen . '.webp' . '?' .
                                 filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $status->sdm_no_absen .
                                 '.webp')), false])
-                                : $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                                : $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                                 $status->sdm_nama ?? 'foto akun' }}" title="{{ $status->sdm_nama ?? 'foto akun'
                                 }}" loading="lazy">
                             </a>

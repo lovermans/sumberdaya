@@ -304,7 +304,7 @@
                                     $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
                                     $tabel->tambahsdm_sdm_id . '.webp' . '?' .
                                     filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $tabel->tambahsdm_sdm_id
-                                    . '.webp'))]) : $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                                    . '.webp'))]) : $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                                     $tabel->sdm_nama ??
                                     'foto akun' }}" title="{{ $tabel->sdm_nama ?? 'foto akun' }}" loading="lazy">
                                 </a>

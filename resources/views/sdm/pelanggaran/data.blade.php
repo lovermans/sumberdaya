@@ -258,7 +258,7 @@
                                     $tabel->langgar_no_absen . '.webp' . '?' .
                                     filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
                                     $tabel->langgar_no_absen . '.webp'))]) :
-                                    $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                                    $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                                     $tabel->langgar_tsdm_nama ?? 'foto akun' }}" title="{{
                                     $tabel->langgar_tsdm_nama
                                     ?? 'foto akun' }}" loading="lazy">
@@ -281,7 +281,7 @@
                                     $tabel->langgar_pelapor . '.webp' . '?' .
                                     filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
                                     $tabel->langgar_pelapor . '.webp'))]) :
-                                    $urlRangka->asset($mixRangka('/ikon.svg')) . '#ikonakun' }}" alt="{{
+                                    $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
                                     $tabel->langgar_psdm_nama ?? 'foto akun' }}" title="{{
                                     $tabel->langgar_psdm_nama
                                     ?? 'foto akun' }}" loading="lazy">

@@ -450,17 +450,6 @@ window.pilCari = function (a) {
     });
 };
 
-window.muatSlimSelect = function (data) {
-    if (!window.SlimSelect) {
-        import('./slimselect-es.js?id=202304042113').then(({ default: SS }) => {
-            window.SlimSelect = SS;
-            new SlimSelect(data);
-        });
-    } else {
-        new SlimSelect(data);
-    };
-};
-
 function urutIsi(a, b) {
     if (a.dataset.indeks < b.dataset.indeks)
         return -1;
@@ -477,34 +466,3 @@ window.urutData = function (a, b) {
         document.querySelector(a).appendChild(e)
     );
 };
-
-(function () {
-    if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
-        let updated = false;
-        let activated = false;
-        navigator.serviceWorker.register('service-worker.js')
-            .then(registration => {
-                registration.addEventListener("updatefound", () => {
-                    const worker = registration.installing;
-                    worker.addEventListener('statechange', () => {
-                        console.log({ state: worker.state });
-                        if (worker.state === "activated") {
-                            activated = true;
-                            checkUpdate();
-                        }
-                    });
-                });
-            });
-
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-            updated = true;
-            checkUpdate();
-        });
-
-        function checkUpdate() {
-            if (activated && updated) {
-                window.location.reload();
-            }
-        }
-    };
-})();
