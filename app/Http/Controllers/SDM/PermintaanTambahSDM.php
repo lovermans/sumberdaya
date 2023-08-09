@@ -128,7 +128,7 @@ class PermintaanTambahSDM
 
             $hitungPermintaan = SDMDBQuery::ambilUrutanPermintaanTambahSDM();
 
-            dd($hitungPermintaan);
+            // dd($hitungPermintaan);
 
             $urutanPermintaan = $hitungPermintaan + 1;
 
