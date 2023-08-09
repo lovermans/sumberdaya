@@ -128,8 +128,6 @@ class PermintaanTambahSDM
 
             $hitungPermintaan = SDMDBQuery::ambilUrutanPermintaanTambahSDM();
 
-            // dd($hitungPermintaan);
-
             $urutanPermintaan = $hitungPermintaan + 1;
 
             $nomorPermintaan = date('Y') . date('m') . str($urutanPermintaan)->padLeft(4, '0');

@@ -43,8 +43,11 @@ class SDMDBQuery
         return $app->db->query()
             ->addSelect('tsdm.*')
             ->fromSub(static::ambilDBPermintaanTambahSDM(), 'tsdm')
-            ->whereYear('tsdm.tambahsdm_dibuat', date('Y'))
-            ->whereMonth('tsdm.tambahsdm_dibuat', date('m'))
+            ->where(function ($group) {
+                $group->whereYear('tsdm.tambahsdm_dibuat', date('Y'))
+                    ->whereMonth('tsdm.tambahsdm_dibuat', date('m'));
+            })
+            ->orWhere('tsdm.tambahsdm_no', 'like', date('Y') . date('m') . '%')
             ->count();
     }
 
