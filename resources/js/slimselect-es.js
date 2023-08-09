@@ -1,5 +1,5 @@
-var Config = (function () {
-    function Config(info) {
+class Config {
+    constructor(info) {
         this.id = '';
         this.isMultiple = false;
         this.isAjax = false;
@@ -101,11 +101,10 @@ var Config = (function () {
         }
         this.addToBody = (info.addToBody === true ? true : false);
     }
-    Config.prototype.searchFilter = function (opt, search) {
+    searchFilter(opt, search) {
         return opt.text.toLowerCase().indexOf(search.toLowerCase()) !== -1;
-    };
-    return Config;
-}());
+    }
+}
 
 function hasClassInTree(element, className) {
     function hasClass(e, c) {
@@ -128,10 +127,10 @@ function hasClassInTree(element, className) {
     return hasClass(element, className) || parentByClass(element, className);
 }
 function ensureElementInView(container, element) {
-    var cTop = container.scrollTop + container.offsetTop;
-    var cBottom = cTop + container.clientHeight;
-    var eTop = element.offsetTop;
-    var eBottom = eTop + element.clientHeight;
+    const cTop = container.scrollTop + container.offsetTop;
+    const cBottom = cTop + container.clientHeight;
+    const eTop = element.offsetTop;
+    const eBottom = eTop + element.clientHeight;
     if (eTop < cTop) {
         container.scrollTop -= (cTop - eTop);
     }
@@ -140,10 +139,10 @@ function ensureElementInView(container, element) {
     }
 }
 function putContent(el, currentPosition, isOpen) {
-    var height = el.offsetHeight;
-    var rect = el.getBoundingClientRect();
-    var elemTop = (isOpen ? rect.top : rect.top - height);
-    var elemBottom = (isOpen ? rect.bottom : rect.bottom + height);
+    const height = el.offsetHeight;
+    const rect = el.getBoundingClientRect();
+    const elemTop = (isOpen ? rect.top : rect.top - height);
+    const elemBottom = (isOpen ? rect.bottom : rect.bottom + height);
     if (elemTop <= 0) {
         return 'below';
     }
@@ -152,23 +151,17 @@ function putContent(el, currentPosition, isOpen) {
     }
     return (isOpen ? currentPosition : 'below');
 }
-function debounce(func, wait, immediate) {
-    if (wait === void 0) { wait = 100; }
-    if (immediate === void 0) { immediate = false; }
-    var timeout;
-    return function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var context = self;
-        var later = function () {
+function debounce(func, wait = 100, immediate = false) {
+    let timeout;
+    return function (...args) {
+        const context = self;
+        const later = () => {
             timeout = null;
             if (!immediate) {
                 func.apply(context, args);
             }
         };
-        var callNow = immediate && !timeout;
+        const callNow = immediate && !timeout;
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
         if (callNow) {
@@ -180,8 +173,7 @@ function isValueInArrayOfObjects(selected, key, value) {
     if (!Array.isArray(selected)) {
         return selected[key] === value;
     }
-    for (var _i = 0, selected_1 = selected; _i < selected_1.length; _i++) {
-        var s = selected_1[_i];
+    for (const s of selected) {
         if (s && s[key] && s[key] === value) {
             return true;
         }
@@ -189,31 +181,31 @@ function isValueInArrayOfObjects(selected, key, value) {
     return false;
 }
 function highlight(str, search, className) {
-    var completedString = str;
-    var regex = new RegExp('(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i');
+    let completedString = str;
+    const regex = new RegExp('(' + search.trim() + ')(?![^<]*>[^<>]*</)', 'i');
     if (!str.match(regex)) {
         return str;
     }
-    var matchStartPosition = str.match(regex).index;
-    var matchEndPosition = matchStartPosition + str.match(regex)[0].toString().length;
-    var originalTextFoundByRegex = str.substring(matchStartPosition, matchEndPosition);
-    completedString = completedString.replace(regex, "<mark class=\"".concat(className, "\">").concat(originalTextFoundByRegex, "</mark>"));
+    const matchStartPosition = str.match(regex).index;
+    const matchEndPosition = matchStartPosition + str.match(regex)[0].toString().length;
+    const originalTextFoundByRegex = str.substring(matchStartPosition, matchEndPosition);
+    completedString = completedString.replace(regex, `<mark class="${className}">${originalTextFoundByRegex}</mark>`);
     return completedString;
 }
 function kebabCase(str) {
-    var result = str.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, function (match) { return '-' + match.toLowerCase(); });
+    const result = str.replace(/[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g, (match) => '-' + match.toLowerCase());
     return (str[0] === str[0].toUpperCase())
         ? result.substring(1)
         : result;
 }
-(function () {
-    var w = window;
+(() => {
+    const w = window;
     if (typeof w.CustomEvent === 'function') {
         return;
     }
     function CustomEvent(event, params) {
         params = params || { bubbles: false, cancelable: false, detail: undefined };
-        var evt = document.createEvent('CustomEvent');
+        const evt = document.createEvent('CustomEvent');
         evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
         return evt;
     }
@@ -221,8 +213,8 @@ function kebabCase(str) {
     w.CustomEvent = CustomEvent;
 })();
 
-var Select = (function () {
-    function Select(info) {
+class Select {
+    constructor(info) {
         this.triggerMutationObserver = true;
         this.element = info.select;
         this.main = info.main;
@@ -233,21 +225,19 @@ var Select = (function () {
         this.addEventListeners();
         this.mutationObserver = null;
         this.addMutationObserver();
-        var el = this.element;
+        const el = this.element;
         el.slim = info.main;
     }
-    Select.prototype.setValue = function () {
+    setValue() {
         if (!this.main.data.getSelected()) {
             return;
         }
         if (this.main.config.isMultiple) {
-            var selected = this.main.data.getSelected();
-            var options = this.element.options;
-            for (var _i = 0, options_1 = options; _i < options_1.length; _i++) {
-                var o = options_1[_i];
+            const selected = this.main.data.getSelected();
+            const options = this.element.options;
+            for (const o of options) {
                 o.selected = false;
-                for (var _a = 0, selected_1 = selected; _a < selected_1.length; _a++) {
-                    var s = selected_1[_a];
+                for (const s of selected) {
                     if (s.value === o.value) {
                         o.selected = true;
                     }
@@ -255,14 +245,14 @@ var Select = (function () {
             }
         }
         else {
-            var selected = this.main.data.getSelected();
+            const selected = this.main.data.getSelected();
             this.element.value = (selected ? selected.value : '');
         }
         this.main.data.isOnChangeEnabled = false;
         this.element.dispatchEvent(new CustomEvent('change', { bubbles: true }));
         this.main.data.isOnChangeEnabled = true;
-    };
-    Select.prototype.addAttributes = function () {
+    }
+    addAttributes() {
         this.element.tabIndex = -1;
         this.element.style.display = 'block';
         this.element.style.width = '1px';
@@ -270,35 +260,33 @@ var Select = (function () {
         this.element.style.opacity = '0';
         this.element.dataset.ssid = this.main.config.id;
         this.element.setAttribute('aria-hidden', 'true');
-    };
-    Select.prototype.addEventListeners = function () {
-        var _this = this;
-        this.element.addEventListener('change', function (e) {
-            _this.main.data.setSelectedFromSelect();
-            _this.main.render();
+    }
+    addEventListeners() {
+        this.element.addEventListener('change', (e) => {
+            this.main.data.setSelectedFromSelect();
+            this.main.render();
         });
-    };
-    Select.prototype.addMutationObserver = function () {
-        var _this = this;
+    }
+    addMutationObserver() {
         if (this.main.config.isAjax) {
             return;
         }
-        this.mutationObserver = new MutationObserver(function (mutations) {
-            if (!_this.triggerMutationObserver) {
+        this.mutationObserver = new MutationObserver((mutations) => {
+            if (!this.triggerMutationObserver) {
                 return;
             }
-            _this.main.data.parseSelectData();
-            _this.main.data.setSelectedFromSelect();
-            _this.main.render();
-            mutations.forEach(function (mutation) {
+            this.main.data.parseSelectData();
+            this.main.data.setSelectedFromSelect();
+            this.main.render();
+            mutations.forEach((mutation) => {
                 if (mutation.attributeName === 'class') {
-                    _this.main.slim.updateContainerDivClass(_this.main.slim.container);
+                    this.main.slim.updateContainerDivClass(this.main.slim.container);
                 }
             });
         });
         this.observeMutationObserver();
-    };
-    Select.prototype.observeMutationObserver = function () {
+    }
+    observeMutationObserver() {
         if (!this.mutationObserver) {
             return;
         }
@@ -307,23 +295,21 @@ var Select = (function () {
             childList: true,
             characterData: true
         });
-    };
-    Select.prototype.disconnectMutationObserver = function () {
+    }
+    disconnectMutationObserver() {
         if (this.mutationObserver) {
             this.mutationObserver.disconnect();
         }
-    };
-    Select.prototype.create = function (data) {
+    }
+    create(data) {
         this.element.innerHTML = '';
-        for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
-            var d = data_1[_i];
+        for (const d of data) {
             if (d.hasOwnProperty('options')) {
-                var optgroupObject = d;
-                var optgroupEl = document.createElement('optgroup');
+                const optgroupObject = d;
+                const optgroupEl = document.createElement('optgroup');
                 optgroupEl.label = optgroupObject.label;
                 if (optgroupObject.options) {
-                    for (var _a = 0, _b = optgroupObject.options; _a < _b.length; _a++) {
-                        var oo = _b[_a];
+                    for (const oo of optgroupObject.options) {
                         optgroupEl.appendChild(this.createOption(oo));
                     }
                 }
@@ -333,9 +319,9 @@ var Select = (function () {
                 this.element.appendChild(this.createOption(d));
             }
         }
-    };
-    Select.prototype.createOption = function (info) {
-        var optionEl = document.createElement('option');
+    }
+    createOption(info) {
+        const optionEl = document.createElement('option');
         optionEl.value = info.value !== '' ? info.value : info.text;
         optionEl.innerHTML = info.innerHTML || info.text;
         if (info.selected) {
@@ -354,22 +340,21 @@ var Select = (function () {
             optionEl.setAttribute('data-mandatory', 'true');
         }
         if (info.class) {
-            info.class.split(' ').forEach(function (optionClass) {
+            info.class.split(' ').forEach((optionClass) => {
                 optionEl.classList.add(optionClass);
             });
         }
         if (info.data && typeof info.data === 'object') {
-            Object.keys(info.data).forEach(function (key) {
+            Object.keys(info.data).forEach((key) => {
                 optionEl.setAttribute('data-' + kebabCase(key), info.data[key]);
             });
         }
         return optionEl;
-    };
-    return Select;
-}());
+    }
+}
 
-var Data = (function () {
-    function Data(info) {
+class Data {
+    constructor(info) {
         this.contentOpen = false;
         this.contentPosition = 'below';
         this.isOnChangeEnabled = true;
@@ -380,7 +365,7 @@ var Data = (function () {
         this.parseSelectData();
         this.setSelectedFromSelect();
     }
-    Data.prototype.newOption = function (info) {
+    newOption(info) {
         return {
             id: (info.id ? info.id : String(Math.floor(Math.random() * 100000000))),
             value: (info.value ? info.value : ''),
@@ -394,8 +379,8 @@ var Data = (function () {
             data: (info.data ? info.data : {}),
             mandatory: (info.mandatory ? info.mandatory : false)
         };
-    };
-    Data.prototype.add = function (data) {
+    }
+    add(data) {
         this.data.push({
             id: String(Math.floor(Math.random() * 100000000)),
             value: data.value,
@@ -409,23 +394,21 @@ var Data = (function () {
             mandatory: data.mandatory,
             data: {}
         });
-    };
-    Data.prototype.parseSelectData = function () {
+    }
+    parseSelectData() {
         this.data = [];
-        var nodes = this.main.select.element.childNodes;
-        for (var _i = 0, nodes_1 = nodes; _i < nodes_1.length; _i++) {
-            var n = nodes_1[_i];
+        const nodes = this.main.select.element.childNodes;
+        for (const n of nodes) {
             if (n.nodeName === 'OPTGROUP') {
-                var node = n;
-                var optgroup = {
+                const node = n;
+                const optgroup = {
                     label: node.label,
                     options: []
                 };
-                var options = n.childNodes;
-                for (var _a = 0, options_1 = options; _a < options_1.length; _a++) {
-                    var o = options_1[_a];
+                const options = n.childNodes;
+                for (const o of options) {
                     if (o.nodeName === 'OPTION') {
-                        var option = this.pullOptionData(o);
+                        const option = this.pullOptionData(o);
                         optgroup.options.push(option);
                         if (option.placeholder && option.text.trim() !== '') {
                             this.main.config.placeholderText = option.text;
@@ -435,15 +418,15 @@ var Data = (function () {
                 this.data.push(optgroup);
             }
             else if (n.nodeName === 'OPTION') {
-                var option = this.pullOptionData(n);
+                const option = this.pullOptionData(n);
                 this.data.push(option);
                 if (option.placeholder && option.text.trim() !== '') {
                     this.main.config.placeholderText = option.text;
                 }
             }
         }
-    };
-    Data.prototype.pullOptionData = function (option) {
+    }
+    pullOptionData(option) {
         return {
             id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
             value: option.value,
@@ -457,15 +440,14 @@ var Data = (function () {
             data: option.dataset,
             mandatory: (option.dataset ? option.dataset.mandatory === 'true' : false)
         };
-    };
-    Data.prototype.setSelectedFromSelect = function () {
+    }
+    setSelectedFromSelect() {
         if (this.main.config.isMultiple) {
-            var options = this.main.select.element.options;
-            var newSelected = [];
-            for (var _i = 0, options_2 = options; _i < options_2.length; _i++) {
-                var o = options_2[_i];
+            const options = this.main.select.element.options;
+            const newSelected = [];
+            for (const o of options) {
                 if (o.selected) {
-                    var newOption = this.getObjectFromData(o.value, 'value');
+                    const newOption = this.getObjectFromData(o.value, 'value');
                     if (newOption && newOption.id) {
                         newSelected.push(newOption.id);
                     }
@@ -474,24 +456,21 @@ var Data = (function () {
             this.setSelected(newSelected, 'id');
         }
         else {
-            var element = this.main.select.element;
+            const element = this.main.select.element;
             if (element.selectedIndex !== -1) {
-                var option = element.options[element.selectedIndex];
-                var value = option.value;
+                const option = element.options[element.selectedIndex];
+                const value = option.value;
                 this.setSelected(value, 'value');
             }
         }
-    };
-    Data.prototype.setSelected = function (value, type) {
-        if (type === void 0) { type = 'id'; }
-        for (var _i = 0, _a = this.data; _i < _a.length; _i++) {
-            var d = _a[_i];
+    }
+    setSelected(value, type = 'id') {
+        for (const d of this.data) {
             if (d.hasOwnProperty('label')) {
                 if (d.hasOwnProperty('options')) {
-                    var options = d.options;
+                    const options = d.options;
                     if (options) {
-                        for (var _b = 0, options_3 = options; _b < options_3.length; _b++) {
-                            var o = options_3[_b];
+                        for (const o of options) {
                             if (o.placeholder) {
                                 continue;
                             }
@@ -504,12 +483,10 @@ var Data = (function () {
                 d.selected = this.shouldBeSelected(d, value, type);
             }
         }
-    };
-    Data.prototype.shouldBeSelected = function (option, value, type) {
-        if (type === void 0) { type = 'id'; }
+    }
+    shouldBeSelected(option, value, type = 'id') {
         if (Array.isArray(value)) {
-            for (var _i = 0, value_1 = value; _i < value_1.length; _i++) {
-                var v = value_1[_i];
+            for (const v of value) {
                 if (type in option && String(option[type]) === String(v)) {
                     return true;
                 }
@@ -521,18 +498,16 @@ var Data = (function () {
             }
         }
         return false;
-    };
-    Data.prototype.getSelected = function () {
-        var value = { text: '', placeholder: this.main.config.placeholderText };
-        var values = [];
-        for (var _i = 0, _a = this.data; _i < _a.length; _i++) {
-            var d = _a[_i];
+    }
+    getSelected() {
+        let value = { text: '', placeholder: this.main.config.placeholderText };
+        const values = [];
+        for (const d of this.data) {
             if (d.hasOwnProperty('label')) {
                 if (d.hasOwnProperty('options')) {
-                    var options = d.options;
+                    const options = d.options;
                     if (options) {
-                        for (var _b = 0, options_4 = options; _b < options_4.length; _b++) {
-                            var o = options_4[_b];
+                        for (const o of options) {
                             if (o.selected) {
                                 if (!this.main.config.isMultiple) {
                                     value = o;
@@ -560,53 +535,46 @@ var Data = (function () {
             return values;
         }
         return value;
-    };
-    Data.prototype.addToSelected = function (value, type) {
-        if (type === void 0) { type = 'id'; }
+    }
+    addToSelected(value, type = 'id') {
         if (this.main.config.isMultiple) {
-            var values = [];
-            var selected = this.getSelected();
+            const values = [];
+            const selected = this.getSelected();
             if (Array.isArray(selected)) {
-                for (var _i = 0, selected_1 = selected; _i < selected_1.length; _i++) {
-                    var s = selected_1[_i];
+                for (const s of selected) {
                     values.push(s[type]);
                 }
             }
             values.push(value);
             this.setSelected(values, type);
         }
-    };
-    Data.prototype.removeFromSelected = function (value, type) {
-        if (type === void 0) { type = 'id'; }
+    }
+    removeFromSelected(value, type = 'id') {
         if (this.main.config.isMultiple) {
-            var values = [];
-            var selected = this.getSelected();
-            for (var _i = 0, selected_2 = selected; _i < selected_2.length; _i++) {
-                var s = selected_2[_i];
+            const values = [];
+            const selected = this.getSelected();
+            for (const s of selected) {
                 if (String(s[type]) !== String(value)) {
                     values.push(s[type]);
                 }
             }
             this.setSelected(values, type);
         }
-    };
-    Data.prototype.onDataChange = function () {
+    }
+    onDataChange() {
         if (this.main.onChange && this.isOnChangeEnabled) {
             this.main.onChange(JSON.parse(JSON.stringify(this.getSelected())));
         }
-    };
-    Data.prototype.getObjectFromData = function (value, type) {
-        if (type === void 0) { type = 'id'; }
-        for (var _i = 0, _a = this.data; _i < _a.length; _i++) {
-            var d = _a[_i];
+    }
+    getObjectFromData(value, type = 'id') {
+        for (const d of this.data) {
             if (type in d && String(d[type]) === String(value)) {
                 return d;
             }
             if (d.hasOwnProperty('options')) {
-                var optgroupObject = d;
+                const optgroupObject = d;
                 if (optgroupObject.options) {
-                    for (var _b = 0, _c = optgroupObject.options; _b < _c.length; _b++) {
-                        var oo = _c[_b];
+                    for (const oo of optgroupObject.options) {
                         if (String(oo[type]) === String(value)) {
                             return oo;
                         }
@@ -615,59 +583,56 @@ var Data = (function () {
             }
         }
         return null;
-    };
-    Data.prototype.search = function (search) {
+    }
+    search(search) {
         this.searchValue = search;
         if (search.trim() === '') {
             this.filtered = null;
             return;
         }
-        var searchFilter = this.main.config.searchFilter;
-        var valuesArray = this.data.slice(0);
+        const searchFilter = this.main.config.searchFilter;
+        const valuesArray = this.data.slice(0);
         search = search.trim();
-        var filtered = valuesArray.map(function (obj) {
+        const filtered = valuesArray.map((obj) => {
             if (obj.hasOwnProperty('options')) {
-                var optgroupObj = obj;
-                var options = [];
+                const optgroupObj = obj;
+                let options = [];
                 if (optgroupObj.options) {
-                    options = optgroupObj.options.filter(function (opt) {
+                    options = optgroupObj.options.filter((opt) => {
                         return searchFilter(opt, search);
                     });
                 }
                 if (options.length !== 0) {
-                    var optgroup = Object.assign({}, optgroupObj);
+                    const optgroup = Object.assign({}, optgroupObj);
                     optgroup.options = options;
                     return optgroup;
                 }
             }
             if (obj.hasOwnProperty('text')) {
-                var optionObj = obj;
+                const optionObj = obj;
                 if (searchFilter(optionObj, search)) {
                     return obj;
                 }
             }
             return null;
         });
-        this.filtered = filtered.filter(function (info) { return info; });
-    };
-    return Data;
-}());
+        this.filtered = filtered.filter((info) => info);
+    }
+}
 function validateData(data) {
     if (!data) {
         console.error('Data must be an array of objects');
         return false;
     }
-    var isValid = false;
-    var errorCount = 0;
-    for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
-        var d = data_1[_i];
+    let isValid = false;
+    let errorCount = 0;
+    for (const d of data) {
         if (d.hasOwnProperty('label')) {
             if (d.hasOwnProperty('options')) {
-                var optgroup = d;
-                var options = optgroup.options;
+                const optgroup = d;
+                const options = optgroup.options;
                 if (options) {
-                    for (var _a = 0, options_5 = options; _a < options_5.length; _a++) {
-                        var o = options_5[_a];
+                    for (const o of options) {
                         isValid = validateOption(o);
                         if (!isValid) {
                             errorCount++;
@@ -677,7 +642,7 @@ function validateData(data) {
             }
         }
         else {
-            var option = d;
+            const option = d;
             isValid = validateOption(option);
             if (!isValid) {
                 errorCount++;
@@ -694,8 +659,8 @@ function validateOption(option) {
     return true;
 }
 
-var Slim = (function () {
-    function Slim(info) {
+class Slim {
+    constructor(info) {
         this.main = info.main;
         this.container = this.containerDiv();
         this.content = this.contentDiv();
@@ -724,68 +689,66 @@ var Slim = (function () {
         this.content.appendChild(this.search.container);
         this.content.appendChild(this.list);
     }
-    Slim.prototype.containerDiv = function () {
-        var container = document.createElement('div');
+    containerDiv() {
+        const container = document.createElement('div');
         container.style.cssText = this.main.config.style;
         this.updateContainerDivClass(container);
         return container;
-    };
-    Slim.prototype.updateContainerDivClass = function (container) {
+    }
+    updateContainerDivClass(container) {
         this.main.config.class = this.main.select.element.className.split(' ');
         container.className = '';
         container.classList.add(this.main.config.id);
         container.classList.add(this.main.config.main);
-        for (var _i = 0, _a = this.main.config.class; _i < _a.length; _i++) {
-            var c = _a[_i];
+        for (const c of this.main.config.class) {
             if (c.trim() !== '') {
                 container.classList.add(c);
             }
         }
-    };
-    Slim.prototype.singleSelectedDiv = function () {
-        var _this = this;
-        var container = document.createElement('div');
+    }
+    singleSelectedDiv() {
+        const container = document.createElement('div');
         container.classList.add(this.main.config.singleSelected);
-        var placeholder = document.createElement('span');
+        const placeholder = document.createElement('span');
         placeholder.classList.add('placeholder');
         container.appendChild(placeholder);
-        var deselect = document.createElement('span');
+        const deselect = document.createElement('span');
         deselect.innerHTML = this.main.config.deselectLabel;
         deselect.classList.add('ss-deselect');
-        deselect.onclick = function (e) {
+        deselect.onclick = (e) => {
             e.stopPropagation();
-            if (!_this.main.config.isEnabled) {
+            if (!this.main.config.isEnabled) {
                 return;
             }
-            _this.main.set('');
+            this.main.set('');
         };
         container.appendChild(deselect);
-        var arrowContainer = document.createElement('span');
+        const arrowContainer = document.createElement('span');
         arrowContainer.classList.add(this.main.config.arrow);
-        var arrowIcon = document.createElement('span');
+        const arrowIcon = document.createElement('span');
         arrowIcon.classList.add('arrow-down');
         arrowContainer.appendChild(arrowIcon);
         container.appendChild(arrowContainer);
-        container.onclick = function () {
-            if (!_this.main.config.isEnabled) {
+        container.onclick = () => {
+            if (!this.main.config.isEnabled) {
                 return;
             }
-            _this.main.data.contentOpen ? _this.main.close() : _this.main.open();
+            this.main.data.contentOpen ? this.main.close() : this.main.open();
         };
         return {
-            container: container,
-            placeholder: placeholder,
-            deselect: deselect,
+            container,
+            placeholder,
+            deselect,
             arrowIcon: {
                 container: arrowContainer,
                 arrow: arrowIcon
             }
         };
-    };
-    Slim.prototype.placeholder = function () {
-        var selected = this.main.data.getSelected();
+    }
+    placeholder() {
+        const selected = this.main.data.getSelected();
         if (selected === null || (selected && selected.placeholder)) {
-            var placeholder = document.createElement('span');
+            const placeholder = document.createElement('span');
             placeholder.classList.add(this.main.config.disabled);
             placeholder.innerHTML = this.main.config.placeholderText;
             if (this.singleSelected) {
@@ -793,7 +756,7 @@ var Slim = (function () {
             }
         }
         else {
-            var selectedValue = '';
+            let selectedValue = '';
             if (selected) {
                 selectedValue = selected.innerHTML && this.main.config.valuesUseText !== true ? selected.innerHTML : selected.text;
             }
@@ -801,8 +764,8 @@ var Slim = (function () {
                 this.singleSelected.placeholder.innerHTML = (selected ? selectedValue : '');
             }
         }
-    };
-    Slim.prototype.deselect = function () {
+    }
+    deselect() {
         if (this.singleSelected) {
             if (!this.main.config.allowDeselect) {
                 this.singleSelected.deselect.classList.add('ss-hide');
@@ -815,55 +778,52 @@ var Slim = (function () {
                 this.singleSelected.deselect.classList.remove('ss-hide');
             }
         }
-    };
-    Slim.prototype.multiSelectedDiv = function () {
-        var _this = this;
-        var container = document.createElement('div');
+    }
+    multiSelectedDiv() {
+        const container = document.createElement('div');
         container.classList.add(this.main.config.multiSelected);
-        var values = document.createElement('div');
+        const values = document.createElement('div');
         values.classList.add(this.main.config.values);
         container.appendChild(values);
-        var add = document.createElement('div');
+        const add = document.createElement('div');
         add.classList.add(this.main.config.add);
-        var plus = document.createElement('span');
+        const plus = document.createElement('span');
         plus.classList.add(this.main.config.plus);
-        plus.onclick = function (e) {
-            if (_this.main.data.contentOpen) {
-                _this.main.close();
+        plus.onclick = (e) => {
+            if (this.main.data.contentOpen) {
+                this.main.close();
                 e.stopPropagation();
             }
         };
         add.appendChild(plus);
         container.appendChild(add);
-        container.onclick = function (e) {
-            if (!_this.main.config.isEnabled) {
+        container.onclick = (e) => {
+            if (!this.main.config.isEnabled) {
                 return;
             }
-            var target = e.target;
-            if (!target.classList.contains(_this.main.config.valueDelete)) {
-                _this.main.data.contentOpen ? _this.main.close() : _this.main.open();
+            const target = e.target;
+            if (!target.classList.contains(this.main.config.valueDelete)) {
+                this.main.data.contentOpen ? this.main.close() : this.main.open();
             }
         };
         return {
-            container: container,
-            values: values,
-            add: add,
-            plus: plus
+            container,
+            values,
+            add,
+            plus
         };
-    };
-    Slim.prototype.values = function () {
+    }
+    values() {
         if (!this.multiSelected) {
             return;
         }
-        var currentNodes = this.multiSelected.values.childNodes;
-        var selected = this.main.data.getSelected();
-        var exists;
-        var nodesToRemove = [];
-        for (var _i = 0, currentNodes_1 = currentNodes; _i < currentNodes_1.length; _i++) {
-            var c = currentNodes_1[_i];
+        let currentNodes = this.multiSelected.values.childNodes;
+        const selected = this.main.data.getSelected();
+        let exists;
+        const nodesToRemove = [];
+        for (const c of currentNodes) {
             exists = true;
-            for (var _a = 0, selected_1 = selected; _a < selected_1.length; _a++) {
-                var s = selected_1[_a];
+            for (const s of selected) {
                 if (String(s.id) === String(c.dataset.id)) {
                     exists = false;
                 }
@@ -872,16 +832,14 @@ var Slim = (function () {
                 nodesToRemove.push(c);
             }
         }
-        for (var _b = 0, nodesToRemove_1 = nodesToRemove; _b < nodesToRemove_1.length; _b++) {
-            var n = nodesToRemove_1[_b];
+        for (const n of nodesToRemove) {
             n.classList.add('ss-out');
             this.multiSelected.values.removeChild(n);
         }
         currentNodes = this.multiSelected.values.childNodes;
-        for (var s = 0; s < selected.length; s++) {
+        for (let s = 0; s < selected.length; s++) {
             exists = false;
-            for (var _c = 0, currentNodes_2 = currentNodes; _c < currentNodes_2.length; _c++) {
-                var c = currentNodes_2[_c];
+            for (const c of currentNodes) {
                 if (String(selected[s].id) === String(c.dataset.id)) {
                     exists = true;
                 }
@@ -899,70 +857,68 @@ var Slim = (function () {
             }
         }
         if (selected.length === 0) {
-            var placeholder = document.createElement('span');
+            const placeholder = document.createElement('span');
             placeholder.classList.add(this.main.config.disabled);
             placeholder.innerHTML = this.main.config.placeholderText;
             this.multiSelected.values.innerHTML = placeholder.outerHTML;
         }
-    };
-    Slim.prototype.valueDiv = function (optionObj) {
-        var _this = this;
-        var value = document.createElement('div');
+    }
+    valueDiv(optionObj) {
+        const value = document.createElement('div');
         value.classList.add(this.main.config.value);
         value.dataset.id = optionObj.id;
-        var text = document.createElement('span');
+        const text = document.createElement('span');
         text.classList.add(this.main.config.valueText);
         text.innerHTML = (optionObj.innerHTML && this.main.config.valuesUseText !== true ? optionObj.innerHTML : optionObj.text);
         value.appendChild(text);
         if (!optionObj.mandatory) {
-            var deleteSpan = document.createElement('span');
+            const deleteSpan = document.createElement('span');
             deleteSpan.classList.add(this.main.config.valueDelete);
             deleteSpan.innerHTML = this.main.config.deselectLabel;
-            deleteSpan.onclick = function (e) {
+            deleteSpan.onclick = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                var shouldUpdate = false;
-                if (!_this.main.beforeOnChange) {
+                let shouldUpdate = false;
+                if (!this.main.beforeOnChange) {
                     shouldUpdate = true;
                 }
-                if (_this.main.beforeOnChange) {
-                    var selected = _this.main.data.getSelected();
-                    var currentValues = JSON.parse(JSON.stringify(selected));
-                    for (var i = 0; i < currentValues.length; i++) {
+                if (this.main.beforeOnChange) {
+                    const selected = this.main.data.getSelected();
+                    const currentValues = JSON.parse(JSON.stringify(selected));
+                    for (let i = 0; i < currentValues.length; i++) {
                         if (currentValues[i].id === optionObj.id) {
                             currentValues.splice(i, 1);
                         }
                     }
-                    var beforeOnchange = _this.main.beforeOnChange(currentValues);
+                    const beforeOnchange = this.main.beforeOnChange(currentValues);
                     if (beforeOnchange !== false) {
                         shouldUpdate = true;
                     }
                 }
                 if (shouldUpdate) {
-                    _this.main.data.removeFromSelected(optionObj.id, 'id');
-                    _this.main.render();
-                    _this.main.select.setValue();
-                    _this.main.data.onDataChange();
+                    this.main.data.removeFromSelected(optionObj.id, 'id');
+                    this.main.render();
+                    this.main.select.setValue();
+                    this.main.data.onDataChange();
                 }
             };
             value.appendChild(deleteSpan);
         }
         return value;
-    };
-    Slim.prototype.contentDiv = function () {
-        var container = document.createElement('div');
+    }
+    contentDiv() {
+        const container = document.createElement('div');
         container.classList.add(this.main.config.content);
         return container;
-    };
-    Slim.prototype.searchDiv = function () {
-        var _this = this;
-        var container = document.createElement('div');
-        var input = document.createElement('input');
-        var addable = document.createElement('div');
+    }
+    searchDiv() {
+        const container = document.createElement('div');
+        const input = document.createElement('input');
+        const addable = document.createElement('div');
         container.classList.add(this.main.config.search);
-        var searchReturn = {
-            container: container,
-            input: input
+        const searchReturn = {
+            container,
+            input
         };
         if (!this.main.config.showSearch) {
             container.classList.add(this.main.config.hide);
@@ -975,58 +931,58 @@ var Slim = (function () {
         input.setAttribute('autocapitalize', 'off');
         input.setAttribute('autocomplete', 'off');
         input.setAttribute('autocorrect', 'off');
-        input.onclick = function (e) {
-            setTimeout(function () {
-                var target = e.target;
+        input.onclick = (e) => {
+            setTimeout(() => {
+                const target = e.target;
                 if (target.value === '') {
-                    _this.main.search('');
+                    this.main.search('');
                 }
             }, 10);
         };
-        input.onkeydown = function (e) {
+        input.onkeydown = (e) => {
             if (e.key === 'ArrowUp') {
-                _this.main.open();
-                _this.highlightUp();
+                this.main.open();
+                this.highlightUp();
                 e.preventDefault();
             }
             else if (e.key === 'ArrowDown') {
-                _this.main.open();
-                _this.highlightDown();
+                this.main.open();
+                this.highlightDown();
                 e.preventDefault();
             }
             else if (e.key === 'Tab') {
-                if (!_this.main.data.contentOpen) {
-                    setTimeout(function () { _this.main.close(); }, _this.main.config.timeoutDelay);
+                if (!this.main.data.contentOpen) {
+                    setTimeout(() => { this.main.close(); }, this.main.config.timeoutDelay);
                 }
                 else {
-                    _this.main.close();
+                    this.main.close();
                 }
             }
             else if (e.key === 'Enter') {
                 e.preventDefault();
             }
         };
-        input.onkeyup = function (e) {
-            var target = e.target;
+        input.onkeyup = (e) => {
+            const target = e.target;
             if (e.key === 'Enter') {
-                if (_this.main.addable && e.ctrlKey) {
+                if (this.main.addable && e.ctrlKey) {
                     addable.click();
                     e.preventDefault();
                     e.stopPropagation();
                     return;
                 }
-                var highlighted = _this.list.querySelector('.' + _this.main.config.highlighted);
+                const highlighted = this.list.querySelector('.' + this.main.config.highlighted);
                 if (highlighted) {
                     highlighted.click();
                 }
             }
-            else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') ;
+            else if (e.key === 'ArrowUp' || e.key === 'ArrowDown');
             else if (e.key === 'Escape') {
-                _this.main.close();
+                this.main.close();
             }
             else {
-                if (_this.main.config.showSearch && _this.main.data.contentOpen) {
-                    _this.main.search(target.value);
+                if (this.main.config.showSearch && this.main.data.contentOpen) {
+                    this.main.search(target.value);
                 }
                 else {
                     input.value = '';
@@ -1035,46 +991,46 @@ var Slim = (function () {
             e.preventDefault();
             e.stopPropagation();
         };
-        input.onfocus = function () { _this.main.open(); };
+        input.onfocus = () => { this.main.open(); };
         container.appendChild(input);
         if (this.main.addable) {
             addable.classList.add(this.main.config.addable);
             addable.innerHTML = '+';
-            addable.onclick = function (e) {
-                if (_this.main.addable) {
+            addable.onclick = (e) => {
+                if (this.main.addable) {
                     e.preventDefault();
                     e.stopPropagation();
-                    var inputValue = _this.search.input.value;
+                    const inputValue = this.search.input.value;
                     if (inputValue.trim() === '') {
-                        _this.search.input.focus();
+                        this.search.input.focus();
                         return;
                     }
-                    var addableValue = _this.main.addable(inputValue);
-                    var addableValueStr_1 = '';
+                    const addableValue = this.main.addable(inputValue);
+                    let addableValueStr = '';
                     if (!addableValue) {
                         return;
                     }
                     if (typeof addableValue === 'object') {
-                        var validValue = validateOption(addableValue);
+                        const validValue = validateOption(addableValue);
                         if (validValue) {
-                            _this.main.addData(addableValue);
-                            addableValueStr_1 = (addableValue.value ? addableValue.value : addableValue.text);
+                            this.main.addData(addableValue);
+                            addableValueStr = (addableValue.value ? addableValue.value : addableValue.text);
                         }
                     }
                     else {
-                        _this.main.addData(_this.main.data.newOption({
+                        this.main.addData(this.main.data.newOption({
                             text: addableValue,
                             value: addableValue
                         }));
-                        addableValueStr_1 = addableValue;
+                        addableValueStr = addableValue;
                     }
-                    _this.main.search('');
-                    setTimeout(function () {
-                        _this.main.set(addableValueStr_1, 'value', false, false);
+                    this.main.search('');
+                    setTimeout(() => {
+                        this.main.set(addableValueStr, 'value', false, false);
                     }, 100);
-                    if (_this.main.config.closeOnSelect) {
-                        setTimeout(function () {
-                            _this.main.close();
+                    if (this.main.config.closeOnSelect) {
+                        setTimeout(() => {
+                            this.main.close();
                         }, 100);
                     }
                 }
@@ -1083,10 +1039,10 @@ var Slim = (function () {
             searchReturn.addable = addable;
         }
         return searchReturn;
-    };
-    Slim.prototype.highlightUp = function () {
-        var highlighted = this.list.querySelector('.' + this.main.config.highlighted);
-        var prev = null;
+    }
+    highlightUp() {
+        const highlighted = this.list.querySelector('.' + this.main.config.highlighted);
+        let prev = null;
         if (highlighted) {
             prev = highlighted.previousSibling;
             while (prev !== null) {
@@ -1100,17 +1056,17 @@ var Slim = (function () {
             }
         }
         else {
-            var allOptions = this.list.querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')');
+            const allOptions = this.list.querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')');
             prev = allOptions[allOptions.length - 1];
         }
         if (prev && prev.classList.contains(this.main.config.optgroupLabel)) {
             prev = null;
         }
         if (prev === null) {
-            var parent_1 = highlighted.parentNode;
-            if (parent_1.classList.contains(this.main.config.optgroup)) {
-                if (parent_1.previousSibling) {
-                    var prevNodes = parent_1.previousSibling.querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')');
+            const parent = highlighted.parentNode;
+            if (parent.classList.contains(this.main.config.optgroup)) {
+                if (parent.previousSibling) {
+                    const prevNodes = parent.previousSibling.querySelectorAll('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')');
                     if (prevNodes.length) {
                         prev = prevNodes[prevNodes.length - 1];
                     }
@@ -1124,10 +1080,10 @@ var Slim = (function () {
             prev.classList.add(this.main.config.highlighted);
             ensureElementInView(this.list, prev);
         }
-    };
-    Slim.prototype.highlightDown = function () {
-        var highlighted = this.list.querySelector('.' + this.main.config.highlighted);
-        var next = null;
+    }
+    highlightDown() {
+        const highlighted = this.list.querySelector('.' + this.main.config.highlighted);
+        let next = null;
         if (highlighted) {
             next = highlighted.nextSibling;
             while (next !== null) {
@@ -1144,10 +1100,10 @@ var Slim = (function () {
             next = this.list.querySelector('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')');
         }
         if (next === null && highlighted !== null) {
-            var parent_2 = highlighted.parentNode;
-            if (parent_2.classList.contains(this.main.config.optgroup)) {
-                if (parent_2.nextSibling) {
-                    var sibling = parent_2.nextSibling;
+            const parent = highlighted.parentNode;
+            if (parent.classList.contains(this.main.config.optgroup)) {
+                if (parent.nextSibling) {
+                    const sibling = parent.nextSibling;
                     next = sibling.querySelector('.' + this.main.config.option + ':not(.' + this.main.config.disabled + ')');
                 }
             }
@@ -1159,21 +1115,20 @@ var Slim = (function () {
             next.classList.add(this.main.config.highlighted);
             ensureElementInView(this.list, next);
         }
-    };
-    Slim.prototype.listDiv = function () {
-        var list = document.createElement('div');
+    }
+    listDiv() {
+        const list = document.createElement('div');
         list.id = this.main.config.id;
         list.classList.add(this.main.config.list);
         list.setAttribute('role', 'listbox');
         list.setAttribute('aria-label', 'Pilihan ' + this.main.config.id);
         return list;
-    };
-    Slim.prototype.options = function (content) {
-        if (content === void 0) { content = ''; }
-        var data = this.main.data.filtered || this.main.data.data;
+    }
+    options(content = '') {
+        const data = this.main.data.filtered || this.main.data.data;
         this.list.innerHTML = '';
         if (content !== '') {
-            var searching = document.createElement('div');
+            const searching = document.createElement('div');
             searching.classList.add(this.main.config.option);
             searching.classList.add(this.main.config.disabled);
             searching.innerHTML = content;
@@ -1181,7 +1136,7 @@ var Slim = (function () {
             return;
         }
         if (this.main.config.isAjax && this.main.config.isSearching) {
-            var searching = document.createElement('div');
+            const searching = document.createElement('div');
             searching.classList.add(this.main.config.option);
             searching.classList.add(this.main.config.disabled);
             searching.innerHTML = this.main.config.searchingText;
@@ -1189,76 +1144,69 @@ var Slim = (function () {
             return;
         }
         if (data.length === 0) {
-            var noResults = document.createElement('div');
+            const noResults = document.createElement('div');
             noResults.classList.add(this.main.config.option);
             noResults.classList.add(this.main.config.disabled);
             noResults.innerHTML = this.main.config.searchText;
             this.list.appendChild(noResults);
             return;
         }
-        var _loop_1 = function (d) {
+        for (const d of data) {
             if (d.hasOwnProperty('label')) {
-                var item = d;
-                var optgroupEl_1 = document.createElement('div');
-                optgroupEl_1.classList.add(this_1.main.config.optgroup);
-                var optgroupLabel = document.createElement('div');
-                optgroupLabel.classList.add(this_1.main.config.optgroupLabel);
-                if (this_1.main.config.selectByGroup && this_1.main.config.isMultiple) {
-                    optgroupLabel.classList.add(this_1.main.config.optgroupLabelSelectable);
+                const item = d;
+                const optgroupEl = document.createElement('div');
+                optgroupEl.classList.add(this.main.config.optgroup);
+                const optgroupLabel = document.createElement('div');
+                optgroupLabel.classList.add(this.main.config.optgroupLabel);
+                if (this.main.config.selectByGroup && this.main.config.isMultiple) {
+                    optgroupLabel.classList.add(this.main.config.optgroupLabelSelectable);
                 }
                 optgroupLabel.innerHTML = item.label;
-                optgroupEl_1.appendChild(optgroupLabel);
-                var options = item.options;
+                optgroupEl.appendChild(optgroupLabel);
+                const options = item.options;
                 if (options) {
-                    for (var _a = 0, options_1 = options; _a < options_1.length; _a++) {
-                        var o = options_1[_a];
-                        optgroupEl_1.appendChild(this_1.option(o));
+                    for (const o of options) {
+                        optgroupEl.appendChild(this.option(o));
                     }
-                    if (this_1.main.config.selectByGroup && this_1.main.config.isMultiple) {
-                        var master_1 = this_1;
-                        optgroupLabel.addEventListener('click', function (e) {
+                    if (this.main.config.selectByGroup && this.main.config.isMultiple) {
+                        const master = this;
+                        optgroupLabel.addEventListener('click', (e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            for (var _i = 0, _a = optgroupEl_1.children; _i < _a.length; _i++) {
-                                var childEl = _a[_i];
-                                if (childEl.className.indexOf(master_1.main.config.option) !== -1) {
+                            for (const childEl of optgroupEl.children) {
+                                if (childEl.className.indexOf(master.main.config.option) !== -1) {
                                     childEl.click();
                                 }
                             }
                         });
                     }
                 }
-                this_1.list.appendChild(optgroupEl_1);
+                this.list.appendChild(optgroupEl);
             }
             else {
-                this_1.list.appendChild(this_1.option(d));
+                this.list.appendChild(this.option(d));
             }
-        };
-        var this_1 = this;
-        for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
-            var d = data_1[_i];
-            _loop_1(d);
         }
-    };
-    Slim.prototype.option = function (data) {
+    }
+    option(data) {
         if (data.placeholder) {
-            var placeholder = document.createElement('div');
+            const placeholder = document.createElement('div');
             placeholder.classList.add(this.main.config.option);
             placeholder.classList.add(this.main.config.hide);
             return placeholder;
         }
-        var optionEl = document.createElement('div');
+        const optionEl = document.createElement('div');
         optionEl.classList.add(this.main.config.option);
         optionEl.setAttribute('role', 'option');
         if (data.class) {
-            data.class.split(' ').forEach(function (dataClass) {
+            data.class.split(' ').forEach((dataClass) => {
                 optionEl.classList.add(dataClass);
             });
         }
         if (data.style) {
             optionEl.style.cssText = data.style;
         }
-        var selected = this.main.data.getSelected();
+        const selected = this.main.data.getSelected();
         optionEl.dataset.id = data.id;
         if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {
             optionEl.innerHTML = highlight(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter);
@@ -1269,26 +1217,26 @@ var Slim = (function () {
         if (this.main.config.showOptionTooltips && optionEl.textContent) {
             optionEl.setAttribute('title', optionEl.textContent);
         }
-        var master = this;
+        const master = this;
         optionEl.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            var element = this;
-            var elementID = element.dataset.id;
+            const element = this;
+            const elementID = element.dataset.id;
             if (data.selected === true && master.main.config.allowDeselectOption) {
-                var shouldUpdate = false;
+                let shouldUpdate = false;
                 if (!master.main.beforeOnChange || !master.main.config.isMultiple) {
                     shouldUpdate = true;
                 }
                 if (master.main.beforeOnChange && master.main.config.isMultiple) {
-                    var selectedValues = master.main.data.getSelected();
-                    var currentValues = JSON.parse(JSON.stringify(selectedValues));
-                    for (var i = 0; i < currentValues.length; i++) {
+                    const selectedValues = master.main.data.getSelected();
+                    const currentValues = JSON.parse(JSON.stringify(selectedValues));
+                    for (let i = 0; i < currentValues.length; i++) {
                         if (currentValues[i].id === elementID) {
                             currentValues.splice(i, 1);
                         }
                     }
-                    var beforeOnchange = master.main.beforeOnChange(currentValues);
+                    const beforeOnchange = master.main.beforeOnChange(currentValues);
                     if (beforeOnchange !== false) {
                         shouldUpdate = true;
                     }
@@ -1313,8 +1261,8 @@ var Slim = (function () {
                     return;
                 }
                 if (master.main.beforeOnChange) {
-                    var value = void 0;
-                    var objectInfo = JSON.parse(JSON.stringify(master.main.data.getObjectFromData(elementID)));
+                    let value;
+                    const objectInfo = JSON.parse(JSON.stringify(master.main.data.getObjectFromData(elementID)));
                     objectInfo.selected = true;
                     if (master.main.config.isMultiple) {
                         value = JSON.parse(JSON.stringify(selected));
@@ -1323,7 +1271,7 @@ var Slim = (function () {
                     else {
                         value = JSON.parse(JSON.stringify(objectInfo));
                     }
-                    var beforeOnchange = master.main.beforeOnChange(value);
+                    const beforeOnchange = master.main.beforeOnChange(value);
                     if (beforeOnchange !== false) {
                         master.main.set(elementID, 'id', master.main.config.closeOnSelect);
                     }
@@ -1333,7 +1281,7 @@ var Slim = (function () {
                 }
             }
         });
-        var isSelected = selected && isValueInArrayOfObjects(selected, 'id', data.id);
+        const isSelected = selected && isValueInArrayOfObjects(selected, 'id', data.id);
         if (data.disabled || isSelected) {
             optionEl.onclick = null;
             if (!master.main.config.allowDeselectOption) {
@@ -1350,13 +1298,11 @@ var Slim = (function () {
             optionEl.classList.remove(this.main.config.optionSelected);
         }
         return optionEl;
-    };
-    return Slim;
-}());
+    }
+}
 
-var SlimSelect = (function () {
-    function SlimSelect(info) {
-        var _this = this;
+class SlimSelect {
+    constructor(info) {
         this.ajax = null;
         this.addable = null;
         this.beforeOnChange = null;
@@ -1365,22 +1311,22 @@ var SlimSelect = (function () {
         this.afterOpen = null;
         this.beforeClose = null;
         this.afterClose = null;
-        this.windowScroll = debounce(function (e) {
-            if (_this.data.contentOpen) {
-                if (putContent(_this.slim.content, _this.data.contentPosition, _this.data.contentOpen) === 'above') {
-                    _this.moveContentAbove();
+        this.windowScroll = debounce((e) => {
+            if (this.data.contentOpen) {
+                if (putContent(this.slim.content, this.data.contentPosition, this.data.contentOpen) === 'above') {
+                    this.moveContentAbove();
                 }
                 else {
-                    _this.moveContentBelow();
+                    this.moveContentBelow();
                 }
             }
         });
-        this.documentClick = function (e) {
-            if (e.target && !hasClassInTree(e.target, _this.config.id)) {
-                _this.close();
+        this.documentClick = (e) => {
+            if (e.target && !hasClassInTree(e.target, this.config.id)) {
+                this.close();
             }
         };
-        var selectElement = this.validate(info);
+        const selectElement = this.validate(info);
         if (selectElement.dataset.ssid) {
             this.destroy(selectElement.dataset.ssid);
         }
@@ -1456,8 +1402,8 @@ var SlimSelect = (function () {
             this.disable();
         }
     }
-    SlimSelect.prototype.validate = function (info) {
-        var select = (typeof info.select === 'string' ? document.querySelector(info.select) : info.select);
+    validate(info) {
+        const select = (typeof info.select === 'string' ? document.querySelector(info.select) : info.select);
         if (!select) {
             throw new Error('Could not find select element');
         }
@@ -1465,25 +1411,22 @@ var SlimSelect = (function () {
             throw new Error('Element isnt of type select');
         }
         return select;
-    };
-    SlimSelect.prototype.selected = function () {
+    }
+    selected() {
         if (this.config.isMultiple) {
-            var selected = this.data.getSelected();
-            var outputSelected = [];
-            for (var _i = 0, selected_1 = selected; _i < selected_1.length; _i++) {
-                var s = selected_1[_i];
+            const selected = this.data.getSelected();
+            const outputSelected = [];
+            for (const s of selected) {
                 outputSelected.push(s.value);
             }
             return outputSelected;
         }
         else {
-            var selected = this.data.getSelected();
+            const selected = this.data.getSelected();
             return (selected ? selected.value : '');
         }
-    };
-    SlimSelect.prototype.set = function (value, type, close, render) {
-        if (type === void 0) { type = 'value'; }
-        if (close === void 0) { close = true; }
+    }
+    set(value, type = 'value', close = true, render = true) {
         if (this.config.isMultiple && !Array.isArray(value)) {
             this.data.addToSelected(value, type);
         }
@@ -1499,43 +1442,39 @@ var SlimSelect = (function () {
         if (close) {
             this.close();
         }
-    };
-    SlimSelect.prototype.setSelected = function (value, type, close, render) {
-        if (type === void 0) { type = 'value'; }
-        if (close === void 0) { close = true; }
-        if (render === void 0) { render = true; }
+    }
+    setSelected(value, type = 'value', close = true, render = true) {
         this.set(value, type, close, render);
-    };
-    SlimSelect.prototype.setData = function (data) {
-        var isValid = validateData(data);
+    }
+    setData(data) {
+        const isValid = validateData(data);
         if (!isValid) {
             console.error('Validation problem on: #' + this.select.element.id);
             return;
         }
-        var newData = JSON.parse(JSON.stringify(data));
-        var selected = this.data.getSelected();
-        for (var i = 0; i < newData.length; i++) {
+        const newData = JSON.parse(JSON.stringify(data));
+        const selected = this.data.getSelected();
+        for (let i = 0; i < newData.length; i++) {
             if (!newData[i].value && !newData[i].placeholder) {
                 newData[i].value = newData[i].text;
             }
         }
         if (this.config.isAjax && selected) {
             if (this.config.isMultiple) {
-                var reverseSelected = selected.reverse();
-                for (var _i = 0, reverseSelected_1 = reverseSelected; _i < reverseSelected_1.length; _i++) {
-                    var r = reverseSelected_1[_i];
+                const reverseSelected = selected.reverse();
+                for (const r of reverseSelected) {
                     newData.unshift(r);
                 }
             }
             else {
                 newData.unshift(selected);
-                for (var i = 0; i < newData.length; i++) {
+                for (let i = 0; i < newData.length; i++) {
                     if (!newData[i].placeholder && newData[i].value === selected.value && newData[i].text === selected.text) {
                         newData.splice(i, 1);
                     }
                 }
-                var hasPlaceholder = false;
-                for (var i = 0; i < newData.length; i++) {
+                let hasPlaceholder = false;
+                for (let i = 0; i < newData.length; i++) {
                     if (newData[i].placeholder) {
                         hasPlaceholder = true;
                     }
@@ -1548,9 +1487,9 @@ var SlimSelect = (function () {
         this.select.create(newData);
         this.data.parseSelectData();
         this.data.setSelectedFromSelect();
-    };
-    SlimSelect.prototype.addData = function (data) {
-        var isValid = validateData([data]);
+    }
+    addData(data) {
+        const isValid = validateData([data]);
         if (!isValid) {
             console.error('Validation problem on: #' + this.select.element.id);
             return;
@@ -1560,9 +1499,8 @@ var SlimSelect = (function () {
         this.data.parseSelectData();
         this.data.setSelectedFromSelect();
         this.render();
-    };
-    SlimSelect.prototype.open = function () {
-        var _this = this;
+    }
+    open() {
         if (!this.config.isEnabled) {
             return;
         }
@@ -1584,7 +1522,7 @@ var SlimSelect = (function () {
         }
         this.slim[(this.config.isMultiple ? 'multiSelected' : 'singleSelected')].container.classList.add((this.data.contentPosition === 'above' ? this.config.openAbove : this.config.openBelow));
         if (this.config.addToBody) {
-            var containerRect = this.slim.container.getBoundingClientRect();
+            const containerRect = this.slim.container.getBoundingClientRect();
             this.slim.content.style.top = (containerRect.top + containerRect.height + window.scrollY) + 'px';
             this.slim.content.style.left = (containerRect.left + window.scrollX) + 'px';
             this.slim.content.style.width = containerRect.width + 'px';
@@ -1605,27 +1543,26 @@ var SlimSelect = (function () {
             }
         }
         if (!this.config.isMultiple) {
-            var selected = this.data.getSelected();
+            const selected = this.data.getSelected();
             if (selected) {
-                var selectedId = selected.id;
-                var selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]');
+                const selectedId = selected.id;
+                const selectedOption = this.slim.list.querySelector('[data-id="' + selectedId + '"]');
                 if (selectedOption) {
                     ensureElementInView(this.slim.list, selectedOption);
                 }
             }
         }
-        setTimeout(function () {
-            _this.data.contentOpen = true;
-            if (_this.config.searchFocus) {
-                _this.slim.search.input.focus();
+        setTimeout(() => {
+            this.data.contentOpen = true;
+            if (this.config.searchFocus) {
+                this.slim.search.input.focus();
             }
-            if (_this.afterOpen) {
-                _this.afterOpen();
+            if (this.afterOpen) {
+                this.afterOpen();
             }
         }, this.config.timeoutDelay);
-    };
-    SlimSelect.prototype.close = function () {
-        var _this = this;
+    }
+    close() {
         if (!this.data.contentOpen) {
             return;
         }
@@ -1646,33 +1583,33 @@ var SlimSelect = (function () {
         this.slim.content.classList.remove(this.config.open);
         this.data.contentOpen = false;
         this.search('');
-        setTimeout(function () {
-            _this.slim.content.removeAttribute('style');
-            _this.data.contentPosition = 'below';
-            if (_this.config.isMultiple && _this.slim.multiSelected) {
-                _this.slim.multiSelected.container.classList.remove(_this.config.openAbove);
-                _this.slim.multiSelected.container.classList.remove(_this.config.openBelow);
+        setTimeout(() => {
+            this.slim.content.removeAttribute('style');
+            this.data.contentPosition = 'below';
+            if (this.config.isMultiple && this.slim.multiSelected) {
+                this.slim.multiSelected.container.classList.remove(this.config.openAbove);
+                this.slim.multiSelected.container.classList.remove(this.config.openBelow);
             }
-            else if (_this.slim.singleSelected) {
-                _this.slim.singleSelected.container.classList.remove(_this.config.openAbove);
-                _this.slim.singleSelected.container.classList.remove(_this.config.openBelow);
+            else if (this.slim.singleSelected) {
+                this.slim.singleSelected.container.classList.remove(this.config.openAbove);
+                this.slim.singleSelected.container.classList.remove(this.config.openBelow);
             }
-            _this.slim.search.input.blur();
-            if (_this.afterClose) {
-                _this.afterClose();
+            this.slim.search.input.blur();
+            if (this.afterClose) {
+                this.afterClose();
             }
         }, this.config.timeoutDelay);
-    };
-    SlimSelect.prototype.moveContentAbove = function () {
-        var selectHeight = 0;
+    }
+    moveContentAbove() {
+        let selectHeight = 0;
         if (this.config.isMultiple && this.slim.multiSelected) {
             selectHeight = this.slim.multiSelected.container.offsetHeight;
         }
         else if (this.slim.singleSelected) {
             selectHeight = this.slim.singleSelected.container.offsetHeight;
         }
-        var contentHeight = this.slim.content.offsetHeight;
-        var height = selectHeight + contentHeight - 1;
+        const contentHeight = this.slim.content.offsetHeight;
+        const height = selectHeight + contentHeight - 1;
         this.slim.content.style.margin = '-' + height + 'px 0 0 0';
         this.slim.content.style.height = (height - selectHeight + 1) + 'px';
         this.slim.content.style.transformOrigin = 'center bottom';
@@ -1685,8 +1622,8 @@ var SlimSelect = (function () {
             this.slim.singleSelected.container.classList.remove(this.config.openBelow);
             this.slim.singleSelected.container.classList.add(this.config.openAbove);
         }
-    };
-    SlimSelect.prototype.moveContentBelow = function () {
+    }
+    moveContentBelow() {
         this.data.contentPosition = 'below';
         if (this.config.isMultiple && this.slim.multiSelected) {
             this.slim.multiSelected.container.classList.remove(this.config.openAbove);
@@ -1696,8 +1633,8 @@ var SlimSelect = (function () {
             this.slim.singleSelected.container.classList.remove(this.config.openAbove);
             this.slim.singleSelected.container.classList.add(this.config.openBelow);
         }
-    };
-    SlimSelect.prototype.enable = function () {
+    }
+    enable() {
         this.config.isEnabled = true;
         if (this.config.isMultiple && this.slim.multiSelected) {
             this.slim.multiSelected.container.classList.remove(this.config.disabled);
@@ -1709,8 +1646,8 @@ var SlimSelect = (function () {
         this.select.element.disabled = false;
         this.slim.search.input.disabled = false;
         this.select.triggerMutationObserver = true;
-    };
-    SlimSelect.prototype.disable = function () {
+    }
+    disable() {
         this.config.isEnabled = false;
         if (this.config.isMultiple && this.slim.multiSelected) {
             this.slim.multiSelected.container.classList.add(this.config.disabled);
@@ -1722,30 +1659,30 @@ var SlimSelect = (function () {
         this.select.element.disabled = true;
         this.slim.search.input.disabled = true;
         this.select.triggerMutationObserver = true;
-    };
-    SlimSelect.prototype.search = function (value) {
+    }
+    search(value) {
         if (this.data.searchValue === value) {
             return;
         }
         this.slim.search.input.value = value;
         if (this.config.isAjax) {
-            var master_1 = this;
+            const master = this;
             this.config.isSearching = true;
             this.render();
             if (this.ajax) {
-                this.ajax(value, function (info) {
-                    master_1.config.isSearching = false;
+                this.ajax(value, (info) => {
+                    master.config.isSearching = false;
                     if (Array.isArray(info)) {
                         info.unshift({ text: '', placeholder: true });
-                        master_1.setData(info);
-                        master_1.data.search(value);
-                        master_1.render();
+                        master.setData(info);
+                        master.data.search(value);
+                        master.render();
                     }
                     else if (typeof info === 'string') {
-                        master_1.slim.options(info);
+                        master.slim.options(info);
                     }
                     else {
-                        master_1.render();
+                        master.render();
                     }
                 });
             }
@@ -1754,11 +1691,11 @@ var SlimSelect = (function () {
             this.data.search(value);
             this.render();
         }
-    };
-    SlimSelect.prototype.setSearchText = function (text) {
+    }
+    setSearchText(text) {
         this.config.searchText = text;
-    };
-    SlimSelect.prototype.render = function () {
+    }
+    render() {
         if (this.config.isMultiple) {
             this.slim.values();
         }
@@ -1767,11 +1704,10 @@ var SlimSelect = (function () {
             this.slim.deselect();
         }
         this.slim.options();
-    };
-    SlimSelect.prototype.destroy = function (id) {
-        if (id === void 0) { id = null; }
-        var slim = (id ? document.querySelector('.' + id + '.ss-main') : this.slim.container);
-        var select = (id ? document.querySelector("[data-ssid=".concat(id, "]")) : this.select.element);
+    }
+    destroy(id = null) {
+        const slim = (id ? document.querySelector('.' + id + '.ss-main') : this.slim.container);
+        const select = (id ? document.querySelector(`[data-ssid=${id}]`) : this.select.element);
         if (!slim || !select) {
             return;
         }
@@ -1779,22 +1715,24 @@ var SlimSelect = (function () {
         if (this.config.showContent === 'auto') {
             window.removeEventListener('scroll', this.windowScroll, false);
         }
-        select.style.display = '';
+        select.style.display = 'revert';
+        select.style.width = 'revert';
+        select.style.height = 'revert';
+        select.style.opacity = 'revert';
         delete select.dataset.ssid;
-        var el = select;
+        const el = select;
         el.slim = null;
         if (slim.parentElement) {
             slim.parentElement.removeChild(slim);
         }
         if (this.config.addToBody) {
-            var slimContent = (id ? document.querySelector('.' + id + '.ss-content') : this.slim.content);
+            const slimContent = (id ? document.querySelector('.' + id + '.ss-content') : this.slim.content);
             if (!slimContent) {
                 return;
             }
             document.body.removeChild(slimContent);
         }
-    };
-    return SlimSelect;
-}());
+    }
+}
 
 export { SlimSelect as default };
