@@ -20,9 +20,9 @@
 
 //  import Echo from 'laravel-echo';
 //  import Pusher from 'pusher-js';
- 
+
 //  window.Pusher = Pusher;
- 
+
 //  window.Echo = new Echo({
 //      broadcaster: 'pusher',
 //      key: process.env.MIX_PUSHER_APP_KEY,
@@ -38,5 +38,4 @@
 
 // import SlimSelect from './slimselect';
 // window.SlimSelect = SlimSelect;
-import './js';
-import './slimselect';
+import './interaksi';

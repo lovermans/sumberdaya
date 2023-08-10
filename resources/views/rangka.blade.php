@@ -8,35 +8,34 @@
     </noscript>
 
     @include('informasi-meta')
-
 </head>
 
 <body data-tematerang="" id="badan-dokumen">
     <div id="ikonSVG"></div>
+
     <div id="sambutan">
         <img src="{{ $urlRangka->asset($mixRangka('/images/Lambang Perusahaan.webp')) }}"
             alt="{{ $confRangka->get('app.usaha') }}" title="{{ $confRangka->get('app.usaha') }}">
         <p>
-            <b>Memuat Aplikasi, Periksa Koneksi Internet</b> <br>
-            Penggunaan Terbaik di <u><b><a href="https://www.google.com/chrome/" target="_blank"
-                        rel="noopener noreferrer">Chrome</a></b></u> Browser
+            <b>Memuat Aplikasi, Periksa Koneksi Internet</b>
+            <br>
+            Penggunaan Terbaik di
+            <u>
+                <b><a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome</a></b>
+            </u>
+            Browser
         </p>
     </div>
 
     <a class="skip-navigation tcetak" href="#main" tabindex="0">Langsung Ke Konten Utama</a>
 
     <input class="tcetak" type="checkbox" id="nav" aria-label="Navigasi">
-
     <input class="tcetak" type="checkbox" id="menu" aria-label="Menu">
-
     <input class="tcetak" type="checkbox" id="pilih-aplikasi" aria-label="Aplikasi">
-
     <input class="tcetak" type="checkbox" id="tema" aria-label="Tema">
 
     <label for="nav" id="nav-kanvas" class="blok-kanvas"></label>
-
     <label for="menu" id="menu-kanvas" class="blok-kanvas"></label>
-
     <label for="pilih-aplikasi" id="aplikasi-kanvas" class="blok-kanvas"></label>
 
     <div id="memuat" class="mati">
@@ -105,14 +104,11 @@
     </main>
 
     <div id="brand" class="tcetak"></div>
-
     <div id="hiasan" class="tcetak"></div>
 
     <footer class="tcetak">
         <section></section>
     </footer>
-
-    {{-- <script defer type="module" src="{{ $mixRangka('/interaksi.js') }}"></script> --}}
 
     <script>
         async function cariElemen(el) {
@@ -131,7 +127,11 @@
                     new SlimSelect(data);
                 });
             } else {
-                new SlimSelect(data);
+                window.SlimSelect 
+                ? new SlimSelect(data) 
+                : (function () {
+                    alert('Terjadi kesalahan dalam memuat tombol pilihan. Modul pemrosesan tombol pilihan tidak ditemukan. Harap hubungi Personalia Pusat.');
+                })();
             };
         };
         window.addEventListener('DOMContentLoaded', function () {
@@ -181,7 +181,7 @@
             })();
             
             (async() => {
-                while(!window.aplikasiSiap) {
+                while(!window.aplikasiSiap()) {
                     await new Promise((resolve,reject) =>
                     setTimeout(resolve, 1000));
                 }

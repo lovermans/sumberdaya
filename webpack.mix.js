@@ -13,9 +13,9 @@ const mix = require('laravel-mix');
 
 mix.disableNotifications();
 // mix.setPublicPath('');
-// mix.js('resources/js/app.js', 'public/interaksi.js').version();
+mix.js('resources/js/app.js', 'public/interaksi.js').version();
 // mix.scripts(['resources/js/js.js', 'resources/js/slimselect.js'], 'public/interaksi.js').version();
-mix.scripts('resources/js/js.js', 'public/interaksi.js').version();
+// mix.scripts('resources/js/interaksi.js', 'public/interaksi.js').version();
 mix.scripts('resources/js/slimselect-es.js', 'public/slimselect-es.js').version();
 mix.scripts('resources/js/siapkan-foto-es.js', 'public/siapkan-foto-es.js').version();
 // mix.scripts('resources/js/service-worker.js', 'public/service-worker.js').version();

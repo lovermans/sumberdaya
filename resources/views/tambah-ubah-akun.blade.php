@@ -739,7 +739,12 @@
                     new SiapkanFoto(berkas);
                 });
             } else {
-                    new SiapkanFoto(berkas);
+                window.SiapkanFoto 
+                ? new SiapkanFoto(berkas) 
+                : (function () {
+                    document.getElementById('foto_profil').value = '';
+                    alert('Terjadi kesalahan dalam memroses foto profil. Modul pemrosesan foto tidak ditemukan. Harap hubungi Personalia Pusat.');
+                })();
             };
         }
     </script>
