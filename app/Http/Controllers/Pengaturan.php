@@ -18,8 +18,6 @@ class Pengaturan
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
-        $cacheAturs = Cache::ambilCacheAtur();
-
         $validator = Validasi::validasiPermintaanDataPengaturan([$reqs->all()]);
 
         if ($validator->fails()) {
@@ -27,33 +25,8 @@ class Pengaturan
         };
 
         $urutArray = $reqs->urut;
-
-        $uruts = $urutArray ? implode(',', array_filter($urutArray)) : null;
-
-        $statuses = $cacheAturs->unique('atur_status')->pluck('atur_status')->merge($reqs->atur_status)->unique()->sort();
-
-        $jenises = $cacheAturs
-            ->when($reqs->filled('atur_status'), function ($cacheAturs) use ($reqs) {
-                return $cacheAturs->whereIn('atur_status', $reqs->atur_status);
-            })->unique('atur_jenis')->pluck('atur_jenis')->merge($reqs->atur_jenis)->unique()->sort();
-
-        $butirs = $cacheAturs
-            ->when($reqs->filled('atur_status'), function ($cacheAturs) use ($reqs) {
-                return $cacheAturs->whereIn('atur_status', $reqs->atur_status);
-            })
-            ->when($reqs->filled('atur_jenis'), function ($cacheAturs) use ($reqs) {
-                return $cacheAturs->whereIn('atur_jenis', $reqs->atur_jenis);
-            })->unique('atur_butir')->pluck('atur_butir')->merge($reqs->atur_butir)->unique()->sort();
-
         $kunciUrut = array_filter((array) $urutArray);
-
-        $urutJenis = $str->contains($uruts, 'atur_jenis');
-        $indexJenis = (head(array_keys($kunciUrut, 'atur_jenis ASC')) + head(array_keys($kunciUrut, 'atur_jenis DESC')) + 1);
-        $urutButir = $str->contains($uruts, 'atur_butir');
-        $indexButir = (head(array_keys($kunciUrut, 'atur_butir ASC')) + head(array_keys($kunciUrut, 'atur_butir DESC')) + 1);
-        $urutStatus = $str->contains($uruts, 'atur_status');
-        $indexStatus = (head(array_keys($kunciUrut, 'atur_status ASC')) + head(array_keys($kunciUrut, 'atur_status DESC')) + 1);
-
+        $uruts = $urutArray ? implode(',', $kunciUrut) : null;
 
         $cari = DBQuery::saringDatabasePengaturan($reqs, $uruts);
 
@@ -61,19 +34,28 @@ class Pengaturan
             return Excel::eksporExcelDatabasePengaturan($cari);
         }
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'atur_tabels']);
+        $cacheAturs = Cache::ambilCacheAtur();
 
         $data = [
-            'tabels' => $tabels,
-            'statuses' => $statuses,
-            'jenises' => $jenises,
-            'butirs' => $butirs,
-            'urutJenis' => $urutJenis,
-            'indexJenis' => $indexJenis,
-            'urutButir' => $urutButir,
-            'indexButir' => $indexButir,
-            'urutStatus' => $urutStatus,
-            'indexStatus' => $indexStatus,
+            'tabels' => $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'atur_tabels']),
+            'statuses' => $cacheAturs->unique('atur_status')->pluck('atur_status')->merge($reqs->atur_status)->unique()->sort(),
+            'jenises' => $cacheAturs
+                ->when($reqs->filled('atur_status'), function ($cacheAturs) use ($reqs) {
+                    return $cacheAturs->whereIn('atur_status', $reqs->atur_status);
+                })->unique('atur_jenis')->pluck('atur_jenis')->merge($reqs->atur_jenis)->unique()->sort(),
+            'butirs' => $cacheAturs
+                ->when($reqs->filled('atur_status'), function ($cacheAturs) use ($reqs) {
+                    return $cacheAturs->whereIn('atur_status', $reqs->atur_status);
+                })
+                ->when($reqs->filled('atur_jenis'), function ($cacheAturs) use ($reqs) {
+                    return $cacheAturs->whereIn('atur_jenis', $reqs->atur_jenis);
+                })->unique('atur_butir')->pluck('atur_butir')->merge($reqs->atur_butir)->unique()->sort(),
+            'urutJenis' => $str->contains($uruts, 'atur_jenis'),
+            'indexJenis' => (head(array_keys($kunciUrut, 'atur_jenis ASC')) + head(array_keys($kunciUrut, 'atur_jenis DESC')) + 1),
+            'urutButir' => $str->contains($uruts, 'atur_butir'),
+            'indexButir' => (head(array_keys($kunciUrut, 'atur_butir ASC')) + head(array_keys($kunciUrut, 'atur_butir DESC')) + 1),
+            'urutStatus' => $str->contains($uruts, 'atur_status'),
+            'indexStatus' => (head(array_keys($kunciUrut, 'atur_status ASC')) + head(array_keys($kunciUrut, 'atur_status DESC')) + 1),
         ];
 
         $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
@@ -109,7 +91,9 @@ class Pengaturan
 
         abort_unless($atur, 404, 'Data Pengaturan tidak ditemukan.');
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('pengaturan.lihat', compact('atur'))->renderSections()))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
+            ->make(implode('', $app->view->make('pengaturan.lihat', compact('atur'))->renderSections()))
+            ->withHeaders(['Vary' => 'Accept']);
     }
 
     public function tambah()
@@ -137,7 +121,9 @@ class Pengaturan
             return $app->redirect->route('atur.data')->with('pesan', Rangka::statusBerhasil());
         }
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('pengaturan.tambah-ubah')->renderSections()))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
+            ->make(implode('', $app->view->make('pengaturan.tambah-ubah')->renderSections()))
+            ->withHeaders(['Vary' => 'Accept']);
     }
 
     public function ubah($uuid)
@@ -222,6 +208,8 @@ class Pengaturan
             return Excel::imporExcelDataPengaturan($fileexcel);
         };
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('pengaturan.unggah')->renderSections()))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
+            ->make(implode('', $app->view->make('pengaturan.unggah')->renderSections()))
+            ->withHeaders(['Vary' => 'Accept']);
     }
 }
