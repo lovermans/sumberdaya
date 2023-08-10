@@ -20,7 +20,9 @@ class SumberDaya
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('rangka'))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
+            ->make($app->view->make('rangka'))
+            ->withHeaders(['Vary' => 'Accept']);
     }
 
     public function mulaiAplikasi()
@@ -95,13 +97,17 @@ class SumberDaya
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('pwa-manifest'))->withHeaders(['Content-Type' => 'application/json']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
+            ->make($app->view->make('pwa-manifest'))
+            ->withHeaders(['Content-Type' => 'application/json']);
     }
 
     public function serviceWorker()
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('service-worker'))->withHeaders(['Content-Type' => 'application/javascript', 'Cache-Control' => 'no-cache']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
+            ->make($app->view->make('service-worker'))
+            ->withHeaders(['Content-Type' => 'application/javascript', 'Cache-Control' => 'no-cache']);
     }
 }
