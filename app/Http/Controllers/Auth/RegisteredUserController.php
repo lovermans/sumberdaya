@@ -24,12 +24,10 @@ class RegisteredUserController
         abort_unless($pengguna && str($pengguna?->sdm_hak_akses)->contains('SDM-PENGURUS'), 403);
 
         $aturs = Cache::ambilCacheAtur();
-        $permintaanSdms = SDMCache::ambilCachePermintaanTambahSDM();
-        $atasan = SDMCache::ambilCacheSDM();
 
         $data = [
-            'permintaanSdms' => $permintaanSdms,
-            'atasans' => $atasan,
+            'permintaanSdms' => SDMCache::ambilCachePermintaanTambahSDM(),
+            'atasans' => SDMCache::ambilCacheSDM(),
             'negaras' => $aturs->where('atur_jenis', 'NEGARA')->sortBy(['atur_butir', 'asc']),
             'kelamins' => $aturs->where('atur_jenis', 'KELAMIN')->sortBy(['atur_butir', 'asc']),
             'gdarahs' => $aturs->where('atur_jenis', 'GOLONGAN DARAH')->sortBy(['atur_butir', 'asc']),
