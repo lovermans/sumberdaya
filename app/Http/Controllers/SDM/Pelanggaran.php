@@ -2,167 +2,58 @@
 
 namespace App\Http\Controllers\SDM;
 
+use App\Interaksi\Cache;
+use App\Interaksi\Rangka;
 use Illuminate\Support\Arr;
 use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
-use App\Http\Controllers\SDM\Berkas;
-
+use App\Interaksi\SDM\SDMValidasi;
+use App\Interaksi\SDM\SDMDBQuery;
+use App\Interaksi\SDM\SDMExcel;
 
 class Pelanggaran
 {
-    public function index(Rule $rule, FungsiStatis $fungsiStatis, Berkas $berkas, $uuid = null)
+    public function index($uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
+        extract(Rangka::obyekPermintaanRangka(true));
+
         $str = str();
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $validator = $app->validator->make(
-            $reqs->all(),
-            [
-                'kata_kunci' => ['sometimes', 'nullable', 'string'],
-                'tgl_langgar_mulai' => ['sometimes', 'nullable', 'date'],
-                'tgl_langgar_sampai' => ['sometimes', 'nullable', 'required_with:tgl_langgar_mulai', 'date', 'after:tgl_langgar_mulai'],
-                'langgar_status.*' => ['sometimes', 'nullable', 'string', $rule->in(['DIPROSES', 'DIBATALKAN'])],
-                'langgar_penempatan.*' => ['sometimes', 'nullable', 'string'],
-                'status_sdm.*' => ['sometimes', 'nullable', 'string'],
-                'langgar_proses' => ['sometimes', 'nullable', 'string', $rule->in(['SELESAI', 'BELUM SELESAI'])],
-                'unduh' => ['sometimes', 'nullable', 'string', $rule->in(['excel'])],
-                'bph' => ['sometimes', 'nullable', 'numeric', $rule->in([25, 50, 75, 100])],
-                'urut.*' => ['sometimes', 'nullable', 'string']
-            ],
-            [
-                'tgl_langgar_mulai.*' => 'Tanggal Mulai Laporan wajib berupa tanggal valid.',
-                'tgl_langgar_sampai.*' => 'Tanggal Akhir Laporan wajib berupa tanggal valid dan lebih lama dari Tanggal Mulai.',
-                'langgar_status.*' => 'Status Laporan tidak sesuai daftar.',
-                'kata_kunci.*' => 'Kata Kunci Pencarian harus berupa karakter.',
-                'langgar_penempatan.*' => 'Lokasi #:position wajib berupa karakter.',
-                'status_sdm.*' => 'Status #:position wajib berupa karakter.',
-                'unduh.*' => 'Format ekspor tidak dikenali.',
-                'langgar_proses.*' => 'Proses Laporan tidak sesuai daftar.',
-                'bph.*' => 'Baris Per halaman tidak sesuai daftar.',
-                'urut.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.'
-            ]
-        );
+        $validator = SDMValidasi::validasiPencarianLapPelanggaranSDM([$reqs->all()]);
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.pelanggaran.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
 
+        $kataKunci = $reqs->kata_kunci;
+        $urutArray = $reqs->urut;
+        $kunciUrut = array_filter((array) $urutArray);
+        $uruts = $urutArray ? implode(',', $kunciUrut) : null;
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
-        $cacheAtur = $fungsiStatis->ambilCacheAtur();
-
-        $lokasis = $cacheAtur->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-            return $query->whereIn('atur_butir', $lingkupIjin)->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'asc']);
-        });
-
-        $urutArray = $reqs->urut;
-
-        $uruts = $urutArray ? implode(',', array_filter($urutArray)) : null;
-
-        $kataKunci = $reqs->kata_kunci;
-
-        $database = $app->db;
-
-        $kontrak = $this->dataKontrak($database);
-
-        $sanksi = $this->dataSanksi($database);
-
-        $cari = $this->dataDasar($database)->addSelect('a.sdm_uuid as langgar_tsdm_uuid', 'a.sdm_nama as langgar_tsdm_nama', 'a.sdm_tgl_berhenti as langgar_tsdm_tgl_berhenti', 'kontrak_t.penempatan_lokasi as langgar_tlokasi', 'kontrak_t.penempatan_posisi as langgar_tposisi', 'kontrak_t.penempatan_kontrak as langgar_tkontrak', 'b.sdm_uuid as langgar_psdm_uuid', 'b.sdm_nama as langgar_psdm_nama', 'b.sdm_tgl_berhenti as langgar_psdm_tgl_berhenti', 'kontrak_p.penempatan_lokasi as langgar_plokasi', 'kontrak_p.penempatan_posisi as langgar_pposisi', 'kontrak_p.penempatan_kontrak as langgar_pkontrak', 'sanksilama.sanksi_jenis as sanksi_aktif_sebelumnya', 'sanksilama.sanksi_lap_no as lap_no_sebelumnya', 'sanksilama.sanksi_selesai as sanksi_selesai_sebelumnya', 'sanksisdms.sanksi_uuid as final_sanksi_uuid', 'sanksisdms.sanksi_jenis as final_sanksi_jenis', 'sanksisdms.sanksi_mulai as final_sanksi_mulai', 'sanksisdms.sanksi_selesai as final_sanksi_selesai', 'sanksisdms.sanksi_tambahan as final_sanksi_tambahan', 'sanksisdms.sanksi_keterangan as final_sanksi_keterangan')
-            ->join('sdms as a', 'langgar_no_absen', '=', 'a.sdm_no_absen')
-            ->join('sdms as b', 'langgar_pelapor', '=', 'b.sdm_no_absen')
-            ->leftJoinSub($kontrak, 'kontrak_t', function ($join) {
-                $join->on('langgar_no_absen', '=', 'kontrak_t.penempatan_no_absen');
-            })
-            ->leftJoinSub($kontrak, 'kontrak_p', function ($join) {
-                $join->on('langgar_pelapor', '=', 'kontrak_p.penempatan_no_absen');
-            })
-            ->leftJoinSub($sanksi, 'sanksilama', function ($join) {
-                $join->on('langgar_no_absen', '=', 'sanksilama.sanksi_no_absen')->on('sanksilama.sanksi_selesai', '>=', 'langgar_tanggal')->on('langgar_lap_no', '!=', 'sanksilama.sanksi_lap_no');
-            })
-            ->leftJoin('sanksisdms', function ($join) {
-                $join->on('langgar_no_absen', '=', 'sanksisdms.sanksi_no_absen')->on('langgar_lap_no', '=', 'sanksisdms.sanksi_lap_no');
-            })
-            ->when($reqs->langgar_proses == 'SELESAI', function ($query) {
-                $query->whereNotNull('sanksisdms.sanksi_jenis')->where('langgar_status', '=', 'DIPROSES');
-            })
-            ->when($reqs->langgar_proses == 'BELUM SELESAI', function ($query) {
-                $query->whereNull('sanksisdms.sanksi_jenis')->where('langgar_status', '=', 'DIPROSES');
-            })
-            ->when($reqs->langgar_status, function ($query) use ($reqs) {
-                $query->whereIn('langgar_status', (array) $reqs->langgar_status);
-            })
-            ->when($reqs->langgar_penempatan, function ($query) use ($reqs) {
-                $query->where(function ($group) use ($reqs) {
-                    $group->whereIn('kontrak_t.penempatan_lokasi', (array) $reqs->langgar_penempatan)
-                        ->orWhereIn('kontrak_p.penempatan_lokasi', (array) $reqs->langgar_penempatan);
-                });
-            })
-            ->when($reqs->status_sdm, function ($query) use ($reqs) {
-                $query->where(function ($group) use ($reqs) {
-                    $group->whereIn('kontrak_t.penempatan_kontrak', (array) $reqs->status_sdm);
-                });
-            })
-            ->when($kataKunci, function ($query) use ($kataKunci) {
-                $query->where(function ($group) use ($kataKunci) {
-                    $group->where('langgar_lap_no', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('langgar_no_absen', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('langgar_pelapor', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('a.sdm_nama', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('b.sdm_nama', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('langgar_isi', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('langgar_keterangan', 'like', '%' . $kataKunci . '%');
-                });
-            })
-            ->when($reqs->tgl_langgar_mulai && $reqs->tgl_langgar_sampai, function ($query) use ($reqs) {
-                $query->whereBetween('langgar_tanggal', [$reqs->tgl_langgar_mulai, $reqs->tgl_langgar_sampai]);
-            })
-            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-                $query->where(function ($group) use ($lingkupIjin) {
-                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin)
-                        ->orWhereIn('kontrak_p.penempatan_lokasi', $lingkupIjin);
-                });
-            })
-            ->when(
-                $uruts,
-                function ($query, $uruts) {
-                    $query->orderByRaw($uruts);
-                },
-                function ($query) {
-                    $query->orderBy('langgar_lap_no', 'desc');
-                }
-            );
+        $cari = SDMDBQuery::saringLapPelanggaranSDM($reqs, $kataKunci, $uruts, $lingkupIjin);
 
         if ($reqs->unduh == 'excel') {
-            return $berkas->unduhIndexPelanggaranSDM($cari, $app);
+            return SDMExcel::eksporExcelPencarianLapPelanggaranSDM($cari);
         }
 
-        $jumlahOS = $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'like', 'OS-%')->count();
-        $jumlahOrganik = $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'not like', 'OS-%')->count();
-
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'pelanggaran-sdm_tabels', 'uuid' => $uuid ?? '']);;
-
-        $kunciUrut = array_filter((array) $urutArray);
-
-        $urutTanggal = $str->contains($uruts, 'langgar_tanggal');
-        $indexTanggal = (head(array_keys($kunciUrut, 'langgar_tanggal ASC')) + head(array_keys($kunciUrut, 'langgar_tanggal DESC')) + 1);
-        $urutNomor = $str->contains($uruts, 'langgar_lap_no');
-        $indexNomor = (head(array_keys($kunciUrut, 'langgar_lap_no ASC')) + head(array_keys($kunciUrut, 'langgar_lap_no DESC')) + 1);
+        $cacheAtur = Cache::ambilCacheAtur();
 
         $data = [
-            'tabels' => $tabels,
-            'lokasis' => $lokasis,
+            'tabels' => $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'pelanggaran-sdm_tabels', 'uuid' => $uuid ?? '']),
+            'lokasis' => $cacheAtur->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                return $query->whereIn('atur_butir', $lingkupIjin)->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'asc']);
+            }),
             'statusSDMs' => $cacheAtur->where('atur_jenis', 'STATUS KONTRAK')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'asc']),
-            'urutTanggal' => $urutTanggal,
-            'indexTanggal' => $indexTanggal,
-            'urutNomor' => $urutNomor,
-            'indexNomor' => $indexNomor,
+            'urutTanggal' => $str->contains($uruts, 'langgar_tanggal'),
+            'indexTanggal' => (head(array_keys($kunciUrut, 'langgar_tanggal ASC')) + head(array_keys($kunciUrut, 'langgar_tanggal DESC')) + 1),
+            'urutNomor' => $str->contains($uruts, 'langgar_lap_no'),
+            'indexNomor' => (head(array_keys($kunciUrut, 'langgar_lap_no ASC')) + head(array_keys($kunciUrut, 'langgar_lap_no DESC')) + 1),
             'halamanAkun' => $uuid ?? '',
-            'jumlahOS' => $jumlahOS,
-            'jumlahOrganik' => $jumlahOrganik
+            'jumlahOS' => $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'like', 'OS-%')->count(),
+            'jumlahOrganik' => $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'not like', 'OS-%')->count()
         ];
 
         if (!isset($uuid)) {
@@ -171,6 +62,7 @@ class Pelanggaran
 
         $HtmlPenuh = $app->view->make('sdm.pelanggaran.data', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+
         return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
             ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
             : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);

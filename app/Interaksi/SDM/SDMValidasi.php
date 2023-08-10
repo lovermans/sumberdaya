@@ -226,7 +226,8 @@ class SDMValidasi
         return [
             '*.kata_kunci' => ['sometimes', 'nullable', 'string'],
             '*.bph' => ['sometimes', 'nullable', 'numeric', Rule::in([25, 50, 75, 100])],
-            '*.urut.*' => ['sometimes', 'nullable', 'string']
+            '*.urut.*' => ['sometimes', 'nullable', 'string'],
+            '*.unduh' => ['sometimes', 'nullable', 'string', Rule::in(['excel'])],
         ];
     }
 
@@ -235,7 +236,8 @@ class SDMValidasi
         return [
             '*.kata_kunci.*' => 'Kata Kunci Pencarian wajib berupa karakter.',
             '*.bph.*' => 'Baris Per halaman wajib sesuai daftar.',
-            '*.urut.*' => 'Butir Pengaturan urutan ke-:position wajib berupa karakter.'
+            '*.urut.*' => 'Butir Pengaturan urutan ke-:position wajib berupa karakter.',
+            '*.unduh.*' => 'Parameter Pencarian Unduhan urutan ke-:position tidak sesuai daftar.'
         ];
     }
 
@@ -433,6 +435,33 @@ class SDMValidasi
             $permintaan,
             $aturan,
             static::pesanKesalahanValidasiPermintaanTambahSDM()
+        );
+    }
+
+    public static function validasiPencarianLapPelanggaranSDM($permintaan)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            [
+                ...static::dasarValidasiPencarianSDM(),
+                '*.tgl_langgar_mulai' => ['sometimes', 'nullable', 'date'],
+                '*.tgl_langgar_sampai' => ['sometimes', 'nullable', 'required_with:tgl_langgar_mulai', 'date', 'after:tgl_langgar_mulai'],
+                '*.langgar_status.*' => ['sometimes', 'nullable', 'string', Rule::in(['DIPROSES', 'DIBATALKAN'])],
+                '*.langgar_penempatan.*' => ['sometimes', 'nullable', 'string'],
+                '*.status_sdm.*' => ['sometimes', 'nullable', 'string'],
+                '*.langgar_proses' => ['sometimes', 'nullable', 'string', Rule::in(['SELESAI', 'BELUM SELESAI'])],
+            ],
+            [
+                ...static::pesanKesalahanValidasiPencarianSDM(),
+                '*.tgl_langgar_mulai.*' => 'Tanggal Mulai Laporan urutan ke-:position wajib berupa tanggal valid.',
+                '*.tgl_langgar_sampai.*' => 'Tanggal Akhir Laporan urutan ke-:position wajib berupa tanggal valid dan lebih lama dari Tanggal Mulai Laporan.',
+                '*.langgar_status.*' => 'Status Laporan urutan ke-:position tidak sesuai daftar.',
+                '*.langgar_penempatan.*' => 'Lokasi urutan ke-:position wajib berupa karakter.',
+                '*.status_sdm.*' => 'Status urutan ke-:position wajib berupa karakter.',
+                '*.langgar_proses.*' => 'Proses Laporan urutan ke-:position tidak sesuai daftar.',
+            ]
         );
     }
 }

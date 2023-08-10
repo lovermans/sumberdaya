@@ -138,17 +138,15 @@ class SDMDBQuery
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $database = $app->db;
-
-        return $database->query()
+        return $app->db->query()
             ->select(
                 'penempatan_no_absen',
                 'penempatan_lokasi',
                 'penempatan_posisi',
                 'penempatan_kontrak'
             )
-            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
-                $query->select($database->raw('MAX(penempatan_mulai)'))
+            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) {
+                $query->selectRaw('MAX(penempatan_mulai)')
                     ->from('penempatans as p2')
                     ->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
             });
@@ -558,9 +556,7 @@ class SDMDBQuery
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $database = $app->db;
-
-        return $database->query()
+        return $app->db->query()
             ->select(
                 'sanksi_no_absen',
                 'sanksi_jenis',
@@ -569,8 +565,8 @@ class SDMDBQuery
                 'sanksi_mulai'
             )
             ->from('sanksisdms as p1')
-            ->where('sanksi_mulai', '=', function ($query) use ($database) {
-                $query->select($database->raw('MAX(sanksi_mulai)'))
+            ->where('sanksi_mulai', '=', function ($query) {
+                $query->selectRaw('MAX(sanksi_mulai)')
                     ->from('sanksisdms as p2')
                     ->whereColumn('p1.sanksi_no_absen', 'p2.sanksi_no_absen');
             });
@@ -836,5 +832,101 @@ class SDMDBQuery
                 ['posisi_wlkp', 'posisi_status', 'posisi_keterangan', 'posisi_id_pengunggah', 'posisi_diunggah']
             );
         });
+    }
+
+    public static function saringLapPelanggaranSDM($permintaan, $kataKunci, $uruts, $lingkupIjin)
+    {
+        return static::ambilLaporanPelanggaranSDM()
+            ->addSelect(
+                'a.sdm_uuid as langgar_tsdm_uuid',
+                'a.sdm_nama as langgar_tsdm_nama',
+                'a.sdm_tgl_berhenti as langgar_tsdm_tgl_berhenti',
+                'kontrak_t.penempatan_lokasi as langgar_tlokasi',
+                'kontrak_t.penempatan_posisi as langgar_tposisi',
+                'kontrak_t.penempatan_kontrak as langgar_tkontrak',
+                'b.sdm_uuid as langgar_psdm_uuid',
+                'b.sdm_nama as langgar_psdm_nama',
+                'b.sdm_tgl_berhenti as langgar_psdm_tgl_berhenti',
+                'kontrak_p.penempatan_lokasi as langgar_plokasi',
+                'kontrak_p.penempatan_posisi as langgar_pposisi',
+                'kontrak_p.penempatan_kontrak as langgar_pkontrak',
+                'sanksilama.sanksi_jenis as sanksi_aktif_sebelumnya',
+                'sanksilama.sanksi_lap_no as lap_no_sebelumnya',
+                'sanksilama.sanksi_selesai as sanksi_selesai_sebelumnya',
+                'sanksisdms.sanksi_uuid as final_sanksi_uuid',
+                'sanksisdms.sanksi_jenis as final_sanksi_jenis',
+                'sanksisdms.sanksi_mulai as final_sanksi_mulai',
+                'sanksisdms.sanksi_selesai as final_sanksi_selesai',
+                'sanksisdms.sanksi_tambahan as final_sanksi_tambahan',
+                'sanksisdms.sanksi_keterangan as final_sanksi_keterangan'
+            )
+            ->join('sdms as a', 'langgar_no_absen', '=', 'a.sdm_no_absen')
+            ->join('sdms as b', 'langgar_pelapor', '=', 'b.sdm_no_absen')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak_t', function ($join) {
+                $join->on('langgar_no_absen', '=', 'kontrak_t.penempatan_no_absen');
+            })
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak_p', function ($join) {
+                $join->on('langgar_pelapor', '=', 'kontrak_p.penempatan_no_absen');
+            })
+            ->leftJoinSub(static::ambilSanksiSDMTerkini(), 'sanksilama', function ($join) {
+                $join->on('langgar_no_absen', '=', 'sanksilama.sanksi_no_absen')
+                    ->on('sanksilama.sanksi_selesai', '>=', 'langgar_tanggal')
+                    ->on('langgar_lap_no', '!=', 'sanksilama.sanksi_lap_no');
+            })
+            ->leftJoin('sanksisdms', function ($join) {
+                $join->on('langgar_no_absen', '=', 'sanksisdms.sanksi_no_absen')
+                    ->on('langgar_lap_no', '=', 'sanksisdms.sanksi_lap_no');
+            })
+            ->when($permintaan->langgar_proses == 'SELESAI', function ($query) {
+                $query->whereNotNull('sanksisdms.sanksi_jenis')
+                    ->where('langgar_status', '=', 'DIPROSES');
+            })
+            ->when($permintaan->langgar_proses == 'BELUM SELESAI', function ($query) {
+                $query->whereNull('sanksisdms.sanksi_jenis')
+                    ->where('langgar_status', '=', 'DIPROSES');
+            })
+            ->when($permintaan->langgar_status, function ($query) use ($permintaan) {
+                $query->whereIn('langgar_status', (array) $permintaan->langgar_status);
+            })
+            ->when($permintaan->langgar_penempatan, function ($query) use ($permintaan) {
+                $query->where(function ($group) use ($permintaan) {
+                    $group->whereIn('kontrak_t.penempatan_lokasi', (array) $permintaan->langgar_penempatan)
+                        ->orWhereIn('kontrak_p.penempatan_lokasi', (array) $permintaan->langgar_penempatan);
+                });
+            })
+            ->when($permintaan->status_sdm, function ($query) use ($permintaan) {
+                $query->where(function ($group) use ($permintaan) {
+                    $group->whereIn('kontrak_t.penempatan_kontrak', (array) $permintaan->status_sdm);
+                });
+            })
+            ->when($kataKunci, function ($query) use ($kataKunci) {
+                $query->where(function ($group) use ($kataKunci) {
+                    $group->where('langgar_lap_no', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('langgar_no_absen', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('langgar_pelapor', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('a.sdm_nama', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('b.sdm_nama', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('langgar_isi', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('langgar_keterangan', 'like', '%' . $kataKunci . '%');
+                });
+            })
+            ->when($permintaan->tgl_langgar_mulai && $permintaan->tgl_langgar_sampai, function ($query) use ($permintaan) {
+                $query->whereBetween('langgar_tanggal', [$permintaan->tgl_langgar_mulai, $permintaan->tgl_langgar_sampai]);
+            })
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin)
+                        ->orWhereIn('kontrak_p.penempatan_lokasi', $lingkupIjin);
+                });
+            })
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->orderBy('langgar_lap_no', 'desc');
+                }
+            );
     }
 }
