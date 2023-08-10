@@ -97,8 +97,8 @@
 
             <input id="penempatan_selesai" type="date" name="penempatan_selesai"
                 value="{{ $rekRangka->old('penempatan_selesai', $penem->penempatan_selesai ?? null) }}"
-                @required($strRangka->contains($rekRangka->old('penempatan_kontrak', $penem->penempatan_kontrak ??
-            null), ['PKWT', 'PERCOBAAN']))>
+                @required(!$strRangka->contains($rekRangka->old('penempatan_kontrak', $penem->penempatan_kontrak ??
+            null), ['PKWTT', 'OS-']))>
             <span class="t-bantu">Kosongi jika PKWTT atau OS</span>
         </div>
 
