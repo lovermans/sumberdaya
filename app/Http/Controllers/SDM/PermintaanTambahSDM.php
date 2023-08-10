@@ -31,11 +31,11 @@ class PermintaanTambahSDM
             return $app->redirect->route('sdm.permintaan-tambah-sdm.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
 
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
-
-        $urutArray = $reqs->urut;
-        $uruts = $urutArray ? implode(',', array_filter($urutArray)) : null;
         $kataKunci = $reqs->kata_kunci;
+        $urutArray = $reqs->urut;
+        $kunciUrut = array_filter((array) $urutArray);
+        $uruts = $urutArray ? implode(',', $kunciUrut) : null;
+        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
         $cari = SDMDBQuery::ambilPencarianPermintaanTambahSDM($reqs, $kataKunci, $uruts, $lingkupIjin);
 
@@ -47,36 +47,23 @@ class PermintaanTambahSDM
         $terpenuhi = $cari->clone()->where('tambahsdm_status', '=', 'DISETUJUI')->sum('tambahsdm_terpenuhi');
         $selisih = $terpenuhi - $kebutuhan;
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'tambah_sdm_tabels']);
-
-        $kunciUrut = array_filter((array) $urutArray);
-
-        $urutPenempatan = $str->contains($uruts, 'tambahsdm_penempatan');
-        $indexPenempatan = (head(array_keys($kunciUrut, 'tambahsdm_penempatan ASC')) + head(array_keys($kunciUrut, 'tambahsdm_penempatan DESC')) + 1);
-        $urutPosisi = $str->contains($uruts, 'tambahsdm_posisi');
-        $indexPosisi = (head(array_keys($kunciUrut, 'tambahsdm_posisi ASC')) + head(array_keys($kunciUrut, 'tambahsdm_posisi DESC')) + 1);
-        $urutJumlah = $str->contains($uruts, 'tambahsdm_jumlah');
-        $indexJumlah = (head(array_keys($kunciUrut, 'tambahsdm_jumlah ASC')) + head(array_keys($kunciUrut, 'tambahsdm_jumlah DESC')) + 1);
-        $urutNomor = $str->contains($uruts, 'tambahsdm_no');
-        $indexNomor = (head(array_keys($kunciUrut, 'tambahsdm_no ASC')) + head(array_keys($kunciUrut, 'tambahsdm_no DESC')) + 1);
-
         $cacheAtur = Cache::ambilCacheAtur();
         $posisis = SDMCache::ambilCachePosisiSDM();
 
         $data = [
-            'tabels' => $tabels,
+            'tabels' => $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'tambah_sdm_tabels']),
             'statuses' => $cacheAtur->where('atur_jenis', 'STATUS PERMOHONAN')->sortBy(['atur_butir', 'asc']),
             'lokasis' => $cacheAtur->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 return $query->whereIn('atur_butir', $lingkupIjin)->sortBy(['atur_butir', 'asc']);
             }),
-            'urutPenempatan' => $urutPenempatan,
-            'indexPenempatan' => $indexPenempatan,
-            'urutPosisi' => $urutPosisi,
-            'indexPosisi' => $indexPosisi,
-            'urutJumlah' => $urutJumlah,
-            'indexJumlah' => $indexJumlah,
-            'urutNomor' => $urutNomor,
-            'indexNomor' => $indexNomor,
+            'urutPenempatan' => $str->contains($uruts, 'tambahsdm_penempatan'),
+            'indexPenempatan' => (head(array_keys($kunciUrut, 'tambahsdm_penempatan ASC')) + head(array_keys($kunciUrut, 'tambahsdm_penempatan DESC')) + 1),
+            'urutPosisi' => $str->contains($uruts, 'tambahsdm_posisi'),
+            'indexPosisi' => (head(array_keys($kunciUrut, 'tambahsdm_posisi ASC')) + head(array_keys($kunciUrut, 'tambahsdm_posisi DESC')) + 1),
+            'urutJumlah' => $str->contains($uruts, 'tambahsdm_jumlah'),
+            'indexJumlah' => (head(array_keys($kunciUrut, 'tambahsdm_jumlah ASC')) + head(array_keys($kunciUrut, 'tambahsdm_jumlah DESC')) + 1),
+            'urutNomor' => $str->contains($uruts, 'tambahsdm_no'),
+            'indexNomor' => (head(array_keys($kunciUrut, 'tambahsdm_no ASC')) + head(array_keys($kunciUrut, 'tambahsdm_no DESC')) + 1),
             'posisis' => $posisis,
             'kebutuhan' => $kebutuhan,
             'terpenuhi' => $terpenuhi,

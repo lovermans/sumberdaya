@@ -84,7 +84,7 @@ class SDMExcel
         return EksporExcel::eksporExcelStream(...$argumen);
     }
 
-    public static function eksporExcelPencarianLapPelanggaranSDM($data)
+    public static function eksporExcelPencarianPermintaanTambahSDM($data)
     {
         $spreadsheet = new Spreadsheet();
         $binder = new CustomValueBinder();
@@ -125,7 +125,7 @@ class SDMExcel
         return EksporExcel::eksporExcelStream(...$argumen);
     }
 
-    public static function eksporExcelPencarianLapPelanggaeanSDM($data)
+    public static function eksporExcelPencarianLapPelanggaranSDM($data)
     {
         $spreadsheet = new Spreadsheet();
         $binder = new CustomValueBinder();
