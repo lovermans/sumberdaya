@@ -80,8 +80,6 @@ class Umum
 
         abort_unless($pengguna && $uuid, 401);
 
-        $storage = $app->filesystem;
-
         $ijin_akses = $pengguna->sdm_ijin_akses;
         $lingkup = array_filter(explode(',', $ijin_akses));
 
@@ -117,7 +115,16 @@ class Umum
         $lingkup_akses = $lingkup_lokasi->unique()->intersect($lingkup)->count();
         $str = str();
 
-        abort_unless(($str->contains($pengguna->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) && (blank($ijin_akses) || $lingkup_lokasi->isEmpty() || ($lingkup_akses > 0))) || ($no_absen_sdm == $akun->sdm_no_absen) || ($akun->sdm_no_absen == $no_absen_atasan) || ($akun->sdm_id_atasan == $no_absen_sdm) || (!blank($no_absen_atasan) && ($akun->sdm_id_atasan == $no_absen_atasan)), 403, 'Ijin akses dibatasi.');
+        abort_unless(
+            ($str->contains($pengguna->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN'])
+                && (blank($ijin_akses) || $lingkup_lokasi->isEmpty() || ($lingkup_akses > 0)))
+                || ($no_absen_sdm == $akun->sdm_no_absen)
+                || ($akun->sdm_no_absen == $no_absen_atasan)
+                || ($akun->sdm_id_atasan == $no_absen_sdm)
+                || (!blank($no_absen_atasan) && ($akun->sdm_id_atasan == $no_absen_atasan)),
+            403,
+            'Ijin akses dibatasi.'
+        );
 
         $no_wa_tst = $str->of($akun->sdm_telepon)->replace('-', '')->replace(' ', '');
 
@@ -239,13 +246,11 @@ class Umum
         }
 
         $aturs = Cache::ambilCacheAtur();
-        $permintaanSdms = SDMCache::ambilCachePermintaanTambahSDM();
-        $atasan = SDMCache::ambilCacheSDM();
 
         $data = [
             'sdm' => $akun,
-            'permintaanSdms' => $permintaanSdms,
-            'atasans' => $atasan,
+            'permintaanSdms' => SDMCache::ambilCachePermintaanTambahSDM(),
+            'atasans' => SDMCache::ambilCacheSDM(),
             'negaras' => $aturs->where('atur_jenis', 'NEGARA')->sortBy(['atur_butir', 'asc']),
             'kelamins' => $aturs->where('atur_jenis', 'KELAMIN')->sortBy(['atur_butir', 'asc']),
             'gdarahs' => $aturs->where('atur_jenis', 'GOLONGAN DARAH')->sortBy(['atur_butir', 'asc']),
@@ -339,7 +344,9 @@ class Umum
             return SDMExcel::imporExcelDataSDM($fileexcel);
         }
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make(implode('', $app->view->make('unggah')->renderSections()))->withHeaders(['Vary' => 'Accept']);
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
+            ->make(implode('', $app->view->make('unggah')->renderSections()))
+            ->withHeaders(['Vary' => 'Accept']);
     }
 
     public function panduan()
