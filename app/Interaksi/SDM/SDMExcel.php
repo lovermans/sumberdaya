@@ -49,15 +49,14 @@ class SDMExcel
 
         $reader = new ExcelReader();
         $spreadsheet = $reader->load($app->storagePath('app/contoh/unggah-umum.xlsx'));
-        $binder = new StringValueBinder();
         $worksheet = $spreadsheet->getSheet(1);
 
         $argumen = [
             'namaBerkas' => 'unggahprofilsdm-',
             'dataEkspor' => $data,
             'pengecualian' => ['penempatan_lokasi'],
-            'pesanData' =>  ' data profil SDM',
-            'binder' => $binder,
+            'pesanData' => ' data profil SDM',
+            'binder' => new StringValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet
         ];
@@ -68,15 +67,14 @@ class SDMExcel
     public static function eksporExcelPencarianPosisiSDM($data)
     {
         $spreadsheet = new Spreadsheet();
-        $binder = new CustomValueBinder();
         $worksheet = $spreadsheet->getActiveSheet();
 
         $argumen = [
             'namaBerkas' => 'eksporjabatansdm-',
             'dataEkspor' => $data,
             'pengecualian' => ['posisi_uuid'],
-            'pesanData' =>  ' data jabatan SDM',
-            'binder' => $binder,
+            'pesanData' => ' data jabatan SDM',
+            'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet
         ];
@@ -87,15 +85,14 @@ class SDMExcel
     public static function eksporExcelPencarianPermintaanTambahSDM($data)
     {
         $spreadsheet = new Spreadsheet();
-        $binder = new CustomValueBinder();
         $worksheet = $spreadsheet->getActiveSheet();
 
         $argumen = [
             'namaBerkas' => 'eksporpermintaansdm-',
             'dataEkspor' => $data,
             'pengecualian' => ['sdm_uuid', 'tambahsdm_uuid'],
-            'pesanData' =>  ' data permintaan tambah SDM',
-            'binder' => $binder,
+            'pesanData' => ' data permintaan tambah SDM',
+            'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet
         ];
@@ -109,15 +106,14 @@ class SDMExcel
 
         $reader = new ExcelReader();
         $spreadsheet = $reader->load($app->storagePath('app/contoh/unggah-umum.xlsx'));
-        $binder = new CustomValueBinder();
         $worksheet = $spreadsheet->getSheet(1);
 
         $argumen = [
             'namaBerkas' => 'unggahjabatansdm-',
             'dataEkspor' => $data,
             'pengecualian' => ['posisi_uuid'],
-            'pesanData' =>  ' data jabatan SDM',
-            'binder' => $binder,
+            'pesanData' => ' data jabatan SDM',
+            'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet
         ];
@@ -128,16 +124,19 @@ class SDMExcel
     public static function eksporExcelPencarianLapPelanggaranSDM($data)
     {
         $spreadsheet = new Spreadsheet();
-        $binder = new CustomValueBinder();
         $worksheet = $spreadsheet->getActiveSheet();
 
         $argumen = [
             'namaBerkas' => 'eksporpelanggaransdm-',
             'dataEkspor' => $data,
-            'pengecualian' => ['langgar_uuid', 'langgar_tsdm_uuid', 'langgar_psdm_uuid', 'final_sanksi_uuid
-            '],
-            'pesanData' =>  ' data laporan pelanggaran SDM',
-            'binder' => $binder,
+            'pengecualian' => [
+                'langgar_uuid',
+                'langgar_tsdm_uuid',
+                'langgar_psdm_uuid',
+                'final_sanksi_uuid'
+            ],
+            'pesanData' => ' data laporan pelanggaran SDM',
+            'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet
         ];

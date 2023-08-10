@@ -11,7 +11,6 @@ class Excel
     public static function eksporExcelDatabasePengaturan($data)
     {
         $spreadsheet = new Spreadsheet();
-        $binder = new CustomValueBinder();
         $worksheet = $spreadsheet->getActiveSheet();
 
         $argumen = [
@@ -19,7 +18,7 @@ class Excel
             'dataEkspor' => $data,
             'pengecualian' => ['atur_uuid'],
             'pesanData' =>  ' data pengaturan aplikasi',
-            'binder' => $binder,
+            'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet
         ];
@@ -33,7 +32,6 @@ class Excel
 
         $reader = new ExcelReader();
         $spreadsheet = $reader->load($app->storagePath('app/contoh/unggah-umum.xlsx'));
-        $binder = new CustomValueBinder();
         $worksheet = $spreadsheet->getSheet(1);
 
         $argumen = [
@@ -41,7 +39,7 @@ class Excel
             'dataEkspor' => $data,
             'pengecualian' => ['atur_uuid'],
             'pesanData' =>  ' data pengaturan aplikasi',
-            'binder' => $binder,
+            'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet
         ];
