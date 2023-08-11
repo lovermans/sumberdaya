@@ -129,11 +129,7 @@ class Posisi
             return $app->redirect->route('sdm.posisi.data')->with('pesan', Rangka::statusBerhasil());
         }
 
-        $data = [
-            'posisis' => SDMCache::ambilCachePosisiSDM(),
-        ];
-
-        $HtmlPenuh = $app->view->make('sdm.posisi.tambah-ubah', $data);
+        $HtmlPenuh = $app->view->make('sdm.posisi.tambah-ubah', ['posisis' => SDMCache::ambilCachePosisiSDM()]);
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
 
         return $reqs->pjax()

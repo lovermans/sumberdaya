@@ -177,11 +177,7 @@ class Pengaturan
                 : $redirect->route('atur.data')->with('pesan', $pesan);
         }
 
-        $data = [
-            'atur' => $atur,
-        ];
-
-        return $tanggapan->make(implode('', $halaman->make('pengaturan.tambah-ubah', $data)->renderSections()))->withHeaders(['Vary' => 'Accept']);
+        return $tanggapan->make(implode('', $halaman->make('pengaturan.tambah-ubah', compact('atur'))->renderSections()))->withHeaders(['Vary' => 'Accept']);
     }
 
     public function unggah()
