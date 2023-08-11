@@ -126,52 +126,20 @@ class Pelanggaran
 
     public function lihat($uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
+        extract(Rangka::obyekPermintaanRangka(true));
 
         abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
-
-        $database = $app->db;
-
-        $kontrak = $this->dataKontrak($database);
-
-        $sanksi = $this->dataSanksi($database);
-
-        $langgar = $this->dataDasar($database)->addSelect('a.sdm_uuid as langgar_tsdm_uuid', 'a.sdm_nama as langgar_tsdm_nama', 'a.sdm_tgl_berhenti as langgar_tsdm_tgl_berhenti', 'kontrak_t.penempatan_lokasi as langgar_tlokasi', 'kontrak_t.penempatan_posisi as langgar_tposisi', 'kontrak_t.penempatan_kontrak as langgar_tkontrak', 'b.sdm_uuid as langgar_psdm_uuid', 'b.sdm_nama as langgar_psdm_nama', 'b.sdm_tgl_berhenti as langgar_psdm_tgl_berhenti', 'kontrak_p.penempatan_lokasi as langgar_plokasi', 'kontrak_p.penempatan_posisi as langgar_pposisi', 'kontrak_p.penempatan_kontrak as langgar_pkontrak', 'sanksilama.sanksi_jenis as sanksi_aktif_sebelumnya', 'sanksilama.sanksi_lap_no as lap_no_sebelumnya', 'sanksilama.sanksi_mulai as sanksi_mulai_sebelumnya', 'sanksilama.sanksi_selesai as sanksi_selesai_sebelumnya', 'sanksisdms.sanksi_uuid as final_sanksi_uuid', 'sanksisdms.sanksi_jenis as final_sanksi_jenis', 'sanksisdms.sanksi_mulai as final_sanksi_mulai', 'sanksisdms.sanksi_selesai as final_sanksi_selesai', 'sanksisdms.sanksi_tambahan as final_sanksi_tambahan', 'sanksisdms.sanksi_keterangan as final_sanksi_keterangan')
-            ->join('sdms as a', 'langgar_no_absen', '=', 'a.sdm_no_absen')
-            ->join('sdms as b', 'langgar_pelapor', '=', 'b.sdm_no_absen')
-            ->leftJoinSub($kontrak, 'kontrak_t', function ($join) {
-                $join->on('langgar_no_absen', '=', 'kontrak_t.penempatan_no_absen');
-            })
-            ->leftJoinSub($kontrak, 'kontrak_p', function ($join) {
-                $join->on('langgar_pelapor', '=', 'kontrak_p.penempatan_no_absen');
-            })
-            ->leftJoinSub($sanksi, 'sanksilama', function ($join) {
-                $join->on('langgar_no_absen', '=', 'sanksilama.sanksi_no_absen')->on('sanksilama.sanksi_selesai', '>=', 'langgar_tanggal')->on('langgar_lap_no', '!=', 'sanksilama.sanksi_lap_no');
-            })
-            ->leftJoin('sanksisdms', function ($join) {
-                $join->on('langgar_no_absen', '=', 'sanksisdms.sanksi_no_absen')->on('langgar_lap_no', '=', 'sanksisdms.sanksi_lap_no');
-            })
-            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-                $query->where(function ($group) use ($lingkupIjin) {
-                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin)
-                        ->orWhereIn('kontrak_p.penempatan_lokasi', $lingkupIjin);
-                });
-            })
-            ->where('langgar_uuid', $uuid)->first();
+        $langgar = SDMDBQuery::ambilPelanggaran_SanksiSDM($uuid, array_filter(explode(',', $pengguna->sdm_ijin_akses)));
 
         abort_unless($langgar, 404, 'Data Laporan Pelanggaran tidak ditemukan.');
 
-        $data = [
-            'langgar' => $langgar
-        ];
-
-        $HtmlPenuh = $app->view->make('sdm.pelanggaran.lihat', $data);
+        $HtmlPenuh = $app->view->make('sdm.pelanggaran.lihat', compact('langgar'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 
     public function tambah(FungsiStatis $fungsiStatis)

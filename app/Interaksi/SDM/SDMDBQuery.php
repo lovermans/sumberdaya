@@ -834,7 +834,7 @@ class SDMDBQuery
         });
     }
 
-    public static function saringLapPelanggaranSDM($permintaan, $kataKunci, $uruts, $lingkupIjin)
+    public static function ambilDBPelanggaran_SanksiSDM($lingkupIjin = null)
     {
         return static::ambilLaporanPelanggaranSDM()
             ->addSelect(
@@ -852,6 +852,7 @@ class SDMDBQuery
                 'kontrak_p.penempatan_kontrak as langgar_pkontrak',
                 'sanksilama.sanksi_jenis as sanksi_aktif_sebelumnya',
                 'sanksilama.sanksi_lap_no as lap_no_sebelumnya',
+                'sanksilama.sanksi_mulai as sanksi_mulai_sebelumnya',
                 'sanksilama.sanksi_selesai as sanksi_selesai_sebelumnya',
                 'sanksisdms.sanksi_uuid as final_sanksi_uuid',
                 'sanksisdms.sanksi_jenis as final_sanksi_jenis',
@@ -877,6 +878,17 @@ class SDMDBQuery
                 $join->on('langgar_no_absen', '=', 'sanksisdms.sanksi_no_absen')
                     ->on('langgar_lap_no', '=', 'sanksisdms.sanksi_lap_no');
             })
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin)
+                        ->orWhereIn('kontrak_p.penempatan_lokasi', $lingkupIjin);
+                });
+            });
+    }
+
+    public static function saringLapPelanggaranSDM($permintaan, $kataKunci, $uruts, $lingkupIjin)
+    {
+        return static::ambilDBPelanggaran_SanksiSDM($lingkupIjin)
             ->when($permintaan->langgar_proses == 'SELESAI', function ($query) {
                 $query->whereNotNull('sanksisdms.sanksi_jenis')
                     ->where('langgar_status', '=', 'DIPROSES');
@@ -913,12 +925,6 @@ class SDMDBQuery
             ->when($permintaan->tgl_langgar_mulai && $permintaan->tgl_langgar_sampai, function ($query) use ($permintaan) {
                 $query->whereBetween('langgar_tanggal', [$permintaan->tgl_langgar_mulai, $permintaan->tgl_langgar_sampai]);
             })
-            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-                $query->where(function ($group) use ($lingkupIjin) {
-                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin)
-                        ->orWhereIn('kontrak_p.penempatan_lokasi', $lingkupIjin);
-                });
-            })
             ->when(
                 $uruts,
                 function ($query, $uruts) {
@@ -928,5 +934,12 @@ class SDMDBQuery
                     $query->orderBy('langgar_lap_no', 'desc');
                 }
             );
+    }
+
+    public static function ambilPelanggaran_SanksiSDM($uuid, $lingkupIjin)
+    {
+        return static::ambilDBPelanggaran_SanksiSDM($lingkupIjin)
+            ->where('langgar_uuid', $uuid)
+            ->first();
     }
 }
