@@ -5,9 +5,10 @@
     <h2>Aplikasi</h2>
 
     <div class="kartu">
-        <p>Merupakan aplikasi web sumber terbuka sederhana yang dibangun bertujuan untuk memudahkan pengelolaan sumber
-            daya
-            usaha secara umum di Indonesia.</p>
+        <p>
+            Merupakan aplikasi web sumber terbuka sederhana yang dibangun bertujuan untuk memudahkan pengelolaan
+            sumberdaya usaha secara umum di Indonesia.
+        </p>
     </div>
 
     <h2>Fitur</h2>
@@ -22,8 +23,10 @@
     <h2>Kontribusi Sumber Kode</h2>
 
     <div class="kartu">
-        <p><a href="https://github.com/lovermans/sumberdaya" target="_blank"
-                rel="noopener noreferrer">lovermans/sumberdaya</a>.</p>
+        <p>
+            <a href="https://github.com/lovermans/sumberdaya" target="_blank"
+                rel="noopener noreferrer">lovermans/sumberdaya</a>.
+        </p>
     </div>
 
     <h2>Perangkat Uji Pengembangan Lokal</h2>
@@ -39,28 +42,52 @@
             <li>Pengelola Aset Paket Antarmuka Pengguna : Node 16.14.0 + NPM 9.8.0 + Laravel Mix 6.0.43.</li>
             <li>Paket Tambahan :
                 <ul>
-                    <li>Valet Windows : <a href="https://github.com/cretueusebiu/valet-windows" target="_blank"
-                            rel="noopener noreferrer">cretueusebiu/valet-windows</a>.</li>
-                    <li>Laravel Breeze : <a href="https://github.com/laravel/breeze" target="_blank"
-                            rel="noopener noreferrer">laravel/breeze</a>.</li>
-                    <li>PHP Spreadsheet : <a href="https://github.com/PHPOffice/PhpSpreadsheet" target="_blank"
-                            rel="noopener noreferrer">PHPOffice/PhpSpreadsheet</a>.</li>
-                    <li>PHP Word : <a href="https://github.com/PHPOffice/PHPWord" target="_blank"
-                            rel="noopener noreferrer">PHPOffice/PHPWord</a>.</li>
-                    <li>PHP QRCode : <a href="http://phpqrcode.sourceforge.net/" target="_blank"
-                            rel="noopener noreferrer">PHP QRCode Sourceforge</a>.</li>
+                    <li>
+                        Valet Windows :
+                        <a href="https://github.com/cretueusebiu/valet-windows" target="_blank"
+                            rel="noopener noreferrer">cretueusebiu/valet-windows</a>.
+                    </li>
+
+                    <li>
+                        Laravel Breeze :
+                        <a href="https://github.com/laravel/breeze" target="_blank"
+                            rel="noopener noreferrer">laravel/breeze</a>.
+                    </li>
+
+                    <li>
+                        PHP Spreadsheet :
+                        <a href="https://github.com/PHPOffice/PhpSpreadsheet" target="_blank"
+                            rel="noopener noreferrer">PHPOffice/PhpSpreadsheet</a>.
+                    </li>
+
+                    <li>
+                        PHP Word :
+                        <a href="https://github.com/PHPOffice/PHPWord" target="_blank"
+                            rel="noopener noreferrer">PHPOffice/PHPWord</a>.
+                    </li>
+                    <li>
+                        PHP QRCode :
+                        <a href="http://phpqrcode.sourceforge.net/" target="_blank" rel="noopener noreferrer">PHP QRCode
+                            Sourceforge</a>.
+                    </li>
                 </ul>
             </li>
             <li>Aset Paket Antarmuka Pengguna :
                 <ul>
-                    <li>Slim Select JS : <a href="https://github.com/brianvoe/slim-select" target="_blank"
-                            rel="noopener noreferrer">brianvoe/slim-select</a>.</li>
+                    <li>
+                        Slim Select JS :
+                        <a href="https://github.com/brianvoe/slim-select" target="_blank"
+                            rel="noopener noreferrer">brianvoe/slim-select</a>.
+                    </li>
                 </ul>
             </li>
         </ul>
 
-        <p>Penggunaan terbaik aplikasi di <i><a href="https://www.google.com/chrome/" target="_blank"
-                    rel="noopener noreferrer">Chrome Browser</a></i> oleh Google.</p>
+        <p>
+            Penggunaan terbaik aplikasi di
+            <i><a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome Browser</a></i>
+            oleh Google.
+        </p>
     </div>
 
     <h2>Status Aplikasi</h2>

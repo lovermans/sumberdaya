@@ -13,9 +13,15 @@
 
             <h4 class="form">Unggah Data Profil SDM</h4>
 
-            <p>Unduh <a class="isi-xhr" href="{{ $urlRangka->route('sdm.contoh-unggah') }}" data-rekam="false"
-                    data-tujuan="#unggah_profil_sdm" data-laju="true">contoh</a> excel, isi sesuai petunjuk dalam excel
-                lalu unggah kembali.</p>
+            <p>
+                Unduh
+                <a class="isi-xhr" href="{{ $urlRangka->route('sdm.contoh-unggah') }}" data-rekam="false"
+                    data-tujuan="#unggah_profil_sdm" data-laju="true">
+                    contoh
+                </a>
+                excel, isi sesuai petunjuk dalam excel
+                lalu unggah kembali.
+            </p>
         </div>
 
         <div class="isian">

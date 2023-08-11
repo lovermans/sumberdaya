@@ -8,14 +8,17 @@
         <div class="isian pendek">
             <img id="foto" @class(['svg'=> !$storageRangka->exists('sdm/foto-profil/' . $rekRangka->old('sdm_no_absen',
             $sdm->sdm_no_absen ?? null) . '.webp')])
-            src="{{ $storageRangka->exists('sdm/foto-profil/' . $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ??
-            null) . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
-            $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp' . '?' .
-            filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $rekRangka->old('sdm_no_absen',
-            $sdm->sdm_no_absen ?? null) . '.webp'))]) : $urlRangka->asset($mixRangka('/images/blank.webp')) }}"
-            alt="{{
-            $rekRangka->old('sdm_no_absen', $sdm->sdm_nama ?? 'foto akun') }}" title="{{ $rekRangka->old('sdm_no_absen',
-            $sdm->sdm_nama ?? 'foto akun') }}" loading="lazy">
+            src="{{
+            $storageRangka->exists('sdm/foto-profil/' . $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ??
+            null) . '.webp')
+            ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $rekRangka->old('sdm_no_absen',
+            $sdm->sdm_no_absen ?? null) . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
+            $rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp'))])
+            : $urlRangka->asset($mixRangka('/images/blank.webp'))
+            }}"
+            alt="{{ $rekRangka->old('sdm_no_absen', $sdm->sdm_nama ?? 'foto akun') }}"
+            title="{{ $rekRangka->old('sdm_no_absen',$sdm->sdm_nama ?? 'foto akun') }}"
+            loading="lazy">
         </div>
 
         <div class="isian normal">
@@ -24,9 +27,11 @@
             <input id="foto_profil" type="file" name="foto_profil" accept="image/*" capture
                 onchange="siapkanFoto(this)">
 
-            <span class="t-bantu">Pilih gambar atau ambil dari kamera {{
-                $storageRangka->exists('sdm/foto-profil/'.$rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ??
-                null).'.webp') ? '(berkas yang diunggah akan menindih berkas unggahan lama).' : '' }}</span>
+            <span class="t-bantu">
+                Pilih gambar atau ambil dari kamera
+                {{ $storageRangka->exists('sdm/foto-profil/'.$rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ??
+                null).'.webp') ? '(berkas yang diunggah akan menindih berkas unggahan lama).' : '' }}
+            </span>
         </div>
 
         @if($strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS'))
@@ -55,7 +60,8 @@
                         ($permintaanSdm->tambahsdm_jumlah - $permintaanSdm->tambahsdm_terpenuhi) :
                         (($permintaanSdm->tambahsdm_jumlah < $permintaanSdm->tambahsdm_terpenuhi) ? 'KELEBIHAN ' .
                             ($permintaanSdm->tambahsdm_terpenuhi - $permintaanSdm->tambahsdm_jumlah) : 'TELAH
-                            TERPENUHI')}} </option>
+                            TERPENUHI')}}
+                </option>
                 @endforeach
             </select>
 
@@ -86,14 +92,16 @@
                 $atasans->pluck('sdm_no_absen')->toArray()) && $rekRangka->old('sdm_id_atasan', $sdm->sdm_id_atasan ??
                 null))
                 <option value="{{ $rekRangka->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null) }}" class="merah"
-                    selected>{{ $rekRangka->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null) }}</option>
+                    selected>{{ $rekRangka->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null) }}
+                </option>
                 @endif
 
                 @foreach ($atasans as $atasan)
                 <option value="{{ $atasan->sdm_no_absen }}" @selected($rekRangka->old('sdm_id_atasan',
                     $sdm->sdm_id_atasan ?? null) == $atasan->sdm_no_absen) @class(['merah' =>
                     $atasan->sdm_tgl_berhenti])>
-                    {{ $atasan->sdm_no_absen }} - {{ $atasan->sdm_nama }} - {{ $atasan->penempatan_posisi }}</option>
+                    {{ $atasan->sdm_no_absen }} - {{ $atasan->sdm_nama }} - {{ $atasan->penempatan_posisi }}
+                </option>
                 @endforeach
             </select>
 
@@ -120,14 +128,18 @@
                 $negaras->pluck('atur_butir')->toArray()) && $rekRangka->old('sdm_warganegara', $sdm->sdm_warganegara ??
                 null))
                 <option value="{{ $rekRangka->old('sdm_warganegara', $sdm->sdm_warganegara ?? null) }}" class="merah"
-                    selected>{{ $rekRangka->old('sdm_warganegara', $sdm->sdm_warganegara ?? null) }}</option>
+                    selected>
+                    {{ $rekRangka->old('sdm_warganegara', $sdm->sdm_warganegara ?? null) }}
+                </option>
                 @endif
 
                 @foreach ($negaras as $negara)
                 <option {{ ($rekRangka->old('sdm_warganegara', $sdm->sdm_warganegara ?? null) == $negara->atur_butir) ?
                     'selected' : (!$rekRangka->old('sdm_warganegara', $sdm->sdm_warganegara ?? null) &&
                     $negara->atur_butir == 'INDONESIA' ? 'selected' : '') }} @class(['merah' => $negara->atur_status ==
-                    'NON-AKTIF'])>{{ $negara->atur_butir }}</option>
+                    'NON-AKTIF'])>
+                    {{ $negara->atur_butir }}
+                </option>
                 @endforeach
             </select>
 
@@ -179,14 +191,16 @@
                 @if (!in_array($rekRangka->old('sdm_kelamin', $sdm->sdm_kelamin ?? null),
                 $kelamins->pluck('atur_butir')->toArray()) && $rekRangka->old('sdm_kelamin', $sdm->sdm_kelamin ?? null))
                 <option value="{{ $rekRangka->old('sdm_kelamin', $sdm->sdm_kelamin ?? null) }}" class="merah" selected>
-                    {{ $rekRangka->old('sdm_kelamin', $sdm->sdm_kelamin ?? null) }}</option>
+                    {{ $rekRangka->old('sdm_kelamin', $sdm->sdm_kelamin ?? null) }}
+                </option>
                 @endif
 
                 @foreach ($kelamins as $kelamin)
                 <option {{ ($rekRangka->old('sdm_kelamin', $sdm->sdm_kelamin ?? null) == $kelamin->atur_butir) ?
                     'selected' : (!$rekRangka->old('sdm_kelamin', $sdm->sdm_kelamin ?? null) &&$kelamin->atur_butir ==
-                    'L' ? 'selected' : '') }} @class(['merah' => $kelamin->atur_status == 'NON-AKTIF'])>{{
-                    $kelamin->atur_butir }}</option>
+                    'L' ? 'selected' : '') }} @class(['merah' => $kelamin->atur_status == 'NON-AKTIF'])>
+                    {{ $kelamin->atur_butir }}
+                </option>
                 @endforeach
             </select>
 
@@ -203,12 +217,16 @@
                 $gdarahs->pluck('atur_butir')->toArray()) && $rekRangka->old('sdm_gol_darah', $sdm->sdm_gol_darah ??
                 null))
                 <option value="{{ $rekRangka->old('sdm_gol_darah', $sdm->sdm_gol_darah ?? null) }}" class="merah"
-                    selected>{{ $rekRangka->old('sdm_gol_darah', $sdm->sdm_gol_darah ?? null) }}</option>
+                    selected>
+                    {{ $rekRangka->old('sdm_gol_darah', $sdm->sdm_gol_darah ?? null) }}
+                </option>
                 @endif
 
                 @foreach ($gdarahs as $gdarah)
                 <option @selected($rekRangka->old('sdm_gol_darah', $sdm->sdm_gol_darah ?? null) == $gdarah->atur_butir)
-                    @class(['merah' => $gdarah->atur_status == 'NON-AKTIF'])>{{ $gdarah->atur_butir }}</option>
+                    @class(['merah' => $gdarah->atur_status == 'NON-AKTIF'])>
+                    {{ $gdarah->atur_butir }}
+                </option>
                 @endforeach
             </select>
 
@@ -296,14 +314,16 @@
             <select id="sdm_agama" name="sdm_agama" class="pil-cari" required>
                 @if (!in_array($rekRangka->old('sdm_agama', $sdm->sdm_agama ?? null),
                 $agamas->pluck('atur_butir')->toArray()) && $rekRangka->old('sdm_agama', $sdm->sdm_agama ?? null))
-                <option value="{{ $rekRangka->old('sdm_agama', $sdm->sdm_agama ?? null) }}" class="merah" selected>{{
-                    $rekRangka->old('sdm_agama', $sdm->sdm_agama ?? null) }}</option>
+                <option value="{{ $rekRangka->old('sdm_agama', $sdm->sdm_agama ?? null) }}" class="merah" selected>
+                    {{ $rekRangka->old('sdm_agama', $sdm->sdm_agama ?? null) }}
+                </option>
                 @endif
 
                 @foreach ($agamas as $agama)
                 <option {{ ($rekRangka->old('sdm_agama', $sdm->sdm_agama ?? null) == $agama->atur_butir) ? 'selected' :
                     (!$rekRangka->old('sdm_agama', $sdm->sdm_agama ?? null) && $agama->atur_butir == 'ISLAM' ?
-                    'selected' : '') }} @class(['merah' => $agama->atur_status == 'NON-AKTIF'])>{{ $agama->atur_butir }}
+                    'selected' : '') }} @class(['merah' => $agama->atur_status == 'NON-AKTIF'])>
+                    {{ $agama->atur_butir }}
                 </option>
                 @endforeach
             </select>
@@ -328,13 +348,17 @@
                 $kawins->pluck('atur_butir')->toArray()) && $rekRangka->old('sdm_status_kawin', $sdm->sdm_status_kawin
                 ?? null))
                 <option value="{{ $rekRangka->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null) }}" class="merah"
-                    selected>{{ $rekRangka->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null) }}</option>
+                    selected>
+                    {{ $rekRangka->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null) }}
+                </option>
                 @endif
                 @foreach ($kawins as $kawin)
                 <option {{ ($rekRangka->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null) == $kawin->atur_butir) ?
                     'selected' : (!$rekRangka->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null) &&
                     $kawin->atur_butir == 'LAJANG' ? 'selected' : '') }} @class(['merah' => $kawin->atur_status ==
-                    'NON-AKTIF'])>{{ $kawin->atur_butir }}</option>
+                    'NON-AKTIF'])>
+                    {{ $kawin->atur_butir }}
+                </option>
                 @endforeach
             </select>
 
@@ -360,13 +384,16 @@
                 $pendidikans->pluck('atur_butir')->toArray()) && $rekRangka->old('sdm_pendidikan', $sdm->sdm_pendidikan
                 ?? null))
                 <option value="{{ $rekRangka->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null) }}" class="merah"
-                    selected>{{ $rekRangka->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null) }}</option>
+                    selected>
+                    {{ $rekRangka->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null) }}
+                </option>
                 @endif
 
                 @foreach ($pendidikans as $pendidikan)
                 <option @selected($rekRangka->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null) ==
-                    $pendidikan->atur_butir) @class(['merah' => $pendidikan->atur_status == 'NON-AKTIF'])>{{
-                    $pendidikan->atur_butir }}</option>
+                    $pendidikan->atur_butir) @class(['merah' => $pendidikan->atur_status == 'NON-AKTIF'])>
+                    {{ $pendidikan->atur_butir }}
+                </option>
                 @endforeach
             </select>
 
@@ -410,14 +437,18 @@
                 $disabilitas->pluck('atur_butir')->toArray()) && $rekRangka->old('sdm_disabilitas',
                 $sdm->sdm_disabilitas ?? null))
                 <option value="{{ $rekRangka->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null) }}" class="merah"
-                    selected>{{ $rekRangka->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null) }}</option>
+                    selected>
+                    {{ $rekRangka->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null) }}
+                </option>
                 @endif
 
                 @foreach ($disabilitas as $difabel)
                 <option {{ ($rekRangka->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null) == $difabel->atur_butir) ?
                     'selected' : (!$rekRangka->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null) &&
                     $difabel->atur_butir == 'NORMAL' ? 'selected' : '') }} @class(['merah' => $difabel->atur_status ==
-                    'NON-AKTIF'])>{{ $difabel->atur_butir }}</option>
+                    'NON-AKTIF'])>
+                    {{ $difabel->atur_butir }}
+                </option>
                 @endforeach
             </select>
 
@@ -464,12 +495,16 @@
                 $banks->pluck('atur_butir')->toArray()) && $rekRangka->old('sdm_nama_bank', $sdm->sdm_nama_bank ??
                 null))
                 <option value="{{ $rekRangka->old('sdm_nama_bank', $sdm->sdm_nama_bank ?? null) }}" class="merah"
-                    selected>{{ $rekRangka->old('sdm_nama_bank', $sdm->sdm_nama_bank ?? null) }}</option>
+                    selected>
+                    {{ $rekRangka->old('sdm_nama_bank', $sdm->sdm_nama_bank ?? null) }}
+                </option>
                 @endif
 
                 @foreach ($banks as $bank)
                 <option @selected($rekRangka->old('sdm_nama_bank', $sdm->sdm_nama_bank ?? null) == $bank->atur_butir)
-                    @class(['merah' => $bank->atur_status == 'NON-AKTIF'])>{{ $bank->atur_butir }}</option>
+                    @class(['merah' => $bank->atur_status == 'NON-AKTIF'])>
+                    {{ $bank->atur_butir }}
+                </option>
                 @endforeach
             </select>
 
@@ -559,13 +594,16 @@
                 $seragams->pluck('atur_butir')->toArray()) && $rekRangka->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ??
                 null))
                 <option value="{{ $rekRangka->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null) }}" class="merah"
-                    selected>{{ $rekRangka->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null) }}</option>
+                    selected>
+                    {{ $rekRangka->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null) }}
+                </option>
                 @endif
 
                 @foreach ($seragams as $seragam)
                 <option @selected($rekRangka->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null) ==
-                    $seragam->atur_butir) @class(['merah' => $seragam->atur_status == 'NON-AKTIF'])>{{
-                    $seragam->atur_butir }}</option>
+                    $seragam->atur_butir) @class(['merah' => $seragam->atur_status == 'NON-AKTIF'])>
+                    {{ $seragam->atur_butir }}
+                </option>
                 @endforeach
             </select>
 
@@ -585,8 +623,9 @@
         <div class="isian gspan-4">
             <label for="sdm_ket_kary">Keterangan</label>
 
-            <textarea id="sdm_ket_kary" name="sdm_ket_kary"
-                rows="3">{{ $rekRangka->old('sdm_ket_kary', $sdm->sdm_ket_kary ?? null) }}</textarea>
+            <textarea id="sdm_ket_kary" name="sdm_ket_kary" rows="3">
+                {{ $rekRangka->old('sdm_ket_kary', $sdm->sdm_ket_kary ?? null) }}
+            </textarea>
 
             <span class="t-bantu">Keterangan lain</span>
         </div>
@@ -603,7 +642,9 @@
                 $rekRangka->old('sdm_hak_akses', $sdm->sdm_hak_akses ?? null)))) as $peran)
                 <option @selected(in_array($peran, explode(',', $rekRangka->old('sdm_hak_akses', $sdm->sdm_hak_akses ??
                     null)))) @class(['merah' => in_array($peran, $perans->where('atur_status',
-                    'NON-AKTIF')->pluck('atur_butir')->toArray())])>{{ $peran }}</option>
+                    'NON-AKTIF')->pluck('atur_butir')->toArray())])>
+                    {{ $peran }}
+                </option>
                 @endforeach
             </select>
             <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
@@ -617,7 +658,8 @@
                 explode(',', $rekRangka->old('sdm_ijin_akses', $sdm->sdm_ijin_akses ?? null))))) as $penempatan)
                 <option @selected(in_array($penempatan, explode(',', $rekRangka->old('sdm_ijin_akses',
                     $sdm->sdm_ijin_akses ?? null)))) @class(['merah' => in_array($penempatan,
-                    $penempatans->where('atur_status', 'NON-AKTIF')->pluck('atur_butir')->toArray())])>{{ $penempatan }}
+                    $penempatans->where('atur_status', 'NON-AKTIF')->pluck('atur_butir')->toArray())])>
+                    {{ $penempatan }}
                 </option>
                 @endforeach
             </select>
@@ -646,13 +688,15 @@
                 $phks->pluck('atur_butir')->toArray()) && $rekRangka->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti
                 ?? null))
                 <option value="{{ $rekRangka->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null) }}"
-                    class="merah" selected>{{ $rekRangka->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null) }}
+                    class="merah" selected>
+                    {{ $rekRangka->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null) }}
                 </option>
                 @endif
 
                 @foreach ($phks as $phk)
                 <option @selected($rekRangka->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null) ==
-                    $phk->atur_butir) @class(['merah' => $phk->atur_status == 'NON-AKTIF'])>{{ $phk->atur_butir }}
+                    $phk->atur_butir) @class(['merah' => $phk->atur_status == 'NON-AKTIF'])>
+                    {{ $phk->atur_butir }}
                 </option>
                 @endforeach
             </select>
@@ -663,8 +707,9 @@
         <div class="isian gspan-4">
             <label for="sdm_ket_berhenti">Keterangan Berhenti</label>
 
-            <textarea id="sdm_ket_berhenti" name="sdm_ket_berhenti"
-                rows="3">{{ $rekRangka->old('sdm_ket_berhenti', $sdm->sdm_ket_berhenti ?? null) }}</textarea>
+            <textarea id="sdm_ket_berhenti" name="sdm_ket_berhenti" rows="3">
+                {{ $rekRangka->old('sdm_ket_berhenti', $sdm->sdm_ket_berhenti ?? null) }}
+            </textarea>
 
             <span class="t-bantu">Keterangan lain pelepasan</span>
         </div>
@@ -676,7 +721,8 @@
             <iframe class="berkas tcetak"
                 src="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $berkasSDM . '?' . filemtime($appRangka->storagePath('app/' . $berkasSDM))]) }}"
                 title="Berkas SDM" loading="lazy"
-                onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
+                onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()">
+            </iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
                 href="{{ $urlRangka->route('sdm.berkas', ['berkas' =>  $berkasSDM . '?' . filemtime($appRangka->storagePath('app/' . $berkasSDM))]) }}">
@@ -700,10 +746,12 @@
 
             <input id="sdm_berkas" type="file" name="sdm_berkas" accept=".pdf,application/pdf">
 
-            <span class="t-bantu">Scan PDF data isian pelamar, lamaran, riwayat hidup, rangkuman tes, persetujuan gaji,
-                tanda terima dokumen titipan, serah terima, pengunduran diri dan pelepasan {{
-                $storageRangka->exists('sdm/berkas/'.$rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ?? null).'.pdf')
-                ? '(berkas yang diunggah akan menindih berkas unggahan lama).' : '' }}</span>
+            <span class="t-bantu">
+                Scan PDF data isian pelamar, lamaran, riwayat hidup, rangkuman tes, persetujuan gaji,
+                tanda terima dokumen titipan, serah terima, pengunduran diri dan pelepasan
+                {{$storageRangka->exists('sdm/berkas/'.$rekRangka->old('sdm_no_absen', $sdm->sdm_no_absen ??
+                null).'.pdf') ? '(berkas yang diunggah akan menindih berkas unggahan lama).' : '' }}
+            </span>
         </div>
         @endif
 

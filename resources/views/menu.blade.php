@@ -10,11 +10,14 @@
 @if($rekRangka->user())
 <img id="akun" @class(['svg'=> !$storageRangka->exists('sdm/foto-profil/' . $rekRangka->user()->sdm_no_absen .
 '.webp')])
-src="{{ $storageRangka->exists('sdm/foto-profil/' . $rekRangka->user()->sdm_no_absen . '.webp') ?
-$urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $rekRangka->user()?->sdm_no_absen . '.webp' .
-'?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $rekRangka->user()->sdm_no_absen . '.webp'))]) :
-$urlRangka->asset($mixRangka('/images/blank.webp')) }}"
-alt="{{ $rekRangka->user()->sdm_nama ?? 'foto akun' }}" title="{{ $rekRangka->user()->sdm_nama ?? 'foto akun' }}"
+src="{{
+$storageRangka->exists('sdm/foto-profil/' . $rekRangka->user()->sdm_no_absen . '.webp')
+? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $rekRangka->user()?->sdm_no_absen . '.webp' .'?'
+. filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $rekRangka->user()->sdm_no_absen . '.webp'))])
+: $urlRangka->asset($mixRangka('/images/blank.webp'))
+}}"
+alt="{{ $rekRangka->user()->sdm_nama ?? 'foto akun' }}"
+title="{{ $rekRangka->user()->sdm_nama ?? 'foto akun' }}"
 loading="lazy">
 @endif
 @endfragment

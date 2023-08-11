@@ -9,7 +9,7 @@
         
         @if($rekRangka->session()->has('spanduk'))
         !function(){
-        var isiSpanduk = '<div class="spanduk tcetak"><p><svg viewbox="0 0 24 24" ><use href="#ikonperhatian"></use></svg> {!! $rekRangka->session()->get('spanduk') !!}</p><a class="isi-xhr sekunder" href="{{$urlRangka->route('sdm.ubah-sandi')}}">AMANKAN</a></div>';
+        var isiSpanduk = '<div class="spanduk tcetak"><p><svg viewbox="0 0 24 24" ><use href="#ikonperhatian"></use></svg>{!! $rekRangka->session()->get('spanduk') !!}</p><a class="isi-xhr sekunder" href="{{$urlRangka->route('sdm.ubah-sandi')}}">AMANKAN</a></div>';
         isiPemberitahuan('pemberitahuan', isiSpanduk);}();
         @endif
 
