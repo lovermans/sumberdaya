@@ -942,4 +942,17 @@ class SDMDBQuery
             ->where('langgar_uuid', $uuid)
             ->first();
     }
+
+    public static function ambilUrutanPelanggaranSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return static::ambilLaporanPelanggaranSDM()
+            ->where(function ($group) {
+                $group->whereYear('langgar_dibuat', date('Y'))
+                    ->whereMonth('langgar_dibuat', date('m'));
+            })
+            ->orWhere('langgar_lap_no', 'like', date('Y') . date('m') . '%')
+            ->count();
+    }
 }

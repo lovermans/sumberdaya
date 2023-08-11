@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SDM;
 
 use App\Interaksi\Cache;
 use App\Interaksi\Rangka;
+use App\Interaksi\SDM\SDMCache;
 use Illuminate\Support\Arr;
 use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
@@ -144,9 +145,8 @@ class Pelanggaran
 
     public function tambah(FungsiStatis $fungsiStatis)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
+        extract(Rangka::obyekPermintaanRangka(true));
+
         $str = str();
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
@@ -155,9 +155,7 @@ class Pelanggaran
 
             $database = $app->db;
 
-            $hitungLaporan = $this->dataDasar($database)->addSelect($database->raw('COUNT(DISTINCT langgar_lap_no) jml_lap'))->whereYear('langgar_dibuat', date('Y'))->whereMonth('langgar_dibuat', date('m'))->groupBy('langgar_lap_no');
-
-            $hitungNomor = $database->query()->select('nolap.jml_lap')->fromSub($hitungLaporan, 'nolap')->sum('jml_lap');
+            $hitungNomor = SDMDBQuery::ambilUrutanPelanggaranSDM();
 
             $urutanLaporan = $hitungNomor + 1;
 
@@ -205,9 +203,8 @@ class Pelanggaran
                 [
                     'berkas_laporan' => ['sometimes', 'file', 'mimetypes:application/pdf'],
                 ],
-                [],
                 [
-                    'berkas_laporan' => 'Berkas Laporan',
+                    'berkas_laporan' => 'Berkas laporan yang diunggah wajib berupa file PDF.',
                 ]
             );
 
@@ -234,18 +231,19 @@ class Pelanggaran
             return $str->contains($perujuk, ['pelanggaran']) ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);
         }
 
-        $sdms = $fungsiStatis->ambilCacheSDM();
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
-        $data = [
-            'sdms' => $sdms->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+        $HtmlPenuh = $app->view->make('sdm.pelanggaran.tambah-ubah', [
+            'sdms' => SDMCache::ambilCacheSDM()->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 return $query->whereIn('penempatan_lokasi', $lingkupIjin);
             }),
-        ];
+        ]);
 
-        $HtmlPenuh = $app->view->make('sdm.pelanggaran.tambah-ubah', $data);
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 
     public function ubah(FungsiStatis $fungsiStatis, $uuid = null)
