@@ -48,7 +48,6 @@ class PermintaanTambahSDM
         $selisih = $terpenuhi - $kebutuhan;
 
         $cacheAtur = Cache::ambilCacheAtur();
-        $posisis = SDMCache::ambilCachePosisiSDM();
 
         $data = [
             'tabels' => $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'tambah_sdm_tabels']),
@@ -64,7 +63,7 @@ class PermintaanTambahSDM
             'indexJumlah' => (head(array_keys($kunciUrut, 'tambahsdm_jumlah ASC')) + head(array_keys($kunciUrut, 'tambahsdm_jumlah DESC')) + 1),
             'urutNomor' => $str->contains($uruts, 'tambahsdm_no'),
             'indexNomor' => (head(array_keys($kunciUrut, 'tambahsdm_no ASC')) + head(array_keys($kunciUrut, 'tambahsdm_no DESC')) + 1),
-            'posisis' => $posisis,
+            'posisis' => SDMCache::ambilCachePosisiSDM(),
             'kebutuhan' => $kebutuhan,
             'terpenuhi' => $terpenuhi,
             'selisih' => $selisih,
@@ -148,17 +147,15 @@ class PermintaanTambahSDM
         }
 
         $aturs = Cache::ambilCacheAtur();
-        $sdms = SDMCache::ambilCacheSDM();
-        $posisis = SDMCache::ambilCachePosisiSDM();
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
         $data = [
             'penempatans' => $aturs->where('atur_jenis', 'PENEMPATAN')->sortBy(['atur_butir', 'asc'])->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 return $query->whereIn('atur_butir', $lingkupIjin);
             }),
-            'posisis' => $posisis,
+            'posisis' => SDMCache::ambilCachePosisiSDM(),
             'statuses' => $aturs->where('atur_jenis', 'STATUS PERMOHONAN')->sortBy(['atur_butir', 'asc']),
-            'sdms' => $sdms->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+            'sdms' => SDMCache::ambilCacheSDM()->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 return $query->whereIn('penempatan_lokasi', $lingkupIjin);
             }),
         ];
@@ -239,17 +236,15 @@ class PermintaanTambahSDM
         }
 
         $aturs = Cache::ambilCacheAtur();
-        $sdms = SDMCache::ambilCacheSDM();
-        $posisis = SDMCache::ambilCachePosisiSDM();
 
         $data = [
             'permin' => $permin,
             'penempatans' => $aturs->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 return $query->whereIn('atur_butir', $lingkupIjin);
             })->sortBy(['atur_butir', 'asc']),
-            'posisis' => $posisis,
+            'posisis' => SDMCache::ambilCachePosisiSDM(),
             'statuses' => $aturs->where('atur_jenis', 'STATUS PERMOHONAN')->sortBy(['atur_butir', 'asc']),
-            'sdms' => $sdms->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+            'sdms' => SDMCache::ambilCacheSDM()->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 return $query->whereIn('penempatan_lokasi', $lingkupIjin);
             }),
         ];
@@ -292,14 +287,12 @@ class PermintaanTambahSDM
 
             $dataValid = $validasi->validated();
 
-            $jenisHapus = 'Permintaan Tambah SDM';
-            $idHapus = $dataValid['id_penghapus'];
-            $alasanHapus = $dataValid['alasan'];
-            $waktuHapus = $dataValid['waktu_dihapus']->format('Y-m-d H:i:s');
-            $hapus = collect($permin)->toJson();
-
             $dataHapus = [
-                $jenisHapus, $hapus, $idHapus, $waktuHapus, $alasanHapus
+                'Permintaan Tambah SDM',
+                collect($permin)->toJson(),
+                $dataValid['id_penghapus'],
+                $dataValid['waktu_dihapus']->format('Y-m-d H:i:s'),
+                $dataValid['alasan']
             ];
 
             SDMDBQuery::hapusDataPermintaanTambahSDM($uuid);
@@ -319,11 +312,7 @@ class PermintaanTambahSDM
                 : $redirect->route('sdm.permintaan-tambah-sdm.data')->with('pesan', $pesan);
         }
 
-        $data = [
-            'permin' => $permin
-        ];
-
-        $HtmlPenuh = $app->view->make('sdm.permintaan-tambah-sdm.hapus', $data);
+        $HtmlPenuh = $app->view->make('sdm.permintaan-tambah-sdm.hapus', compact('permin'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
 
         return $reqs->pjax()
