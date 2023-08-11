@@ -20,16 +20,6 @@ class Posisi
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $validator = SDMValidasi::validasiPencarianPosisiSDM([$reqs->all()]);
-
-        if ($validator->fails()) {
-            return $app->redirect->route('sdm.posisi.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
-
-        $urutArray = $reqs->urut;
-        $uruts = $urutArray ? implode(',', array_filter($urutArray)) : null;
-        $kataKunci = $reqs->kata_kunci;
-
         $ijin_akses = $pengguna->sdm_ijin_akses;
         $lingkupIjin = array_filter(explode(',', $ijin_akses));
         $lingkup_lokasi = collect($reqs->lokasi);
@@ -38,6 +28,17 @@ class Posisi
         $permin_akses = $lingkup_lokasi->count();
 
         abort_unless(blank($ijin_akses) || ($lingkup_akses <= $maks_akses && $maks_akses >= $permin_akses), 403, 'Akses lokasi lain dibatasi.');
+
+        $validator = SDMValidasi::validasiPencarianPosisiSDM([$reqs->all()]);
+
+        if ($validator->fails()) {
+            return $app->redirect->route('sdm.posisi.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
+        };
+
+        $kataKunci = $reqs->kata_kunci;
+        $urutArray = $reqs->urut;
+        $kunciUrut = array_filter((array) $urutArray);
+        $uruts = $urutArray ? implode(',', $kunciUrut) : null;
 
         $cari = SDMDBQuery::saringPosisiSDM($kataKunci, $uruts);
 
@@ -49,31 +50,18 @@ class Posisi
         $nonAktif = $cari->clone()->sum('jml_nonaktif');
         $total = $aktif + $nonAktif;
 
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'sdm_posisi_tabels']);
-
         $cacheAtur = Cache::ambilCacheAtur();
 
-        $kunciUrut = array_filter((array) $urutArray);
-
-        $urutPergantian = $str->contains($uruts, 'pergantian');
-        $indexPergantian = (head(array_keys($kunciUrut, 'pergantian ASC')) + head(array_keys(array_filter((array)  $urutArray), 'pergantian DESC')) + 1);
-        $urutPosisi = $str->contains($uruts, 'posisi_nama');
-        $indexPosisi = (head(array_keys($kunciUrut, 'posisi_nama ASC')) + head(array_keys(array_filter((array)  $urutArray), 'posisi_nama DESC')) + 1);
-        $urutAktif = $str->contains($uruts, 'jml_aktif');
-        $indexAktif = (head(array_keys($kunciUrut, 'jml_aktif ASC')) + head(array_keys(array_filter((array)  $urutArray), 'jml_aktif DESC')) + 1);
-        $urutNonAktif = $str->contains($uruts, 'jml_nonaktif');
-        $indexNonAktif = (head(array_keys($kunciUrut, 'jml_nonaktif ASC')) + head(array_keys(array_filter((array)  $urutArray), 'jml_nonaktif DESC')) + 1);
-
         $data = [
-            'tabels' => $tabels,
-            'urutPergantian' => $urutPergantian,
-            'indexPergantian' => $indexPergantian,
-            'urutPosisi' => $urutPosisi,
-            'indexPosisi' => $indexPosisi,
-            'urutAktif' => $urutAktif,
-            'indexAktif' => $indexAktif,
-            'urutNonAktif' => $urutNonAktif,
-            'indexNonAktif' => $indexNonAktif,
+            'tabels' => $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'sdm_posisi_tabels']),
+            'urutPergantian' => $str->contains($uruts, 'pergantian'),
+            'indexPergantian' => (head(array_keys($kunciUrut, 'pergantian ASC')) + head(array_keys(array_filter((array)  $urutArray), 'pergantian DESC')) + 1),
+            'urutPosisi' => $str->contains($uruts, 'posisi_nama'),
+            'indexPosisi' => (head(array_keys($kunciUrut, 'posisi_nama ASC')) + head(array_keys(array_filter((array)  $urutArray), 'posisi_nama DESC')) + 1),
+            'urutAktif' => $str->contains($uruts, 'jml_aktif'),
+            'indexAktif' => (head(array_keys($kunciUrut, 'jml_aktif ASC')) + head(array_keys(array_filter((array)  $urutArray), 'jml_aktif DESC')) + 1),
+            'urutNonAktif' => $str->contains($uruts, 'jml_nonaktif'),
+            'indexNonAktif' => (head(array_keys($kunciUrut, 'jml_nonaktif ASC')) + head(array_keys(array_filter((array)  $urutArray), 'jml_nonaktif DESC')) + 1),
             'lokasis' => $cacheAtur->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 return $query->whereIn('atur_butir', $lingkupIjin);
             })->sortBy(['atur_butir', 'asc']),
