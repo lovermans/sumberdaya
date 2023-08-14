@@ -203,6 +203,25 @@
                 document.getElementById('sambutan').remove();
             })();
         });
+        // if (!window.Echo) {
+        //     import('{{ $urlRangka->asset($mixRangka('/window-pusher.js')) }}').then(
+        //         function () {
+        //             import('{{ $urlRangka->asset($mixRangka('/echo-es.js')) }}').then(({ default: LE }) => {
+        //                 window.Echo = new LE({
+        //                     broadcaster: "pusher",
+        //                     key: "key",
+        //                     forceTLS: "https",
+        //                     enabledTransports: ["ws", "wss"]
+        //                 });
+        //                 console.log(Echo);
+        //             });
+        //         }
+        //     )
+        // } else {
+        //     (function () {
+        //         alert('Terjadi kesalahan dalam memuat soket pilihan. Modul pemrosesan soket pilihan tidak ditemukan. Harap hubungi Personalia Pusat.');
+        //     })();
+        // };
     </script>
 </body>
 
