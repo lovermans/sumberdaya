@@ -12,15 +12,15 @@
 
     @isset($dokumenPengurusCabang)
     @forelse ($dokumenPengurusCabang as $jalur)
-    @if (blank($rekRangka->user()->sdm_ijin_akses) || $rekRangka->user()->sdm_ijin_akses == substr($jalur,28))
+    @if (blank($app->request->user()->sdm_ijin_akses) || $app->request->user()->sdm_ijin_akses == substr($jalur,28))
     <details class="kartu">
         <summary>Panduan Pengurus Cabang {{ substr($jalur,28) }}</summary>
 
         <ol>
-            @forelse ($storageRangka->files($jalur) as $berkas)
+            @forelse ($app->filesystem->files($jalur) as $berkas)
             <li>
-                <a href="{{ $storageRangka->disk('local')->temporaryUrl($berkas, $dateRangka->now()->addMinutes(5)) }}"
-                    target="_blank">{{ $appRangka->files->name($berkas).'.'.$appRangka->files->extension($berkas) }}</a>
+                <a href="{{ $app->filesystem->disk('local')->temporaryUrl($berkas, $app->date->now()->addMinutes(5)) }}"
+                    target="_blank">{{ $app->files->name($berkas).'.'.$app->files->extension($berkas) }}</a>
             </li>
             @empty Panduan Belum Tersedia.
             @endforelse
@@ -40,10 +40,10 @@
         <summary>{{ substr($jalur,21) }}</summary>
 
         <ol>
-            @forelse ($storageRangka->files($jalur) as $berkas)
+            @forelse ($app->filesystem->files($jalur) as $berkas)
             <li>
-                <a href="{{ $storageRangka->disk('local')->temporaryUrl($berkas, $dateRangka->now()->addMinutes(5)) }}"
-                    target="_blank">{{ $appRangka->files->name($berkas).'.'.$appRangka->files->extension($berkas) }}</a>
+                <a href="{{ $app->filesystem->disk('local')->temporaryUrl($berkas, $app->date->now()->addMinutes(5)) }}"
+                    target="_blank">{{ $app->files->name($berkas).'.'.$app->files->extension($berkas) }}</a>
             </li>
             @empty Panduan Belum Tersedia.
             @endforelse
@@ -62,10 +62,10 @@
         <summary>{{ substr($jalur,17) }}</summary>
 
         <ol>
-            @forelse ($storageRangka->files($jalur) as $berkas)
+            @forelse ($app->filesystem->files($jalur) as $berkas)
             <li>
-                <a href="{{ $storageRangka->disk('local')->temporaryUrl($berkas, $dateRangka->now()->addMinutes(5)) }}"
-                    target="_blank">{{ $appRangka->files->name($berkas).'.'.$appRangka->files->extension($berkas) }}</a>
+                <a href="{{ $app->filesystem->disk('local')->temporaryUrl($berkas, $app->date->now()->addMinutes(5)) }}"
+                    target="_blank">{{ $app->files->name($berkas).'.'.$app->files->extension($berkas) }}</a>
             </li>
             @empty Panduan Belum Tersedia.
             @endforelse

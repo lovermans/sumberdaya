@@ -10,14 +10,14 @@
             method="GET" data-blank="true">
             <input type="hidden" name="fragment" value="nilai-sdm_tabels">
 
-            <details class="gspan-4" {{ $rekRangka->anyFilled(['nilaisdm_tahun', 'nilaisdm_periode',
+            <details class="gspan-4" {{ $app->request->anyFilled(['nilaisdm_tahun', 'nilaisdm_periode',
                 'nilaisdm_penempatan', 'nilaisdm_kontrak']) ?
                 'open' : '' }}>
 
                 <summary class="cari">
                     <div class="isian gspan-4">
                         <input type="text" id="kata_kunci_nilai_sdm" name="kata_kunci"
-                            value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
+                            value="{{ $app->request->kata_kunci }}" aria-label="Cari Kata Kunci">
 
                         <button id="tombol_cari_nilai" class="cari-cepat" type="submit" title="Cari Data">
                             <svg viewbox="0 0 24 24">
@@ -33,7 +33,8 @@
 
                         <select id="sdm_nilai_cariTahun" name="nilaisdm_tahun[]" class="pil-cari" multiple>
                             @foreach (range(2020,date("Y")) as $tahun)
-                            <option @selected(in_array($tahun, (array) $rekRangka->sanksi_jenis))>{{ $tahun }}</option>
+                            <option @selected(in_array($tahun, (array) $app->request->sanksi_jenis))>{{ $tahun }}
+                            </option>
                             @endforeach
                         </select>
 
@@ -44,8 +45,8 @@
                         <label for="sdm_nilai_cariPeriode">Saring Periode</label>
 
                         <select id="sdm_nilai_cariPeriode" name="nilaisdm_periode[]" class="pil-cari" multiple>
-                            <option @selected($rekRangka->nilaisdm_periode == 'SEMESTER-I')>SEMESTER-I</option>
-                            <option @selected($rekRangka->nilaisdm_periode == 'SEMESTER-II')>SEMESTER-II</option>
+                            <option @selected($app->request->nilaisdm_periode == 'SEMESTER-I')>SEMESTER-I</option>
+                            <option @selected($app->request->nilaisdm_periode == 'SEMESTER-II')>SEMESTER-II</option>
                         </select>
 
                         <span class="t-bantu">Pilih satu atau lebih</span>
@@ -57,7 +58,7 @@
                         <select id="sdm_nilai_cariPenempatan" name="nilaisdm_penempatan[]" class="pil-cari" multiple>
                             @foreach ($lokasis as $lokasi)
                             <option @selected(in_array($lokasi->atur_butir, (array)
-                                $rekRangka->nilaisdm_penempatan)) @class(['merah' => $lokasi->atur_status ==
+                                $app->request->nilaisdm_penempatan)) @class(['merah' => $lokasi->atur_status ==
                                 'NON-AKTIF'])>{{ $lokasi->atur_butir }}</option>
                             @endforeach
                         </select>
@@ -71,7 +72,7 @@
                         <select id="sdm_nilai_cariKontrak" name="nilaisdm_kontrak[]" class="pil-cari" multiple>
                             @foreach ($statusSDMs as $statusSDM)
                             <option @selected(in_array($statusSDM->atur_butir, (array)
-                                $rekRangka->nilaisdm_kontrak)) @class(['merah' => $statusSDM->atur_status ==
+                                $app->request->nilaisdm_kontrak)) @class(['merah' => $statusSDM->atur_status ==
                                 'NON-AKTIF'])>{{ $statusSDM->atur_butir }}</option>
                             @endforeach
                         </select>
@@ -94,7 +95,7 @@
     <div id="nilai-sdm_tabels" class="kartu scroll-margin">
         @fragment('nilai-sdm_tabels')
         @unless ($halamanAkun ?? null)
-        <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['nilaisdm_tahun', 'nilaisdm_periode',
+        <b><i><small>Jumlah SDM ({{ $app->request->anyFilled(['nilaisdm_tahun', 'nilaisdm_periode',
                     'nilaisdm_penempatan', 'nilaisdm_kontrak']) ? 'sesuai data penyaringan' : 'global'
                     }}) : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
                     {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
@@ -161,7 +162,7 @@
             @endif
 
             @unless ($halamanAkun ?? null)
-            <details class="gspan-4" {{ $rekRangka->anyFilled('urut') ? 'open' : '' }}>
+            <details class="gspan-4" {{ $app->request->anyFilled('urut') ? 'open' : '' }}>
                 <summary>Pengurutan :</summary>
                 <div class="kartu form" id="sdm_nilai_cariUrut">
                     <div class="isian" data-indeks="{{ $urutTahun ? $indexTahun : 'X' }}">
@@ -170,9 +171,9 @@
                         <select id="sdm_nilai_tambah_cariUrutTahun" name="urut[]" class="pil-dasar"
                             form="form_sdm_nilai_cari" onchange="getElementById('tombol_cari_nilai').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('nilaisdm_tahun ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('nilaisdm_tahun ASC', (array) $app->request->urut))
                                 value="nilaisdm_tahun ASC">0 - 9</option>
-                            <option @selected(in_array('nilaisdm_tahun DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('nilaisdm_tahun DESC', (array) $app->request->urut))
                                 value="nilaisdm_tahun DESC">9 - 0</option>
                         </select>
                         <span class="t-bantu">Pilih satu</span>
@@ -185,9 +186,9 @@
                         <select id="sdm_nilai_tambah_cariUrutPeriode" name="urut[]" class="pil-dasar"
                             form="form_sdm_nilai_cari" onchange="getElementById('tombol_cari_nilai').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('nilaisdm_periode ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('nilaisdm_periode ASC', (array) $app->request->urut))
                                 value="nilaisdm_periode ASC">A - Z</option>
-                            <option @selected(in_array('nilaisdm_periode DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('nilaisdm_periode DESC', (array) $app->request->urut))
                                 value="nilaisdm_periode DESC">Z - A</option>
                         </select>
                         <span class="t-bantu">Pilih satu</span>
@@ -200,9 +201,9 @@
                         <select id="sdm_nilai_tambah_cariUrutNilai" name="urut[]" class="pil-dasar"
                             form="form_sdm_nilai_cari" onchange="getElementById('tombol_cari_nilai').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('nilaisdm_total ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('nilaisdm_total ASC', (array) $app->request->urut))
                                 value="nilaisdm_total ASC">0 - 9</option>
-                            <option @selected(in_array('nilaisdm_total DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('nilaisdm_total DESC', (array) $app->request->urut))
                                 value="nilaisdm_total DESC">9 - 0</option>
                         </select>
                         <span class="t-bantu">Pilih satu</span>
@@ -230,7 +231,7 @@
                 </thead>
                 <tbody>
                     @forelse ($tabels as $nomor => $tabel)
-                    <tr @class([ 'biru'=> $strRangka->contains($tabel->penempatan_kontrak, 'OS-')])>
+                    <tr @class([ 'biru'=> str()->contains($tabel->penempatan_kontrak, 'OS-')])>
                         <th>
                             <div class="pil-aksi">
                                 <button id="{{ 'aksi_nilai_baris_' .$tabels->firstItem() + $nomor}}"
@@ -241,7 +242,7 @@
                                 </button>
                                 <div class="aksi">
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#nilai-sdm_sematan"
-                                        href="{{ $urlRangka->route('sdm.penilaian.lihat', ['uuid' => $tabel->nilaisdm_uuid]) }}"
+                                        href="{{ $app->url->route('sdm.penilaian.lihat', ['uuid' => $tabel->nilaisdm_uuid]) }}"
                                         title="Lihat/Ubah">Lihat/Ubah</a>
                                 </div>
                             </div>
@@ -251,16 +252,17 @@
                         <td>
                             <div @class(['merah'=> $tabel->sdm_tgl_berhenti])>
                                 <a class="isi-xhr taut-akun"
-                                    href="{{ $urlRangka->route('sdm.akun', ['uuid' => $tabel->sdm_uuid]) }}">
-                                    <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
+                                    href="{{ $app->url->route('sdm.akun', ['uuid' => $tabel->sdm_uuid]) }}">
+                                    <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/' .
                                     $tabel->nilaisdm_no_absen . '.webp')]) src="{{
-                                    $storageRangka->exists('sdm/foto-profil/' . $tabel->nilaisdm_no_absen .
+                                    $app->filesystem->exists('sdm/foto-profil/' . $tabel->nilaisdm_no_absen .
                                     '.webp')
-                                    ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
+                                    ? $app->url->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
                                     $tabel->nilaisdm_no_absen . '.webp' . '?' .
-                                    filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
+                                    filemtime($app->storagePath('app/sdm/foto-profil/' .
                                     $tabel->nilaisdm_no_absen . '.webp'))]) :
-                                    $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
+                                    $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
+                                    alt="{{
                                     $tabel->sdm_nama ?? 'foto akun' }}" title="{{
                                     $tabel->sdm_nama
                                     ?? 'foto akun' }}" loading="lazy">
@@ -329,7 +331,7 @@
                 <use href="#ikonpanahatas"></use>
             </svg>
         </a>
-        <a class="isi-xhr" data-rekam="false" href="{{ $urlRangka->route('sdm.penilaian.unggah') }}"
+        <a class="isi-xhr" data-rekam="false" href="{{ $app->url->route('sdm.penilaian.unggah') }}"
             data-tujuan="#nilai-sdm_sematan" title="Unggah Data Penilaian SDM">
             <svg viewBox="0 0 24 24">
                 <use href="#ikonunggah"></use>
@@ -342,7 +344,7 @@
             </svg>
         </a>
         <a class="isi-xhr" data-rekam="false" data-tujuan="#nilai-sdm_sematan"
-            href="{{ $urlRangka->route('sdm.penilaian.tambah') }}" title="Tambah Data">
+            href="{{ $app->url->route('sdm.penilaian.tambah') }}" title="Tambah Data">
             <svg viewBox="0 0 24 24">
                 <use href="#ikontambah"></use>
             </svg>

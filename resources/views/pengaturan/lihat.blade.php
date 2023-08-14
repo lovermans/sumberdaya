@@ -11,7 +11,7 @@
                 </svg>
             </a>
 
-            <h4 class="form">{{$rekRangka->routeIs('atur.tambah') ? 'Tambah' : 'Ubah'}} Data Pengaturan Umum</h4>
+            <h4 class="form">{{$app->request->routeIs('atur.tambah') ? 'Tambah' : 'Ubah'}} Data Pengaturan Umum</h4>
         </div>
 
         <div class="isian">
@@ -41,7 +41,7 @@
         <div class="gspan-4"></div>
 
         <a class="utama isi-xhr" data-rekam="false" data-tujuan="#atur_lihat"
-            href="{{ $urlRangka->route('atur.ubah', ['uuid' => $atur->atur_uuid]) }}">UBAH</a>
+            href="{{ $app->url->route('atur.ubah', ['uuid' => $atur->atur_uuid]) }}">UBAH</a>
 
         @else
         <div class="isian">

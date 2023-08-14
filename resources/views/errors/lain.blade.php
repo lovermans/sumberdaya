@@ -7,7 +7,7 @@
         Kesalahan Fungsi : {{ $kesalahan ?? 'Tidak diketahui.'}} Laporkan kesalahan ini ke Personalia
         Pusat.
     </p>
-    <a class="utama" href="{{ $urlRangka->route('mulai') }}">OKE</a>
+    <a class="utama" href="{{ $app->url->route('mulai') }}">OKE</a>
     <a class="sekunder" href="#" onclick="event.preventDefault();this.parentElement.remove()">TUTUP</a>
     <div class="bersih"></div>
 </div>

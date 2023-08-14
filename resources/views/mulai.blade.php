@@ -2,16 +2,19 @@
 
 @section('isi')
 <div id="mulai-aplikasi">
-    @if (!$rekRangka->user())
+    @php
+    dd($app);
+    @endphp
+    @if (!$app->request->user())
     <div class="mini-aside">
         <form id="form-masuk" class="form-xhr kartu" method="POST" data-tn="true"
-            action="{{ $urlRangka->route('login') }}">
-            <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+            action="{{ $app->url->route('login') }}">
+            <input type="hidden" name="_token" value="{{ $app->request->session()->token() }}">
 
             <div class="isian normal">
                 <label for="idAbsen">Nomor Absen</label>
 
-                <input id="idAbsen" type="text" name="sdm_no_absen" value="{{ $rekRangka->old('sdm_no_absen') }}"
+                <input id="idAbsen" type="text" name="sdm_no_absen" value="{{ $app->request->old('sdm_no_absen') }}"
                     pattern="^[0-9]{8}$" inputmode="numeric" required>
 
                 <span class="t-bantu">8 digit nomor absen</span>
@@ -174,9 +177,9 @@
     @include('pemberitahuan')
     @include('komponen')
 
-    @if($rekRangka->user() && $rekRangka->pjax())
+    @if($app->request->user() && $app->request->pjax())
     <script>
-        cariElemen("#menu-aplikasi a[href='{{ $urlRangka->route('mulai') }}']").then((el) => {el.classList.add("aktif");});
+        cariElemen("#menu-aplikasi a[href='{{ $app->url->route('mulai') }}']").then((el) => {el.classList.add("aktif");});
     </script>
     @endif
 </div>

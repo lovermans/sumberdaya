@@ -35,7 +35,7 @@
         <ul>
             <li>Sistem Operasi : Windows 10 64 bit Intel Core i3 8 GB RAM.</li>
             <li>Basis Bahasa : {{ 'PHP '.PHP_VERSION }}.</li>
-            <li>Kerangka : {{ 'Laravel '.$appRangka->version() }}.</li>
+            <li>Kerangka : {{ 'Laravel '.$app->version() }}.</li>
             <li>Basis Data : MariaDB 10.8.3.</li>
             <li>Webserver : Nginx 1.24.0.</li>
             <li>Pengelola Rantai Paket : Composer 2.5.5.</li>
@@ -111,7 +111,7 @@
             </svg>
         </a>
 
-        <a class="isi-xhr" data-tn="true" href="{{ $urlRangka->route('mulai') }}">
+        <a class="isi-xhr" data-tn="true" href="{{ $app->url->route('mulai') }}">
             <svg viewBox="0 0 24 24">
                 <use href="#ikonrumah"></use>
             </svg>

@@ -10,13 +10,14 @@
             data-frag="true" method="GET" data-blank="true">
             <input type="hidden" name="fragment" value="pelanggaran-sdm_tabels">
 
-            <details class="gspan-4" {{ $rekRangka->anyFilled(['tgl_langgar_mulai', 'langgar_status', 'langgar_proses',
+            <details class="gspan-4" {{ $app->request->anyFilled(['tgl_langgar_mulai', 'langgar_status',
+                'langgar_proses',
                 'tgl_langgar_sampai', 'langgar_penempatan', 'langgar_sanksi', 'status_sdm']) ? 'open' : '' }}>
 
                 <summary class="cari">
                     <div class="isian gspan-4">
                         <input type="text" id="kata_kunci_pelanggaran_sdm" name="kata_kunci"
-                            value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
+                            value="{{ $app->request->kata_kunci }}" aria-label="Cari Kata Kunci">
 
                         <button id="tombol_cari_pelanggaran" class="cari-cepat" type="submit" title="Cari Data">
                             <svg viewbox="0 0 24 24">
@@ -31,8 +32,8 @@
                         <label for="sdm_pelanggaran_cariStatus">Saring Status Laporan</label>
 
                         <select id="sdm_pelanggaran_cariStatus" name="langgar_status[]" class="pil-dasar" multiple>
-                            <option @selected($rekRangka->langgar_status == 'DIPROSES')>DIPROSES</option>
-                            <option @selected($rekRangka->langgar_status == 'DIBATALKAN')>DIBATALKAN</option>
+                            <option @selected($app->request->langgar_status == 'DIPROSES')>DIPROSES</option>
+                            <option @selected($app->request->langgar_status == 'DIBATALKAN')>DIBATALKAN</option>
                         </select>
 
                         <span class="t-bantu">Pilih satu atau lebih</span>
@@ -43,8 +44,8 @@
 
                         <select id="sdm_pelanggaran_cariStatusPenanganan" name="langgar_proses" class="pil-dasar">
                             <option selected disabled></option>
-                            <option @selected($rekRangka->langgar_proses == 'SELESAI')>SELESAI</option>
-                            <option @selected($rekRangka->langgar_proses == 'BELUM SELESAI')>BELUM SELESAI
+                            <option @selected($app->request->langgar_proses == 'SELESAI')>SELESAI</option>
+                            <option @selected($app->request->langgar_proses == 'BELUM SELESAI')>BELUM SELESAI
                             </option>
                         </select>
 
@@ -57,7 +58,7 @@
                         <select id="sdm_pelanggaran_cariLokasi" name="langgar_penempatan[]" class="pil-cari" multiple>
                             @foreach ($lokasis as $lokasi)
                             <option @selected(in_array($lokasi->atur_butir, (array)
-                                $rekRangka->langgar_penempatan)) @class(['merah' => $lokasi->atur_status ==
+                                $app->request->langgar_penempatan)) @class(['merah' => $lokasi->atur_status ==
                                 'NON-AKTIF'])>{{ $lokasi->atur_butir }}</option>
                             @endforeach
                         </select>
@@ -71,7 +72,7 @@
                         <select id="sdm_pelanggaran_cariStatusSDM" name="status_sdm[]" class="pil-cari" multiple>
                             @foreach ($statusSDMs as $statusSDM)
                             <option @selected(in_array($statusSDM->atur_butir, (array)
-                                $rekRangka->status_sdm)) @class(['merah' => $statusSDM->atur_status ==
+                                $app->request->status_sdm)) @class(['merah' => $statusSDM->atur_status ==
                                 'NON-AKTIF'])>{{ $statusSDM->atur_butir }}</option>
                             @endforeach
                         </select>
@@ -82,14 +83,14 @@
                     <div class="isian normal">
                         <label for="sdm_pelanggaran_cariTanggalMulai">Tanggal Laporan Mulai</label>
                         <input id="sdm_pelanggaran_cariTanggalMulai" type="date" name="tgl_langgar_mulai"
-                            value="{{ $rekRangka->old('tgl_langgar_mulai', $rekRangka->tgl_langgar_mulai ?? null) }}">
+                            value="{{ $app->request->old('tgl_langgar_mulai', $app->request->tgl_langgar_mulai ?? null) }}">
                         <span class="t-bantu">Isi tanggal</span>
                     </div>
 
                     <div class="isian normal">
                         <label for="sdm_pelanggaran_cariTanggalSampai">Tanggal Laporan Sampai</label>
                         <input id="sdm_pelanggaran_cariTanggalSampai" type="date" name="tgl_langgar_sampai"
-                            value="{{ $rekRangka->old('tgl_langgar_sampai', $rekRangka->tgl_langgar_sampai ?? null) }}">
+                            value="{{ $app->request->old('tgl_langgar_sampai', $app->request->tgl_langgar_sampai ?? null) }}">
                         <span class="t-bantu">Isi tanggal</span>
                     </div>
 
@@ -107,7 +108,7 @@
 
     <div id="pelanggaran-sdm_tabels" class="kartu scroll-margin">
         @fragment('pelanggaran-sdm_tabels')
-        <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['tgl_langgar_mulai', 'langgar_status', 'langgar_proses',
+        <b><i><small>Jumlah SDM ({{ $app->request->anyFilled(['tgl_langgar_mulai', 'langgar_status', 'langgar_proses',
                     'tgl_langgar_sampai', 'langgar_penempatan', 'langgar_sanksi', 'status_sdm']) ? 'sesuai data
                     penyaringan'
                     : 'global'
@@ -175,7 +176,7 @@
             @endif
 
             @unless ($halamanAkun ?? null)
-            <details class="gspan-4" {{ $rekRangka->anyFilled('urut') ? 'open' : '' }}>
+            <details class="gspan-4" {{ $app->request->anyFilled('urut') ? 'open' : '' }}>
                 <summary>Pengurutan :</summary>
                 <div class="kartu form" id="sdm_pelanggaran_cariUrut">
                     <div class="isian" data-indeks="{{ $urutNomor ? $indexNomor : 'X' }}">
@@ -185,9 +186,9 @@
                             form="form_sdm_pelanggaran_cari"
                             onchange="getElementById('tombol_cari_pelanggaran').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('langgar_lap_no ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('langgar_lap_no ASC', (array) $app->request->urut))
                                 value="langgar_lap_no ASC">0 - 9</option>
-                            <option @selected(in_array('langgar_lap_no DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('langgar_lap_no DESC', (array) $app->request->urut))
                                 value="langgar_lap_no DESC">9 - 0</option>
                         </select>
                         <span class="t-bantu">Pilih satu</span>
@@ -200,9 +201,9 @@
                             form="form_sdm_pelanggaran_cari"
                             onchange="getElementById('tombol_cari_pelanggaran').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('langgar_tanggal ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('langgar_tanggal ASC', (array) $app->request->urut))
                                 value="langgar_tanggal ASC">Lama - Baru</option>
-                            <option @selected(in_array('langgar_tanggal DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('langgar_tanggal DESC', (array) $app->request->urut))
                                 value="langgar_tanggal DESC">Baru - Lama</option>
                         </select>
                         <span class="t-bantu">Pilih satu</span>
@@ -239,7 +240,7 @@
                                 </button>
                                 <div class="aksi">
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#pelanggaran-sdm_sematan"
-                                        href="{{ $urlRangka->route('sdm.pelanggaran.lihat', ['uuid' => $tabel->langgar_uuid]) }}"
+                                        href="{{ $app->url->route('sdm.pelanggaran.lihat', ['uuid' => $tabel->langgar_uuid]) }}"
                                         title="Tindaklanjuti">Tindaklanjuti</a>
                                 </div>
                             </div>
@@ -249,16 +250,17 @@
                             <div @class(['merah'=> $tabel->langgar_tsdm_tgl_berhenti])>
                                 <b><i><u>Terlapor</u></i></b> :<br />
                                 <a class="isi-xhr taut-akun"
-                                    href="{{ $urlRangka->route('sdm.akun', ['uuid' => $tabel->langgar_tsdm_uuid]) }}">
-                                    <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
+                                    href="{{ $app->url->route('sdm.akun', ['uuid' => $tabel->langgar_tsdm_uuid]) }}">
+                                    <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/' .
                                     $tabel->langgar_no_absen . '.webp')]) src="{{
-                                    $storageRangka->exists('sdm/foto-profil/' . $tabel->langgar_no_absen .
+                                    $app->filesystem->exists('sdm/foto-profil/' . $tabel->langgar_no_absen .
                                     '.webp')
-                                    ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
+                                    ? $app->url->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
                                     $tabel->langgar_no_absen . '.webp' . '?' .
-                                    filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
+                                    filemtime($app->storagePath('app/sdm/foto-profil/' .
                                     $tabel->langgar_no_absen . '.webp'))]) :
-                                    $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
+                                    $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
+                                    alt="{{
                                     $tabel->langgar_tsdm_nama ?? 'foto akun' }}" title="{{
                                     $tabel->langgar_tsdm_nama
                                     ?? 'foto akun' }}" loading="lazy">
@@ -272,16 +274,17 @@
                             <div @class(['merah'=> $tabel->langgar_psdm_tgl_berhenti])>
                                 <b><i><u>Pelapor</u></i></b> :<br />
                                 <a class="isi-xhr taut-akun"
-                                    href="{{ $urlRangka->route('sdm.akun', ['uuid' => $tabel->langgar_psdm_uuid]) }}">
-                                    <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
+                                    href="{{ $app->url->route('sdm.akun', ['uuid' => $tabel->langgar_psdm_uuid]) }}">
+                                    <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/' .
                                     $tabel->langgar_pelapor . '.webp')]) src="{{
-                                    $storageRangka->exists('sdm/foto-profil/' . $tabel->langgar_pelapor .
+                                    $app->filesystem->exists('sdm/foto-profil/' . $tabel->langgar_pelapor .
                                     '.webp') ?
-                                    $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
+                                    $app->url->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
                                     $tabel->langgar_pelapor . '.webp' . '?' .
-                                    filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
+                                    filemtime($app->storagePath('app/sdm/foto-profil/' .
                                     $tabel->langgar_pelapor . '.webp'))]) :
-                                    $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
+                                    $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
+                                    alt="{{
                                     $tabel->langgar_psdm_nama ?? 'foto akun' }}" title="{{
                                     $tabel->langgar_psdm_nama
                                     ?? 'foto akun' }}" loading="lazy">
@@ -295,19 +298,19 @@
                         </td>
                         <td>
                             <form class="form-xhr" method="POST"
-                                action="{{ $urlRangka->route('sdm.pelanggaran.ubah', [ 'uuid' => $tabel->langgar_uuid]) }}"
+                                action="{{ $app->url->route('sdm.pelanggaran.ubah', [ 'uuid' => $tabel->langgar_uuid]) }}"
                                 data-singkat="true">
-                                <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+                                <input type="hidden" name="_token" value="{{ $app->request->session()->token() }}">
                                 <div class="isian">
                                     <label for="{{'ubah_cepat_pelanggaran_' . $tabels->firstItem() + $nomor}}"
                                         class="tcetak">Ubah Status</label>
                                     <select id="{{'ubah_cepat_pelanggaran_' . $tabels->firstItem() + $nomor}}"
                                         name="langgar_status" class="pil-saja" required
                                         onchange="getElementById('kirim-{{$tabel->langgar_uuid}}').click()">
-                                        <option @selected($rekRangka->old('langgar_status',
+                                        <option @selected($app->request->old('langgar_status',
                                             $tabel->langgar_status
                                             ?? null) == 'DIPROSES')>DIPROSES</option>
-                                        <option @selected($rekRangka->old('langgar_status',
+                                        <option @selected($app->request->old('langgar_status',
                                             $tabel->langgar_status
                                             ?? null) == 'DIBATALKAN')>DIBATALKAN</option>
                                     </select>
@@ -316,7 +319,7 @@
                             </form><br />
                             <b>Nomor</b> : {{$tabel->langgar_lap_no}}<br />
                             <b>Tanggal</b> : {{
-                            strtoupper($dateRangka->make($tabel->langgar_tanggal)?->translatedFormat('d F Y'))
+                            strtoupper($app->date->make($tabel->langgar_tanggal)?->translatedFormat('d F Y'))
                             }}<br />
                             <b>Aduan</b> : {!! nl2br($tabel->langgar_isi) !!}<br />
                             <b>Keterangan</b> : {!! nl2br($tabel->langgar_keterangan) !!}
@@ -326,17 +329,17 @@
                             <b>No Laporan</b> : {{ $tabel->lap_no_sebelumnya}}<br />
                             <b>Sanksi </b> : {{ $tabel->sanksi_aktif_sebelumnya}}<br />
                             <b>Berakhir pada </b> : {{
-                            strtoupper($dateRangka->make($tabel->sanksi_selesai_sebelumnya)?->translatedFormat('d
+                            strtoupper($app->date->make($tabel->sanksi_selesai_sebelumnya)?->translatedFormat('d
                             F
                             Y')) }}<br /><br />
                             <b><i><u>Sanksi Diberikan</u></i></b> :<br />
                             <b>Sanksi </b> : {{ $tabel->final_sanksi_jenis}}<br />
                             <b>Tambahan </b> : {{ $tabel->final_sanksi_tambahan}}<br />
                             <b>Mulai </b> : {{
-                            strtoupper($dateRangka->make($tabel->final_sanksi_mulai)?->translatedFormat('d F
+                            strtoupper($app->date->make($tabel->final_sanksi_mulai)?->translatedFormat('d F
                             Y'))}}<br />
                             <b>Selesai </b> : {{
-                            strtoupper($dateRangka->make($tabel->final_sanksi_selesai)?->translatedFormat('d F
+                            strtoupper($app->date->make($tabel->final_sanksi_selesai)?->translatedFormat('d F
                             Y'))
                             }}<br />
                             <b>Keterangan </b> : {!! nl2br($tabel->final_sanksi_keterangan) !!}
@@ -390,7 +393,7 @@
             </svg>
         </a>
         <a class="isi-xhr" data-rekam="false" data-tujuan="#pelanggaran-sdm_sematan"
-            href="{{ $urlRangka->route('sdm.pelanggaran.tambah') }}" title="Tambah Data">
+            href="{{ $app->url->route('sdm.pelanggaran.tambah') }}" title="Tambah Data">
             <svg viewBox="0 0 24 24">
                 <use href="#ikontambah"></use>
             </svg>

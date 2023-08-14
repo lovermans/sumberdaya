@@ -14,17 +14,18 @@
     @isset($tabels)
     <div class="cari-data tcetak">
         <form id="form_atur_data_cari" class="form-xhr kartu" data-tujuan="#atur_tabels" data-frag="true" method="GET"
-            action="{{ $urlRangka->current() }}">
+            action="{{ $app->url->current() }}">
 
             <input type="hidden" name="fragment" value="atur_tabels">
 
-            <details class="gspan-4" {{ $rekRangka->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : ''
+            <details class="gspan-4" {{ $app->request->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' :
+                ''
                 }}>
 
                 <summary class="cari">
                     <div class="isian gspan-4">
                         <input type="text" id="kata_kunci_pengaturan" name="kata_kunci"
-                            value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
+                            value="{{ $app->request->kata_kunci }}" aria-label="Cari Kata Kunci">
 
                         <button id="tombol_cari_atur" class="cari-cepat" type="submit" title="Cari Data">
                             <svg viewbox="0 0 24 24">
@@ -42,7 +43,8 @@
                         <select id="atur_data_cariStatus" name="atur_status[]" class="pil-dasar" multiple
                             onchange="getElementById('tombol_cari_atur').click()">
                             @foreach ($statuses as $status)
-                            <option @selected(in_array($status, (array) $rekRangka->atur_status))>{{ $status }}</option>
+                            <option @selected(in_array($status, (array) $app->request->atur_status))>{{ $status }}
+                            </option>
                             @endforeach
                         </select>
 
@@ -56,7 +58,7 @@
                             @disabled($jenises->count() < 1) multiple
                                 onchange="getElementById('tombol_cari_atur').click()">
                                 @foreach ($jenises as $jenis)
-                                <option @selected(in_array($jenis, (array) $rekRangka->atur_jenis))>{{ $jenis }}
+                                <option @selected(in_array($jenis, (array) $app->request->atur_jenis))>{{ $jenis }}
                                 </option>
                                 @endforeach
                         </select>
@@ -70,7 +72,7 @@
                         <select id="atur_data_cariButir" name="atur_butir[]" class="pil-cari" @disabled($butirs->count()
                             < 1) multiple onchange="getElementById('tombol_cari_atur').click()">
                                 @foreach ($butirs as $butir)
-                                <option @selected(in_array($butir, (array) $rekRangka->atur_butir))>{{ $butir }}
+                                <option @selected(in_array($butir, (array) $app->request->atur_butir))>{{ $butir }}
                                 </option>
                                 @endforeach
                         </select>
@@ -149,7 +151,7 @@
             </span>
             @endif
 
-            <details class="gspan-4" {{ $rekRangka->anyFilled('urut') ? 'open' : '' }}>
+            <details class="gspan-4" {{ $app->request->anyFilled('urut') ? 'open' : '' }}>
                 <summary>Pengurutan :</summary>
 
                 <div class="kartu form" id="atur_data_cariUrut">
@@ -159,9 +161,9 @@
                         <select id="atur_data_cariUrutJenis" name="urut[]" class="pil-dasar" form="form_atur_data_cari"
                             onchange="getElementById('tombol_cari_atur').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('atur_jenis ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('atur_jenis ASC', (array) $app->request->urut))
                                 value="atur_jenis ASC">A - Z</option>
-                            <option @selected(in_array('atur_jenis DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('atur_jenis DESC', (array) $app->request->urut))
                                 value="atur_jenis DESC">Z - A</option>
                         </select>
 
@@ -174,9 +176,9 @@
                         <select id="atur_data_cariUrutButir" name="urut[]" class="pil-dasar" form="form_atur_data_cari"
                             onchange="getElementById('tombol_cari_atur').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('atur_butir ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('atur_butir ASC', (array) $app->request->urut))
                                 value="atur_butir ASC">A - Z</option>
-                            <option @selected(in_array('atur_butir DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('atur_butir DESC', (array) $app->request->urut))
                                 value="atur_butir DESC">Z - A</option>
                         </select>
 
@@ -190,9 +192,9 @@
                         <select id="atur_data_cariUrutStatus" name="urut[]" class="pil-dasar" form="form_atur_data_cari"
                             onchange="getElementById('tombol_cari_atur').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('atur_status ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('atur_status ASC', (array) $app->request->urut))
                                 value="atur_status ASC">A - Z</option>
-                            <option @selected(in_array('atur_status DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('atur_status DESC', (array) $app->request->urut))
                                 value="atur_status DESC">Z - A</option>
                         </select>
 
@@ -230,20 +232,20 @@
 
                                 <div class="aksi">
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan"
-                                        href="{{ $urlRangka->route('atur.lihat', ['uuid' => $tabel->atur_uuid]) }}"
+                                        href="{{ $app->url->route('atur.lihat', ['uuid' => $tabel->atur_uuid]) }}"
                                         title="Lihat Data">
                                         Lihat Data
                                     </a>
 
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan"
-                                        href="{{ $urlRangka->route('atur.ubah', ['uuid' => $tabel->atur_uuid]) }}"
+                                        href="{{ $app->url->route('atur.ubah', ['uuid' => $tabel->atur_uuid]) }}"
                                         title="Ubah Data">
                                         Ubah Data
                                     </a>
 
                                     {{-- <a class="isi-xhr" data-rekam="false" data-metode="POST" data-enkode="true"
                                         data-kirim="{{ '_token='.csrf_token() }}"
-                                        href="{{ $urlRangka->route('atur.nonaktifkan', ['uuid' => $atur->atur_uuid]) }}">Non-aktifkan</a>
+                                        href="{{ $app->url->route('atur.nonaktifkan', ['uuid' => $atur->atur_uuid]) }}">Non-aktifkan</a>
                                     --}}
                                 </div>
                             </div>
@@ -297,7 +299,7 @@
             </svg>
         </a>
 
-        <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.unggah') }}"
+        <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $app->url->route('atur.unggah') }}"
             title="Unggah Data">
             <svg viewBox="0 0 24 24">
                 <use href="#ikonunggah"></use>
@@ -311,7 +313,7 @@
             </svg>
         </a>
 
-        <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $urlRangka->route('atur.tambah') }}"
+        <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $app->url->route('atur.tambah') }}"
             title="Tambah Data">
             <svg viewBox="0 0 24 24">
                 <use href="#ikontambah"></use>

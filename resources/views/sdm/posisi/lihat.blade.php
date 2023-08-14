@@ -39,7 +39,7 @@
         <div class="isian gspan-4"></div>
 
         <a class="utama isi-xhr" data-rekam="false" data-tujuan="#posisi_sdm_lihat"
-            href="{{ $urlRangka->route('sdm.posisi.ubah', ['uuid' => $pos->posisi_uuid]) }}">UBAH</a>
+            href="{{ $app->url->route('sdm.posisi.ubah', ['uuid' => $pos->posisi_uuid]) }}">UBAH</a>
 
         @else
         <div class="isian gspan-4">

@@ -1,5 +1,5 @@
 @fragment('pilih-sumber_daya')
-@if ($rekRangka->user())
+@if ($app->request->user())
 <svg viewBox="0 0 24 24">
     <use href="#ikonaplikasi"></use>
 </svg>
@@ -7,44 +7,45 @@
 @endfragment
 
 @fragment('avatar')
-@if($rekRangka->user())
-<img id="akun" @class(['svg'=> !$storageRangka->exists('sdm/foto-profil/' . $rekRangka->user()->sdm_no_absen .
+@if($app->request->user())
+<img id="akun" @class(['svg'=> !$app->filesystem->exists('sdm/foto-profil/' . $app->request->user()->sdm_no_absen .
 '.webp')])
 src="{{
-$storageRangka->exists('sdm/foto-profil/' . $rekRangka->user()->sdm_no_absen . '.webp')
-? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $rekRangka->user()?->sdm_no_absen . '.webp' .'?'
-. filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $rekRangka->user()->sdm_no_absen . '.webp'))])
-: $urlRangka->asset($mixRangka('/images/blank.webp'))
+$app->filesystem->exists('sdm/foto-profil/' . $app->request->user()->sdm_no_absen . '.webp')
+? $app->url->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $app->request->user()?->sdm_no_absen . '.webp'
+.'?'
+. filemtime($app->storagePath('app/sdm/foto-profil/' . $app->request->user()->sdm_no_absen . '.webp'))])
+: $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp'))
 }}"
-alt="{{ $rekRangka->user()->sdm_nama ?? 'foto akun' }}"
-title="{{ $rekRangka->user()->sdm_nama ?? 'foto akun' }}"
+alt="{{ $app->request->user()->sdm_nama ?? 'foto akun' }}"
+title="{{ $app->request->user()->sdm_nama ?? 'foto akun' }}"
 loading="lazy">
 @endif
 @endfragment
 
 @fragment('menu-avatar')
-@if($rekRangka->user())
+@if($app->request->user())
 <div class="menu-akun">
-    <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('sdm.akun')]) href="{{ $urlRangka->route('sdm.akun',
-        ['uuid' => $rekRangka->user()->sdm_uuid]) }}">
+    <a @class(['menu-xhr', 'aktif'=> $app->request->routeIs('sdm.akun')]) href="{{ $app->url->route('sdm.akun',
+        ['uuid' => $app->request->user()->sdm_uuid]) }}">
         <svg viewBox="0 0 24 24">
             <use href="#ikonakun"></use>
         </svg>
         Profil
     </a>
 
-    <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('sdm.ubah-sandi')]) href="{{
-        $urlRangka->route('sdm.ubah-sandi') }}">
+    <a @class(['menu-xhr', 'aktif'=> $app->request->routeIs('sdm.ubah-sandi')]) href="{{
+        $app->url->route('sdm.ubah-sandi') }}">
         <svg viewBox="0 0 24 24">
             <use href="#ikonkunci"></use>
         </svg>
         Ubah Sandi
     </a>
 
-    <form method="POST" class="form-xhr" action="{{ $urlRangka->route('logout') }}">
-        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+    <form method="POST" class="form-xhr" action="{{ $app->url->route('logout') }}">
+        <input type="hidden" name="_token" value="{{ $app->request->session()->token() }}">
         <button type="submit" id="keluar-aplikasi" sembunyikan></button>
-        <a href="{{ $urlRangka->route('logout') }}" onclick="event.preventDefault();
+        <a href="{{ $app->url->route('logout') }}" onclick="event.preventDefault();
                 document.getElementById('sematan_umum').replaceChildren();
                 document.getElementById('nav').checked = false;
                 document.getElementById('menu').checked = false;
@@ -58,18 +59,18 @@ loading="lazy">
     </form>
 </div>
 <script>
-    if ("{{ $urlRangka->route('sdm.akun', ['uuid' => $rekRangka->user()->sdm_uuid]) }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('sdm.akun',
-        ['uuid' => $rekRangka->user()->sdm_uuid]) }}']").then((el) => {el.classList.add("aktif");});
-    if ("{{$urlRangka->route('sdm.ubah-sandi') }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('sdm.ubah-sandi') }}']").then((el) => {el.classList.add("aktif");});
+    if ("{{ $app->url->route('sdm.akun', ['uuid' => $app->request->user()->sdm_uuid]) }}" == location.href) cariElemen(".menu-akun a[href='{{ $app->url->route('sdm.akun',
+        ['uuid' => $app->request->user()->sdm_uuid]) }}']").then((el) => {el.classList.add("aktif");});
+    if ("{{$app->url->route('sdm.ubah-sandi') }}" == location.href) cariElemen(".menu-akun a[href='{{ $app->url->route('sdm.ubah-sandi') }}']").then((el) => {el.classList.add("aktif");});
 </script>
 @endif
 @endfragment
 
 
 @fragment('menu-aplikasi')
-@if($rekRangka->user())
+@if($app->request->user())
 <div class="menu-akun">
-    <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('mulai')]) href="{{ $urlRangka->route('mulai')
+    <a @class(['menu-xhr', 'aktif'=> $app->request->routeIs('mulai')]) href="{{ $app->url->route('mulai')
         }}">
         <svg viewBox="0 0 24 24">
             <use href="#ikonrumah"></use>
@@ -77,16 +78,16 @@ loading="lazy">
         Beranda
     </a>
 
-    <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('sdm.*', 'register')]) href="{{
-        $urlRangka->route('sdm.mulai') }}">
+    <a @class(['menu-xhr', 'aktif'=> $app->request->routeIs('sdm.*', 'register')]) href="{{
+        $app->url->route('sdm.mulai') }}">
         <svg viewBox="0 0 24 24">
             <use href="#ikonpersonil"></use>
         </svg>
         Sumber Daya Manusia
     </a>
 
-    @if($strRangka->contains($rekRangka->user()?->sdm_hak_akses, 'PENGURUS'))
-    <a @class(['menu-xhr', 'aktif'=> $rekRangka->routeIs('atur.*')]) href="{{ $urlRangka->route('atur.data')
+    @if(str()->contains($app->request->user()?->sdm_hak_akses, 'PENGURUS'))
+    <a @class(['menu-xhr', 'aktif'=> $app->request->routeIs('atur.*')]) href="{{ $app->url->route('atur.data')
         }}">
         <svg viewBox="0 0 24 24">
             <use href="#ikonpengaturan"></use>
@@ -96,8 +97,8 @@ loading="lazy">
     @endif
 </div>
 <script>
-    if ("{{$urlRangka->route('sdm.mulai') }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('sdm.mulai') }}']").then((el) => {el.classList.add("aktif");});
-    if ("{{ $urlRangka->route('atur.data') }}" == location.href) cariElemen(".menu-akun a[href='{{ $urlRangka->route('atur.data') }}']").then((el) => {el.classList.add("aktif");});
+    if ("{{$app->url->route('sdm.mulai') }}" == location.href) cariElemen(".menu-akun a[href='{{ $app->url->route('sdm.mulai') }}']").then((el) => {el.classList.add("aktif");});
+    if ("{{ $app->url->route('atur.data') }}" == location.href) cariElemen(".menu-akun a[href='{{ $app->url->route('atur.data') }}']").then((el) => {el.classList.add("aktif");});
 </script>
 @endif
 @endfragment

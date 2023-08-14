@@ -10,14 +10,14 @@
             method="GET" data-blank="true">
             <input type="hidden" name="fragment" value="sanksi-sdm_tabels">
 
-            <details class="gspan-4" {{ $rekRangka->anyFilled(['sanksi_jenis', 'sanksi_penempatan', 'status_sdm',
+            <details class="gspan-4" {{ $app->request->anyFilled(['sanksi_jenis', 'sanksi_penempatan', 'status_sdm',
                 'sanksi_status', 'tgl_sanksi_mulai', 'tgl_sanksi_sampai']) ?
                 'open' : '' }}>
 
                 <summary class="cari">
                     <div class="isian gspan-4">
                         <input type="text" id="kata_kunci_sanksi_sdm" name="kata_kunci"
-                            value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
+                            value="{{ $app->request->kata_kunci }}" aria-label="Cari Kata Kunci">
 
                         <button id="tombol_cari_sanksi" class="cari-cepat" type="submit" title="Cari Data">
                             <svg viewbox="0 0 24 24">
@@ -34,7 +34,7 @@
                         <select id="sdm_sanksi_cariJenis" name="sanksi_jenis[]" class="pil-cari" multiple>
                             @foreach ($jenisSanksis as $jenisSanksi)
                             <option @selected(in_array($jenisSanksi->atur_butir, (array)
-                                $rekRangka->sanksi_jenis)) @class(['merah' => $jenisSanksi->atur_status ==
+                                $app->request->sanksi_jenis)) @class(['merah' => $jenisSanksi->atur_status ==
                                 'NON-AKTIF'])>{{ $jenisSanksi->atur_butir }}</option>
                             @endforeach
                         </select>
@@ -47,8 +47,8 @@
 
                         <select id="sdm_sanksi_cariStatusSanksi" name="sanksi_status" class="pil-dasar">
                             <option selected disabled></option>
-                            <option @selected($rekRangka->sanksi_status == 'AKTIF')>AKTIF</option>
-                            <option @selected($rekRangka->sanksi_status == 'BERAKHIR')>BERAKHIR</option>
+                            <option @selected($app->request->sanksi_status == 'AKTIF')>AKTIF</option>
+                            <option @selected($app->request->sanksi_status == 'BERAKHIR')>BERAKHIR</option>
                         </select>
 
                         <span class="t-bantu">Pilih satu atau lebih</span>
@@ -60,7 +60,7 @@
                         <select id="sdm_sanksi_cariLokasi" name="sanksi_penempatan[]" class="pil-cari" multiple>
                             @foreach ($lokasis as $lokasi)
                             <option @selected(in_array($lokasi->atur_butir, (array)
-                                $rekRangka->sanksi_penempatan)) @class(['merah' => $lokasi->atur_status ==
+                                $app->request->sanksi_penempatan)) @class(['merah' => $lokasi->atur_status ==
                                 'NON-AKTIF'])>{{ $lokasi->atur_butir }}</option>
                             @endforeach
                         </select>
@@ -74,7 +74,7 @@
                         <select id="sdm_sanksi_cariStatusSDM" name="status_sdm[]" class="pil-cari" multiple>
                             @foreach ($statusSDMs as $statusSDM)
                             <option @selected(in_array($statusSDM->atur_butir, (array)
-                                $rekRangka->status_sdm)) @class(['merah' => $statusSDM->atur_status ==
+                                $app->request->status_sdm)) @class(['merah' => $statusSDM->atur_status ==
                                 'NON-AKTIF'])>{{ $statusSDM->atur_butir }}</option>
                             @endforeach
                         </select>
@@ -85,14 +85,14 @@
                     <div class="isian normal">
                         <label for="sdm_sanksi_cariTanggalMulai">Terbit Sanksi Mulai</label>
                         <input id="sdm_sanksi_cariTanggalMulai" type="date" name="tgl_sanksi_mulai"
-                            value="{{ $rekRangka->old('tgl_sanksi_mulai', $rekRangka->tgl_sanksi_mulai ?? null) }}">
+                            value="{{ $app->request->old('tgl_sanksi_mulai', $app->request->tgl_sanksi_mulai ?? null) }}">
                         <span class="t-bantu">Isi tanggal</span>
                     </div>
 
                     <div class="isian normal">
                         <label for="sdm_sanksi_cariTanggalSampai">Terbit Sanksi Sampai</label>
                         <input id="sdm_sanksi_cariTanggalSampai" type="date" name="tgl_sanksi_sampai"
-                            value="{{ $rekRangka->old('tgl_sanksi_sampai', $rekRangka->tgl_sanksi_sampai ?? null) }}">
+                            value="{{ $app->request->old('tgl_sanksi_sampai', $app->request->tgl_sanksi_sampai ?? null) }}">
                         <span class="t-bantu">Isi tanggal</span>
                     </div>
 
@@ -111,7 +111,7 @@
     <div id="sanksi-sdm_tabels" class="kartu scroll-margin">
         @fragment('sanksi-sdm_tabels')
         @unless ($halamanAkun ?? null)
-        <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['sanksi_jenis', 'sanksi_penempatan', 'status_sdm',
+        <b><i><small>Jumlah SDM ({{ $app->request->anyFilled(['sanksi_jenis', 'sanksi_penempatan', 'status_sdm',
                     'sanksi_status', 'tgl_sanksi_mulai', 'tgl_sanksi_sampai']) ? 'sesuai data penyaringan' : 'global'
                     }}) : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
                     {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
@@ -178,7 +178,7 @@
             @endif
 
             @unless ($halamanAkun ?? null)
-            <details class="gspan-4" {{ $rekRangka->anyFilled('urut') ? 'open' : '' }}>
+            <details class="gspan-4" {{ $app->request->anyFilled('urut') ? 'open' : '' }}>
                 <summary>Pengurutan :</summary>
                 <div class="kartu form" id="sdm_sanksi_cariUrut">
                     <div class="isian" data-indeks="{{ $urutTanggalMulai ? $indexTanggalMulai : 'X' }}">
@@ -188,9 +188,9 @@
                         <select id="sdm_sanksi_tambah_cariUrutTanggalMulai" name="urut[]" class="pil-dasar"
                             form="form_sdm_sanksi_cari" onchange="getElementById('tombol_cari_sanksi').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('sanksi_mulai ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('sanksi_mulai ASC', (array) $app->request->urut))
                                 value="sanksi_mulai ASC">Lama - Baru</option>
-                            <option @selected(in_array('sanksi_mulai DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('sanksi_mulai DESC', (array) $app->request->urut))
                                 value="sanksi_mulai DESC">Baru - Lama</option>
                         </select>
                         <span class="t-bantu">Pilih satu</span>
@@ -203,9 +203,9 @@
                         <select id="sdm_sanksi_tambah_cariUrutTanggalSelesai" name="urut[]" class="pil-dasar"
                             form="form_sdm_sanksi_cari" onchange="getElementById('tombol_cari_sanksi').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('sanksi_selesai ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('sanksi_selesai ASC', (array) $app->request->urut))
                                 value="sanksi_selesai ASC">Lama - Baru</option>
-                            <option @selected(in_array('sanksi_selesai DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('sanksi_selesai DESC', (array) $app->request->urut))
                                 value="sanksi_selesai DESC">Baru - Lama</option>
                         </select>
                         <span class="t-bantu">Pilih satu</span>
@@ -233,7 +233,7 @@
                 </thead>
                 <tbody>
                     @forelse ($tabels as $nomor => $tabel)
-                    <tr @class(['merah'=> $tabel->sanksi_selesai <= $dateRangka->today()])>
+                    <tr @class(['merah'=> $tabel->sanksi_selesai <= $app->date->today()])>
                             <th>
                                 <div class="pil-aksi">
                                     <button id="{{ 'aksi_sanksi_baris_' .$tabels->firstItem() + $nomor}}"
@@ -244,7 +244,7 @@
                                     </button>
                                     <div class="aksi">
                                         <a class="isi-xhr" data-rekam="false" data-tujuan="#sanksi-sdm_sematan"
-                                            href="{{ $urlRangka->route('sdm.sanksi.lihat', ['uuid' => $tabel->sanksi_uuid]) }}"
+                                            href="{{ $app->url->route('sdm.sanksi.lihat', ['uuid' => $tabel->sanksi_uuid]) }}"
                                             title="Lihat/Ubah Sanksi">Lihat/Ubah Sanksi</a>
                                     </div>
                                 </div>
@@ -254,16 +254,17 @@
                             <td>
                                 <div @class(['merah'=> $tabel->langgar_tsdm_tgl_berhenti])>
                                     <a class="isi-xhr taut-akun"
-                                        href="{{ $urlRangka->route('sdm.akun', ['uuid' => $tabel->langgar_tsdm_uuid]) }}">
-                                        <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
+                                        href="{{ $app->url->route('sdm.akun', ['uuid' => $tabel->langgar_tsdm_uuid]) }}">
+                                        <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/' .
                                         $tabel->sanksi_no_absen . '.webp')]) src="{{
-                                        $storageRangka->exists('sdm/foto-profil/' . $tabel->sanksi_no_absen .
+                                        $app->filesystem->exists('sdm/foto-profil/' . $tabel->sanksi_no_absen .
                                         '.webp')
-                                        ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
+                                        ? $app->url->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
                                         $tabel->sanksi_no_absen . '.webp' . '?' .
-                                        filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
+                                        filemtime($app->storagePath('app/sdm/foto-profil/' .
                                         $tabel->sanksi_no_absen . '.webp'))]) :
-                                        $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
+                                        $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp'))
+                                        }}" alt="{{
                                         $tabel->langgar_tsdm_nama ?? 'foto akun' }}" title="{{
                                         $tabel->langgar_tsdm_nama
                                         ?? 'foto akun' }}" loading="lazy">
@@ -279,20 +280,20 @@
                             <td>
                                 <b>Sanksi</b> : {{$tabel->sanksi_jenis}}<br />
                                 <b>Berlaku</b> : {{
-                                strtoupper($dateRangka->make($tabel->sanksi_mulai)?->translatedFormat('d F Y'))
+                                strtoupper($app->date->make($tabel->sanksi_mulai)?->translatedFormat('d F Y'))
                                 }} s.d {{
-                                strtoupper($dateRangka->make($tabel->sanksi_selesai)?->translatedFormat('d F Y'))
+                                strtoupper($app->date->make($tabel->sanksi_selesai)?->translatedFormat('d F Y'))
                                 }}<br />
                                 <b>Tambahan</b> : {!! nl2br($tabel->sanksi_tambahan) !!}<br />
                                 <b>Keterangan</b> : {!! nl2br($tabel->sanksi_keterangan) !!}
                             </td>
                             <td>
                                 <b>Nomor</b> : <u><a class="isi-xhr"
-                                        href="{{ $urlRangka->route('sdm.pelanggaran.data', ['kata_kunci' => $tabel->sanksi_lap_no]) }}"
+                                        href="{{ $app->url->route('sdm.pelanggaran.data', ['kata_kunci' => $tabel->sanksi_lap_no]) }}"
                                         aria-label="Lap Pelanggaran SDM No {{ $tabel->sanksi_lap_no }}">{{
                                         $tabel->sanksi_lap_no }}</a></u><br />
                                 <b>Tanggal</b> : {{
-                                strtoupper($dateRangka->make($tabel->langgar_tanggal)?->translatedFormat('d F Y'))
+                                strtoupper($app->date->make($tabel->langgar_tanggal)?->translatedFormat('d F Y'))
                                 }}<br />
                                 <b>Aduan</b> : {!! nl2br($tabel->langgar_isi) !!}
                             </td>
@@ -301,16 +302,17 @@
                                 <div @class(['merah'=> $tabel->langgar_psdm_tgl_berhenti])>
                                     <b><i><u>Pelapor</u></i></b> :<br />
                                     <a class="isi-xhr taut-akun"
-                                        href="{{ $urlRangka->route('sdm.akun', ['uuid' => $tabel->langgar_psdm_uuid]) }}">
-                                        <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
+                                        href="{{ $app->url->route('sdm.akun', ['uuid' => $tabel->langgar_psdm_uuid]) }}">
+                                        <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/' .
                                         $tabel->langgar_pelapor . '.webp')]) src="{{
-                                        $storageRangka->exists('sdm/foto-profil/' . $tabel->langgar_pelapor .
+                                        $app->filesystem->exists('sdm/foto-profil/' . $tabel->langgar_pelapor .
                                         '.webp') ?
-                                        $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
+                                        $app->url->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
                                         $tabel->langgar_pelapor . '.webp' . '?' .
-                                        filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
+                                        filemtime($app->storagePath('app/sdm/foto-profil/' .
                                         $tabel->langgar_pelapor . '.webp'))]) :
-                                        $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
+                                        $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp'))
+                                        }}" alt="{{
                                         $tabel->langgar_psdm_nama ?? 'foto akun' }}" title="{{
                                         $tabel->langgar_psdm_nama
                                         ?? 'foto akun' }}" loading="lazy">
@@ -365,7 +367,7 @@
                 <use href="#ikonpanahatas"></use>
             </svg>
         </a>
-        <a class="isi-xhr" data-rekam="false" href="{{ $urlRangka->route('sdm.sanksi.unggah') }}"
+        <a class="isi-xhr" data-rekam="false" href="{{ $app->url->route('sdm.sanksi.unggah') }}"
             data-tujuan="#sanksi-sdm_sematan" title="Unggah Data Sanksi SDM">
             <svg viewBox="0 0 24 24">
                 <use href="#ikonunggah"></use>
@@ -378,7 +380,7 @@
             </svg>
         </a>
         <a class="isi-xhr" data-rekam="false" data-tujuan="#sanksi-sdm_sematan"
-            href="{{ $urlRangka->route('sdm.pelanggaran.tambah') }}" title="Tambah Data">
+            href="{{ $app->url->route('sdm.pelanggaran.tambah') }}" title="Tambah Data">
             <svg viewBox="0 0 24 24">
                 <use href="#ikontambah"></use>
             </svg>

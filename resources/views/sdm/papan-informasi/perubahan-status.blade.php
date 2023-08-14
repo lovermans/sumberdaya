@@ -24,7 +24,7 @@
 
                 <tbody>
                     @forelse ($statuses as $no => $status)
-                    <tr @class(['biru'=> $strRangka->contains($status->penempatan_kontrak, 'OS-')])>
+                    <tr @class(['biru'=> str()->contains($status->penempatan_kontrak, 'OS-')])>
                         <th>
                             <div class="pil-aksi">
                                 <button id="{{'aksi_pstatus_baris_' . $loop->iteration}}" title="Pilih Tindakan">
@@ -36,11 +36,11 @@
 
                                 <div class="aksi">
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_status_sematan"
-                                        href="{{ $urlRangka->route('sdm.penempatan.lihat', ['uuid' => $status->penempatan_uuid]) }}"
+                                        href="{{ $app->url->route('sdm.penempatan.lihat', ['uuid' => $status->penempatan_uuid]) }}"
                                         title="Lihat Data Penempatan">Lihat Penempatan</a>
 
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_status_sematan"
-                                        href="{{ $urlRangka->route('sdm.penempatan.ubah', ['uuid' => $status->penempatan_uuid]) }}"
+                                        href="{{ $app->url->route('sdm.penempatan.ubah', ['uuid' => $status->penempatan_uuid]) }}"
                                         title="Ubah Data Penempatan">Ubah Penempatan</a>
                                 </div>
                             </div>
@@ -50,14 +50,15 @@
 
                         <td>
                             <a class="isi-xhr taut-akun"
-                                href="{{ $urlRangka->route('sdm.akun', ['uuid' => $status->sdm_uuid]) }}">
-                                <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
-                                $status->sdm_no_absen . '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' .
-                                $status->sdm_no_absen . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil',
+                                href="{{ $app->url->route('sdm.akun', ['uuid' => $status->sdm_uuid]) }}">
+                                <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/' .
+                                $status->sdm_no_absen . '.webp')]) src="{{ $app->filesystem->exists('sdm/foto-profil/' .
+                                $status->sdm_no_absen . '.webp') ? $app->url->route('sdm.tautan-foto-profil',
                                 ['berkas_foto_profil' => $status->sdm_no_absen . '.webp' . '?' .
-                                filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $status->sdm_no_absen .
+                                filemtime($app->storagePath('app/sdm/foto-profil/' . $status->sdm_no_absen .
                                 '.webp')), false])
-                                : $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
+                                : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
+                                alt="{{
                                 $status->sdm_nama ?? 'foto akun' }}" title="{{ $status->sdm_nama ?? 'foto akun'
                                 }}" loading="lazy">
                             </a>
@@ -68,9 +69,9 @@
                         </td>
 
                         <td>
-                            {{ strtoupper($dateRangka->make($status->penempatan_mulai)?->translatedFormat('d F Y')) }}
+                            {{ strtoupper($app->date->make($status->penempatan_mulai)?->translatedFormat('d F Y')) }}
                             s.d
-                            {{ strtoupper($dateRangka->make($status->penempatan_selesai)?->translatedFormat('d F Y'))
+                            {{ strtoupper($app->date->make($status->penempatan_selesai)?->translatedFormat('d F Y'))
                             }} <br />
                             {{ $status->penempatan_kontrak }} Ke : {{ $status->penempatan_ke }}
                         </td>

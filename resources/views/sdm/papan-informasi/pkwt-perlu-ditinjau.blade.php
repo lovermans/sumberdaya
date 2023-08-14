@@ -23,8 +23,8 @@
 
                 <tbody>
                     @forelse ($kontraks as $no => $kontrak)
-                    <tr @class(['oranye'=> $kontrak->penempatan_selesai <= $dateRangka->today(), 'biru'=>
-                            ($kontrak->penempatan_selesai <= $dateRangka->today()->addDay(40))])>
+                    <tr @class(['oranye'=> $kontrak->penempatan_selesai <= $app->date->today(), 'biru'=>
+                            ($kontrak->penempatan_selesai <= $app->date->today()->addDay(40))])>
                                 <th>
                                     <div class="pil-aksi">
                                         <button id="{{'aksi_pkwt_baris_' . $loop->iteration}}" title="Pilih Tindakan">
@@ -35,15 +35,15 @@
 
                                         <div class="aksi">
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_kontrak_sematan"
-                                                href="{{ $urlRangka->route('sdm.penempatan.lihat', ['uuid' => $kontrak->penempatan_uuid]) }}"
+                                                href="{{ $app->url->route('sdm.penempatan.lihat', ['uuid' => $kontrak->penempatan_uuid]) }}"
                                                 title="Lihat Data Penempatan">Lihat Penempatan</a>
 
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_kontrak_sematan"
-                                                href="{{ $urlRangka->route('sdm.penempatan.ubah', ['uuid' => $kontrak->penempatan_uuid]) }}"
+                                                href="{{ $app->url->route('sdm.penempatan.ubah', ['uuid' => $kontrak->penempatan_uuid]) }}"
                                                 title="Ubah Data Penempatan">Ubah Penempatan</a>
 
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_kontrak_sematan"
-                                                href="{{ $urlRangka->route('sdm.penempatan.tambah', ['uuid' => $kontrak->sdm_uuid]) }}"
+                                                href="{{ $app->url->route('sdm.penempatan.tambah', ['uuid' => $kontrak->sdm_uuid]) }}"
                                                 title="Tambah Data Penempatan">Tambah Penempatan</a>
                                         </div>
                                     </div>
@@ -53,17 +53,19 @@
 
                                 <td>
                                     <a class="isi-xhr taut-akun"
-                                        href="{{ $urlRangka->route('sdm.akun', ['uuid' => $kontrak->sdm_uuid]) }}">
-                                        <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/'
+                                        href="{{ $app->url->route('sdm.akun', ['uuid' => $kontrak->sdm_uuid]) }}">
+                                        <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/'
                                         .
                                         $kontrak->sdm_no_absen . '.webp')]) src="{{
-                                        $storageRangka->exists('sdm/foto-profil/' .
+                                        $app->filesystem->exists('sdm/foto-profil/' .
                                         $kontrak->sdm_no_absen . '.webp') ?
-                                        $urlRangka->route('sdm.tautan-foto-profil',
+                                        $app->url->route('sdm.tautan-foto-profil',
                                         ['berkas_foto_profil' => $kontrak->sdm_no_absen . '.webp' . '?' .
-                                        filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
+                                        filemtime($app->storagePath('app/sdm/foto-profil/' .
                                         $kontrak->sdm_no_absen . '.webp')), false])
-                                        : $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
+                                        :
+                                        $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp'))
+                                        }}" alt="{{
                                         $kontrak->sdm_nama ?? 'foto akun' }}" title="{{ $kontrak->sdm_nama ??
                                         'foto
                                         akun'
@@ -77,12 +79,12 @@
 
                                 <td>
                                     {{
-                                    strtoupper($dateRangka->make($kontrak->penempatan_mulai)?->translatedFormat('d
+                                    strtoupper($app->date->make($kontrak->penempatan_mulai)?->translatedFormat('d
                                     F
                                     Y')) }}
                                     s.d
                                     {{
-                                    strtoupper($dateRangka->make($kontrak->penempatan_selesai)?->translatedFormat('d
+                                    strtoupper($app->date->make($kontrak->penempatan_selesai)?->translatedFormat('d
                                     F Y'))
                                     }} <br />
                                     {{ $kontrak->penempatan_kontrak }} Ke : {{ $kontrak->penempatan_ke }}
@@ -109,12 +111,12 @@
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
 
         @if ($jmlAkanHabis > 0)
-        <a class="isi-xhr utama" href="{{ $urlRangka->route('sdm.penempatan.data-akanhabis') }}">AKAN
+        <a class="isi-xhr utama" href="{{ $app->url->route('sdm.penempatan.data-akanhabis') }}">AKAN
             HABIS</a>&nbsp;
         @endif
 
         @if ($jmlKadaluarsa > 0)
-        <a class="isi-xhr utama" href="{{ $urlRangka->route('sdm.penempatan.data-kadaluarsa') }}">KADALUARSA</a>
+        <a class="isi-xhr utama" href="{{ $app->url->route('sdm.penempatan.data-kadaluarsa') }}">KADALUARSA</a>
         @endif
         @endif
     </div>

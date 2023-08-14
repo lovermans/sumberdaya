@@ -61,15 +61,15 @@
         <div class="isian gspan-4">
             <h3>Berkas Penilaian</h3>
 
-            @if ($storageRangka->exists('sdm/penilaian/berkas/' . $nilai->nilaisdm_no_absen . ' - ' .
+            @if ($app->filesystem->exists('sdm/penilaian/berkas/' . $nilai->nilaisdm_no_absen . ' - ' .
             $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf'))
-            <iframe class="berkas tcetak" src="{{ $urlRangka->route('sdm.penilaian.berkas', ['berkas' => $nilai->nilaisdm_no_absen . ' - ' .
+            <iframe class="berkas tcetak" src="{{ $app->url->route('sdm.penilaian.berkas', ['berkas' => $nilai->nilaisdm_no_absen . ' - ' .
                 $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf' . '?' . filemtime(storage_path('app/sdm/penilaian/berkas/' . $nilai->nilaisdm_no_absen . ' - ' .
             $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf'))]) }}"
                 title="Bukti Pendukung Laporan Penilaian SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
-            <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $urlRangka->route('sdm.penilaian.berkas', ['berkas' => $nilai->nilaisdm_no_absen . ' - ' .
+            <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $app->url->route('sdm.penilaian.berkas', ['berkas' => $nilai->nilaisdm_no_absen . ' - ' .
                 $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf' . '?' . filemtime(storage_path('app/sdm/penilaian/berkas/' . $nilai->nilaisdm_no_absen . ' - ' .
             $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf'))]) }}">
                 <svg viewBox="0 0 24 24">
@@ -85,7 +85,7 @@
         </div>
 
         <a class="utama isi-xhr" data-rekam="false" data-tujuan="#nilai_sdm_lihat_sematan"
-            href="{{ $urlRangka->route('sdm.penilaian.ubah', ['uuid' => $nilai->nilaisdm_uuid]) }}">UBAH
+            href="{{ $app->url->route('sdm.penilaian.ubah', ['uuid' => $nilai->nilaisdm_uuid]) }}">UBAH
             PENILAIAN</a>
 
         @else

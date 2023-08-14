@@ -2,8 +2,8 @@
 
 @section('isi')
 <div id="sdm_sanksi_tambahUbah">
-    <form id="form_sdm_sanksi_tambahUbah" class="form-xhr kartu" method="POST" action="{{ $urlRangka->current() }}">
-        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+    <form id="form_sdm_sanksi_tambahUbah" class="form-xhr kartu" method="POST" action="{{ $app->url->current() }}">
+        <input type="hidden" name="_token" value="{{ $app->request->session()->token() }}">
 
         <div class="gspan-4">
             <a class="tutup-i">
@@ -12,23 +12,23 @@
                 </svg>
             </a>
 
-            <h4 class="form">{{$rekRangka->routeIs('sdm.sanksi.tambah') ? 'Tambah' : 'Ubah'}} Sanksi SDM</h4>
+            <h4 class="form">{{$app->request->routeIs('sdm.sanksi.tambah') ? 'Tambah' : 'Ubah'}} Sanksi SDM</h4>
         </div>
 
         <div class="isian normal">
             <label for="sanksi_jenis">Jenis Sanksi</label>
 
             <select id="sanksi_jenis" name="sanksi_jenis" class="pil-cari" required>
-                @if (!in_array($rekRangka->old('sanksi_jenis', $sanksiLama->sanksi_jenis ?? null), (array)
-                $sanksis->pluck('atur_butir')->toArray()) && !is_null($rekRangka->old('sanksi_jenis',
+                @if (!in_array($app->request->old('sanksi_jenis', $sanksiLama->sanksi_jenis ?? null), (array)
+                $sanksis->pluck('atur_butir')->toArray()) && !is_null($app->request->old('sanksi_jenis',
                 $sanksiLama->sanksi_jenis ?? null)))
-                <option value="{{ $rekRangka->old('sanksi_jenis', $sanksiLama->sanksi_jenis ?? null) }}" class="merah"
-                    selected>{{ $rekRangka->old('sanksi_jenis', $sanksiLama->sanksi_jenis ?? null)
+                <option value="{{ $app->request->old('sanksi_jenis', $sanksiLama->sanksi_jenis ?? null) }}"
+                    class="merah" selected>{{ $app->request->old('sanksi_jenis', $sanksiLama->sanksi_jenis ?? null)
                     }}</option>
                 @endif
 
                 @foreach ($sanksis as $sanksi)
-                <option @selected($sanksi->atur_butir == $rekRangka->old('sanksi_jenis',
+                <option @selected($sanksi->atur_butir == $app->request->old('sanksi_jenis',
                     $sanksiLama->sanksi_jenis ?? null)) @class(['merah' => $sanksi->atur_status == 'NON-AKTIF'])>{{
                     $sanksi->atur_butir }}</option>
                 @endforeach
@@ -41,7 +41,7 @@
             <label for="sanksi_mulai">Sanksi Mulai</label>
 
             <input id="sanksi_mulai" type="date" name="sanksi_mulai"
-                value="{{ $rekRangka->old('sanksi_mulai', $sanksiLama->sanksi_mulai ?? $dateRangka->today()->toDateString()) }}"
+                value="{{ $app->request->old('sanksi_mulai', $sanksiLama->sanksi_mulai ?? $app->date->today()->toDateString()) }}"
                 required>
 
             <span class="t-bantu">Isi tanggal</span>
@@ -51,7 +51,7 @@
             <label for="sanksi_selesai">Sanksi Selesai</label>
 
             <input id="sanksi_selesai" type="date" name="sanksi_selesai"
-                value="{{ $rekRangka->old('sanksi_selesai', $sanksiLama->sanksi_selesai ?? $dateRangka->today()->addMonths(6)->toDateString()) }}"
+                value="{{ $app->request->old('sanksi_selesai', $sanksiLama->sanksi_selesai ?? $app->date->today()->addMonths(6)->toDateString()) }}"
                 required>
             <span class="t-bantu">Isi tanggal</span>
         </div>
@@ -60,7 +60,7 @@
             <label for="sanksi_tambahan">Sanksi Tambahan</label>
 
             <textarea id="sanksi_tambahan" name="sanksi_tambahan"
-                rows="3">{{ $rekRangka->old('sanksi_tambahan', $sanksiLama->sanksi_tambahan ?? null) }}</textarea>
+                rows="3">{{ $app->request->old('sanksi_tambahan', $sanksiLama->sanksi_tambahan ?? null) }}</textarea>
 
             <span class="t-bantu">Sanksi tambahan dapat berupa denda, demosi/rotasi/mutasi</span>
         </div>
@@ -69,7 +69,7 @@
             <label for="sanksi_keterangan">Keterangan Sanksi</label>
 
             <textarea id="sanksi_keterangan" name="sanksi_keterangan"
-                rows="3">{{ $rekRangka->old('sanksi_keterangan', $sanksiLama->sanksi_keterangan ?? null) }}</textarea>
+                rows="3">{{ $app->request->old('sanksi_keterangan', $sanksiLama->sanksi_keterangan ?? null) }}</textarea>
 
             <span class="t-bantu">Keterangan lain terkait informasi sanksi</span>
         </div>
@@ -80,10 +80,10 @@
             <input id="sanksi_berkas" type="file" name="sanksi_berkas" accept=".pdf,application/pdf">
 
             <span class="t-bantu">Scan PDF laporan pelanggaran, sanksi, pernyataan & lampiran lainnya {{
-                $storageRangka->exists('sdm/sanksi/berkas/'. $rekRangka->old('sanksi_no_absen',
+                $app->filesystem->exists('sdm/sanksi/berkas/'. $app->request->old('sanksi_no_absen',
                 $sanksiLama->sanksi_no_absen ??
-                null) . ' - ' . $rekRangka->old('sanksi_jenis', $sanksiLama->sanksi_jenis ?? null) . ' - ' .
-                $rekRangka->old('sanksi_mulai', $sanksiLama->sanksi_mulai ?? null) . '.pdf') ? '(berkas yang diunggah
+                null) . ' - ' . $app->request->old('sanksi_jenis', $sanksiLama->sanksi_jenis ?? null) . ' - ' .
+                $app->request->old('sanksi_mulai', $sanksiLama->sanksi_mulai ?? null) . '.pdf') ? '(berkas yang diunggah
                 akan menindih berkas unggahan lama).' : '' }}</span>
         </div>
 

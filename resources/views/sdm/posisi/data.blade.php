@@ -5,15 +5,16 @@
     <h4>Data Pengaturan Jabatan</h4>
     @isset($tabels)
     <div class="cari-data tcetak">
-        <form id="form_sdm_posisi_cari" class="form-xhr kartu" method="GET" action="{{ $urlRangka->current() }}"
+        <form id="form_sdm_posisi_cari" class="form-xhr kartu" method="GET" action="{{ $app->url->current() }}"
             data-tujuan="#sdm_posisi_tabels" data-frag="true">
             <input type="hidden" name="fragment" value="sdm_posisi_tabels">
 
-            <details class="gspan-4" {{ $rekRangka->anyFilled(['lokasi', 'kontrak', 'posisi_status']) ? 'open' : '' }}>
+            <details class="gspan-4" {{ $app->request->anyFilled(['lokasi', 'kontrak', 'posisi_status']) ? 'open' : ''
+                }}>
                 <summary class="cari">
                     <div class="isian gspan-4">
                         <input id="sdm_posisi_cariKataKunci" type="text" name="kata_kunci"
-                            value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
+                            value="{{ $app->request->kata_kunci }}" aria-label="Cari Kata Kunci">
 
                         <button id="tombol_cari_posisi_sdm" class="cari-cepat" type="submit" title="Cari Data">
                             <svg viewbox="0 0 24 24">
@@ -29,8 +30,8 @@
 
                         <select id="sdm_posisi_cariStatus" name="posisi_status" class="pil-dasar">
                             <option selected disabled></option>
-                            <option @selected($rekRangka->posisi_status == 'AKTIF')>AKTIF</option>
-                            <option @selected($rekRangka->posisi_status == 'NON-AKTIF')>NON-AKTIF</option>
+                            <option @selected($app->request->posisi_status == 'AKTIF')>AKTIF</option>
+                            <option @selected($app->request->posisi_status == 'NON-AKTIF')>NON-AKTIF</option>
                         </select>
 
                         <span class="t-bantu">Pilih satu</span>
@@ -41,7 +42,8 @@
 
                         <select id="sdm_posisi_cariStatusPenempatanSDM" name="lokasi[]" class="pil-cari" multiple>
                             @foreach ($lokasis as $lokasi)
-                            <option @selected(in_array($lokasi->atur_butir, (array) $rekRangka->lokasi)) @class(['merah'
+                            <option @selected(in_array($lokasi->atur_butir, (array) $app->request->lokasi))
+                                @class(['merah'
                                 => $lokasi->atur_status == 'NON-AKTIF'])>{{ $lokasi->atur_butir }}</option>
                             @endforeach
                         </select>
@@ -54,7 +56,7 @@
 
                         <select id="sdm_posisi_StatusKontrakSDM" name="kontrak[]" class="pil-cari" multiple>
                             @foreach ($kontraks as $kontrak)
-                            <option @selected(in_array($kontrak->atur_butir, (array) $rekRangka->kontrak))
+                            <option @selected(in_array($kontrak->atur_butir, (array) $app->request->kontrak))
                                 @class(['merah' => $kontrak->atur_status == 'NON-AKTIF'])>{{ $kontrak->atur_butir }}
                             </option>
                             @endforeach
@@ -78,7 +80,8 @@
 
     <div id="sdm_posisi_tabels" class="kartu scroll-margin">
         @fragment('sdm_posisi_tabels')
-        <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['lokasi', 'kontrak']) ? 'sesuai data penyaringan' : 'global'
+        <b><i><small>Jumlah SDM ({{ $app->request->anyFilled(['lokasi', 'kontrak']) ? 'sesuai data penyaringan' :
+                    'global'
                     }}) : Aktif = {{number_format($aktif, 0, ',', '.')}} Personil -> Non-Aktif =
                     {{number_format($nonAktif, 0, ',', '.')}} Personil -> Total = {{number_format($total, 0, ',', '.')}}
                     Personil.</small></i></b>
@@ -141,7 +144,7 @@
             </span>
             @endif
 
-            <details class="gspan-4" {{ $rekRangka->anyFilled('urut') ? 'open' : '' }}>
+            <details class="gspan-4" {{ $app->request->anyFilled('urut') ? 'open' : '' }}>
                 <summary>Pengurutan :</summary>
 
                 <div class="kartu form" id="sdm_posisi_cariUrut">
@@ -152,9 +155,10 @@
                         <select id="sdm_posisi_cariUrutPergantian" name="urut[]" class="pil-dasar"
                             form="form_sdm_posisi_cari" onchange="getElementById('tombol_cari_posisi_sdm').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('pergantian ASC', (array) $rekRangka->urut)) value="pergantian
+                            <option @selected(in_array('pergantian ASC', (array) $app->request->urut)) value="pergantian
                                 ASC">0 - 9</option>
-                            <option @selected(in_array('pergantian DESC', (array) $rekRangka->urut)) value="pergantian
+                            <option @selected(in_array('pergantian DESC', (array) $app->request->urut))
+                                value="pergantian
                                 DESC">9 - 0</option>
                         </select>
                         <span class="t-bantu">Pilih satu</span>
@@ -167,9 +171,11 @@
                         <select id="sdm_posisi_cariUrutPosisi" name="urut[]" class="pil-dasar"
                             form="form_sdm_posisi_cari" onchange="getElementById('tombol_cari_posisi_sdm').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('posisi_nama ASC', (array) $rekRangka->urut)) value="posisi_nama
+                            <option @selected(in_array('posisi_nama ASC', (array) $app->request->urut))
+                                value="posisi_nama
                                 ASC">A - Z</option>
-                            <option @selected(in_array('posisi_nama DESC', (array) $rekRangka->urut)) value="posisi_nama
+                            <option @selected(in_array('posisi_nama DESC', (array) $app->request->urut))
+                                value="posisi_nama
                                 DESC">Z - A</option>
                         </select>
 
@@ -182,9 +188,9 @@
                         <select id="sdm_posisi_cariUrutAktif" name="urut[]" class="pil-dasar"
                             form="form_sdm_posisi_cari" onchange="getElementById('tombol_cari_posisi_sdm').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('jml_aktif ASC', (array) $rekRangka->urut)) value="jml_aktif
+                            <option @selected(in_array('jml_aktif ASC', (array) $app->request->urut)) value="jml_aktif
                                 ASC">0 - 9</option>
-                            <option @selected(in_array('jml_aktif DESC', (array) $rekRangka->urut)) value="jml_aktif
+                            <option @selected(in_array('jml_aktif DESC', (array) $app->request->urut)) value="jml_aktif
                                 DESC">9 - 0</option>
                         </select>
 
@@ -198,9 +204,9 @@
                         <select id="sdm_posisi_cariUrutNonAktif" name="urut[]" class="pil-dasar"
                             form="form_sdm_posisi_cari" onchange="getElementById('tombol_cari_posisi_sdm').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('jml_nonaktif ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('jml_nonaktif ASC', (array) $app->request->urut))
                                 value="jml_nonaktif ASC">0 - 9</option>
-                            <option @selected(in_array('jml_nonaktif DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('jml_nonaktif DESC', (array) $app->request->urut))
                                 value="jml_nonaktif DESC">9 - 0</option>
                         </select>
 
@@ -240,11 +246,11 @@
 
                                 <div class="aksi">
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan"
-                                        href="{{ $urlRangka->route('sdm.posisi.lihat', ['uuid' => $tabel->posisi_uuid]) }}"
+                                        href="{{ $app->url->route('sdm.posisi.lihat', ['uuid' => $tabel->posisi_uuid]) }}"
                                         title="Lihat Data">Lihat Data</a>
 
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan"
-                                        href="{{ $urlRangka->route('sdm.posisi.ubah', ['uuid' => $tabel->posisi_uuid]) }}"
+                                        href="{{ $app->url->route('sdm.posisi.ubah', ['uuid' => $tabel->posisi_uuid]) }}"
                                         title="Ubah Data">Ubah Data</a>
                                 </div>
                             </div>
@@ -254,10 +260,10 @@
 
                         <td>{{$tabel->posisi_nama}}</td>
                         <td><u><a class="isi-xhr"
-                                    href="{{ $urlRangka->route('sdm.penempatan.data-aktif', ['posisi' => $tabel->posisi_nama, ...$rekRangka->only(['lokasi', 'kontrak'])]) }}">{{number_format($tabel->jml_aktif,
+                                    href="{{ $app->url->route('sdm.penempatan.data-aktif', ['posisi' => $tabel->posisi_nama, ...$app->request->only(['lokasi', 'kontrak'])]) }}">{{number_format($tabel->jml_aktif,
                                     0, ',', '.')}}</a></u></td>
                         <td><u><a class="isi-xhr"
-                                    href="{{ $urlRangka->route('sdm.penempatan.data-nonaktif', ['posisi' => $tabel->posisi_nama, ...$rekRangka->only(['lokasi', 'kontrak'])]) }}">{{number_format($tabel->jml_nonaktif,
+                                    href="{{ $app->url->route('sdm.penempatan.data-nonaktif', ['posisi' => $tabel->posisi_nama, ...$app->request->only(['lokasi', 'kontrak'])]) }}">{{number_format($tabel->jml_nonaktif,
                                     0, ',', '.')}}</a></u></td>
                         <td>{{ number_format($tabel->pergantian, 2, ',', '.') }} %</td>
                         <td>{{$tabel->posisi_atasan}}</td>
@@ -311,7 +317,7 @@
         </a>
 
         <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan"
-            href="{{ $urlRangka->route('sdm.posisi.unggah') }}" title="Unggah Data">
+            href="{{ $app->url->route('sdm.posisi.unggah') }}" title="Unggah Data">
             <svg viewBox="0 0 24 24">
                 <use href="#ikonunggah"></use>
             </svg>
@@ -325,7 +331,7 @@
         </a>
 
         <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan"
-            href="{{ $urlRangka->route('sdm.posisi.tambah') }}" title="Tambah Data">
+            href="{{ $app->url->route('sdm.posisi.tambah') }}" title="Tambah Data">
             <svg viewBox="0 0 24 24">
                 <use href="#ikontambah"></use>
             </svg>

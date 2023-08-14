@@ -6,16 +6,16 @@
     @isset($tabels)
     <div class="cari-data tcetak">
         <form id="form_sdm_permintaan_tambah_cari" class="form-xhr kartu" data-tujuan="#tambah_sdm_tabels"
-            data-frag="true" method="GET" action="{{ $urlRangka->current() }}">
+            data-frag="true" method="GET" action="{{ $app->url->current() }}">
             <input type="hidden" name="fragment" value="tambah_sdm_tabels">
 
-            <details class="gspan-4" {{ $rekRangka->anyFilled(['tgl_diusulkan_mulai', 'tambahsdm_status',
+            <details class="gspan-4" {{ $app->request->anyFilled(['tgl_diusulkan_mulai', 'tambahsdm_status',
                 'tgl_diusulkan_sampai', 'tambahsdm_penempatan', 'tambahsdm_laju', 'posisi']) ? 'open' : '' }}>
 
                 <summary class="cari">
                     <div class="isian gspan-4">
                         <input type="text" id="kata_kunci_permintaan_tambah_sdm" name="kata_kunci"
-                            value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
+                            value="{{ $app->request->kata_kunci }}" aria-label="Cari Kata Kunci">
 
                         <button id="tombol_cari_permintaan_sdm" class="cari-cepat" type="submit" title="Cari Data">
                             <svg viewbox="0 0 24 24">
@@ -32,7 +32,8 @@
                         <select id="sdm_permintaan_tambah_cariLokasi" name="tambahsdm_penempatan[]" class="pil-cari"
                             multiple>
                             @foreach ($lokasis as $lokasi)
-                            <option @selected(in_array($lokasi->atur_butir, (array) $rekRangka->tambahsdm_penempatan))
+                            <option @selected(in_array($lokasi->atur_butir, (array)
+                                $app->request->tambahsdm_penempatan))
                                 @class(['merah' => $lokasi->atur_status == 'NON-AKTIF'])>{{ $lokasi->atur_butir }}
                             </option>
                             @endforeach
@@ -46,9 +47,11 @@
 
                         <select id="sdm_permintaan_tambah_cariPemenuhan" name="tambahsdm_laju" class="pil-cari">
                             <option selected disabled></option>
-                            <option @selected($rekRangka->tambahsdm_laju == 'BELUM TERPENUHI')>BELUM TERPENUHI</option>
-                            <option @selected($rekRangka->tambahsdm_laju == 'SUDAH TERPENUHI')>SUDAH TERPENUHI</option>
-                            <option @selected($rekRangka->tambahsdm_laju == 'KELEBIHAN')>KELEBIHAN</option>
+                            <option @selected($app->request->tambahsdm_laju == 'BELUM TERPENUHI')>BELUM TERPENUHI
+                            </option>
+                            <option @selected($app->request->tambahsdm_laju == 'SUDAH TERPENUHI')>SUDAH TERPENUHI
+                            </option>
+                            <option @selected($app->request->tambahsdm_laju == 'KELEBIHAN')>KELEBIHAN</option>
                         </select>
 
                         <span class="t-bantu">Pilih satu atau lebih</span>
@@ -58,7 +61,7 @@
                         <label for="sdm_permintaan_tambah_cariTanggalUsulMulai">Tanggal Diusulkan Mulai</label>
 
                         <input id="sdm_permintaan_tambah_cariTanggalUsulMulai" type="date" name="tgl_diusulkan_mulai"
-                            value="{{ $rekRangka->old('tgl_diusulkan_mulai', $rekRangka->tgl_diusulkan_mulai ?? null) }}">
+                            value="{{ $app->request->old('tgl_diusulkan_mulai', $app->request->tgl_diusulkan_mulai ?? null) }}">
 
                         <span class="t-bantu">Isi tanggal</span>
                     </div>
@@ -67,7 +70,7 @@
                         <label for="sdm_permintaan_tambah_cariTanggalUsulSampai">Tanggal Diusulkan Sampai</label>
 
                         <input id="sdm_permintaan_tambah_cariTanggalUsulSampai" type="date" name="tgl_diusulkan_sampai"
-                            value="{{ $rekRangka->old('tgl_diusulkan_sampai', $rekRangka->tgl_diusulkan_sampai ?? null) }}">
+                            value="{{ $app->request->old('tgl_diusulkan_sampai', $app->request->tgl_diusulkan_sampai ?? null) }}">
 
                         <span class="t-bantu">Isi tanggal</span>
                     </div>
@@ -78,7 +81,7 @@
                         <select id="sdm_permintaan_tambah_cariStatusJabatanSDM" name="posisi[]" class="pil-cari"
                             multiple>
                             @foreach ($posisis as $posisi)
-                            <option @selected(in_array($posisi->posisi_nama, (array) $rekRangka->posisi))
+                            <option @selected(in_array($posisi->posisi_nama, (array) $app->request->posisi))
                                 @class(['merah' => $posisi->posisi_status == 'NON-AKTIF'])>{{ $posisi->posisi_nama }}
                             </option>
                             @endforeach
@@ -93,7 +96,7 @@
                         <select id="sdm_permintaan_tambah_cariStatus" name="tambahsdm_status[]" class="pil-dasar"
                             multiple>
                             @foreach ($statuses as $status)
-                            <option @selected(in_array($status->atur_butir, (array) $rekRangka->tambahsdm_status))>{{
+                            <option @selected(in_array($status->atur_butir, (array) $app->request->tambahsdm_status))>{{
                                 $status->atur_butir }}</option>
                             @endforeach
                         </select>
@@ -115,7 +118,7 @@
 
     <div id="tambah_sdm_tabels" class="kartu scroll-margin">
         @fragment('tambah_sdm_tabels')
-        <b><i><small>Total permintaan tambah SDM ({{ $rekRangka->anyFilled(['kata_kunci', 'tambahsdm_status',
+        <b><i><small>Total permintaan tambah SDM ({{ $app->request->anyFilled(['kata_kunci', 'tambahsdm_status',
                     'tgl_diusulkan_mulai', 'tgl_diusulkan_sampai', 'tambahsdm_penempatan', 'tambahsdm_laju', 'posisi'])
                     ? 'sesuai data pencarian & penyaringan' : 'global' }}) : Kebutuhan = {{number_format($kebutuhan, 0,
                     ',', '.')}} Personil -> Terpenuhi = {{number_format($terpenuhi, 0, ',', '.')}} Personil -> Selisih =
@@ -179,7 +182,7 @@
             </span>
             @endif
 
-            <details class="gspan-4" {{ $rekRangka->anyFilled('urut') ? 'open' : '' }}>
+            <details class="gspan-4" {{ $app->request->anyFilled('urut') ? 'open' : '' }}>
                 <summary>Pengurutan :</summary>
 
                 <div class="kartu form" id="sdm_permintaan_tambah_cariUrut">
@@ -191,9 +194,9 @@
                             form="form_sdm_permintaan_tambah_cari" class="pil-dasar"
                             onchange="getElementById('tombol_cari_permintaan_sdm').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('tambahsdm_no ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('tambahsdm_no ASC', (array) $app->request->urut))
                                 value="tambahsdm_no ASC">0 - 9</option>
-                            <option @selected(in_array('tambahsdm_no DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('tambahsdm_no DESC', (array) $app->request->urut))
                                 value="tambahsdm_no DESC">9 - 0</option>
                         </select>
 
@@ -208,9 +211,9 @@
                             form="form_sdm_permintaan_tambah_cari" class="pil-dasar"
                             onchange="getElementById('tombol_cari_permintaan_sdm').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('tambahsdm_jumlah ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('tambahsdm_jumlah ASC', (array) $app->request->urut))
                                 value="tambahsdm_jumlah ASC">0 - 9</option>
-                            <option @selected(in_array('tambahsdm_jumlah DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('tambahsdm_jumlah DESC', (array) $app->request->urut))
                                 value="tambahsdm_jumlah DESC">9 - 0</option>
                         </select>
 
@@ -225,9 +228,9 @@
                             form="form_sdm_permintaan_tambah_cari" class="pil-dasar"
                             onchange="getElementById('tombol_cari_permintaan_sdm').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('tambahsdm_posisi ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('tambahsdm_posisi ASC', (array) $app->request->urut))
                                 value="tambahsdm_posisi ASC">A - Z</option>
-                            <option @selected(in_array('tambahsdm_posisi DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('tambahsdm_posisi DESC', (array) $app->request->urut))
                                 value="tambahsdm_posisi DESC">Z - A</option>
                         </select>
 
@@ -242,9 +245,9 @@
                             form="form_sdm_permintaan_tambah_cari" class="pil-dasar"
                             onchange="getElementById('tombol_cari_permintaan_sdm').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('tambahsdm_penempatan ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('tambahsdm_penempatan ASC', (array) $app->request->urut))
                                 value="tambahsdm_penempatan ASC">A - Z</option>
-                            <option @selected(in_array('tambahsdm_penempatan DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('tambahsdm_penempatan DESC', (array) $app->request->urut))
                                 value="tambahsdm_penempatan DESC">Z - A</option>
                         </select>
 
@@ -283,11 +286,11 @@
 
                                     <div class="aksi">
                                         <a class="isi-xhr" data-rekam="false" data-tujuan="#permintaan-sdm_sematan"
-                                            href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.lihat', ['uuid' => $tabel->tambahsdm_uuid]) }}"
+                                            href="{{ $app->url->route('sdm.permintaan-tambah-sdm.lihat', ['uuid' => $tabel->tambahsdm_uuid]) }}"
                                             title="Lihat Data">Lihat Data</a>
 
                                         <a class="isi-xhr" data-rekam="false" data-tujuan="#permintaan-sdm_sematan"
-                                            href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $tabel->tambahsdm_uuid]) }}"
+                                            href="{{ $app->url->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $tabel->tambahsdm_uuid]) }}"
                                             title="Ubah Data">Ubah Data</a>
                                     </div>
                                 </div>
@@ -297,24 +300,26 @@
 
                             <td>
                                 <a class="isi-xhr taut-akun"
-                                    href="{{ $urlRangka->route('sdm.akun', ['uuid' => $tabel->sdm_uuid]) }}">
-                                    <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
+                                    href="{{ $app->url->route('sdm.akun', ['uuid' => $tabel->sdm_uuid]) }}">
+                                    <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/' .
                                     $tabel->tambahsdm_sdm_id . '.webp')]) src="{{
-                                    $storageRangka->exists('sdm/foto-profil/' . $tabel->tambahsdm_sdm_id . '.webp') ?
-                                    $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
+                                    $app->filesystem->exists('sdm/foto-profil/' . $tabel->tambahsdm_sdm_id . '.webp') ?
+                                    $app->url->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
                                     $tabel->tambahsdm_sdm_id . '.webp' . '?' .
-                                    filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $tabel->tambahsdm_sdm_id
-                                    . '.webp'))]) : $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
+                                    filemtime($app->storagePath('app/sdm/foto-profil/' . $tabel->tambahsdm_sdm_id
+                                    . '.webp'))]) :
+                                    $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
+                                    alt="{{
                                     $tabel->sdm_nama ??
                                     'foto akun' }}" title="{{ $tabel->sdm_nama ?? 'foto akun' }}" loading="lazy">
                                 </a>
                                 <b>Nomor</b> : {{$tabel->tambahsdm_no}}<br />
                                 <b>Pemohon</b> : {{$tabel->tambahsdm_sdm_id}} - {{$tabel->sdm_nama}}<br />
                                 <b>Diusulkan</b> : {{
-                                strtoupper($dateRangka->make($tabel->tambahsdm_tgl_diusulkan)?->translatedFormat('d F
+                                strtoupper($app->date->make($tabel->tambahsdm_tgl_diusulkan)?->translatedFormat('d F
                                 Y')) }}<br />
                                 <b>Dibutuhkan</b> : {{
-                                strtoupper($dateRangka->make($tabel->tambahsdm_tgl_dibutuhkan)?->translatedFormat('d F
+                                strtoupper($app->date->make($tabel->tambahsdm_tgl_dibutuhkan)?->translatedFormat('d F
                                 Y')) }}
                             </td>
 
@@ -323,10 +328,10 @@
                                 <b>Posisi</b> : {{$tabel->tambahsdm_posisi}}<br />
                                 <b>Jml Kebutuhan</b> : {{$tabel->tambahsdm_jumlah}}<br />
                                 <b>Jml Terpenuhi</b> : <u><a class="isi-xhr"
-                                        href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $tabel->tambahsdm_no]) }}">{{
+                                        href="{{ $app->url->route('sdm.penempatan.riwayat', ['kata_kunci' => $tabel->tambahsdm_no]) }}">{{
                                         $tabel->tambahsdm_terpenuhi }}</a></u><br />
                                 <b>Pemenuhan Terbaru</b> : {{
-                                strtoupper($dateRangka->make($tabel->pemenuhan_terkini)?->translatedFormat('d F Y')) }}
+                                strtoupper($app->date->make($tabel->pemenuhan_terkini)?->translatedFormat('d F Y')) }}
                             </td>
 
                             <td>
@@ -336,9 +341,9 @@
 
                             <td>
                                 <form class="form-xhr" method="POST"
-                                    action="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', [ 'uuid' => $tabel->tambahsdm_uuid]) }}"
+                                    action="{{ $app->url->route('sdm.permintaan-tambah-sdm.ubah', [ 'uuid' => $tabel->tambahsdm_uuid]) }}"
                                     data-singkat="true">
-                                    <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+                                    <input type="hidden" name="_token" value="{{ $app->request->session()->token() }}">
                                     <div class="isian pendek">
                                         <label for="{{'ubah_cepat_status_tsdm_' . $tabels->firstItem() + $nomor}}"
                                             class="tcetak">Ubah Status</label>
@@ -347,15 +352,17 @@
                                             name="tambahsdm_status" class="pil-saja" required
                                             onchange="getElementById('kirim-{{$tabel->tambahsdm_uuid}}').click()">
                                             <option selected disabled></option>
-                                            @if (!in_array($rekRangka->old('tambahsdm_status', $tabel->tambahsdm_status
+                                            @if (!in_array($app->request->old('tambahsdm_status',
+                                            $tabel->tambahsdm_status
                                             ?? null), (array) $statuses->pluck('atur_butir')->toArray()))
                                             <option
-                                                value="{{ $rekRangka->old('tambahsdm_status', $tabel->tambahsdm_status ?? null) }}"
-                                                class="merah" selected>{{ $rekRangka->old('tambahsdm_status',
+                                                value="{{ $app->request->old('tambahsdm_status', $tabel->tambahsdm_status ?? null) }}"
+                                                class="merah" selected>{{ $app->request->old('tambahsdm_status',
                                                 $permin->tambahsdm_status ?? null) }}</option>
                                             @endif
                                             @foreach ($statuses as $status)
-                                            <option @selected($status->atur_butir == $rekRangka->old('tambahsdm_status',
+                                            <option @selected($status->atur_butir ==
+                                                $app->request->old('tambahsdm_status',
                                                 $tabel->tambahsdm_status ?? null))>{{ $status->atur_butir }}</option>
                                             @endforeach
                                         </select>
@@ -368,7 +375,7 @@
                                 <p class="tcetak">
                                     <a class="isi-xhr utama" data-rekam="false" data-laju="true"
                                         data-tujuan="#permintaan-sdm_sematan"
-                                        href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.formulir', ['uuid' => $tabel->tambahsdm_uuid]) }}"
+                                        href="{{ $app->url->route('sdm.permintaan-tambah-sdm.formulir', ['uuid' => $tabel->tambahsdm_uuid]) }}"
                                         title="Cetak Formulir Permintaan Tambah SDM">
                                         <svg viewbox="0 0 24 24">
                                             <use href="#ikoncetak"></use>
@@ -377,11 +384,12 @@
                                     </a>
                                 </p>
 
-                                @if($storageRangka->exists($berkasPerminTambahSDM = 'sdm/permintaan-tambah-sdm/berkas/'
+                                @if($app->filesystem->exists($berkasPerminTambahSDM =
+                                'sdm/permintaan-tambah-sdm/berkas/'
                                 . $tabel->tambahsdm_no . '.pdf'))
                                 <p class="tcetak">
                                     <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                                        href="{{ $urlRangka->route('sdm.berkas', ['berkas' => $berkasPerminTambahSDM . '?' . filemtime($appRangka->storagePath('app/' . $berkasPerminTambahSDM))]) }}">
+                                        href="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasPerminTambahSDM . '?' . filemtime($app->storagePath('app/' . $berkasPerminTambahSDM))]) }}">
                                         <svg viewBox="0 0 24 24">
                                             <use href="#ikonunduh"></use>
                                         </svg>
@@ -444,7 +452,7 @@
         </a>
 
         <a class="isi-xhr" data-rekam="false" data-tujuan="#permintaan-sdm_sematan"
-            href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.tambah') }}" title="Tambah Data">
+            href="{{ $app->url->route('sdm.permintaan-tambah-sdm.tambah') }}" title="Tambah Data">
             <svg viewBox="0 0 24 24">
                 <use href="#ikontambah"></use>
             </svg>

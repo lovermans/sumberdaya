@@ -43,12 +43,12 @@
 
         <div class="isian">
             <h3>Tanggal Diusulkan</h3>
-            <p>{{ strtoupper($dateRangka->make($permin->tambahsdm_tgl_diusulkan)?->translatedFormat('d F Y')) }}</p>
+            <p>{{ strtoupper($app->date->make($permin->tambahsdm_tgl_diusulkan)?->translatedFormat('d F Y')) }}</p>
         </div>
 
         <div class="isian">
             <h3>Tanggal Dibutuhkan</h3>
-            <p>{{ strtoupper($dateRangka->make($permin->tambahsdm_tgl_dibutuhkan)?->translatedFormat('d F Y')) }}</p>
+            <p>{{ strtoupper($app->date->make($permin->tambahsdm_tgl_dibutuhkan)?->translatedFormat('d F Y')) }}</p>
         </div>
 
         <div class="isian">
@@ -68,15 +68,15 @@
         <div class="isian gspan-4">
             <h3>Berkas Permohonan</h3>
 
-            @if ($storageRangka->exists($berkasPerminTambahSDM = 'sdm/permintaan-tambah-sdm/berkas/'
+            @if ($app->filesystem->exists($berkasPerminTambahSDM = 'sdm/permintaan-tambah-sdm/berkas/'
             . $permin->tambahsdm_no . '.pdf'))
             <iframe class="berkas tcetak"
-                src="{{ $urlRangka->route('sdm.berkas', ['berkas' => $berkasPerminTambahSDM . '?' . filemtime($appRangka->storagePath('app/' . $berkasPerminTambahSDM))]) }}"
+                src="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasPerminTambahSDM . '?' . filemtime($app->storagePath('app/' . $berkasPerminTambahSDM))]) }}"
                 title="Berkas Permintaan SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                href="{{ $urlRangka->route('sdm.berkas', ['berkas' => $berkasPerminTambahSDM . '?' . filemtime($appRangka->storagePath('app/' . $berkasPerminTambahSDM))]) }}">
+                href="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasPerminTambahSDM . '?' . filemtime($app->storagePath('app/' . $berkasPerminTambahSDM))]) }}">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonunduh"></use>
                 </svg>
@@ -90,7 +90,7 @@
 
 
         <a class="isi-xhr utama tcetak" data-rekam="false" data-laju="true" data-tujuan="#permintaan-sdm_sematan_lihat"
-            href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.formulir', ['uuid' => $permin->tambahsdm_uuid]) }}">
+            href="{{ $app->url->route('sdm.permintaan-tambah-sdm.formulir', ['uuid' => $permin->tambahsdm_uuid]) }}">
             <svg viewbox="0 0 24 24">
                 <use href="#ikoncetak"></use>
             </svg>
@@ -102,10 +102,10 @@
         <div class="gspan-4"></div>
 
         <a class="utama isi-xhr tcetak" data-rekam="false" data-tujuan="#permintambahsdm_lihat"
-            href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $permin->tambahsdm_uuid]) }}">UBAH</a>
+            href="{{ $app->url->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $permin->tambahsdm_uuid]) }}">UBAH</a>
 
         <a class="sekunder isi-xhr" data-rekam="false" data-tujuan="#permintambahsdm_lihat"
-            href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.hapus', ['uuid' => $permin->tambahsdm_uuid]) }}">HAPUS</a>
+            href="{{ $app->url->route('sdm.permintaan-tambah-sdm.hapus', ['uuid' => $permin->tambahsdm_uuid]) }}">HAPUS</a>
 
         @else
         <div class="isian gspan-4">

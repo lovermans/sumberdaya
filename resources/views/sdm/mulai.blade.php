@@ -6,7 +6,7 @@
 
     <div id="sdm_unggah_sematan" class="scroll-margin"></div>
 
-    @if($strRangka->contains($rekRangka->user()?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
+    @if(str()->contains($app->request->user()?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
     <div id="sdmIngatPtsb">
         <p class="kartu">Mengambil data permintaan tambah SDM...</p>
     </div>
@@ -41,49 +41,49 @@
             
             lemparXHR({
                 tujuan : "#sdmIngatKeluar",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatKeluar']) }}",
+                tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatKeluar']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatBaru",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatBaru']) }}",
+                tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatBaru']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatPstatus",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPstatus']) }}",
+                tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatPstatus']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatPkpd",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPkpd']) }}",
+                tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatPkpd']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatPtsb",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPtsb']) }}",
+                tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatPtsb']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatNilai",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatNilai']) }}",
+                tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatNilai']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatPelanggaran",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatPelanggaran']) }}",
+                tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatPelanggaran']) }}",
                 normalview : true,
                 fragmen : true
             });
             lemparXHR({
                 tujuan : "#sdmIngatSanksi",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatSanksi']) }}",
+                tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatSanksi']) }}",
                 normalview : true,
                 fragmen : true
             });
@@ -104,7 +104,7 @@
             
             lemparXHR({
                 tujuan : "#sdmIngatUltah",
-                tautan : "{{ $urlRangka->route('sdm.mulai', ['fragment' => 'sdmIngatUltah']) }}",
+                tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatUltah']) }}",
                 normalview : true,
                 fragmen : true
             });
@@ -118,22 +118,22 @@
             </svg>
         </a>
 
-        @if($strRangka->contains($rekRangka->user()?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
+        @if(str()->contains($app->request->user()?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
         <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_unggah_sematan"
-            href="{{ $urlRangka->route('sdm.unggah') }}" title="Unggah Data Profil SDM">
+            href="{{ $app->url->route('sdm.unggah') }}" title="Unggah Data Profil SDM">
             <svg viewBox="0 0 24 24">
                 <use href="#ikonunggah"></use>
             </svg>
         </a>
 
-        <a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.riwayat') }}"
+        <a class="isi-xhr" href="{{ $app->url->route('sdm.penempatan.riwayat') }}"
             title="Cari Semua Riwayat Penempatan SDM">
             <svg viewBox="0 0 24 24">
                 <use href="#ikoncari"></use>
             </svg>
         </a>
 
-        <a class="isi-xhr" href="{{ $urlRangka->route('register') }}" title="Tambah Data SDM">
+        <a class="isi-xhr" href="{{ $app->url->route('register') }}" title="Tambah Data SDM">
             <svg viewBox="0 0 24 24">
                 <use href="#ikontambahorang"></use>
             </svg>
@@ -144,9 +144,9 @@
     @include('pemberitahuan')
     @include('komponen')
 
-    @if($rekRangka->user() && $rekRangka->pjax())
+    @if($app->request->user() && $app->request->pjax())
     <script>
-        cariElemen("#navigasi-sdm a[href='{{ $urlRangka->route('sdm.mulai') }}']").then((el) => {el.classList.add("aktif");});
+        cariElemen("#navigasi-sdm a[href='{{ $app->url->route('sdm.mulai') }}']").then((el) => {el.classList.add("aktif");});
     </script>
     @endif
 </div>

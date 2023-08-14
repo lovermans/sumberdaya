@@ -19,7 +19,7 @@
 
         <div class="isian">
             <h3>Tanggal Laporan</h3>
-            <p>{{ strtoupper($dateRangka->make($langgar->langgar_tanggal)?->translatedFormat('d F Y')) }}</p>
+            <p>{{ strtoupper($app->date->make($langgar->langgar_tanggal)?->translatedFormat('d F Y')) }}</p>
         </div>
 
         <div class="isian">
@@ -52,14 +52,14 @@
         <div class="isian gspan-4">
             <h3>Bukti Pendukung Laporan</h3>
 
-            @if ($storageRangka->exists('sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))
+            @if ($app->filesystem->exists('sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))
             <iframe class="berkas tcetak"
-                src="{{ $urlRangka->route('sdm.pelanggaran.berkas', ['berkas' => $langgar->langgar_lap_no . '.pdf' . '?' . filemtime(storage_path('app/sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))]) }}"
+                src="{{ $app->url->route('sdm.pelanggaran.berkas', ['berkas' => $langgar->langgar_lap_no . '.pdf' . '?' . filemtime(storage_path('app/sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))]) }}"
                 title="Bukti Pendukung Laporan Pelanggaran SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                href="{{ $urlRangka->route('sdm.pelanggaran.berkas', ['berkas' => $langgar->langgar_lap_no . '.pdf' . '?' . filemtime(storage_path('app/sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))]) }}">
+                href="{{ $app->url->route('sdm.pelanggaran.berkas', ['berkas' => $langgar->langgar_lap_no . '.pdf' . '?' . filemtime(storage_path('app/sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))]) }}">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonunduh"></use>
                 </svg>
@@ -76,7 +76,7 @@
 
         @unless ($langgar->final_sanksi_jenis)
         <a class="utama isi-xhr" data-rekam="false" data-tujuan="#pelanggaran_sdm_lihat_sematan"
-            href="{{ $urlRangka->route('sdm.pelanggaran.ubah', ['uuid' => $langgar->langgar_uuid]) }}">UBAH
+            href="{{ $app->url->route('sdm.pelanggaran.ubah', ['uuid' => $langgar->langgar_uuid]) }}">UBAH
             LAPORAN PELANGGARAN</a>
         @endunless
 
@@ -87,7 +87,7 @@
                 Lap : {{ $langgar->lap_no_sebelumnya }}<br>
                 Sanksi : {{ $langgar->sanksi_aktif_sebelumnya }}<br>
                 Berakhir pada : {{
-                strtoupper($dateRangka->make($langgar->sanksi_selesai_sebelumnya)?->translatedFormat('d F Y')) }}
+                strtoupper($app->date->make($langgar->sanksi_selesai_sebelumnya)?->translatedFormat('d F Y')) }}
 
                 @else
                 Tidak ada
@@ -100,16 +100,16 @@
         <div class="isian gspan-4">
             <h3>Berkas Sanksi Sebelumnya</h3>
 
-            @if ($storageRangka->exists('sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' .
+            @if ($app->filesystem->exists('sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' .
             $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf'))
             <iframe class="berkas tcetak"
-                src="{{ $urlRangka->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' .
+                src="{{ $app->url->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' .
                 $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf'))]) }}"
                 title="Dokumen Sanksi Sebelumnya" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                href="{{ $urlRangka->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' . $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf'))]) }}">
+                href="{{ $app->url->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' . $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->sanksi_aktif_sebelumnya . ' - ' . $langgar->sanksi_mulai_sebelumnya . '.pdf'))]) }}">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonunduh"></use>
                 </svg>
@@ -128,9 +128,9 @@
             <p>
                 @if ($langgar->final_sanksi_jenis)
                 Sanksi : {{ $langgar->final_sanksi_jenis }} <br>
-                Mulai : {{ strtoupper($dateRangka->make($langgar->final_sanksi_mulai)?->translatedFormat('d F Y'))
+                Mulai : {{ strtoupper($app->date->make($langgar->final_sanksi_mulai)?->translatedFormat('d F Y'))
                 }}<br>
-                Selesai : {{ strtoupper($dateRangka->make($langgar->final_sanksi_selesai)?->translatedFormat('d F Y'))
+                Selesai : {{ strtoupper($app->date->make($langgar->final_sanksi_selesai)?->translatedFormat('d F Y'))
                 }}<br>
                 Tambahan : {!! nl2br($langgar->final_sanksi_tambahan) !!}<br>
                 Keterangan : {!!nl2br($langgar->final_sanksi_keterangan) !!}
@@ -146,15 +146,15 @@
         <div class="isian gspan-4">
             <h3>Berkas Pemberian Sanksi</h3>
 
-            @if ($storageRangka->exists('sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' .
+            @if ($app->filesystem->exists('sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' .
             $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf'))
             <iframe class="berkas tcetak"
-                src="{{ $urlRangka->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf'))]) }}"
+                src="{{ $app->url->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf'))]) }}"
                 title="Dokumen Sanksi SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                href="{{ $urlRangka->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf'))]) }}">
+                href="{{ $app->url->route('sdm.sanksi.berkas', ['berkas' => $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $langgar->langgar_no_absen . ' - ' . $langgar->final_sanksi_jenis . ' - ' . $langgar->final_sanksi_mulai . '.pdf'))]) }}">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonunduh"></use>
                 </svg>
@@ -171,12 +171,12 @@
         @if ($langgar->langgar_status == 'DIPROSES')
         @unless ($langgar->final_sanksi_jenis)
         <a class="utama isi-xhr" data-rekam="false" data-tujuan="#pelanggaran_sdm_lihat_sematan"
-            href="{{ $urlRangka->route('sdm.sanksi.tambah', ['lap_uuid' => $langgar->langgar_uuid]) }}">TAMBAH
+            href="{{ $app->url->route('sdm.sanksi.tambah', ['lap_uuid' => $langgar->langgar_uuid]) }}">TAMBAH
             SANKSI</a>
 
         @else
         <a class="utama isi-xhr" data-rekam="false" data-tujuan="#pelanggaran_sdm_lihat_sematan"
-            href="{{ $urlRangka->route('sdm.sanksi.ubah', ['uuid' => $langgar->final_sanksi_uuid]) }}">UBAH
+            href="{{ $app->url->route('sdm.sanksi.ubah', ['uuid' => $langgar->final_sanksi_uuid]) }}">UBAH
             SANKSI</a>
         @endunless
         @endif

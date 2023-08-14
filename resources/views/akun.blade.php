@@ -9,12 +9,12 @@
             @isset($akun)
             <div class="isian pendek">
                 <h3>Foto Profil</h3>
-                <img @class(['svg'=> !$storageRangka->exists('sdm/foto-profil/' . $akun->sdm_no_absen . '.webp')])
+                <img @class(['svg'=> !$app->filesystem->exists('sdm/foto-profil/' . $akun->sdm_no_absen . '.webp')])
                 src="{{
-                $storageRangka->exists('sdm/foto-profil/' . $akun->sdm_no_absen . '.webp')
-                ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $akun->sdm_no_absen . '.webp' .
-                '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $akun->sdm_no_absen . '.webp'))])
-                : $urlRangka->asset($mixRangka('/images/blank.webp'))
+                $app->filesystem->exists('sdm/foto-profil/' . $akun->sdm_no_absen . '.webp')
+                ? $app->url->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $akun->sdm_no_absen . '.webp' .
+                '?' . filemtime($app->storagePath('app/sdm/foto-profil/' . $akun->sdm_no_absen . '.webp'))])
+                : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp'))
                 }}"
                 alt="{{ $akun->sdm_nama ?? 'foto akun' }}"
                 title="{{$akun->sdm_nama ?? 'foto akun' }}"
@@ -31,16 +31,17 @@
                 <p @class(['merah'=> $akun->tgl_berhenti_atasan])>
                     @if ($akun->uuid_atasan)
                     <a class="taut-akun isi-xhr"
-                        href="{{ $urlRangka->route('sdm.akun', ['uuid' => $akun->uuid_atasan]) }}">
+                        href="{{ $app->url->route('sdm.akun', ['uuid' => $akun->uuid_atasan]) }}">
 
-                        <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' . $akun->sdm_id_atasan .
+                        <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/' . $akun->sdm_id_atasan
+                        .
                         '.webp')])
                         src="{{
-                        $storageRangka->exists('sdm/foto-profil/' . $akun->sdm_id_atasan . '.webp')
-                        ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $akun->sdm_id_atasan
-                        .'.webp' .'?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $akun->sdm_id_atasan
+                        $app->filesystem->exists('sdm/foto-profil/' . $akun->sdm_id_atasan . '.webp')
+                        ? $app->url->route('sdm.tautan-foto-profil', ['berkas_foto_profil' => $akun->sdm_id_atasan
+                        .'.webp' .'?' . filemtime($app->storagePath('app/sdm/foto-profil/' . $akun->sdm_id_atasan
                         .'.webp'))])
-                        : $urlRangka->asset($mixRangka('/images/blank.webp'))
+                        : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp'))
                         }}"
                         alt="{{$akun->nama_atasan ?? 'foto akun' }}"
                         title="{{ $akun->nama_atasan ?? 'foto akun' }}"
@@ -56,7 +57,7 @@
             <div class="isian">
                 <h3>Tanggal Bergabung</h3>
 
-                <p>{{ strtoupper($dateRangka->make($akun->sdm_tgl_gabung)?->translatedFormat('d F Y')) }}</p>
+                <p>{{ strtoupper($app->date->make($akun->sdm_tgl_gabung)?->translatedFormat('d F Y')) }}</p>
 
                 @if ($batasi)
                 <h3>No Permintaan SDM</h3>
@@ -64,7 +65,7 @@
                 <p>
                     <u>
                         <a class="isi-xhr"
-                            href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $akun->sdm_no_permintaan]) }}"
+                            href="{{ $app->url->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $akun->sdm_no_permintaan]) }}"
                             aria-label="Permintaan Tambah SDM No {{ $akun->sdm_no_permintaan }}">{{$akun->sdm_no_permintaan}}
                         </a>
                     </u>
@@ -75,7 +76,7 @@
                 <p>
                     <u>
                         <a class="isi-xhr"
-                            href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $akun->sdm_no_ktp]) }}">
+                            href="{{ $app->url->route('sdm.penempatan.riwayat', ['kata_kunci' => $akun->sdm_no_ktp]) }}">
                             {{$akun->sdm_no_ktp }}
                         </a>
                     </u>
@@ -91,7 +92,7 @@
 
                 <h3>Tanggal Lahir</h3>
 
-                <p>{{ strtoupper($dateRangka->make($akun->sdm_tgl_lahir)?->translatedFormat('d F Y')) }}</p>
+                <p>{{ strtoupper($app->date->make($akun->sdm_tgl_lahir)?->translatedFormat('d F Y')) }}</p>
                 @endif
 
                 <div class="isian">
@@ -296,7 +297,7 @@
                         <h3>Kadaluarsa Dokumen</h3>
 
                         <p>
-                            {{ strtoupper($dateRangka->make($akun->sdm_kadaluarsa_dok)?->translatedFormat('d F Y')) }}
+                            {{ strtoupper($app->date->make($akun->sdm_kadaluarsa_dok)?->translatedFormat('d F Y')) }}
                         </p>
                     </div>
 
@@ -333,7 +334,7 @@
                     <div class="isian">
                         <h3>Tanggal Berhenti</h3>
 
-                        <p>{{ strtoupper($dateRangka->make($akun->sdm_tgl_berhenti)?->translatedFormat('d F Y')) }}</p>
+                        <p>{{ strtoupper($app->date->make($akun->sdm_tgl_berhenti)?->translatedFormat('d F Y')) }}</p>
                     </div>
 
                     <div class="isian">
@@ -362,17 +363,17 @@
                     @forelse ($personils as $personil)
                     <li class="bersih">
                         <a class="taut-akun isi-xhr"
-                            href="{{ $urlRangka->route('sdm.akun', ['uuid' => $personil->sdm_uuid]) }}">
-                            <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
+                            href="{{ $app->url->route('sdm.akun', ['uuid' => $personil->sdm_uuid]) }}">
+                            <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/' .
                             $personil->sdm_no_absen .'.webp')])
                             src="{{
-                            $storageRangka->exists('sdm/foto-profil/' . $personil->sdm_no_absen . '.webp')
-                            ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
+                            $app->filesystem->exists('sdm/foto-profil/' . $personil->sdm_no_absen . '.webp')
+                            ? $app->url->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
                             $personil->sdm_no_absen
-                            . '.webp' . '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
+                            . '.webp' . '?' . filemtime($app->storagePath('app/sdm/foto-profil/' .
                             $personil->sdm_no_absen .
                             '.webp'))])
-                            : $urlRangka->asset($mixRangka('/images/blank.webp')) }}"
+                            : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
                             alt="{{ $personil->sdm_nama ?? 'foto akun' }}"
                             title="{{ $personil->sdm_nama ?? 'foto akun' }}"
                             loading="lazy">
@@ -393,14 +394,14 @@
             <div class="isian gspan-4">
                 <h3>Berkas SDM</h3>
 
-                @if ($storageRangka->exists($berkasSDM = 'sdm/berkas/'.$akun->sdm_no_absen.'.pdf'))
+                @if ($app->filesystem->exists($berkasSDM = 'sdm/berkas/'.$akun->sdm_no_absen.'.pdf'))
                 <iframe class="tcetak berkas"
-                    src="{{ $urlRangka->route('sdm.berkas', ['berkas' => $berkasSDM . '?' . filemtime($appRangka->storagePath('app/' . $berkasSDM))]) }}"
+                    src="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasSDM . '?' . filemtime($app->storagePath('app/' . $berkasSDM))]) }}"
                     title="Berkas SDM" loading="lazy"
                     onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
                 <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                    href="{{ $urlRangka->route('sdm.berkas', ['berkas' => $berkasSDM . '?' . filemtime($appRangka->storagePath('app/' . $berkasSDM))]) }}">
+                    href="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasSDM . '?' . filemtime($app->storagePath('app/' . $berkasSDM))]) }}">
                     <svg viewBox="0 0 24 24">
                         <use href="#ikonunduh"></use>
                     </svg>
@@ -412,35 +413,35 @@
                 @endif
             </div>
 
-            @if($strRangka->contains($rekRangka->user()->sdm_hak_akses, 'SDM-PENGURUS'))
+            @if(str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS'))
             <div class="isian tcetak" id="akun-cetakFormulir">
                 <select class="pil-saja tombol"
                     onchange="if (this.value !== '') lemparXHR({tujuan : '#akun-cetakFormulirStatus', tautan : this.value, strim : true})">
                     <option value="">CETAK FORMULIR</option>
 
                     <option
-                        value="{{$urlRangka->route('sdm.formulir-serah-terima-sdm-baru', ['uuid' => $akun->sdm_uuid])}}">
+                        value="{{$app->url->route('sdm.formulir-serah-terima-sdm-baru', ['uuid' => $akun->sdm_uuid])}}">
                         SERAH TERIMA SDM BARU
                     </option>
 
-                    <option value="{{$urlRangka->route('sdm.formulir-persetujuan-gaji', ['uuid' => $akun->sdm_uuid])}}">
+                    <option value="{{$app->url->route('sdm.formulir-persetujuan-gaji', ['uuid' => $akun->sdm_uuid])}}">
                         PERSETUJUAN GAJI
                     </option>
 
                     <option
-                        value="{{$urlRangka->route('sdm.formulir-tt-dokumen-titipan', ['uuid' => $akun->sdm_uuid])}}">
+                        value="{{$app->url->route('sdm.formulir-tt-dokumen-titipan', ['uuid' => $akun->sdm_uuid])}}">
                         TANDA TERIMA DOKUMEN TITIPAN
                     </option>
 
-                    <option value="{{$urlRangka->route('sdm.formulir-tt-inventaris', ['uuid' => $akun->sdm_uuid])}}">
+                    <option value="{{$app->url->route('sdm.formulir-tt-inventaris', ['uuid' => $akun->sdm_uuid])}}">
                         TANDA TERIMA SERAGAM/SEPATU/INVENTARIS
                     </option>
 
-                    <option value="{{$urlRangka->route('sdm.formulir-pelepasan-sdm', ['uuid' => $akun->sdm_uuid])}}">
+                    <option value="{{$app->url->route('sdm.formulir-pelepasan-sdm', ['uuid' => $akun->sdm_uuid])}}">
                         PELEPASAN KARYAWAN
                     </option>
 
-                    <option value="{{$urlRangka->route('sdm.surat-keterangan-sdm', ['uuid' => $akun->sdm_uuid])}}">
+                    <option value="{{$app->url->route('sdm.surat-keterangan-sdm', ['uuid' => $akun->sdm_uuid])}}">
                         SURAT KETERANGAN KERJA
                     </option>
                 </select>
@@ -450,7 +451,7 @@
             <div class="isian gspan-4 scroll-margin" id="akun-cetakFormulirStatus"></div>
 
             <a class="utama isi-xhr tcetak" data-tujuan="#profil-akun"
-                href="{{ $urlRangka->route('sdm.ubah-akun', ['uuid' => $akun->sdm_uuid]) }}">
+                href="{{ $app->url->route('sdm.ubah-akun', ['uuid' => $akun->sdm_uuid]) }}">
                 UBAH
             </a>
 
@@ -483,7 +484,7 @@
             </svg>
         </a>
 
-        <a href="{{ $urlRangka->route('sdm.unduh.kartu-sdm', ['uuid' => $akun->sdm_uuid]) }}"
+        <a href="{{ $app->url->route('sdm.unduh.kartu-sdm', ['uuid' => $akun->sdm_uuid]) }}"
             title="Unduh Kartu Identitas">
             <svg viewBox="0 0 24 24">
                 <use href="#ikonkartuID"></use>
@@ -499,9 +500,9 @@
             }
             
             pilSaja('#akun-cetakFormulir .pil-saja');
-            lemparXHR({tujuan : "#riwa-penem-sdm_tabels", tautan : "{{ $urlRangka->route('sdm.penempatan.riwayat', ['uuid' => $akun->sdm_uuid, 'fragment' => 'riwa-penem-sdm_tabels']) }}", normalview : true, fragmen : true});
-            lemparXHR({tujuan : "#nilai-sdm_tabels", tautan : "{{ $urlRangka->route('sdm.penilaian.data', ['uuid' => $akun->sdm_uuid, 'fragment' => 'nilai-sdm_tabels']) }}", normalview : true, fragmen : true});
-            lemparXHR({tujuan : "#sanksi-sdm_tabels", tautan : "{{ $urlRangka->route('sdm.sanksi.data', ['uuid' => $akun->sdm_uuid, 'fragment' => 'sanksi-sdm_tabels']) }}", normalview : true, fragmen : true});
+            lemparXHR({tujuan : "#riwa-penem-sdm_tabels", tautan : "{{ $app->url->route('sdm.penempatan.riwayat', ['uuid' => $akun->sdm_uuid, 'fragment' => 'riwa-penem-sdm_tabels']) }}", normalview : true, fragmen : true});
+            lemparXHR({tujuan : "#nilai-sdm_tabels", tautan : "{{ $app->url->route('sdm.penilaian.data', ['uuid' => $akun->sdm_uuid, 'fragment' => 'nilai-sdm_tabels']) }}", normalview : true, fragmen : true});
+            lemparXHR({tujuan : "#sanksi-sdm_tabels", tautan : "{{ $app->url->route('sdm.sanksi.data', ['uuid' => $akun->sdm_uuid, 'fragment' => 'sanksi-sdm_tabels']) }}", normalview : true, fragmen : true});
         })();
     </script>
 

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', $appRangka->getLocale()) }}" dir="ltr">
+<html lang="{{ str_replace('_', '-', $app->getLocale()) }}" dir="ltr">
 
 <head id="kepala-dokumen">
     @include('informasi-meta')

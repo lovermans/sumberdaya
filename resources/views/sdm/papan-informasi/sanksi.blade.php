@@ -23,7 +23,7 @@
                 </thead>
                 <tbody>
                     @forelse ($sanksis as $no => $sanksi)
-                    <tr @class([ 'biru'=> $strRangka->contains($sanksi->langgar_tkontrak, 'OS-') ])>
+                    <tr @class([ 'biru'=> str()->contains($sanksi->langgar_tkontrak, 'OS-') ])>
                         <th>
                             <div class="pil-aksi">
                                 <button id="{{'aksi_sanksi_baris_' . $loop->iteration}}" title="Pilih Tindakan">
@@ -35,7 +35,7 @@
 
                                 <div class="aksi">
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_sanksi_sdm_sematan"
-                                        href="{{ $urlRangka->route('sdm.sanksi.lihat', ['uuid' => $sanksi->sanksi_uuid]) }}"
+                                        href="{{ $app->url->route('sdm.sanksi.lihat', ['uuid' => $sanksi->sanksi_uuid]) }}"
                                         title="Lihat/Ubah Sanksi">Lihat/Ubah Sanksi</a>
                                 </div>
                             </div>
@@ -46,16 +46,17 @@
                         <td>
                             <div @class(['merah'=> $sanksi->langgar_tsdm_tgl_berhenti])>
                                 <a class="isi-xhr taut-akun"
-                                    href="{{ $urlRangka->route('sdm.akun', ['uuid' => $sanksi->langgar_tsdm_uuid]) }}">
-                                    <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
+                                    href="{{ $app->url->route('sdm.akun', ['uuid' => $sanksi->langgar_tsdm_uuid]) }}">
+                                    <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/' .
                                     $sanksi->sanksi_no_absen . '.webp')]) src="{{
-                                    $storageRangka->exists('sdm/foto-profil/' . $sanksi->sanksi_no_absen .
+                                    $app->filesystem->exists('sdm/foto-profil/' . $sanksi->sanksi_no_absen .
                                     '.webp')
-                                    ? $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
+                                    ? $app->url->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
                                     $sanksi->sanksi_no_absen . '.webp' . '?' .
-                                    filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
+                                    filemtime($app->storagePath('app/sdm/foto-profil/' .
                                     $sanksi->sanksi_no_absen . '.webp'))]) :
-                                    $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
+                                    $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
+                                    alt="{{
                                     $sanksi->langgar_tsdm_nama ?? 'foto akun' }}" title="{{
                                     $sanksi->langgar_tsdm_nama
                                     ?? 'foto akun' }}" loading="lazy">
@@ -71,9 +72,9 @@
                         <td>
                             <b>Sanksi</b> : {{$sanksi->sanksi_jenis}}<br />
                             <b>Berlaku</b> : {{
-                            strtoupper($dateRangka->make($sanksi->sanksi_mulai)?->translatedFormat('d F Y'))
+                            strtoupper($app->date->make($sanksi->sanksi_mulai)?->translatedFormat('d F Y'))
                             }} s.d {{
-                            strtoupper($dateRangka->make($sanksi->sanksi_selesai)?->translatedFormat('d F Y'))
+                            strtoupper($app->date->make($sanksi->sanksi_selesai)?->translatedFormat('d F Y'))
                             }}<br />
                             <b>Tambahan</b> : {!! nl2br($sanksi->sanksi_tambahan) !!}<br />
                             <b>Keterangan</b> : {!! nl2br($sanksi->sanksi_keterangan) !!}
@@ -81,11 +82,11 @@
 
                         <td>
                             <b>Nomor</b> : <u><a class="isi-xhr"
-                                    href="{{ $urlRangka->route('sdm.pelanggaran.data', ['kata_kunci' => $sanksi->sanksi_lap_no]) }}"
+                                    href="{{ $app->url->route('sdm.pelanggaran.data', ['kata_kunci' => $sanksi->sanksi_lap_no]) }}"
                                     aria-label="Lap Pelanggaran SDM No {{ $sanksi->sanksi_lap_no }}">{{
                                     $sanksi->sanksi_lap_no }}</a></u><br />
                             <b>Tanggal</b> : {{
-                            strtoupper($dateRangka->make($sanksi->langgar_tanggal)?->translatedFormat('d F Y'))
+                            strtoupper($app->date->make($sanksi->langgar_tanggal)?->translatedFormat('d F Y'))
                             }}<br />
                             <b>Aduan</b> : {!! nl2br($sanksi->langgar_isi) !!}
 
@@ -95,16 +96,17 @@
                             <div @class(['merah'=> $sanksi->langgar_psdm_tgl_berhenti])>
                                 <b><i><u>Pelapor</u></i></b> :<br />
                                 <a class="isi-xhr taut-akun"
-                                    href="{{ $urlRangka->route('sdm.akun', ['uuid' => $sanksi->langgar_psdm_uuid]) }}">
-                                    <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
+                                    href="{{ $app->url->route('sdm.akun', ['uuid' => $sanksi->langgar_psdm_uuid]) }}">
+                                    <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/' .
                                     $sanksi->langgar_pelapor . '.webp')]) src="{{
-                                    $storageRangka->exists('sdm/foto-profil/' . $sanksi->langgar_pelapor .
+                                    $app->filesystem->exists('sdm/foto-profil/' . $sanksi->langgar_pelapor .
                                     '.webp') ?
-                                    $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
+                                    $app->url->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
                                     $sanksi->langgar_pelapor . '.webp' . '?' .
-                                    filemtime($appRangka->storagePath('app/sdm/foto-profil/' .
+                                    filemtime($app->storagePath('app/sdm/foto-profil/' .
                                     $sanksi->langgar_pelapor . '.webp'))]) :
-                                    $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
+                                    $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
+                                    alt="{{
                                     $sanksi->langgar_psdm_nama ?? 'foto akun' }}" title="{{
                                     $sanksi->langgar_psdm_nama
                                     ?? 'foto akun' }}" loading="lazy">
@@ -133,7 +135,7 @@
         @if ($sanksis->count() > 0)
         <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
 
-        <a class="isi-xhr utama" href="{{ $urlRangka->route('sdm.sanksi.data') }}">SELENGKAPNYA</a>
+        <a class="isi-xhr utama" href="{{ $app->url->route('sdm.sanksi.data') }}">SELENGKAPNYA</a>
         @endif
     </div>
 </details>

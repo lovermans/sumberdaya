@@ -2,8 +2,8 @@
 
 @section('isi')
 <div id="permintaan_tambah_hapus">
-    <form id="form_perminTambahSDMHapus" class="form-xhr kartu" method="POST" action="{{ $urlRangka->current() }}">
-        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+    <form id="form_perminTambahSDMHapus" class="form-xhr kartu" method="POST" action="{{ $app->url->current() }}">
+        <input type="hidden" name="_token" value="{{ $app->request->session()->token() }}">
 
         <div class="gspan-4">
             <a class="tutup-i"><svg viewbox="0 0 24 24">
@@ -17,7 +17,7 @@
                 {{$permin->tambahsdm_penempatan}} - {{$permin->tambahsdm_posisi}} - {{$permin->tambahsdm_jumlah}} ?</p>
             <label for="alasan_hapus_penempatan">Alasan Penghapusan</label>
             <textarea id="alasan_hapus_penempatan" name="alasan" cols="3"
-                required>{{ $rekRangka->old('alasan') }}</textarea>
+                required>{{ $app->request->old('alasan') }}</textarea>
             <span class="t-bantu">Isi alasan penghapusan data</span>
         </div>
 

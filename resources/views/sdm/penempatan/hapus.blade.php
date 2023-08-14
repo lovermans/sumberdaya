@@ -2,8 +2,8 @@
 
 @section('isi')
 <div id="penempatan_sdm_hapus">
-    <form id="form_penempatanSDMHapus" class="form-xhr kartu" method="POST" action="{{ $urlRangka->current() }}">
-        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+    <form id="form_penempatanSDMHapus" class="form-xhr kartu" method="POST" action="{{ $app->url->current() }}">
+        <input type="hidden" name="_token" value="{{ $app->request->session()->token() }}">
 
         <div class="gspan-4">
             <a class="tutup-i"><svg viewbox="0 0 24 24">
@@ -15,13 +15,13 @@
 
         <div class="isian gspan-4">
             <p>Yakin menghapus data penempatan : {{$penem->sdm_no_absen}} - {{$penem->sdm_nama}} -
-                {{strtoupper($dateRangka->make($penem->penempatan_mulai)?->translatedFormat('d F Y'))}} -
+                {{strtoupper($app->date->make($penem->penempatan_mulai)?->translatedFormat('d F Y'))}} -
                 {{$penem->penempatan_lokasi}} - {{$penem->penempatan_kontrak}} - {{$penem->penempatan_ke}} ?</p>
 
             <label for="alasan_hapus_penempatan">Alasan Penghapusan</label>
 
             <textarea id="alasan_hapus_penempatan" name="alasan" cols="3"
-                required>{{ $rekRangka->old('alasan') }}</textarea>
+                required>{{ $app->request->old('alasan') }}</textarea>
 
             <span class="t-bantu">Isi alasan penghapusan data</span>
         </div>

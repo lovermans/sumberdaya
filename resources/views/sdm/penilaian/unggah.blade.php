@@ -3,8 +3,8 @@
 @section('isi')
 <div id="nilai_unggah">
     <form id="form_nilai_unggah" class="form-xhr kartu" method="POST" data-laju="true" data-tujuan="#nilai_unggah"
-        action="{{ $urlRangka->route('sdm.penilaian.unggah') }}">
-        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+        action="{{ $app->url->route('sdm.penilaian.unggah') }}">
+        <input type="hidden" name="_token" value="{{ $app->request->session()->token() }}">
 
         <div class="gspan-4">
             <a class="tutup-i">
@@ -15,7 +15,7 @@
 
             <h4 class="form">Unggah Data Penilaian SDM</h4>
 
-            <p>Unduh <a class="isi-xhr" href="{{ $urlRangka->route('sdm.penilaian.contoh-unggah') }}" data-rekam="false"
+            <p>Unduh <a class="isi-xhr" href="{{ $app->url->route('sdm.penilaian.contoh-unggah') }}" data-rekam="false"
                     data-tujuan="#nilai_unggah" data-laju="true">contoh</a> excel, isi sesuai
                 petunjuk dalam excel lalu unggah kembali.</p>
         </div>

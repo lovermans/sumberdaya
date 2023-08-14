@@ -2,8 +2,8 @@
 
 @section('isi')
 <div id="penempatan_sdm_tambahUbah">
-    <form id="form_penempatanSDMTambahUbah" class="form-xhr kartu" method="POST" action="{{ $urlRangka->current() }}">
-        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+    <form id="form_penempatanSDMTambahUbah" class="form-xhr kartu" method="POST" action="{{ $app->url->current() }}">
+        <input type="hidden" name="_token" value="{{ $app->request->session()->token() }}">
 
         <div class="gspan-4">
             <a class="tutup-i">
@@ -12,7 +12,7 @@
                 </svg>
             </a>
 
-            <h4 class="form">{{$rekRangka->routeIs('sdm.penempatan.tambah') ? 'Tambah' : 'Ubah'}} Data Penempatan SDM
+            <h4 class="form">{{$app->request->routeIs('sdm.penempatan.tambah') ? 'Tambah' : 'Ubah'}} Data Penempatan SDM
             </h4>
         </div>
 
@@ -20,7 +20,7 @@
             <label for="penempatan_no_absen">No Absen</label>
 
             <input id="penempatan_no_absen" type="text" name="penempatan_no_absen"
-                value="{{ $rekRangka->old('penempatan_no_absen', $penem->sdm_no_absen ?? null) }}" readonly
+                value="{{ $app->request->old('penempatan_no_absen', $penem->sdm_no_absen ?? null) }}" readonly
                 inputmode="numeric" required>
 
             <span class="t-bantu">Harap tidak diubah</span>
@@ -41,16 +41,17 @@
             <select id="penempatan_lokasi" name="penempatan_lokasi" class="pil-cari" required>
                 <option selected></option>
 
-                @if (!in_array($rekRangka->old('penempatan_lokasi', $penem->penempatan_lokasi ?? null), (array)
-                $penempatans->pluck('atur_butir')->toArray()) && !is_null($rekRangka->old('penempatan_lokasi',
+                @if (!in_array($app->request->old('penempatan_lokasi', $penem->penempatan_lokasi ?? null), (array)
+                $penempatans->pluck('atur_butir')->toArray()) && !is_null($app->request->old('penempatan_lokasi',
                 $penem->penempatan_lokasi ?? null)))
-                <option value="{{ $rekRangka->old('penempatan_lokasi', $penem->penempatan_lokasi ?? null) }}"
-                    class="merah" selected>{{ $rekRangka->old('penempatan_lokasi', $penem->penempatan_lokasi ?? null) }}
+                <option value="{{ $app->request->old('penempatan_lokasi', $penem->penempatan_lokasi ?? null) }}"
+                    class="merah" selected>{{ $app->request->old('penempatan_lokasi', $penem->penempatan_lokasi ?? null)
+                    }}
                 </option>
                 @endif
 
                 @foreach ($penempatans as $penempatan)
-                <option @selected($penempatan->atur_butir == $rekRangka->old('penempatan_lokasi',
+                <option @selected($penempatan->atur_butir == $app->request->old('penempatan_lokasi',
                     $penem->penempatan_lokasi ?? null)) @class(['merah' => $penempatan->atur_status == 'NON-AKTIF'])>{{
                     $penempatan->atur_butir }}</option>
                 @endforeach
@@ -64,16 +65,18 @@
             <select id="penempatan_posisi" name="penempatan_posisi" class="pil-cari" required>
                 <option selected></option>
 
-                @if (!in_array($rekRangka->old('penempatan_posisi', $penem->penempatan_posisi ?? null), (array)
-                $posisis->pluck('posisi_nama')->toArray()) && !is_null($rekRangka->old('penempatan_posisi',
+                @if (!in_array($app->request->old('penempatan_posisi', $penem->penempatan_posisi ?? null), (array)
+                $posisis->pluck('posisi_nama')->toArray()) && !is_null($app->request->old('penempatan_posisi',
                 $penem->penempatan_posisi ?? null)))
-                <option value="{{ $rekRangka->old('penempatan_posisi', $penem->penempatan_posisi ?? null) }}"
-                    class="merah" selected>{{ $rekRangka->old('penempatan_posisi', $penem->penempatan_posisi ?? null) }}
+                <option value="{{ $app->request->old('penempatan_posisi', $penem->penempatan_posisi ?? null) }}"
+                    class="merah" selected>{{ $app->request->old('penempatan_posisi', $penem->penempatan_posisi ?? null)
+                    }}
                 </option>
                 @endif
 
                 @foreach ($posisis as $posisi)
-                <option @selected($posisi->posisi_nama == $rekRangka->old('penempatan_posisi', $penem->penempatan_posisi
+                <option @selected($posisi->posisi_nama == $app->request->old('penempatan_posisi',
+                    $penem->penempatan_posisi
                     ?? null)) @class(['merah' => $posisi->posisi_status == 'NON-AKTIF'])>{{ $posisi->posisi_nama }}
                 </option>
                 @endforeach
@@ -86,7 +89,7 @@
             <label for="penempatan_mulai">Tanggal Mulai</label>
 
             <input id="penempatan_mulai" type="date" name="penempatan_mulai"
-                value="{{ $rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? today()->toDateString()) }}"
+                value="{{ $app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? today()->toDateString()) }}"
                 required>
 
             <span class="t-bantu">Isi tanggal</span>
@@ -96,8 +99,8 @@
             <label for="penempatan_selesai">Tanggal Selesai</label>
 
             <input id="penempatan_selesai" type="date" name="penempatan_selesai"
-                value="{{ $rekRangka->old('penempatan_selesai', $penem->penempatan_selesai ?? null) }}"
-                @required(!$strRangka->contains($rekRangka->old('penempatan_kontrak', $penem->penempatan_kontrak ??
+                value="{{ $app->request->old('penempatan_selesai', $penem->penempatan_selesai ?? null) }}"
+                @required(!str()->contains($app->request->old('penempatan_kontrak', $penem->penempatan_kontrak ??
             null), ['PKWTT', 'OS-']))>
             <span class="t-bantu">Kosongi jika PKWTT atau OS</span>
         </div>
@@ -108,16 +111,17 @@
             <select id="penempatan_kontrak" name="penempatan_kontrak" class="pil-cari" required>
                 <option selected></option>
 
-                @if (!in_array($rekRangka->old('penempatan_kontrak', $penem->penempatan_kontrak ?? null), (array)
-                $kontraks->pluck('atur_butir')->toArray()) && !is_null($rekRangka->old('penempatan_kontrak',
+                @if (!in_array($app->request->old('penempatan_kontrak', $penem->penempatan_kontrak ?? null), (array)
+                $kontraks->pluck('atur_butir')->toArray()) && !is_null($app->request->old('penempatan_kontrak',
                 $penem->penempatan_kontrak ?? null)))
-                <option value="{{ $rekRangka->old('penempatan_kontrak', $penem->penempatan_kontrak ?? null) }}"
-                    class="merah" selected>{{ $rekRangka->old('penempatan_kontrak', $penem->penempatan_kontrak ?? null)
+                <option value="{{ $app->request->old('penempatan_kontrak', $penem->penempatan_kontrak ?? null) }}"
+                    class="merah" selected>{{ $app->request->old('penempatan_kontrak', $penem->penempatan_kontrak ??
+                    null)
                     }}</option>
                 @endif
 
                 @foreach ($kontraks as $kontrak)
-                <option @selected($kontrak->atur_butir == $rekRangka->old('penempatan_kontrak',
+                <option @selected($kontrak->atur_butir == $app->request->old('penempatan_kontrak',
                     $penem->penempatan_kontrak ?? null)) @class(['merah' => $kontrak->atur_status == 'NON-AKTIF'])>{{
                     $kontrak->atur_butir }}</option>
                 @endforeach
@@ -130,8 +134,8 @@
             <label for="penempatan_ke">Kontrak Ke</label>
 
             <input id="penempatan_ke" type="number" name="penempatan_ke" min="0"
-                value="{{ $rekRangka->old('penempatan_ke', $penem->penempatan_ke ?? null) }}"
-                @required($strRangka->contains($rekRangka->old('penempatan_kontrak', $penem->penempatan_kontrak ??
+                value="{{ $app->request->old('penempatan_ke', $penem->penempatan_ke ?? null) }}"
+                @required(str()->contains($app->request->old('penempatan_kontrak', $penem->penempatan_kontrak ??
             null), ['PKWT', 'PERCOBAAN']))>
 
             <span class="t-bantu">Angka</span>
@@ -143,16 +147,16 @@
             <select id="penempatan_kategori" name="penempatan_kategori" class="pil-cari" required>
                 <option selected></option>
 
-                @if (!in_array($rekRangka->old('penempatan_kategori', $penem->penempatan_kategori ?? null), (array)
-                $kategoris->pluck('atur_butir')->toArray()) && !is_null($rekRangka->old('penempatan_kategori',
+                @if (!in_array($app->request->old('penempatan_kategori', $penem->penempatan_kategori ?? null), (array)
+                $kategoris->pluck('atur_butir')->toArray()) && !is_null($app->request->old('penempatan_kategori',
                 $penem->penempatan_kategori ?? null)))
-                <option value="{{ $rekRangka->old('penempatan_kategori', $penem->penempatan_kategori ?? null) }}"
-                    class="merah" selected>{{ $rekRangka->old('penempatan_kategori', $penem->penempatan_kategori ??
+                <option value="{{ $app->request->old('penempatan_kategori', $penem->penempatan_kategori ?? null) }}"
+                    class="merah" selected>{{ $app->request->old('penempatan_kategori', $penem->penempatan_kategori ??
                     null) }}</option>
                 @endif
 
                 @foreach ($kategoris as $kategori)
-                <option @selected($kategori->atur_butir == $rekRangka->old('penempatan_kategori',
+                <option @selected($kategori->atur_butir == $app->request->old('penempatan_kategori',
                     $penem->penempatan_kategori ?? null)) @class(['merah' => $kategori->atur_status == 'NON-AKTIF'])>{{
                     $kategori->atur_butir }}</option>
                 @endforeach
@@ -167,16 +171,17 @@
             <select id="penempatan_pangkat" name="penempatan_pangkat" class="pil-cari" required>
                 <option selected></option>
 
-                @if (!in_array($rekRangka->old('penempatan_pangkat', $penem->penempatan_pangkat ?? null), (array)
-                $pangkats->pluck('atur_butir')->toArray()) && !is_null($rekRangka->old('penempatan_pangkat',
+                @if (!in_array($app->request->old('penempatan_pangkat', $penem->penempatan_pangkat ?? null), (array)
+                $pangkats->pluck('atur_butir')->toArray()) && !is_null($app->request->old('penempatan_pangkat',
                 $penem->penempatan_pangkat ?? null)))
-                <option value="{{ $rekRangka->old('penempatan_pangkat', $penem->penempatan_pangkat ?? null) }}"
-                    class="merah" selected>{{ $rekRangka->old('penempatan_pangkat', $penem->penempatan_pangkat ?? null)
+                <option value="{{ $app->request->old('penempatan_pangkat', $penem->penempatan_pangkat ?? null) }}"
+                    class="merah" selected>{{ $app->request->old('penempatan_pangkat', $penem->penempatan_pangkat ??
+                    null)
                     }}</option>
                 @endif
 
                 @foreach ($pangkats as $pangkat)
-                <option @selected($pangkat->atur_butir == $rekRangka->old('penempatan_pangkat',
+                <option @selected($pangkat->atur_butir == $app->request->old('penempatan_pangkat',
                     $penem->penempatan_pangkat ?? null)) @class(['merah' => $pangkat->atur_status == 'NON-AKTIF'])>{{
                     $pangkat->atur_butir }}</option>
                 @endforeach
@@ -191,16 +196,16 @@
             <select id="penempatan_golongan" name="penempatan_golongan" class="pil-cari" required>
                 <option selected></option>
 
-                @if (!in_array($rekRangka->old('penempatan_golongan', $penem->penempatan_golongan ?? null), (array)
-                $golongans->pluck('atur_butir')->toArray()) && !is_null($rekRangka->old('penempatan_golongan',
+                @if (!in_array($app->request->old('penempatan_golongan', $penem->penempatan_golongan ?? null), (array)
+                $golongans->pluck('atur_butir')->toArray()) && !is_null($app->request->old('penempatan_golongan',
                 $penem->penempatan_golongan ?? null)))
-                <option value="{{ $rekRangka->old('penempatan_golongan', $penem->penempatan_golongan ?? null) }}"
-                    class="merah" selected>{{ $rekRangka->old('penempatan_golongan', $penem->penempatan_golongan ??
+                <option value="{{ $app->request->old('penempatan_golongan', $penem->penempatan_golongan ?? null) }}"
+                    class="merah" selected>{{ $app->request->old('penempatan_golongan', $penem->penempatan_golongan ??
                     null) }}</option>
                 @endif
 
                 @foreach ($golongans as $golongan)
-                <option @selected($golongan->atur_butir == $rekRangka->old('penempatan_golongan',
+                <option @selected($golongan->atur_butir == $app->request->old('penempatan_golongan',
                     $penem->penempatan_golongan ?? null)) @class(['merah' => $golongan->atur_status == 'NON-AKTIF'])>{{
                     $golongan->atur_butir }}</option>
                 @endforeach
@@ -213,7 +218,7 @@
             <label for="penempatan_grup">Grup</label>
 
             <input id="penempatan_grup" type="text" name="penempatan_grup"
-                value="{{ $rekRangka->old('penempatan_grup', $penem->penempatan_grup ?? null) }}">
+                value="{{ $app->request->old('penempatan_grup', $penem->penempatan_grup ?? null) }}">
 
             <span class="t-bantu">Regu/Unit Kerja</span>
         </div>
@@ -224,8 +229,10 @@
             <input id="penempatan_berkas" type="file" name="penempatan_berkas" accept=".pdf,application/pdf">
 
             <span class="t-bantu">Scan PDF perjanjian kerja dan perubahan status yang mengikuti {{
-                $storageRangka->exists('sdm/penempatan/berkas/'.$rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ??
-                null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf') ? '(berkas
+                $app->filesystem->exists('sdm/penempatan/berkas/'.$app->request->old('sdm_no_absen',
+                $penem->sdm_no_absen
+                ??
+                null).' - '.$app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf') ? '(berkas
                 yang
                 diunggah akan menindih berkas unggahan lama).' : '' }}</span>
         </div>
@@ -234,24 +241,26 @@
             <label for="penempatan_keterangan">Keterangan</label>
 
             <textarea id="penempatan_keterangan" name="penempatan_keterangan"
-                rows="3">{{ $rekRangka->old('penempatan_keterangan', $penem->penempatan_keterangan ?? null) }}</textarea>
+                rows="3">{{ $app->request->old('penempatan_keterangan', $penem->penempatan_keterangan ?? null) }}</textarea>
 
             <span class="t-bantu">Isi catatan rincian penempatan</span>
         </div>
 
-        @if ($rekRangka->routeIs('sdm.penempatan.ubah'))
+        @if ($app->request->routeIs('sdm.penempatan.ubah'))
         <div class="isian gspan-4">
             <label>Berkas Penempatan</label>
 
-            @if ($storageRangka->exists('sdm/penempatan/berkas/'.$rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ??
-            null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))
+            @if ($app->filesystem->exists('sdm/penempatan/berkas/'.$app->request->old('sdm_no_absen',
+            $penem->sdm_no_absen
+            ??
+            null).' - '.$app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))
             <iframe class="berkas tcetak"
-                src="{{ $urlRangka->route('sdm.penempatan.berkas', ['berkas' => $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf' . '?' . filemtime($app->storagePath('app/sdm/penempatan/berkas/' . $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))]) }}"
+                src="{{ $app->url->route('sdm.penempatan.berkas', ['berkas' => $app->request->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf' . '?' . filemtime($app->storagePath('app/sdm/penempatan/berkas/' . $app->request->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))]) }}"
                 title="Berkas Penempatan SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                href="{{ $urlRangka->route('sdm.penempatan.berkas', ['berkas' => $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf' . '?' . filemtime($app->storagePath('app/sdm/penempatan/berkas/' . $rekRangka->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$rekRangka->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))]) }}">
+                href="{{ $app->url->route('sdm.penempatan.berkas', ['berkas' => $app->request->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf' . '?' . filemtime($app->storagePath('app/sdm/penempatan/berkas/' . $app->request->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))]) }}">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonunduh"></use>
                 </svg>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
-<html lang="{{ str_replace('_', '-', $appRangka->getLocale()) }}" dir="ltr">
+<html lang="{{ str_replace('_', '-', $app->getLocale()) }}" dir="ltr">
 
 <head id="kepala-dokumen">
     <noscript>
-        <meta HTTP-EQUIV="refresh" content="0;url='{{ $urlRangka->route('perlu-javascript') }}'">
+        <meta HTTP-EQUIV="refresh" content="0;url='{{ $app->url->route('perlu-javascript') }}'">
     </noscript>
 
     @include('informasi-meta')
@@ -14,8 +14,8 @@
     <div id="ikonSVG"></div>
 
     <div id="sambutan">
-        <img src="{{ $urlRangka->asset($mixRangka('/images/Lambang Perusahaan.webp')) }}"
-            alt="{{ $confRangka->get('app.usaha') }}" title="{{ $confRangka->get('app.usaha') }}">
+        <img src="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/Lambang Perusahaan.webp')) }}"
+            alt="{{ $app->config->get('app.usaha') }}" title="{{ $app->config->get('app.usaha') }}">
         <p>
             <b>Memuat Aplikasi, Periksa Koneksi Internet</b>
             <br>
@@ -55,10 +55,11 @@
             </svg>
         </label>
 
-        <a class="isi-xhr" href="{{ $urlRangka->route('mulai')
+        <a class="isi-xhr" href="{{ $app->url->route('mulai')
                 }}">
-            <img id="logo" src="{{ $urlRangka->asset($mixRangka('/images/Logo Perusahaan.webp')) }}"
-                title="{{ $confRangka->get('app.usaha') }}" alt="{{ $confRangka->get('app.usaha') }}"
+            <img id="logo"
+                src="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/Logo Perusahaan.webp')) }}"
+                title="{{ $app->config->get('app.usaha') }}" alt="{{ $app->config->get('app.usaha') }}"
                 loading="lazy"></a>
 
         <label for="pilih-aplikasi" id="pilih-sumber_daya" onclick="" title="Pilih Aplikasi"></label>
@@ -78,12 +79,12 @@
     <nav class="tcetak">
         <div id="nav-rangka">
             <div id="navigasi-sdm">
-                @includeWhen(!$rekRangka->pjax(), 'sdm.navigasi')
+                @includeWhen(!$app->request->pjax(), 'sdm.navigasi')
             </div>
 
             <div class="menu-t">
-                <a @class(['nav-xhr', 'aktif'=> $rekRangka->routeIs('tentang-aplikasi')]) href="{{
-                    $urlRangka->route('tentang-aplikasi') }}">
+                <a @class(['nav-xhr', 'aktif'=> $app->request->routeIs('tentang-aplikasi')]) href="{{
+                    $app->url->route('tentang-aplikasi') }}">
                     <svg viewBox="0 0 24 24">
                         <use href="#ikoninformasi"></use>
                     </svg>
@@ -122,7 +123,7 @@
         };
         function muatSlimSelect (data) {
             if (!window.SlimSelect) {
-                import('{{ $urlRangka->asset($mixRangka('/slimselect-es.js')) }}').then(({ default: SS }) => {
+                import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/slimselect-es.js')) }}').then(({ default: SS }) => {
                     window.SlimSelect = SS;
                     new SlimSelect(data);
                 });
@@ -145,15 +146,15 @@
                 halaman.setAttribute('data-tematerang', e.currentTarget.checked);
             }));
 
-            if (location.href == "{{ $urlRangka->route('mulai').'/' }}" && !navigator.onLine) {
-                document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $urlRangka->route('mulai') }}'>Hubungkan Aplikasi</a>.</p>";
+            if (location.href == "{{ $app->url->route('mulai').'/' }}" && !navigator.onLine) {
+                document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $app->url->route('mulai') }}'>Hubungkan Aplikasi</a>.</p>";
             };
 
             (function () {
                 if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
                     let updated = false;
                     let activated = false;
-                    navigator.serviceWorker.register('{{ $rekRangka->getBasePath() . '/service-worker.js' }}')
+                    navigator.serviceWorker.register('{{ $app->request->getBasePath() . '/service-worker.js' }}')
                         .then(registration => {
                             registration.addEventListener("updatefound", () => {
                                 const worker = registration.installing;
@@ -188,14 +189,14 @@
 
                 lemparXHR({
                     tujuan : "#ikonSVG",
-                    tautan : "{!! $urlRangka->asset($mixRangka('/ikon.svg')) !!}",
+                    tautan : "{!! $app->url->asset($app->make('Illuminate\Foundation\Mix')('/ikon.svg')) !!}",
                     normalview : true
                 });
                 
-                if (location.href == "{{ $urlRangka->route('mulai').'/' }}" && navigator.onLine) {
+                if (location.href == "{{ $app->url->route('mulai').'/' }}" && navigator.onLine) {
                     lemparXHR({
                         tujuan : "#isi",
-                        tautan : "{!! $urlRangka->route('mulai-aplikasi', [ 'aplikasivalet' => $confRangka->get('app.aplikasivalet')]) !!}",
+                        tautan : "{!! $app->url->route('mulai-aplikasi', [ 'aplikasivalet' => $app->config->get('app.aplikasivalet')]) !!}",
                         normalview : true
                     });
                 };
@@ -204,9 +205,9 @@
             })();
         });
         // if (!window.Echo) {
-        //     import('{{ $urlRangka->asset($mixRangka('/window-pusher.js')) }}').then(
+        //     import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/window-pusher.js')) }}').then(
         //         function () {
-        //             import('{{ $urlRangka->asset($mixRangka('/echo-es.js')) }}').then(({ default: LE }) => {
+        //             import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/echo-es.js')) }}').then(({ default: LE }) => {
         //                 window.Echo = new LE({
         //                     broadcaster: "pusher",
         //                     key: "key",

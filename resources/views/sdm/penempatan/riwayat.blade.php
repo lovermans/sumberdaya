@@ -9,13 +9,13 @@
             data-frag="true" method="GET" data-blank="true">
             <input type="hidden" name="fragment" value="riwa-penem-sdm_tabels">
 
-            <details class="gspan-4" {{ $rekRangka->anyFilled(['lokasi', 'kontrak', 'kategori', 'pangkat', 'kelamin',
+            <details class="gspan-4" {{ $app->request->anyFilled(['lokasi', 'kontrak', 'kategori', 'pangkat', 'kelamin',
                 'posisi', 'agama', 'kawin', 'warganegara', 'pendidikan', 'disabilitas']) ? 'open' : '' }}>
 
                 <summary class="cari">
                     <div class="isian gspan-4">
                         <input type="text" id="kata_kunci_penempatan_sdm" name="kata_kunci"
-                            value="{{ $rekRangka->kata_kunci }}" aria-label="Cari Kata Kunci">
+                            value="{{ $app->request->kata_kunci }}" aria-label="Cari Kata Kunci">
 
                         <button id="tombol_cari_status_penempatan" class="cari-cepat" type="submit" title="Cari Data">
                             <svg viewbox="0 0 24 24">
@@ -32,7 +32,8 @@
                         <select id="sdm_penempatan_status_cariStatusPenempatanSDM" name="lokasi[]" class="pil-cari"
                             multiple>
                             @foreach ($penempatans as $lokasi)
-                            <option @selected(in_array($lokasi->atur_butir, (array) $rekRangka->lokasi)) @class(['merah'
+                            <option @selected(in_array($lokasi->atur_butir, (array) $app->request->lokasi))
+                                @class(['merah'
                                 => $lokasi->atur_status == 'NON-AKTIF'])>{{ $lokasi->atur_butir }}</option>
                             @endforeach
                         </select>
@@ -46,7 +47,7 @@
                         <select id="sdm_penempatan_status_cariStatusKontrakSDM" name="kontrak[]" class="pil-cari"
                             multiple>
                             @foreach ($kontraks as $kontrak)
-                            <option @selected(in_array($kontrak->atur_butir, (array) $rekRangka->kontrak))
+                            <option @selected(in_array($kontrak->atur_butir, (array) $app->request->kontrak))
                                 @class(['merah' => $kontrak->atur_status == 'NON-AKTIF'])>{{ $kontrak->atur_butir }}
                             </option>
                             @endforeach
@@ -61,7 +62,7 @@
                         <select id="sdm_penempatan_status_cariStatusKategoriSDM" name="kategori[]" class="pil-cari"
                             multiple>
                             @foreach ($kategoris as $kategori)
-                            <option @selected(in_array($kategori->atur_butir, (array) $rekRangka->kategori))
+                            <option @selected(in_array($kategori->atur_butir, (array) $app->request->kategori))
                                 @class(['merah' => $kategori->atur_status == 'NON-AKTIF'])>{{ $kategori->atur_butir }}
                             </option>
                             @endforeach
@@ -76,7 +77,7 @@
                         <select id="sdm_penempatan_status_cariStatusPangkatSDM" name="pangkat[]" class="pil-cari"
                             multiple>
                             @foreach ($pangkats as $pangkat)
-                            <option @selected(in_array($pangkat->atur_butir, (array) $rekRangka->pangkat))
+                            <option @selected(in_array($pangkat->atur_butir, (array) $app->request->pangkat))
                                 @class(['merah' => $pangkat->atur_status == 'NON-AKTIF'])>{{ $pangkat->atur_butir }}
                             </option>
                             @endforeach
@@ -91,7 +92,7 @@
                         <select id="sdm_penempatan_status_cariStatusJabatanSDM" name="posisi[]" class="pil-cari"
                             multiple>
                             @foreach ($posisis as $posisi)
-                            <option @selected(in_array($posisi->posisi_nama, (array) $rekRangka->posisi))
+                            <option @selected(in_array($posisi->posisi_nama, (array) $app->request->posisi))
                                 @class(['merah' => $posisi->posisi_status == 'NON-AKTIF'])>{{ $posisi->posisi_nama }}
                             </option>
                             @endforeach
@@ -106,7 +107,7 @@
                         <select id="sdm_penempatan_status_cariStatusKelaminSDM" name="kelamin[]" multiple
                             class="pil-saja">
                             @foreach ($kelamins as $kelamin)
-                            <option @selected(in_array($kelamin->atur_butir, (array) $rekRangka->kelamin))
+                            <option @selected(in_array($kelamin->atur_butir, (array) $app->request->kelamin))
                                 @class(['merah' => $kelamin->atur_status == 'NON-AKTIF'])>{{ $kelamin->atur_butir }}
                             </option>
                             @endforeach
@@ -120,7 +121,8 @@
 
                         <select id="sdm_penempatan_status_cariAgamaSDM" name="agama[]" multiple class="pil-saja">
                             @foreach ($agamas as $agama)
-                            <option @selected(in_array($agama->atur_butir, (array) $rekRangka->agama)) @class(['merah'
+                            <option @selected(in_array($agama->atur_butir, (array) $app->request->agama))
+                                @class(['merah'
                                 => $agama->atur_status == 'NON-AKTIF'])>{{ $agama->atur_butir }}</option>
                             @endforeach
                         </select>
@@ -133,7 +135,8 @@
 
                         <select id="sdm_penempatan_status_cariStatusKawinSDM" name="kawin[]" multiple class="pil-saja">
                             @foreach ($kawins as $kawin)
-                            <option @selected(in_array($kawin->atur_butir, (array) $rekRangka->kawin)) @class(['merah'
+                            <option @selected(in_array($kawin->atur_butir, (array) $app->request->kawin))
+                                @class(['merah'
                                 => $kawin->atur_status == 'NON-AKTIF'])>{{ $kawin->atur_butir }}</option>
                             @endforeach
                         </select>
@@ -147,7 +150,7 @@
                         <select id="sdm_penempatan_status_cariPendidikanSDM" name="pendidikan[]" multiple
                             class="pil-saja">
                             @foreach ($pendidikans as $pendidikan)
-                            <option @selected(in_array($pendidikan->atur_butir, (array) $rekRangka->pendidikan))
+                            <option @selected(in_array($pendidikan->atur_butir, (array) $app->request->pendidikan))
                                 @class(['merah' => $pendidikan->atur_status == 'NON-AKTIF'])>{{ $pendidikan->atur_butir
                                 }}</option>
                             @endforeach
@@ -162,7 +165,7 @@
                         <select id="sdm_penempatan_status_cariWarganegaraSDM" name="warganegara[]" multiple
                             class="pil-saja">
                             @foreach ($warganegaras as $warganegara)
-                            <option @selected(in_array($warganegara->atur_butir, (array) $rekRangka->warganegara))
+                            <option @selected(in_array($warganegara->atur_butir, (array) $app->request->warganegara))
                                 @class(['merah' => $warganegara->atur_status == 'NON-AKTIF'])>{{
                                 $warganegara->atur_butir }}</option>
                             @endforeach
@@ -177,7 +180,7 @@
                         <select id="sdm_penempatan_status_cariDisabilitasSDM" name="disabilitas[]" multiple
                             class="pil-saja">
                             @foreach ($disabilitases as $disabilitas)
-                            <option @selected(in_array($disabilitas->atur_butir, (array) $rekRangka->disabilitas))
+                            <option @selected(in_array($disabilitas->atur_butir, (array) $app->request->disabilitas))
                                 @class(['merah' => $disabilitas->atur_status == 'NON-AKTIF'])>{{
                                 $disabilitas->atur_butir }}</option>
                             @endforeach
@@ -202,7 +205,7 @@
     <div id="riwa-penem-sdm_tabels" class="kartu scroll-margin">
         @fragment('riwa-penem-sdm_tabels')
         @unless ($halamanAkun ?? null)
-        <b><i><small>Jumlah SDM ({{ $rekRangka->anyFilled(['lokasi', 'kontrak', 'kategori', 'pangkat', 'kelamin',
+        <b><i><small>Jumlah SDM ({{ $app->request->anyFilled(['lokasi', 'kontrak', 'kategori', 'pangkat', 'kelamin',
                     'posisi', 'agama', 'kawin', 'warganegara', 'pendidikan', 'disabilitas']) ? 'sesuai data penyaringan'
                     : 'global'
                     }}) : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
@@ -217,35 +220,35 @@
                 <select id="sdm_penempatan_status_cariStatusAktifSDM" class="pil-saja tombol"
                     onchange="if (this.value !== '') lemparXHR({rekam : true, tujuan : '#riwa-penem-sdm_tabels', tautan : this.value, fragmen : true})">
                     <option
-                        value="{{ $urlRangka->route('sdm.penempatan.riwayat', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
-                        @selected($rekRangka->routeIs('sdm.penempatan.riwayat'))>SEMUA RIWAYAT</option>
+                        value="{{ $app->url->route('sdm.penempatan.riwayat', $app->request->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
+                        @selected($app->request->routeIs('sdm.penempatan.riwayat'))>SEMUA RIWAYAT</option>
 
                     <option
-                        value="{{ $urlRangka->route('sdm.penempatan.data-aktif', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
-                        @selected($rekRangka->routeIs('sdm.penempatan.data-aktif'))>AKTIF</option>
+                        value="{{ $app->url->route('sdm.penempatan.data-aktif', $app->request->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
+                        @selected($app->request->routeIs('sdm.penempatan.data-aktif'))>AKTIF</option>
 
                     <option
-                        value="{{ $urlRangka->route('sdm.penempatan.data-nonaktif', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
-                        @selected($rekRangka->routeIs('sdm.penempatan.data-nonaktif'))>NON-AKTIF</option>
+                        value="{{ $app->url->route('sdm.penempatan.data-nonaktif', $app->request->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
+                        @selected($app->request->routeIs('sdm.penempatan.data-nonaktif'))>NON-AKTIF</option>
                     <option
-                        value="{{ $urlRangka->route('sdm.penempatan.data-akanhabis', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
-                        @selected($rekRangka->routeIs('sdm.penempatan.data-akanhabis'))>AKAN HABIS</option>
+                        value="{{ $app->url->route('sdm.penempatan.data-akanhabis', $app->request->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
+                        @selected($app->request->routeIs('sdm.penempatan.data-akanhabis'))>AKAN HABIS</option>
 
                     <option
-                        value="{{ $urlRangka->route('sdm.penempatan.data-kadaluarsa', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
-                        @selected($rekRangka->routeIs('sdm.penempatan.data-kadaluarsa'))>KADALUARSA</option>
+                        value="{{ $app->url->route('sdm.penempatan.data-kadaluarsa', $app->request->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
+                        @selected($app->request->routeIs('sdm.penempatan.data-kadaluarsa'))>KADALUARSA</option>
 
                     <option
-                        value="{{ $urlRangka->route('sdm.penempatan.data-baru', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
-                        @selected($rekRangka->routeIs('sdm.penempatan.data-baru'))>BELUM DITEMPATKAN</option>
+                        value="{{ $app->url->route('sdm.penempatan.data-baru', $app->request->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
+                        @selected($app->request->routeIs('sdm.penempatan.data-baru'))>BELUM DITEMPATKAN</option>
 
                     <option
-                        value="{{ $urlRangka->route('sdm.penempatan.data-batal', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
-                        @selected($rekRangka->routeIs('sdm.penempatan.data-batal'))>BATAL DITEMPATKAN</option>
+                        value="{{ $app->url->route('sdm.penempatan.data-batal', $app->request->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
+                        @selected($app->request->routeIs('sdm.penempatan.data-batal'))>BATAL DITEMPATKAN</option>
 
                     <option
-                        value="{{ $urlRangka->route('sdm.penempatan.riwayat-nyata', $rekRangka->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
-                        @selected($rekRangka->routeIs('sdm.penempatan.riwayat-nyata'))>MASA KERJA NYATA</option>
+                        value="{{ $app->url->route('sdm.penempatan.riwayat-nyata', $app->request->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
+                        @selected($app->request->routeIs('sdm.penempatan.riwayat-nyata'))>MASA KERJA NYATA</option>
                 </select>
             </div>
 
@@ -310,7 +313,7 @@
             @endif
 
             @unless ($halamanAkun ?? null)
-            <details class="gspan-4" {{ $rekRangka->anyFilled('urut') ? 'open' : '' }}>
+            <details class="gspan-4" {{ $app->request->anyFilled('urut') ? 'open' : '' }}>
                 <summary>Pengurutan :</summary>
                 <div class="kartu form" id="sdm_penempatan_status_urut">
                     <div class="isian" data-indeks="{{ $urutAbsen ? $indexAbsen : 'X' }}">
@@ -320,9 +323,9 @@
                             form="form_sdm_penempatan_status_cari" class="pil-dasar"
                             onchange="getElementById('tombol_cari_status_penempatan').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('sdm_no_absen ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('sdm_no_absen ASC', (array) $app->request->urut))
                                 value="sdm_no_absen ASC">0 - 9</option>
-                            <option @selected(in_array('sdm_no_absen DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('sdm_no_absen DESC', (array) $app->request->urut))
                                 value="sdm_no_absen DESC">9 - 0</option>
                         </select>
 
@@ -337,9 +340,9 @@
                             form="form_sdm_penempatan_status_cari" class="pil-dasar"
                             onchange="getElementById('tombol_cari_status_penempatan').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('sdm_tgl_gabung ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('sdm_tgl_gabung ASC', (array) $app->request->urut))
                                 value="sdm_tgl_gabung ASC">Lama - Baru</option>
-                            <option @selected(in_array('sdm_tgl_gabung DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('sdm_tgl_gabung DESC', (array) $app->request->urut))
                                 value="sdm_tgl_gabung DESC">Baru - Lama</option>
                         </select>
 
@@ -354,9 +357,9 @@
                             form="form_sdm_penempatan_status_cari" class="pil-dasar"
                             onchange="getElementById('tombol_cari_status_penempatan').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('sdm_tgl_lahir ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('sdm_tgl_lahir ASC', (array) $app->request->urut))
                                 value="sdm_tgl_lahir ASC">Lama - Baru</option>
-                            <option @selected(in_array('sdm_tgl_lahir DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('sdm_tgl_lahir DESC', (array) $app->request->urut))
                                 value="sdm_tgl_lahir DESC">Baru - Lama</option>
                         </select>
 
@@ -371,9 +374,9 @@
                             form="form_sdm_penempatan_status_cari" class="pil-dasar"
                             onchange="getElementById('tombol_cari_status_penempatan').click()">
                             <option selected disabled></option>
-                            <option @selected(in_array('sdm_tgl_berhenti ASC', (array) $rekRangka->urut))
+                            <option @selected(in_array('sdm_tgl_berhenti ASC', (array) $app->request->urut))
                                 value="sdm_tgl_berhenti ASC">Lama - Baru</option>
-                            <option @selected(in_array('sdm_tgl_berhenti DESC', (array) $rekRangka->urut))
+                            <option @selected(in_array('sdm_tgl_berhenti DESC', (array) $app->request->urut))
                                 value="sdm_tgl_berhenti DESC">Baru - Lama</option>
                         </select>
 
@@ -413,8 +416,8 @@
                 <tbody>
                     @forelse ($tabels as $nomor => $tabel)
                     <tr @class(['merah'=> $tabel->sdm_tgl_berhenti, 'oranye' => ($tabel->penempatan_selesai &&
-                        $tabel->penempatan_selesai <= $dateRangka->today()->addDay(40)),'biru' =>
-                            $strRangka->startsWith($tabel->penempatan_kontrak, 'OS-')])>
+                        $tabel->penempatan_selesai <= $app->date->today()->addDay(40)),'biru' =>
+                            str()->startsWith($tabel->penempatan_kontrak, 'OS-')])>
                             <th>
                                 <div class="pil-aksi">
                                     <button
@@ -428,17 +431,17 @@
                                     <div class="aksi">
                                         @isset ($tabel->penempatan_uuid)
                                         <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan"
-                                            href="{{ $urlRangka->route('sdm.penempatan.lihat', ['uuid' => $tabel->penempatan_uuid]) }}"
+                                            href="{{ $app->url->route('sdm.penempatan.lihat', ['uuid' => $tabel->penempatan_uuid]) }}"
                                             title="Lihat Data">Lihat Penempatan</a>
 
                                         <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan"
-                                            href="{{ $urlRangka->route('sdm.penempatan.ubah', ['uuid' => $tabel->penempatan_uuid]) }}"
+                                            href="{{ $app->url->route('sdm.penempatan.ubah', ['uuid' => $tabel->penempatan_uuid]) }}"
                                             title="Ubah Data">Ubah Penempatan</a>
                                         @endisset
 
-                                        @unless ($tabel->sdm_uuid == $rekRangka->user()->sdm_uuid)
+                                        @unless ($tabel->sdm_uuid == $app->request->user()->sdm_uuid)
                                         <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan"
-                                            href="{{ $urlRangka->route('sdm.penempatan.tambah', ['uuid' => $tabel->sdm_uuid]) }}"
+                                            href="{{ $app->url->route('sdm.penempatan.tambah', ['uuid' => $tabel->sdm_uuid]) }}"
                                             title="Tambah Data">Tambah Penempatan</a>
                                         @endunless
                                     </div>
@@ -450,27 +453,30 @@
                             @unless ($halamanAkun ?? null)
                             <td>
                                 <a class="isi-xhr taut-akun"
-                                    href="{{ $urlRangka->route('sdm.akun', ['uuid' => $tabel->sdm_uuid]) }}">
-                                    <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
-                                    $tabel->sdm_no_absen . '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/'
-                                    . $tabel->sdm_no_absen . '.webp') ? $urlRangka->route('sdm.tautan-foto-profil',
+                                    href="{{ $app->url->route('sdm.akun', ['uuid' => $tabel->sdm_uuid]) }}">
+                                    <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/' .
+                                    $tabel->sdm_no_absen . '.webp')]) src="{{
+                                    $app->filesystem->exists('sdm/foto-profil/'
+                                    . $tabel->sdm_no_absen . '.webp') ? $app->url->route('sdm.tautan-foto-profil',
                                     ['berkas_foto_profil' => $tabel->sdm_no_absen . '.webp' . '?' .
-                                    filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $tabel->sdm_no_absen .
-                                    '.webp'))]) : $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
+                                    filemtime($app->storagePath('app/sdm/foto-profil/' . $tabel->sdm_no_absen .
+                                    '.webp'))]) :
+                                    $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
+                                    alt="{{
                                     $tabel->sdm_nama
                                     ?? 'foto akun' }}" title="{{ $tabel->sdm_nama ?? 'foto akun' }}" loading="lazy">
                                 </a>
                                 <b>No Absen</b> : {{$tabel->sdm_no_absen}}<br />
                                 <b>Nama</b> : {{$tabel->sdm_nama}}<br />
                                 <b>No Permintaan</b> : <u><a class="isi-xhr"
-                                        href="{{ $urlRangka->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $tabel->sdm_no_permintaan]) }}"
+                                        href="{{ $app->url->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $tabel->sdm_no_permintaan]) }}"
                                         aria-label="Permintaan Tambah SDM No {{ $tabel->sdm_no_permintaan }}">{{
                                         $tabel->sdm_no_permintaan }}</a></u><br />
                                 <b>Tgl Masuk</b> : {{
-                                strtoupper($dateRangka->make($tabel->sdm_tgl_gabung)?->translatedFormat('d F Y'))
+                                strtoupper($app->date->make($tabel->sdm_tgl_gabung)?->translatedFormat('d F Y'))
                                 }}<br />
                                 <b>Tgl Keluar</b> : {{
-                                strtoupper($dateRangka->make($tabel->sdm_tgl_berhenti)?->translatedFormat('d F Y'))
+                                strtoupper($app->date->make($tabel->sdm_tgl_berhenti)?->translatedFormat('d F Y'))
                                 }}<br />
                                 <b>PHK</b> : {{$tabel->sdm_jenis_berhenti}}<br />
                                 <b>Ket PHK</b> : {{$tabel->sdm_ket_berhenti}}
@@ -483,10 +489,10 @@
                                 <b>Kode WLKP</b> : {{$tabel->posisi_wlkp}}<br />
                                 <b>Status</b> : {{$tabel->penempatan_kontrak}}<br />
                                 <b>Mulai</b> : {{
-                                strtoupper($dateRangka->make($tabel->penempatan_mulai)?->translatedFormat('d F Y'))
+                                strtoupper($app->date->make($tabel->penempatan_mulai)?->translatedFormat('d F Y'))
                                 }}<br />
                                 <b>Selesai</b> : {{
-                                strtoupper($dateRangka->make($tabel->penempatan_selesai)?->translatedFormat('d F Y'))
+                                strtoupper($app->date->make($tabel->penempatan_selesai)?->translatedFormat('d F Y'))
                                 }}<br />
                                 <b>Ke</b> : {{$tabel->penempatan_ke}}
                             </td>
@@ -504,11 +510,11 @@
                             @unless ($halamanAkun ?? null)
                             <td>
                                 <b>E-KTP/Passport</b> : <u><a class="isi-xhr"
-                                        href="{{ $urlRangka->route('sdm.penempatan.riwayat', ['kata_kunci' => $tabel->sdm_no_ktp]) }}">{{
+                                        href="{{ $app->url->route('sdm.penempatan.riwayat', ['kata_kunci' => $tabel->sdm_no_ktp]) }}">{{
                                         $tabel->sdm_no_ktp }}</a></u><br />
                                 <b>Warganegara</b> : {{$tabel->sdm_warganegara}}<br />
                                 <b>Lahir</b> : {{$tabel->sdm_tempat_lahir}}, {{
-                                strtoupper($dateRangka->make($tabel->sdm_tgl_lahir)?->translatedFormat('d F Y'))
+                                strtoupper($app->date->make($tabel->sdm_tgl_lahir)?->translatedFormat('d F Y'))
                                 }}<br />
                                 <b>Kelamin</b> : {{$tabel->sdm_kelamin}}<br />
                                 <b>Agama</b> : {{$tabel->sdm_agama}}<br />
@@ -576,7 +582,7 @@
             </svg>
         </a>
 
-        <a class="isi-xhr" data-rekam="false" href="{{ $urlRangka->route('sdm.penempatan.unggah') }}"
+        <a class="isi-xhr" data-rekam="false" href="{{ $app->url->route('sdm.penempatan.unggah') }}"
             data-tujuan="#sdm_penem_riwa_sematan" title="Unggah Data Penempatan SDM">
             <svg viewBox="0 0 24 24">
                 <use href="#ikonunggah"></use>
@@ -590,14 +596,14 @@
             </svg>
         </a>
 
-        <a class="isi-xhr" href="{{ $urlRangka->route('register') }}" title="Tambah Data SDM">
+        <a class="isi-xhr" href="{{ $app->url->route('register') }}" title="Tambah Data SDM">
             <svg viewBox="0 0 24 24">
                 <use href="#ikontambahorang"></use>
             </svg>
         </a>
 
-        <a class="isi-xhr" href="{{ $urlRangka->route('sdm.penempatan.statistik') }}" data-rekam="false"
-            data-laju="true" data-tujuan="#sdm_penem_riwa_sematan" title="Unduh Statistik Penempatan SDM ">
+        <a class="isi-xhr" href="{{ $app->url->route('sdm.penempatan.statistik') }}" data-rekam="false" data-laju="true"
+            data-tujuan="#sdm_penem_riwa_sematan" title="Unduh Statistik Penempatan SDM ">
             <svg viewBox="0 0 24 24">
                 <use href="#ikonstatistik"></use>
             </svg>

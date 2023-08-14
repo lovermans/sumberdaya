@@ -2,8 +2,8 @@
 
 @section('isi')
 <div id="atur_tambahUbah">
-    <form id="form_atur_tambahUbah" class="form-xhr kartu" method="POST" action="{{ $urlRangka->current() }}">
-        <input type="hidden" name="_token" value="{{ $rekRangka->session()->token() }}">
+    <form id="form_atur_tambahUbah" class="form-xhr kartu" method="POST" action="{{ $app->url->current() }}">
+        <input type="hidden" name="_token" value="{{ $app->request->session()->token() }}">
 
         <div class="gspan-4">
             <a class="tutup-i">
@@ -12,14 +12,14 @@
                 </svg>
             </a>
 
-            <h4 class="form">{{$rekRangka->routeIs('atur.tambah') ? 'Tambah' : 'Ubah'}} Data Pengaturan Umum</h4>
+            <h4 class="form">{{$app->request->routeIs('atur.tambah') ? 'Tambah' : 'Ubah'}} Data Pengaturan Umum</h4>
         </div>
 
         <div class="isian">
             <label for="atur_tambahUbahJenis">Jenis Pengaturan</label>
 
             <input id="atur_tambahUbahJenis" type="text" name="atur_jenis"
-                value="{{ $rekRangka->old('atur_jenis', $atur->atur_jenis ?? null) }}" maxlength="20" required>
+                value="{{ $app->request->old('atur_jenis', $atur->atur_jenis ?? null) }}" maxlength="20" required>
 
             <span class="t-bantu">Isi kelompok pengaturan</span>
         </div>
@@ -28,7 +28,7 @@
             <label for="atur_tambahUbahButir">Butir Pengaturan</label>
 
             <input id="atur_tambahUbahButir" type="text" name="atur_butir"
-                value="{{ $rekRangka->old('atur_butir', $atur->atur_butir ?? null) }}" maxlength="40" required>
+                value="{{ $app->request->old('atur_butir', $atur->atur_butir ?? null) }}" maxlength="40" required>
 
             <span class="t-bantu">Isi butir aturan dari kelompok pengaturan di atas</span>
         </div>
@@ -37,9 +37,9 @@
             <label for="atur_tambahUbahStatus">Status</label>
 
             <select id="atur_tambahUbahStatus" name="atur_status" class="pil-saja" required>
-                <option default @selected($rekRangka->old('atur_butir', $atur->atur_status ?? null) == 'AKTIF')>AKTIF
+                <option default @selected($app->request->old('atur_butir', $atur->atur_status ?? null) == 'AKTIF')>AKTIF
                 </option>
-                <option @selected($rekRangka->old('atur_butir', $atur->atur_status ?? null) == 'NON-AKTIF')>NON-AKTIF
+                <option @selected($app->request->old('atur_butir', $atur->atur_status ?? null) == 'NON-AKTIF')>NON-AKTIF
                 </option>
             </select>
 
@@ -50,7 +50,7 @@
             <label for="atur_tambahUbahKeterangan">Keterangan</label>
 
             <textarea id="atur_tambahUbahKeterangan" name="atur_detail"
-                cols="3">{{ $rekRangka->old('atur_detail', $atur->atur_detail ?? null) }}</textarea>
+                cols="3">{{ $app->request->old('atur_detail', $atur->atur_detail ?? null) }}</textarea>
 
             <span class="t-bantu">Isi catatan detail aturan</span>
         </div>

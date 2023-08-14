@@ -22,21 +22,22 @@
 
                 <tbody>
                     @forelse ($ulangTahuns as $no => $ultah)
-                    <tr @class([ 'biru'=> $strRangka->contains($ultah->penempatan_kontrak, 'OS-') ])>
+                    <tr @class([ 'biru'=> str()->contains($ultah->penempatan_kontrak, 'OS-') ])>
                         <td>{{ $loop->iteration }}</td>
 
                         <td>
                             <a class="isi-xhr taut-akun"
-                                href="{{ $urlRangka->route('sdm.akun', ['uuid' => $ultah->sdm_uuid]) }}">
-                                <img @class(['akun', 'svg'=> !$storageRangka->exists('sdm/foto-profil/' .
+                                href="{{ $app->url->route('sdm.akun', ['uuid' => $ultah->sdm_uuid]) }}">
+                                <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/' .
                                 $ultah->sdm_no_absen .
-                                '.webp')]) src="{{ $storageRangka->exists('sdm/foto-profil/' . $ultah->sdm_no_absen .
+                                '.webp')]) src="{{ $app->filesystem->exists('sdm/foto-profil/' . $ultah->sdm_no_absen .
                                 '.webp') ?
-                                $urlRangka->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
+                                $app->url->route('sdm.tautan-foto-profil', ['berkas_foto_profil' =>
                                 $ultah->sdm_no_absen . '.webp' .
-                                '?' . filemtime($appRangka->storagePath('app/sdm/foto-profil/' . $ultah->sdm_no_absen .
+                                '?' . filemtime($app->storagePath('app/sdm/foto-profil/' . $ultah->sdm_no_absen .
                                 '.webp')), false]) :
-                                $urlRangka->asset($mixRangka('/images/blank.webp')) }}" alt="{{
+                                $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
+                                alt="{{
                                 $ultah->sdm_nama ?? 'foto akun' }}" title="{{ $ultah->sdm_nama ?? 'foto akun' }}"
                                 loading="lazy">
                             </a>
@@ -46,7 +47,7 @@
                             {{ $ultah->sdm_nama }}
                         </td>
 
-                        <td>{{ strtoupper($dateRangka->make($ultah->sdm_tgl_lahir)?->translatedFormat('d F')) }}</td>
+                        <td>{{ strtoupper($app->date->make($ultah->sdm_tgl_lahir)?->translatedFormat('d F')) }}</td>
 
                         <td>
                             {{ $ultah->penempatan_lokasi }} <br />

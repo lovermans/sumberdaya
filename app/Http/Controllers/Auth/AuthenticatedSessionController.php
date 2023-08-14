@@ -49,7 +49,7 @@ class AuthenticatedSessionController extends Controller
                 $request->session()->put(['spanduk' => 'Sandi Anda kurang aman.']);
             }
 
-            $request->session()->now('pesan', 'Berhasil masuk aplikasi.');
+            $request->session->now('pesan', 'Berhasil masuk aplikasi.');
         }
 
 
