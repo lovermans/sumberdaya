@@ -204,25 +204,31 @@
                 document.getElementById('sambutan').remove();
             })();
         });
-        // if (!window.Echo) {
-        //     import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/window-pusher.js')) }}').then(
-        //         function () {
-        //             import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/echo-es.js')) }}').then(({ default: LE }) => {
-        //                 window.Echo = new LE({
-        //                     broadcaster: "pusher",
-        //                     key: "key",
-        //                     forceTLS: "https",
-        //                     enabledTransports: ["ws", "wss"]
-        //                 });
-        //                 console.log(Echo);
-        //             });
-        //         }
-        //     )
-        // } else {
-        //     (function () {
-        //         alert('Terjadi kesalahan dalam memuat soket pilihan. Modul pemrosesan soket pilihan tidak ditemukan. Harap hubungi Personalia Pusat.');
-        //     })();
-        // };
+        if (!window.Echo) {
+            import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/window-pusher.js')) }}').then(
+                function () {
+                    import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/echo-es.js')) }}').then(({ default: LE }) => {
+                        window.Echo = new LE({
+                            broadcaster: "{{ $app->config->get('broadcasting.default') }}",
+                            key: "{{ $app->config->get('broadcasting.connections.pusher.key') }}",
+                            cluster: "{{ $app->config->get('broadcasting.connections.pusher.cluster') }}",
+                            wsHost: 127.0.0.1, // Your domain
+                            encrypted: false,
+                            wssPort: 443, // Https port
+                            disableStats: true, // Change this to your liking this disables statistics
+                            forceTLS: true,
+                            enabledTransports: ['ws'],
+                            disabledTransports: ['sockjs', 'xhr_polling', 'xhr_streaming']
+                        });
+                        console.log(Echo);
+                    });
+                }
+            )
+        } else {
+            (function () {
+                alert('Terjadi kesalahan dalam memuat soket pilihan. Modul pemrosesan soket pilihan tidak ditemukan. Harap hubungi Personalia Pusat.');
+            })();
+        };
     </script>
 </body>
 

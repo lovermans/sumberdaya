@@ -190,9 +190,9 @@ return [
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
-        // App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
-        // App\Providers\EventServiceProvider::class,
+        App\Providers\AuthServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
+        App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
     ],
 
@@ -215,7 +215,7 @@ return [
 
     'publisher' => env('APP_PUBLISHER', 'https://laravel.com'),
 
-    'description' => env('APP_DESCRIPTION', 'Laravel'),
+    'description' => $_SERVER['SERVER_NAME'],
 
     'usaha' => env('APP_USAHA', 'Laravel'),
 
