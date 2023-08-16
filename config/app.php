@@ -215,7 +215,7 @@ return [
 
     'publisher' => env('APP_PUBLISHER', 'https://laravel.com'),
 
-    'description' => $_SERVER['SERVER_NAME'],
+    'description' => env('APP_DESCRIPTION', 'Laravel'),
 
     'usaha' => env('APP_USAHA', 'Laravel'),
 
