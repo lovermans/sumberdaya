@@ -204,7 +204,7 @@
                 document.getElementById('sambutan').remove();
             })();
         });
-        if (!window.Echo) {
+        /* if (!window.Echo) {
             import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/window-pusher.js')) }}').then(
                 function () {
                     import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/echo-es.js')) }}').then(({ default: LE }) => {
@@ -228,7 +228,7 @@
             (function () {
                 alert('Terjadi kesalahan dalam memuat soket pilihan. Modul pemrosesan soket pilihan tidak ditemukan. Harap hubungi Personalia Pusat.');
             })();
-        };
+        }; */
     </script>
 </body>
 

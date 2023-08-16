@@ -2,9 +2,9 @@
 
 @section('isi')
 <div id="mulai-aplikasi">
-    @php
+    {{-- @php
     dd($app);
-    @endphp
+    @endphp --}}
     @if (!$app->request->user())
     <div class="mini-aside">
         <form id="form-masuk" class="form-xhr kartu" method="POST" data-tn="true"
