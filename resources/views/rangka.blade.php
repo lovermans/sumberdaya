@@ -215,14 +215,14 @@
                             wsHost: window.location.hostname,
                             encrypted: true,
                             wsPort: 80,
-                            /* wssPort: 443, */
+                            wssPort: 443,
                             disableStats: true,
                             forceTLS: false,
-                            enabledTransports: ['ws'],
+                            enabledTransports: ['ws', 'wss'],
                             disabledTransports: ['sockjs', 'xhr_polling', 'xhr_streaming', 'wss']
                         });
                     }).then( () => {
-                        console.log(Echo.socketId());
+                        Echo.channel('umum').listen('Umum', (ff) => {console.log(ff.message)});
                     });
                 }
             )
