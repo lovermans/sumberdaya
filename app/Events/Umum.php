@@ -15,12 +15,14 @@ class Umum implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $message;
     /**
      * Create a new event instance.
      */
-    public function __construct()
-    {
-        //
+    public function __construct(
+        string $message
+    ) {
+        $this->message = $message;
     }
 
     /**
@@ -31,7 +33,12 @@ class Umum implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            new Channel('umum'),
         ];
+    }
+
+    public function broadcastWith(): array
+    {
+        return ['pesan' => $this->message];
     }
 }

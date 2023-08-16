@@ -36,3 +36,4 @@
 <link href="{{ $app->url->route('pwa-manifest') . '?' . 'aplikasivalet=' . $app->config->get('app.aplikasivalet') }}"
     crossorigin="use-credentials" rel="manifest">
 <script src="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/interaksi.js')) }}" defer></script>
+<script src="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/app.js')) }}"></script>

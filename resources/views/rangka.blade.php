@@ -204,23 +204,25 @@
                 document.getElementById('sambutan').remove();
             })();
         });
-        /* if (!window.Echo) {
+        if (!window.Echo) {
             import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/window-pusher.js')) }}').then(
                 function () {
                     import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/echo-es.js')) }}').then(({ default: LE }) => {
                         window.Echo = new LE({
                             broadcaster: "{{ $app->config->get('broadcasting.default') }}",
                             key: "{{ $app->config->get('broadcasting.connections.pusher.key') }}",
-                            cluster: "{{ $app->config->get('broadcasting.connections.pusher.cluster') }}",
-                            wsHost: 127.0.0.1, // Your domain
-                            encrypted: false,
-                            wssPort: 443, // Https port
-                            disableStats: true, // Change this to your liking this disables statistics
-                            forceTLS: true,
+                            cluster: "{{ $app->config->get('broadcasting.connections.pusher.options.cluster') }}",
+                            wsHost: window.location.hostname,
+                            encrypted: true,
+                            wsPort: 80,
+                            /* wssPort: 443, */
+                            disableStats: true,
+                            forceTLS: false,
                             enabledTransports: ['ws'],
-                            disabledTransports: ['sockjs', 'xhr_polling', 'xhr_streaming']
+                            disabledTransports: ['sockjs', 'xhr_polling', 'xhr_streaming', 'wss']
                         });
-                        console.log(Echo);
+                    }).then( () => {
+                        console.log(Echo.socketId());
                     });
                 }
             )
@@ -228,7 +230,7 @@
             (function () {
                 alert('Terjadi kesalahan dalam memuat soket pilihan. Modul pemrosesan soket pilihan tidak ditemukan. Harap hubungi Personalia Pusat.');
             })();
-        }; */
+        };
     </script>
 </body>
 

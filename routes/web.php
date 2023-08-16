@@ -11,6 +11,8 @@
 |
 */
 
+use App\Events\Umum;
+
 $route = app('router');
 
 $route->get('/', 'App\Http\Controllers\SumberDaya@mulai')->name('mulai');
@@ -24,6 +26,11 @@ $route->view('/offline', 'offline')->name('offline');
 $route->get('/unduh/{berkas?}', 'App\Http\Controllers\SumberDaya@unduh')->name('unduh');
 $route->get('/unduh-panduan/{berkas?}', 'App\Http\Controllers\SumberDaya@unduhPanduan')->where('berkas', '.*')->name('unduh.panduan')->middleware('signed');
 // $route->get('/format-foto', 'App\Http\Controllers\SumberDaya@formatFoto')->name('format-foto');
+$route->get('/fireEvent', function () {
+
+    Umum::dispatch('Hallo Web Socket');
+    return 'soketdikirim';
+})->name('fire.public.event');
 
 require __DIR__ . '/auth.php';
 
