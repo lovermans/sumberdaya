@@ -28,7 +28,7 @@ $route->get('/unduh-panduan/{berkas?}', 'App\Http\Controllers\SumberDaya@unduhPa
 // $route->get('/format-foto', 'App\Http\Controllers\SumberDaya@formatFoto')->name('format-foto');
 $route->get('/fireEvent', function () {
 
-    Umum::dispatch('Hallo Web Socket');
+    Umum::broadcast('hallow');
     return 'soketdikirim';
 })->name('fire.public.event');
 

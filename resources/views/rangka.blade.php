@@ -150,7 +150,7 @@
                 document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $app->url->route('mulai') }}'>Hubungkan Aplikasi</a>.</p>";
             };
 
-            (function () {
+            /* (function () {
                 if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
                     let updated = false;
                     let activated = false;
@@ -179,7 +179,7 @@
                         }
                     }
                 };
-            })();
+            })(); */
             
             (async() => {
                 while(!window.aplikasiSiap()) {
@@ -202,36 +202,46 @@
                 };
                 
                 document.getElementById('sambutan').remove();
+                /* if (!window.Echo) {
+                    import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/window-pusher.js')) }}').then(
+                        function () {
+                            import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/echo-es.js')) }}').then(({ default: LE }) => {
+                                window.Echo = new LE({
+                                    broadcaster: "{{ $app->config->get('broadcasting.default') }}",
+                                    appId: "{{ $app->config->get('broadcasting.connections.pusher.app_id') }}",
+                                    key: "{{ $app->config->get('broadcasting.connections.pusher.key') }}",
+                                    secret : "{{ $app->config->get('broadcasting.connections.pusher.secret') }}",
+                                    cluster: "{{ $app->config->get('broadcasting.connections.pusher.options.cluster') }}",
+                                    wsHost: window.location.hostname,
+                                    authEndpoint: "{{ $app->request->getBasePath() . '/broadcasting/auth' }}",
+                                    userAuthentication: {
+                                        endpoint: "{{ $app->request->getBasePath() . '/broadcasting/user-auth' }}",
+                                        headers: {},
+                                    },
+                                    csrfToken: "{{ $app->session->token() }}",
+                                    encrypted: false,
+                                    wsPort: 80,
+                                    disableStats: true,
+                                    forceTLS: false,
+                                    enabledTransports: ['ws', 'wss'],
+                                    disabledTransports: ['sockjs', 'xhr_polling', 'xhr_streaming']
+                                });
+                                Echo.channel('umum').listen('Umum', (ff) => {console.log(ff.message)});
+                            });
+                        }
+                    )
+                } else {
+                    (function () {
+                        alert('Terjadi kesalahan dalam memuat soket pilihan. Modul pemrosesan soket pilihan tidak ditemukan. Harap hubungi Personalia Pusat.');
+                    })();
+                }; */
             })();
         });
-        if (!window.Echo) {
-            import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/window-pusher.js')) }}').then(
-                function () {
-                    import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/echo-es.js')) }}').then(({ default: LE }) => {
-                        window.Echo = new LE({
-                            broadcaster: "{{ $app->config->get('broadcasting.default') }}",
-                            key: "{{ $app->config->get('broadcasting.connections.pusher.key') }}",
-                            cluster: "{{ $app->config->get('broadcasting.connections.pusher.options.cluster') }}",
-                            wsHost: window.location.hostname,
-                            encrypted: true,
-                            wsPort: 80,
-                            wssPort: 443,
-                            disableStats: true,
-                            forceTLS: false,
-                            enabledTransports: ['ws', 'wss'],
-                            disabledTransports: ['sockjs', 'xhr_polling', 'xhr_streaming', 'wss']
-                        });
-                    }).then( () => {
-                        Echo.channel('umum').listen('Umum', (ff) => {console.log(ff.message)});
-                    });
-                }
-            )
-        } else {
-            (function () {
-                alert('Terjadi kesalahan dalam memuat soket pilihan. Modul pemrosesan soket pilihan tidak ditemukan. Harap hubungi Personalia Pusat.');
-            })();
-        };
     </script>
+    {{-- <script src="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/app.js')) }}"></script>
+    <script>
+        Echo.channel('umum').listen('Umum', (ff) => {console.log(ff.message)});
+    </script> --}}
 </body>
 
 </html>

@@ -2,14 +2,13 @@
 
 namespace App\Events;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 
 class Umum implements ShouldBroadcastNow
 {
@@ -25,20 +24,28 @@ class Umum implements ShouldBroadcastNow
         $this->message = $message;
     }
 
+    // public function broadcastAs(): string
+    // {
+    //     return 'Umum';
+    // }
+
+    // public function broadcasQueues(): string
+    // {
+    //     return 'broadcastable';
+    // }
+
     /**
      * Get the channels the event should broadcast on.
      *
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn(): array
+    public function broadcastOn()
     {
-        return [
-            new Channel('umum'),
-        ];
+        return new Channel('umum');
     }
 
     public function broadcastWith(): array
     {
-        return ['pesan' => $this->message];
+        return ['message' => $this->message];
     }
 }
