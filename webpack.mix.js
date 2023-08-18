@@ -13,7 +13,7 @@ const mix = require('laravel-mix');
 
 mix.disableNotifications();
 // mix.setPublicPath('');
-mix.js('resources/js/app.js', 'public/app.js').version();
+// mix.js('resources/js/app.js', 'public/app.js').version();
 mix.scripts('resources/js/echo-es.js', 'public/echo-es.js').version();
 mix.scripts('resources/js/window-pusher.js', 'public/window-pusher.js').version();
 mix.scripts('resources/js/interaksi.js', 'public/interaksi.js').version();
