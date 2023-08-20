@@ -687,7 +687,7 @@ aside .aktif {
 .pesan,
 .periksa,
 .kartu,
-#pemberitahuan-soket {
+#pemberitahuan-soket:not(:empty) {
     margin: 0 0 1em;
 }
 

@@ -204,14 +204,12 @@
                 
                 document.getElementById('sambutan').remove();
                 
-                im/* port('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/window-pusher.js')) }}').then(
+                /* import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/window-pusher.js')) }}').then(
                     function () {
                         import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/echo-es.js')) }}').then(({ default: LE }) => {
                             window.Echo = new LE({
                                 broadcaster: "{{ $app->config->get('broadcasting.default') }}",
-                                
                                 key: "{{ $app->config->get('broadcasting.connections.pusher.key') }}",
-                                
                                 cluster: "{{ $app->config->get('broadcasting.connections.pusher.options.cluster') }}",
                                 wsHost: window.location.hostname,
                                 authEndpoint: "{{ $app->url->to('/broadcasting/auth') }}",
