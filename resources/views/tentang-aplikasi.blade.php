@@ -43,12 +43,6 @@
             <li>Paket Tambahan :
                 <ul>
                     <li>
-                        Valet Windows :
-                        <a href="https://github.com/cretueusebiu/valet-windows" target="_blank"
-                            rel="noopener noreferrer">cretueusebiu/valet-windows</a>.
-                    </li>
-
-                    <li>
                         Laravel Breeze :
                         <a href="https://github.com/laravel/breeze" target="_blank"
                             rel="noopener noreferrer">laravel/breeze</a>.
@@ -65,13 +59,21 @@
                         <a href="https://github.com/PHPOffice/PHPWord" target="_blank"
                             rel="noopener noreferrer">PHPOffice/PHPWord</a>.
                     </li>
+
                     <li>
                         PHP QRCode :
-                        <a href="http://phpqrcode.sourceforge.net/" target="_blank" rel="noopener noreferrer">PHP QRCode
-                            Sourceforge</a>.
+                        <a href="https://github.com/aferrandini/PHPQRCode" target="_blank"
+                            rel="noopener noreferrer">aferrandini/PHPQRCode</a>.
+                    </li>
+
+                    <li>
+                        Pusher Websocket SDK-PHP :
+                        <a href="https://github.com/pusher/pusher-http-php" target="_blank"
+                            rel="noopener noreferrer">pusher/pusher-http-php</a>.
                     </li>
                 </ul>
             </li>
+
             <li>Aset Paket Antarmuka Pengguna :
                 <ul>
                     <li>
@@ -79,7 +81,30 @@
                         <a href="https://github.com/brianvoe/slim-select" target="_blank"
                             rel="noopener noreferrer">brianvoe/slim-select</a>.
                     </li>
+
+                    <li>
+                        Laravel Echo JS :
+                        <a href="https://github.com/laravel/echo" target="_blank"
+                            rel="noopener noreferrer">laravel/echo</a>.
+                    </li>
+
+                    <li>
+                        Pusher JS :
+                        <a href="https://github.com/pusher/pusher-js" target="_blank"
+                            rel="noopener noreferrer">pusher/pusher-js</a>.
+                    </li>
                 </ul>
+            </li>
+
+            <li>
+                Server <i>Websocket</i> Lokal :
+                <a href="https://github.com/soketi/soketi" target="_blank" rel="noopener noreferrer">soketi/soketi</a>.
+            </li>
+
+            <li>
+                <i>DevOps</i> Lokal :
+                <a href="https://github.com/leokhoa/laragon" target="_blank"
+                    rel="noopener noreferrer">leokhoa/laragon</a>.
             </li>
         </ul>
 

@@ -151,7 +151,7 @@
                 document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $app->url->route('mulai') }}'>Hubungkan Aplikasi</a>.</p>";
             };
 
-            /* (function () {
+            (function () {
                 if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
                     let updated = false;
                     let activated = false;
@@ -180,7 +180,7 @@
                         }
                     }
                 };
-            })(); */
+            })();
             
             (async() => {
                 while(!window.aplikasiSiap()) {
@@ -209,14 +209,12 @@
                         import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/echo-es.js')) }}').then(({ default: LE }) => {
                             window.Echo = new LE({
                                 broadcaster: "{{ $app->config->get('broadcasting.default') }}",
-                                
                                 key: "{{ $app->config->get('broadcasting.connections.pusher.key') }}",
-                                
                                 cluster: "{{ $app->config->get('broadcasting.connections.pusher.options.cluster') }}",
                                 wsHost: window.location.hostname,
-                                authEndpoint: "{{ $app->url->to('/broadcasting/auth') }}",
+                                authEndpoint: "{{ $app->request->getBasePath() . '/broadcasting/auth' }}",
                                 userAuthentication: {
-                                    endpoint: "{{ $app->url->to('/broadcasting/user-auth') }}",
+                                    endpoint: "{{ $app->request->getBasePath() . '/broadcasting/user-auth' }}",
                                     headers: {},
                                 },
                                 csrfToken: "{{ $app->session->token() }}",
@@ -231,10 +229,13 @@
                             Echo.connector.pusher.connection.bind('connected', function () {
                                 soket = Echo.socketId();
                             });
+
                             Echo.channel('umum').listen('Umum', function (e) {
-                                var kontenSoket = document.getElementById('pemberitahuan-soket');
-                                var pesanSoket = '<div class="pesan-soket"><p>' + e.message + '</p><button class="tutup-i"><svg viewBox="0 0 24 24"><use href="#ikontutup"></use></svg></button></div>';
-                                kontenSoket.prepend(range.createContextualFragment(pesanSoket)); 
+                                var wadahSoketUmum = document.getElementById('pemberitahuan-soket');
+                                var idWaktuUmum = new Date().toISOString();
+                                var idPesanUmum = idWaktuUmum.replace('T', '_').replaceAll(':', '-').replace(/\..*/, '');
+                                var pesanSoketUmum = '<div class="pesan-soket"><p>' + e.message + '</p><button class="tutup-i" id="Umum_' + idPesanUmum + '"><svg viewBox="0 0 24 24"><use href="#ikontutup"></use></svg></button></div>';
+                                wadahSoketUmum.prepend(range.createContextualFragment(pesanSoketUmum)); 
                             });
                         });
                     }
