@@ -278,7 +278,9 @@ window.lemparXHR = function (data) {
     if (mintajs) {
         xhr.setRequestHeader('X-Minta-Javascript', true);
     }
-    xhr.setRequestHeader('X-Socket-ID', soket);
+    if (soket) {
+        xhr.setRequestHeader('X-Socket-ID', soket);
+    }
     if (metode == 'POST') {
         xhr.send(postdata);
     }
