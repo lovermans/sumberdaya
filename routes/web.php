@@ -27,8 +27,10 @@ $route->get('/unduh/{berkas?}', 'App\Http\Controllers\SumberDaya@unduh')->name('
 $route->get('/unduh-panduan/{berkas?}', 'App\Http\Controllers\SumberDaya@unduhPanduan')->where('berkas', '.*')->name('unduh.panduan')->middleware('signed');
 // $route->get('/format-foto', 'App\Http\Controllers\SumberDaya@formatFoto')->name('format-foto');
 $route->get('/fireEvent', function () {
-
-    Umum::broadcast('hallow');
+    try {
+        Umum::broadcast('hallow')->toOthers();
+    } catch (Throwable $e) {
+    }
     return 'soketdikirim';
 })->name('fire.public.event');
 

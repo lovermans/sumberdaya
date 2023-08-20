@@ -172,7 +172,8 @@ nav h2 {
 button,
 .pesan p,
 .periksa :is(summary,
-    li) {
+    li),
+#pemberitahuan-soket * {
     color: var(--hitam);
 }
 
@@ -678,32 +679,34 @@ aside .aktif {
     z-index: 100;
 }
 
+#pemberitahuan details[open] summary {
+    padding: 1em 0 0
+}
+
 .spanduk,
 .pesan,
 .periksa,
-.kartu {
+.kartu,
+#pemberitahuan-soket {
     margin: 0 0 1em;
 }
 
 .spanduk,
 .pesan,
-.periksa
-
-/* form.kartu,
-.kartu.form  */
-    {
-    display: grid;
+.periksa,
+#pemberitahuan-soket {
+    padding: 0 1em;
 }
 
 .spanduk,
 .pesan,
-.periksa {
-    padding: 0 1em;
-
+.periksa,
+.pesan-soket,
+.judul-form {
+    display: grid;
     grid-template-columns: 1fr min-content;
     align-items: center;
     column-gap: 1em;
-
 }
 
 .spanduk {
@@ -726,8 +729,13 @@ aside .aktif {
     background: var(--taut-fokus);
 }
 
-.spanduk a,
-.pesan .tutup {
+#pemberitahuan-soket {
+    max-height: 50vh;
+    overflow: auto;
+    background: var(--oranye);
+}
+
+.spanduk a {
     justify-self: end;
     white-space: nowrap;
 }
@@ -737,7 +745,8 @@ aside .aktif {
 }
 
 .pesan,
-.periksa {
+.periksa,
+#pemberitahuan-soket {
     border-radius: .25em;
     box-shadow: var(--tk-6);
 }
@@ -804,14 +813,9 @@ form.kartu,
     flex-wrap: wrap;
 }
 
-:is(form.kartu,
-    .kartu.form) .tutup-i {
-    float: right;
-}
-
 h4.form {
-    display: inline;
-    vertical-align: middle;
+    text-align: left;
+    margin: 0;
 }
 
 button.cari-cepat {

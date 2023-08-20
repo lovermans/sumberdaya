@@ -6,23 +6,25 @@
         data-tujuan="#unggah_profil_sdm" action="{{ $app->url->route('sdm.unggah') }}">
         <input type="hidden" name="_token" value="{{ $app->request->session()->token() }}">
 
-        <div class="isian gspan-4">
-            <a class="tutup-i"><svg viewbox="0 0 24 24">
-                    <use href="#ikontutup"></use>
-                </svg></a>
-
+        <div class="judul-form gspan-4">
             <h4 class="form">Unggah Data Profil SDM</h4>
 
-            <p>
-                Unduh
-                <a class="isi-xhr" href="{{ $app->url->route('sdm.contoh-unggah') }}" data-rekam="false"
-                    data-tujuan="#unggah_profil_sdm" data-laju="true">
-                    contoh
-                </a>
-                excel, isi sesuai petunjuk dalam excel
-                lalu unggah kembali.
-            </p>
+            <a class="tutup-i">
+                <svg viewbox="0 0 24 24">
+                    <use href="#ikontutup"></use>
+                </svg>
+            </a>
         </div>
+
+        <p>
+            Unduh
+            <a class="isi-xhr" href="{{ $app->url->route('sdm.contoh-unggah') }}" data-rekam="false"
+                data-tujuan="#unggah_profil_sdm" data-laju="true">
+                contoh
+            </a>
+            excel, isi sesuai petunjuk dalam excel
+            lalu unggah kembali.
+        </p>
 
         <div class="isian">
             <label for="unggah_profil_sdmBerkas">Berkas</label>

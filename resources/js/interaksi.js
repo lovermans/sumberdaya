@@ -3,6 +3,7 @@ window.aplikasiSiap = function () {
 };
 
 var range = document.createRange(),
+    soket = null,
     judulHal = document.title;
 
 document.addEventListener('click', function (e) {
@@ -79,7 +80,7 @@ document.addEventListener('click', function (e) {
     }
     if (e.target.closest('button.tutup-i')) {
         e.stopImmediatePropagation();
-        return e.target.closest('button.tutup-i').parentNode.remove();
+        return e.target.closest('button.tutup-i').parentElement.remove();
     }
     if (e.target.closest('a.tutup-i')) {
         e.stopImmediatePropagation();
@@ -277,6 +278,7 @@ window.lemparXHR = function (data) {
     if (mintajs) {
         xhr.setRequestHeader('X-Minta-Javascript', true);
     }
+    xhr.setRequestHeader('X-Socket-ID', soket);
     if (metode == 'POST') {
         xhr.send(postdata);
     }

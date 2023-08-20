@@ -4,11 +4,14 @@
 <div id="posisi_sdm_lihat" class="scroll-margin">
     <div class="kartu form">
         @isset($pos)
-        <div class="gspan-4">
-            <a class="tutup-i"><svg viewbox="0 0 24 24">
-                    <use href="#ikontutup"></use>
-                </svg></a>
+        <div class="judul-form gspan-4">
             <h4 class="form">Data Pengaturan Jabatan</h4>
+
+            <a class="tutup-i">
+                <svg viewbox="0 0 24 24">
+                    <use href="#ikontutup"></use>
+                </svg>
+            </a>
         </div>
 
         <div class="isian ">

@@ -123,7 +123,8 @@
         };
         function muatSlimSelect (data) {
             if (!window.SlimSelect) {
-                import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/slimselect-es.js')) }}').then(({ default: SS }) => {
+                import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/slimselect-es.js')) }}')
+                .then(({ default: SS }) => {
                     window.SlimSelect = SS;
                     new SlimSelect(data);
                 });
@@ -150,7 +151,7 @@
                 document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $app->url->route('mulai') }}'>Hubungkan Aplikasi</a>.</p>";
             };
 
-            (function () {
+            /* (function () {
                 if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
                     let updated = false;
                     let activated = false;
@@ -179,7 +180,7 @@
                         }
                     }
                 };
-            })();
+            })(); */
             
             (async() => {
                 while(!window.aplikasiSiap()) {
@@ -203,19 +204,19 @@
                 
                 document.getElementById('sambutan').remove();
                 
-                /* import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/window-pusher.js')) }}').then(
+                im/* port('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/window-pusher.js')) }}').then(
                     function () {
                         import('{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/echo-es.js')) }}').then(({ default: LE }) => {
                             window.Echo = new LE({
                                 broadcaster: "{{ $app->config->get('broadcasting.default') }}",
-                                appId: "{{ $app->config->get('broadcasting.connections.pusher.app_id') }}",
+                                
                                 key: "{{ $app->config->get('broadcasting.connections.pusher.key') }}",
-                                secret : "{{ $app->config->get('broadcasting.connections.pusher.secret') }}",
+                                
                                 cluster: "{{ $app->config->get('broadcasting.connections.pusher.options.cluster') }}",
                                 wsHost: window.location.hostname,
-                                authEndpoint: "{{ url('broadcasting/auth') }}",
+                                authEndpoint: "{{ $app->url->to('/broadcasting/auth') }}",
                                 userAuthentication: {
-                                    endpoint: "{{ url('broadcasting/user-auth') }}",
+                                    endpoint: "{{ $app->url->to('/broadcasting/user-auth') }}",
                                     headers: {},
                                 },
                                 csrfToken: "{{ $app->session->token() }}",
@@ -226,7 +227,15 @@
                                 enabledTransports: ['ws', 'wss'],
                                 disabledTransports: ['sockjs', 'xhr_polling', 'xhr_streaming']
                             });
-                            Echo.channel('umum').listen('Umum', (ff) => {console.log(ff.message)});
+                            
+                            Echo.connector.pusher.connection.bind('connected', function () {
+                                soket = Echo.socketId();
+                            });
+                            Echo.channel('umum').listen('Umum', function (e) {
+                                var kontenSoket = document.getElementById('pemberitahuan-soket');
+                                var pesanSoket = '<div class="pesan-soket"><p>' + e.message + '</p><button class="tutup-i"><svg viewBox="0 0 24 24"><use href="#ikontutup"></use></svg></button></div>';
+                                kontenSoket.prepend(range.createContextualFragment(pesanSoket)); 
+                            });
                         });
                     }
                 ); */

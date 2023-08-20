@@ -18,25 +18,21 @@
  * allows your team to easily build robust real-time web applications.
  */
 
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
+// import Echo from 'laravel-echo';
+// import Pusher from 'pusher-js';
 
-window.Pusher = Pusher;
+// window.Pusher = Pusher;
 
-window.Echo = new Echo({
-    broadcaster: "pusher",
-    key: "app-key",
-    cluster: "mt1",
-    wsHost: window.location.hostname,
-    encrypted: true,
-    wsPort: 80,
-    /* wssPort: 443, */
-    disableStats: true,
-    forceTLS: false,
-    enabledTransports: ['ws'],
-    disabledTransports: ['sockjs', 'xhr_polling', 'xhr_streaming', 'wss']
-});
-
-// import SlimSelect from './slimselect';
-// window.SlimSelect = SlimSelect;
-// import './interaksi';
+// window.Echo = new Echo({
+//     broadcaster: "pusher",
+//     key: "app-key",
+//     cluster: "mt1",
+//     wsHost: window.location.hostname,
+//     encrypted: true,
+//     wsPort: 80,
+//     /* wssPort: 443, */
+//     disableStats: true,
+//     forceTLS: false,
+//     enabledTransports: ['ws'],
+//     disabledTransports: ['sockjs', 'xhr_polling', 'xhr_streaming', 'wss']
+// });

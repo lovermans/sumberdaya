@@ -7,7 +7,7 @@
     <p>
         <small>
             {{ $exception->getMessage() ? $exception->getMessage() . ' Coba periksa permintaan.' : 'Coba periksa
-            permintaan.' }}
+            permintaan atau tautan yang dituju.' }}
         </small>
     </p>
     <a class="utama" href="{{ $app->url->route('mulai') }}">OKE</a>

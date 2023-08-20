@@ -5,16 +5,16 @@
     <form id="form_sdm_pelanggaran_tambahUbah" class="form-xhr kartu" method="POST" action="{{ $app->url->current() }}">
         <input type="hidden" name="_token" value="{{ $app->request->session()->token() }}">
 
-        <div class="gspan-4">
+        <div class="judul-form gspan-4">
+            <h4 class="form">{{$app->request->routeIs('sdm.pelanggaran.tambah') ? 'Tambah' : 'Ubah'}} Data Pelanggaran
+                SDM
+            </h4>
+
             <a class="tutup-i">
                 <svg viewbox="0 0 24 24">
                     <use href="#ikontutup"></use>
                 </svg>
             </a>
-
-            <h4 class="form">{{$app->request->routeIs('sdm.pelanggaran.tambah') ? 'Tambah' : 'Ubah'}} Data Pelanggaran
-                SDM
-            </h4>
         </div>
 
         <div class="isian panjang">
