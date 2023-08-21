@@ -151,37 +151,6 @@
             if (location.href == "{{ $app->url->route('tentang-aplikasi') }}") {
                 cariElemen("nav a[href='{{ $app->url->route('tentang-aplikasi') }}']").then((el) => {el.classList.add("aktif");});
             };
-
-            (function () {
-                if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
-                    let updated = false;
-                    let activated = false;
-                    navigator.serviceWorker.register('{{ $app->request->getBasePath() . '/service-worker.js' }}')
-                        .then(registration => {
-                            registration.addEventListener("updatefound", () => {
-                                const worker = registration.installing;
-                                worker.addEventListener('statechange', () => {
-                                    console.log({ state: worker.state });
-                                    if (worker.state === "activated") {
-                                        activated = true;
-                                        checkUpdate();
-                                    }
-                                });
-                            });
-                        });
-
-                    navigator.serviceWorker.addEventListener('controllerchange', () => {
-                        updated = true;
-                        checkUpdate();
-                    });
-
-                    function checkUpdate() {
-                        if (activated && updated) {
-                            window.location.reload();
-                        }
-                    }
-                };
-            })();
             
             (async() => {
                 while(!window.aplikasiSiap) {
@@ -241,13 +210,40 @@
                         });
                     }
                 );
+
+                (function () {
+                    if ('serviceWorker' in navigator && window.location.protocol === 'https:' && window.self == window.top && navigator.onLine) {
+                        let updated = false;
+                        let activated = false;
+                        navigator.serviceWorker.register('{{ $app->request->getBasePath() . '/service-worker.js' }}')
+                            .then(registration => {
+                                registration.addEventListener("updatefound", () => {
+                                    const worker = registration.installing;
+                                    worker.addEventListener('statechange', () => {
+                                        console.log({ state: worker.state });
+                                        if (worker.state === "activated") {
+                                            activated = true;
+                                            checkUpdate();
+                                        }
+                                    });
+                                });
+                            });
+
+                        navigator.serviceWorker.addEventListener('controllerchange', () => {
+                            updated = true;
+                            checkUpdate();
+                        });
+
+                        function checkUpdate() {
+                            if (activated && updated) {
+                                window.location.reload();
+                            }
+                        }
+                    };
+                })();
             })();
         });
     </script>
-    {{-- <script src="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/app.js')) }}"></script>
-    <script>
-        Echo.channel('umum').listen('Umum', (ff) => {console.log(ff.message)});
-    </script> --}}
 </body>
 
 </html>
