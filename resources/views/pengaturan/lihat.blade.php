@@ -4,14 +4,14 @@
 <div id="atur_lihat" class="scroll-margin">
     <div class="kartu form">
         @isset($atur)
-        <div class="gspan-4">
+        <div class="judul-form gspan-4">
+            <h4 class="form">Data Pengaturan Umum</h4>
+
             <a class="tutup-i">
                 <svg viewbox="0 0 24 24">
                     <use href="#ikontutup"></use>
                 </svg>
             </a>
-
-            <h4 class="form">{{$app->request->routeIs('atur.tambah') ? 'Tambah' : 'Ubah'}} Data Pengaturan Umum</h4>
         </div>
 
         <div class="isian">
