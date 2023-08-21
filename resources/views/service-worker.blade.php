@@ -4,8 +4,6 @@ var CURRENT_CACHES = {
 };
 var offline = [
     "{{ $app->request->getBasePath() . '/' }}",
-    "tentang-aplikasi",
-    "perlu-javascript",
     "offline",
     "{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/tampilan.css')) }}",
     "{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/interaksi.js')) }}",
@@ -13,7 +11,6 @@ var offline = [
     "{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/siapkan-foto-es.js')) }}",
     "{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/echo-es.js')) }}",
     "{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/window-pusher.js')) }}",
-    "pwa-manifest.json",
     "{{ $app->url->asset('/favicon.ico') }}",
     "{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/ikon.svg')) }}",
     "{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/Logo Perusahaan.webp')) }}",
