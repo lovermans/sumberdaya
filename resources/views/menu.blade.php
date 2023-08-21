@@ -26,16 +26,14 @@ loading="lazy">
 @fragment('menu-avatar')
 @if($app->request->user())
 <div class="menu-akun">
-    <a @class(['menu-xhr', 'aktif'=> $app->request->routeIs('sdm.akun')]) href="{{ $app->url->route('sdm.akun',
-        ['uuid' => $app->request->user()->sdm_uuid]) }}">
+    <a class="menu-xhr" href="{{ $app->url->route('sdm.akun', ['uuid' => $app->request->user()->sdm_uuid]) }}">
         <svg viewBox="0 0 24 24">
             <use href="#ikonakun"></use>
         </svg>
         Profil
     </a>
 
-    <a @class(['menu-xhr', 'aktif'=> $app->request->routeIs('sdm.ubah-sandi')]) href="{{
-        $app->url->route('sdm.ubah-sandi') }}">
+    <a class="menu-xhr" href="{{ $app->url->route('sdm.ubah-sandi') }}">
         <svg viewBox="0 0 24 24">
             <use href="#ikonkunci"></use>
         </svg>
@@ -58,10 +56,15 @@ loading="lazy">
         </a>
     </form>
 </div>
+
 <script>
-    if ("{{ $app->url->route('sdm.akun', ['uuid' => $app->request->user()->sdm_uuid]) }}" == location.href) cariElemen(".menu-akun a[href='{{ $app->url->route('sdm.akun',
-        ['uuid' => $app->request->user()->sdm_uuid]) }}']").then((el) => {el.classList.add("aktif");});
-    if ("{{$app->url->route('sdm.ubah-sandi') }}" == location.href) cariElemen(".menu-akun a[href='{{ $app->url->route('sdm.ubah-sandi') }}']").then((el) => {el.classList.add("aktif");});
+    if (location.href.includes("{{ $app->url->route('sdm.akun', ['uuid' => $app->request->user()->sdm_uuid]) }}"))
+    cariElemen(".menu-akun a[href='{{ $app->url->route('sdm.akun', ['uuid' => $app->request->user()->sdm_uuid]) }}']")
+    .then((el) => {el.classList.add("aktif");});
+
+    if (location.href.includes("{{$app->url->route('sdm.ubah-sandi') }}"))
+    cariElemen(".menu-akun a[href='{{ $app->url->route('sdm.ubah-sandi') }}']")
+    .then((el) => {el.classList.add("aktif");});
 </script>
 @endif
 @endfragment
@@ -70,16 +73,14 @@ loading="lazy">
 @fragment('menu-aplikasi')
 @if($app->request->user())
 <div class="menu-akun">
-    <a @class(['menu-xhr', 'aktif'=> $app->request->routeIs('mulai')]) href="{{ $app->url->route('mulai')
-        }}">
+    <a class="menu-xhr" href="{{ $app->url->route('mulai') }}">
         <svg viewBox="0 0 24 24">
             <use href="#ikonrumah"></use>
         </svg>
         Beranda
     </a>
 
-    <a @class(['menu-xhr', 'aktif'=> $app->request->routeIs('sdm.*', 'register')]) href="{{
-        $app->url->route('sdm.mulai') }}">
+    <a class="menu-xhr" href="{{ $app->url->route('sdm.mulai') }}">
         <svg viewBox="0 0 24 24">
             <use href="#ikonpersonil"></use>
         </svg>
@@ -87,8 +88,7 @@ loading="lazy">
     </a>
 
     @if(str()->contains($app->request->user()?->sdm_hak_akses, 'PENGURUS'))
-    <a @class(['menu-xhr', 'aktif'=> $app->request->routeIs('atur.*')]) href="{{ $app->url->route('atur.data')
-        }}">
+    <a class="menu-xhr" href="{{ $app->url->route('atur.data') }}">
         <svg viewBox="0 0 24 24">
             <use href="#ikonpengaturan"></use>
         </svg>
@@ -96,9 +96,15 @@ loading="lazy">
     </a>
     @endif
 </div>
+
 <script>
-    if ("{{$app->url->route('sdm.mulai') }}" == location.href) cariElemen(".menu-akun a[href='{{ $app->url->route('sdm.mulai') }}']").then((el) => {el.classList.add("aktif");});
-    if ("{{ $app->url->route('atur.data') }}" == location.href) cariElemen(".menu-akun a[href='{{ $app->url->route('atur.data') }}']").then((el) => {el.classList.add("aktif");});
+    if (location.href.includes("{{$app->url->route('sdm.mulai') }}"))
+    cariElemen(".menu-akun a[href='{{ $app->url->route('sdm.mulai') }}']")
+    .then((el) => {el.classList.add("aktif");});
+    
+    if (location.href.includes("{{ $app->url->route('atur.data') }}"))
+    cariElemen(".menu-akun a[href='{{ $app->url->route('atur.data') }}']")
+    .then((el) => {el.classList.add("aktif");});
 </script>
 @endif
 @endfragment

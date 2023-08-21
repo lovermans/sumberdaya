@@ -1,6 +1,4 @@
-window.aplikasiSiap = function () {
-    return true;
-};
+window.aplikasiSiap = true;
 
 var range = document.createRange(),
     soket = null,

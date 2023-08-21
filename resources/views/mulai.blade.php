@@ -176,11 +176,5 @@
 
     @include('pemberitahuan')
     @include('komponen')
-
-    @if($app->request->user() && $app->request->pjax())
-    <script>
-        cariElemen("#menu-aplikasi a[href='{{ $app->url->route('mulai') }}']").then((el) => {el.classList.add("aktif");});
-    </script>
-    @endif
 </div>
 @endsection
