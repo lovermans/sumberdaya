@@ -438,6 +438,37 @@ class SDMValidasi
         );
     }
 
+    public static function dasarValidasiLapPelanggaranSDM()
+    {
+        return [
+            '*.langgar_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+            '*.langgar_pelapor' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+            '*.langgar_tanggal' => ['required', 'date'],
+            '*.langgar_status' => ['required', 'in:DIPROSES,DIBATALKAN'],
+            '*.langgar_isi' => ['required', 'string'],
+            '*.langgar_keterangan' => ['sometimes', 'nullable', 'string'],
+        ];
+    }
+
+    public static function pesanKesalahanValidasiLapPelanggaranSDM()
+    {
+        return [
+            '*.tgl_langgar_mulai.*' => 'Tanggal Mulai Laporan urutan ke-:position wajib berupa tanggal valid.',
+            '*.tgl_langgar_sampai.*' => 'Tanggal Akhir Laporan urutan ke-:position wajib berupa tanggal valid dan lebih lama dari Tanggal Mulai Laporan.',
+            '*.langgar_status.*' => 'Status Laporan urutan ke-:position tidak sesuai daftar.',
+            '*.langgar_penempatan.*' => 'Lokasi urutan ke-:position wajib berupa karakter.',
+            '*.status_sdm.*' => 'Status urutan ke-:position wajib berupa karakter.',
+            '*.langgar_proses.*' => 'Proses Laporan urutan ke-:position tidak sesuai daftar.',
+            '*.langgar_no_absen.*' => 'No Absen Terlapor urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.langgar_lap_no.*' => 'No Laporan urutan ke-:position maksimal 20 karakter atau sudah pernah dipakai sebelumnya.',
+            '*.langgar_pelapor.*' => 'No Absen Pelapor maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.langgar_tanggal.*' => 'Tanggal Laporan tidak valid.',
+            '*.langgar_isi.*' => 'Isi Laporan wajib berupa karakter.',
+            '*.langgar_keterangan.*' => 'Keterangan wajib berupa karakter.',
+            '*.langgar_id_pembuat.*' => 'ID Pembuat maksimal 10 karakter dan terdaftar di data SDM.',
+        ];
+    }
+
     public static function validasiPencarianLapPelanggaranSDM($permintaan)
     {
         extract(Rangka::obyekPermintaanRangka());
@@ -455,13 +486,49 @@ class SDMValidasi
             ],
             [
                 ...static::pesanKesalahanValidasiPencarianSDM(),
-                '*.tgl_langgar_mulai.*' => 'Tanggal Mulai Laporan urutan ke-:position wajib berupa tanggal valid.',
-                '*.tgl_langgar_sampai.*' => 'Tanggal Akhir Laporan urutan ke-:position wajib berupa tanggal valid dan lebih lama dari Tanggal Mulai Laporan.',
-                '*.langgar_status.*' => 'Status Laporan urutan ke-:position tidak sesuai daftar.',
-                '*.langgar_penempatan.*' => 'Lokasi urutan ke-:position wajib berupa karakter.',
-                '*.status_sdm.*' => 'Status urutan ke-:position wajib berupa karakter.',
-                '*.langgar_proses.*' => 'Proses Laporan urutan ke-:position tidak sesuai daftar.',
+                ...static::pesanKesalahanValidasiLapPelanggaranSDM()
             ]
+        );
+    }
+
+    public static function validasiTambahDataLapPelanggaranSDM($permintaan)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            [
+                ...static::dasarValidasiLapPelanggaranSDM(),
+                '*.langgar_lap_no' => ['required', 'string', 'max:20', 'unique:pelanggaransdms,langgar_lap_no'],
+                '*.langgar_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+            ],
+            static::pesanKesalahanValidasiLapPelanggaranSDM()
+        );
+    }
+
+    public static function validasiBerkasLapPelanggaranSDM($permintaan)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            [
+                'berkas_laporan' => ['sometimes', 'file', 'mimetypes:application/pdf'],
+            ],
+            [
+                'berkas_laporan' => 'Berkas laporan yang diunggah wajib berupa file PDF.',
+            ]
+        );
+    }
+
+    public static function validasiUbahDataLapPelanggaranSDM($permintaan, $aturan)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            $aturan,
+            static::pesanKesalahanValidasiLapPelanggaranSDM()
         );
     }
 }

@@ -32,13 +32,14 @@
 
                     Echo.connector.pusher.connection.bind('connected', function () {
                         soket = Echo.socketId();
+                        console.log(soket);
                     });
 
                     Echo.channel('umum').listen('Umum', function (e) {
                         var wadahSoketUmum = document.getElementById('pemberitahuan-soket');
                         var idWaktuUmum = new Date().toISOString();
                         var idPesanUmum = idWaktuUmum.replace('T', '_').replaceAll(':', '-').replace(/\..*/, '');
-                        var pesanSoketUmum = '<div class="pesan-soket"><p>' + e.message + '</p><button class="tutup-i" id="Umum_' + idPesanUmum + '"><svg viewBox="0 0 24 24"><use href="#ikontutup"></use></svg></button></div>';
+                        var pesanSoketUmum = '<div class="pesan-soket"><p><b>' + e.message + '</b></p><button class="tutup-i" id="Umum_' + idPesanUmum + '"><svg viewBox="0 0 24 24"><use href="#ikontutup"></use></svg></button></div>';
                         wadahSoketUmum.prepend(range.createContextualFragment(pesanSoketUmum));
                     });
                 });

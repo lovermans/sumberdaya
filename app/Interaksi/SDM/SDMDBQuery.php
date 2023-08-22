@@ -127,6 +127,20 @@ class SDMDBQuery
         $app->db->table('tambahsdms')->where('tambahsdm_uuid', $uuid)->update($data);
     }
 
+    public static function tambahhDataLapPelanggaranSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('pelanggaransdms')->insert($data);
+    }
+
+    public static function ubahDataLapPelanggaranSDM($data, $uuid)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('pelanggaransdms')->where('langgar_uuid', $uuid)->update($data);
+    }
+
     public static function hapusDataPermintaanTambahSDM($uuid)
     {
         extract(Rangka::obyekPermintaanRangka());

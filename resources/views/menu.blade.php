@@ -98,7 +98,7 @@ loading="lazy">
 </div>
 
 <script>
-    if (location.href.includes("{{$app->url->route('mulai') }}"))
+    if (location.href.includes("{{$app->url->route('mulai') }}") && location.pathname.length <= 1)
     cariElemen(".menu-akun a[href='{{ $app->url->route('mulai') }}']")
     .then((el) => {el.classList.add("aktif");});
 

@@ -22,6 +22,17 @@ class SDMBerkas
         $berkas->storeAs('sdm/permintaan-tambah-sdm/berkas', $nomorPermintaan . '.pdf');
     }
 
+    public static function simpanBerkasLapPelanggaranSDM($berkas, $nomorLaporan)
+    {
+        if (is_array($nomorLaporan)) {
+            array_walk($nomorLaporan, function ($x, $y) use ($berkas) {
+                $berkas->storeAs('sdm/pelanggaran/berkas', $x . '.pdf');
+            });
+        } else {
+            $berkas->storeAs('sdm/pelanggaran/berkas', $nomorLaporan . '.pdf');
+        }
+    }
+
     public static function ambilFotoSDM($berkas_foto_profil)
     {
         extract(Rangka::obyekPermintaanRangka());
