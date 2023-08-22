@@ -35,11 +35,21 @@
                 });
             };
 
+            if (!document.getElementById("sematan_websoket")?.innerHTML.trim()) {
+                lemparXHR({
+                tujuan : "#sematan_websoket",
+                tautan : "{!! $app->url->route('komponen', ['komponen' => 'koneksi-websoket']) !!}",
+                normalview : true
+                });
+            };
+
             @else
             document.getElementById("pilih-sumber_daya")?.replaceChildren();
             document.getElementById("menu-aplikasi")?.replaceChildren();
             document.getElementById("tbl-menu")?.replaceChildren();
             document.getElementById("menu-avatar")?.replaceChildren();
+            window.Echo?.disconnect();
+            document.getElementById("sematan_websoket")?.replaceChildren();
             
             @endif
 

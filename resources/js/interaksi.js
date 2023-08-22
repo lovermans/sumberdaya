@@ -44,7 +44,8 @@ document.addEventListener('click', function (e) {
 
             // if (appAktif && urlAktif.pathname.length > 1) {
             for (let m = 0; m < appAktif.length; m++) {
-                if (urlAktif.href == appAktif[m].href) {
+                let daftarmenu = new URL(appAktif[m].href);
+                if (urlAktif.href.includes(daftarmenu.href) && daftarmenu.pathname.length > 1) {
                     appAktif[m].classList.add('aktif');
                 };
             };
