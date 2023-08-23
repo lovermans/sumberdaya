@@ -5,6 +5,7 @@ var CURRENT_CACHES = {
 var offline = [
     "{{ $app->request->getBasePath() . '/' }}",
     "offline",
+    "pwa-manifest.json",
     "{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/tampilan.css')) }}",
     "{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/interaksi.js')) }}",
     "{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/slimselect-es.js')) }}",
