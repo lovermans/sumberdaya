@@ -36,6 +36,16 @@
 
     @else
     <div id="mengerti-mulai-aplikasi" class="pesan-internal">
+        <div class="judul-form">
+            <h4 class="form">Panduan.</h4>
+
+            <a class="tutup-i">
+                <svg viewbox="0 0 24 24">
+                    <use href="#ikontutup"></use>
+                </svg>
+            </a>
+        </div>
+
         <p>
             Tekan/sentuh tombol
             <svg viewBox="0 0 24 24">
@@ -44,17 +54,19 @@
             di ujung kanan atas layar untuk memilih aplikasi.
         </p>
 
-        <a class="sekunder" href="#" onclick="event.preventDefault();
-        localStorage.setItem('mengerti-mulai-aplikasi', true);
-        this.parentElement.setAttribute('sembunyikan', '')">
-            MENGERTI
-        </a>
+        <div class="pesan-internal-tindaklanjut">
+            <a class="sekunder" href="#" onclick="event.preventDefault();
+            localStorage.setItem('mengerti-mulai-aplikasi', true);
+            this.parentElement.parentElement.remove()">
+                JANGAN TAMPILKAN LAGI
+            </a>
+        </div>
 
         <div class="bersih"></div>
     </div>
 
     <script>
-        if(localStorage.getItem('mengerti-mulai-aplikasi') == 'true') document.getElementById('mengerti-mulai-aplikasi').setAttribute('sembunyikan', '');
+        if(localStorage.getItem('mengerti-mulai-aplikasi') == 'true' === true) document.getElementById('mengerti-mulai-aplikasi').remove();
     </script>
     @endif
 

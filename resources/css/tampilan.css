@@ -773,12 +773,12 @@ aside .aktif {
     color: var(--putih-1);
 }
 
-.pesan-internal a {
-    float: right;
+.pesan-internal-tindaklanjut {
+    text-align: right;
 }
 
 .pesan-internal a.utama {
-    margin: 0 0 1em 1em;
+    margin: 1em 0 1em 1em;
 }
 
 .pesan-internal a.sekunder {
