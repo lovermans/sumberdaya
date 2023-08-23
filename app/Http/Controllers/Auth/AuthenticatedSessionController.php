@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
+use App\Interaksi\Websoket;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Auth\LoginRequest;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -51,6 +52,10 @@ class AuthenticatedSessionController extends Controller
 
             $request->session()->now('pesan', 'Berhasil masuk aplikasi.');
         }
+
+        $pesanSoket = $pengguna?->sdm_nama . ' telah berhasil masuk aplikasi pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+        Websoket::siaranUmum($pesanSoket);
 
 
         $HtmlPenuh = $app->view->make('mulai');

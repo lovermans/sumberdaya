@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Interaksi\Cache;
 use App\Interaksi\Rangka;
+use App\Interaksi\Websoket;
 use Illuminate\Support\Arr;
 use App\Interaksi\SDM\SDMCache;
 use App\Interaksi\SDM\SDMBerkas;
@@ -92,10 +93,12 @@ class RegisteredUserController
 
         SDMCache::hapusCacheSDMUmum();
 
+        $pesanSoket = $pengguna?->sdm_nama . ' telah menambahkan data SDM nomor absen ' . $no_absen . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+        Websoket::siaranUmum($pesanSoket);
+
         $pesan = Rangka::statusBerhasil();
-
         $perujuk = $reqs->session()->get('tautan_perujuk');
-
         $redirect = $app->redirect;
 
         return $perujuk

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SDM;
 use App\Interaksi\Cache;
 use App\Interaksi\Berkas;
 use App\Interaksi\Rangka;
+use App\Interaksi\Websoket;
 use App\Interaksi\SDM\SDMCache;
 use App\Interaksi\SDM\SDMExcel;
 use App\Interaksi\SDM\SDMDBQuery;
@@ -126,6 +127,10 @@ class Posisi
 
             SDMCache::hapusCacheSDMUmum();
 
+            $pesanSoket = $pengguna?->sdm_nama . ' telah menambah data pengaturan Jabatan SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
+
             return $app->redirect->route('sdm.posisi.data')->with('pesan', Rangka::statusBerhasil());
         }
 
@@ -167,6 +172,10 @@ class Posisi
             SDMDBQuery::ubahDataPosisiSDM($data[0], $uuid);
 
             SDMCache::hapusCacheSDMUmum();
+
+            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah data pengaturan Jabatan SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
 
             $perujuk = $reqs->session()->get('tautan_perujuk');
             $pesan = Rangka::statusBerhasil();

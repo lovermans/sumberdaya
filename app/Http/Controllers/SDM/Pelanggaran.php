@@ -134,7 +134,7 @@ class Pelanggaran
 
             SDMCache::hapusCachePelanggaranSDMTerkini();
 
-            $pesanSoket = $pengguna?->sdm_no_absen . ' telah menambah ' . $jmlTerlapor . ' laporan pelanggaran SDM baru pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama . ' telah menambah ' . $jmlTerlapor . ' laporan pelanggaran SDM baru pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -210,20 +210,7 @@ class Pelanggaran
 
             SDMDBQuery::ubahDataLapPelanggaranSDM($valid, $uuid);
 
-            $pesan = Rangka::statusBerhasil();
             $nomorLaporan = $langgar->langgar_lap_no;
-
-            $pesanSoket = $pengguna?->sdm_no_absen . ' telah mengubah laporan pelanggaran SDM nomor ' . $nomorLaporan . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
-
-            if ($reqs->header('X-Minta-Javascript', false)) {
-                SDMCache::hapusCachePelanggaranSDMTerkini();
-
-                Websoket::siaranUmum($pesanSoket);
-
-                $session->now('pesan', $pesan);
-                return view('pemberitahuan');
-            }
-
             $berkas =  $validasiBerkas->validated()['berkas_laporan'] ?? false;
 
             if ($berkas) {
@@ -232,7 +219,16 @@ class Pelanggaran
 
             SDMCache::hapusCachePelanggaranSDMTerkini();
 
+            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah laporan pelanggaran SDM nomor ' . $nomorLaporan . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
             Websoket::siaranUmum($pesanSoket);
+
+            $pesan = Rangka::statusBerhasil();
+
+            if ($reqs->header('X-Minta-Javascript', false)) {
+                $session->now('pesan', $pesan);
+                return view('pemberitahuan');
+            }
 
             return $perujuk
                 ? $redirect->to($perujuk)->with('pesan', $pesan)

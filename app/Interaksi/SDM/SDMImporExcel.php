@@ -3,6 +3,7 @@
 namespace App\Interaksi\SDM;
 
 use App\Interaksi\Rangka;
+use App\Interaksi\Websoket;
 use App\Tambahan\ChunkReadFilter;
 
 class SDMImporExcel
@@ -16,6 +17,7 @@ class SDMImporExcel
         $rute,
         $kolomPengunggah,
         $waktuUnggah,
+        $pesanSoket = 'Terdapat Pengguna Mengimpor Data Ke Aplikasi',
         $chunkSize = 25
     ) {
         extract(Rangka::obyekPermintaanRangka(true));
@@ -80,6 +82,8 @@ class SDMImporExcel
         unset($spreadsheet);
 
         $app->filesystem->delete($fileexcel);
+
+        Websoket::siaranUmum($pesanSoket);
 
         return $app->redirect->route($rute)->with('pesan', Rangka::statusBerhasil());
 

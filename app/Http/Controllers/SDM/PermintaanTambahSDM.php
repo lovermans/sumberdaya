@@ -6,14 +6,15 @@ use App\Interaksi\Cache;
 use App\Interaksi\Excel;
 use App\Interaksi\Rangka;
 use App\Interaksi\Validasi;
+use App\Interaksi\Websoket;
 use Illuminate\Support\Arr;
+use App\Interaksi\SDM\SDMWord;
 use App\Interaksi\SDM\SDMCache;
 use App\Interaksi\SDM\SDMExcel;
 use Illuminate\Validation\Rule;
 use App\Interaksi\SDM\SDMBerkas;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMValidasi;
-use App\Interaksi\SDM\SDMWord;
 
 class PermintaanTambahSDM
 {
@@ -137,6 +138,11 @@ class PermintaanTambahSDM
             }
 
             SDMCache::hapusCacheSDMUmum();
+
+            $pesanSoket = $pengguna?->sdm_nama . ' telah menambah data Permintaan Tambah SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
+
             $redirect = $app->redirect;
             $perujuk = $reqs->session()->get('tautan_perujuk');
             $pesan = Rangka::statusBerhasil();
@@ -209,7 +215,18 @@ class PermintaanTambahSDM
 
             SDMDBQuery::ubahDataPermintaanTambahSDM($data, $uuid);
 
+            $nomorPermintaan = Arr::only($valid, ['tambahsdm_no'])['tambahsdm_no'] ?? $permin->tambahsdm_no;
+            $berkas = Arr::only($valid, ['tambahsdm_berkas'])['tambahsdm_berkas'] ?? false;
+
+            if ($berkas) {
+                SDMBerkas::simpanBerkasPermintaanTambahSDM($berkas, $nomorPermintaan);
+            }
+
             SDMCache::hapusCacheSDMUmum();
+
+            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah data Permintaan Tambah SDM nomor ' . $nomorPermintaan . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
 
             $pesan = Rangka::statusBerhasil();
             $session = $reqs->session();
@@ -218,13 +235,6 @@ class PermintaanTambahSDM
                 $session->now('pesan', $pesan);
 
                 return view('pemberitahuan');
-            }
-
-            $nomorPermintaan = Arr::only($valid, ['tambahsdm_no'])['tambahsdm_no'] ?? $permin->tambahsdm_no;
-            $berkas = Arr::only($valid, ['tambahsdm_berkas'])['tambahsdm_berkas'] ?? false;
-
-            if ($berkas) {
-                SDMBerkas::simpanBerkasPermintaanTambahSDM($berkas, $nomorPermintaan);
             }
 
             $perujuk = $session->get('tautan_perujuk');
@@ -302,6 +312,10 @@ class PermintaanTambahSDM
             SDMBerkas::hapusBerkasPermintaanTambahSDM($permin->tambahsdm_no);
 
             SDMCache::hapusCacheSDMUmum();
+
+            $pesanSoket = $pengguna?->sdm_nama . ' telah menghapus data Permintaan Tambah SDM nomor ' . $permin->tambahsdm_no . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
 
             $perujuk = $reqs->session()->get('tautan_perujuk');
             $pesan = 'Data berhasil dihapus';

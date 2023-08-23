@@ -5,14 +5,15 @@ namespace App\Http\Controllers\SDM;
 use App\Interaksi\Cache;
 use App\Interaksi\Berkas;
 use App\Interaksi\Rangka;
+use App\Interaksi\Websoket;
 use Illuminate\Support\Arr;
+use App\Interaksi\SDM\SDMWord;
 use App\Interaksi\SDM\SDMCache;
 use App\Interaksi\SDM\SDMExcel;
 use App\Interaksi\SDM\SDMBerkas;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMValidasi;
 use App\Interaksi\SDM\SDMPapanInformasi;
-use App\Interaksi\SDM\SDMWord;
 
 class Umum
 {
@@ -238,6 +239,10 @@ class Umum
 
             SDMCache::hapusCacheSDMUmum();
 
+            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah data SDM nomor absen ' . $no_absen . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
+
             $pesan = Rangka::statusBerhasil();
             $perujuk = $session->get('tautan_perujuk');
             $redirect = $app->redirect;
@@ -294,6 +299,10 @@ class Umum
             $sandiBaru = $app->hash->make($validasiSandi->safe()->only('password')['password']);
 
             SDMDBQuery::ubahSandiPengguna($idPenguna, $sandiBaru);
+
+            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah kata sandinya pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
 
             $reqs->session()->forget('spanduk');
 

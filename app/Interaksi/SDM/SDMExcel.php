@@ -13,6 +13,8 @@ class SDMExcel
 {
     public static function imporExcelDataSDM($fileexcel)
     {
+        extract(Rangka::obyekPermintaanRangka(true));
+
         $argumen = [
             'reader' => new ExcelReader(),
             'fileexcel' => $fileexcel,
@@ -21,7 +23,8 @@ class SDMExcel
             'cacheImpor' => 'hapusCacheSDMUmum',
             'rute' => 'sdm.mulai',
             'kolomPengunggah' => 'sdm_id_pengunggah',
-            'waktuUnggah' => 'sdm_diunggah'
+            'waktuUnggah' => 'sdm_diunggah',
+            'pesanSoket' => $pengguna?->sdm_nama . ' telah mengimpor data SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'))
         ];
 
         return SDMImporExcel::imporExcelStream(...$argumen);
@@ -29,6 +32,8 @@ class SDMExcel
 
     public static function imporExcelDataPosisiSDM($fileexcel)
     {
+        extract(Rangka::obyekPermintaanRangka(true));
+
         $argumen = [
             'reader' => new ExcelReader(),
             'fileexcel' => $fileexcel,
@@ -37,7 +42,8 @@ class SDMExcel
             'cacheImpor' => 'hapusCacheSDMUmum',
             'rute' => 'sdm.posisi.data',
             'kolomPengunggah' => 'posisi_id_pengunggah',
-            'waktuUnggah' => 'posisi_diunggah'
+            'waktuUnggah' => 'posisi_diunggah',
+            'pesanSoket' => $pengguna?->sdm_nama . ' telah mengimpor data pengaturan Jabatan SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'))
         ];
 
         return SDMImporExcel::imporExcelStream(...$argumen);

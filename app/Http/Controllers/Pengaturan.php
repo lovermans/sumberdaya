@@ -8,6 +8,7 @@ use App\Interaksi\Berkas;
 use App\Interaksi\Rangka;
 use App\Interaksi\DBQuery;
 use App\Interaksi\Validasi;
+use App\Interaksi\Websoket;
 
 class Pengaturan
 {
@@ -118,6 +119,10 @@ class Pengaturan
 
             Cache::hapusCacheAtur();
 
+            $pesanSoket = $pengguna?->sdm_nama . ' telah menambah data Pengaturan Umum pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
+
             return $app->redirect->route('atur.data')->with('pesan', Rangka::statusBerhasil());
         }
 
@@ -154,6 +159,10 @@ class Pengaturan
             DBQuery::ubahDatabasePengaturan($uuid, $data[0]);
 
             Cache::hapusCacheAtur();
+
+            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah data Pengaturan Umum pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
 
             $pesan = Rangka::statusBerhasil();
             $session = $reqs->session();
