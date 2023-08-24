@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\SDM;
 
+use App\Interaksi\Rangka;
 use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
+use App\Interaksi\SDM\SDMDBQuery;
 use App\Http\Controllers\SDM\Berkas;
 
 class Sanksi
@@ -225,47 +227,20 @@ class Sanksi
 
     public function lihat($uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
+        extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
-
-        $database = $app->db;
-
-        $kontrak = $this->dataKontrak($database);
-
-        $sanksi = $this->dataDasar($database)
-            ->addSelect('a.sdm_uuid as langgar_tsdm_uuid', 'a.sdm_nama as langgar_tsdm_nama', 'a.sdm_tgl_berhenti as langgar_tsdm_tgl_berhenti', 'kontrak_t.penempatan_lokasi as langgar_tlokasi', 'kontrak_t.penempatan_posisi as langgar_tposisi', 'kontrak_t.penempatan_kontrak as langgar_tkontrak', 'langgar_isi', 'langgar_tanggal', 'langgar_status', 'langgar_pelapor', 'langgar_keterangan', 'b.sdm_uuid as langgar_psdm_uuid', 'b.sdm_nama as langgar_psdm_nama', 'b.sdm_tgl_berhenti as langgar_psdm_tgl_berhenti', 'kontrak_p.penempatan_lokasi as langgar_plokasi', 'kontrak_p.penempatan_posisi as langgar_pposisi', 'kontrak_p.penempatan_kontrak as langgar_pkontrak')
-            ->join('sdms as a', 'sanksi_no_absen', '=', 'a.sdm_no_absen')
-            ->leftJoinSub($kontrak, 'kontrak_t', function ($join) {
-                $join->on('sanksi_no_absen', '=', 'kontrak_t.penempatan_no_absen');
-            })
-            ->leftJoin('pelanggaransdms', 'sanksi_lap_no', '=', 'langgar_lap_no')
-            ->leftJoin('sdms as b', 'langgar_pelapor', '=', 'b.sdm_no_absen')
-            ->leftJoinSub($kontrak, 'kontrak_p', function ($join) {
-                $join->on('langgar_pelapor', '=', 'kontrak_p.penempatan_no_absen');
-            })
-            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-                $query->where(function ($group) use ($lingkupIjin) {
-                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin)
-                        ->orWhereIn('kontrak_p.penempatan_lokasi', $lingkupIjin);
-                });
-            })
-            ->where('sanksi_uuid', $uuid)->first();
+        $sanksi = SDMDBQuery::ambilDataSanksi_PelanggaranSDM($uuid, array_filter(explode(',', $pengguna->sdm_ijin_akses)));
 
         abort_unless($sanksi, 404, 'Data Laporan Pelanggaran tidak ditemukan.');
 
-        $data = [
-            'sanksi' => $sanksi
-        ];
-
-        $HtmlPenuh = $app->view->make('sdm.sanksi.lihat', $data);
+        $HtmlPenuh = $app->view->make('sdm.sanksi.lihat', compact('sanksi'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 
     public function tambah(FungsiStatis $fungsiStatis, $lap_uuid = null)
