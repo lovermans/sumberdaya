@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\SDM;
 
+use App\Interaksi\Cache;
 use App\Interaksi\Rangka;
+use App\Interaksi\Websoket;
+use Illuminate\Support\Arr;
 use App\Tambahan\FungsiStatis;
 use App\Interaksi\SDM\SDMCache;
 use Illuminate\Validation\Rule;
+use App\Interaksi\SDM\SDMBerkas;
 use App\Interaksi\SDM\SDMDBQuery;
+use App\Interaksi\SDM\SDMValidasi;
 use App\Http\Controllers\SDM\Berkas;
-use App\Interaksi\Cache;
 
 class Sanksi
 {
@@ -358,15 +362,7 @@ class Sanksi
 
             $reqs->merge(['sanksi_id_pengubah' => $pengguna->sdm_no_absen]);
 
-            $validasi = $app->validator->make(
-                $reqs->all(),
-                [
-                    'sanksi_id_pengubah' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                    ...$this->dasarValidasi()
-                ],
-                [],
-                $this->atributInput()
-            );
+            $validasi = SDMValidasi::validasiUbahDataSanksiSDM([$reqs->all()]);
 
             $validasi->validate();
 
@@ -375,24 +371,39 @@ class Sanksi
             $kesalahan = 'Laporan pelanggaran yang dibatalkan tidak dapat dikenai sanksi.';
 
             if ($sanksiLama->langgar_status == 'DIBATALKAN') {
-                return $perujuk ? $redirect->to($perujuk)->withErrors($kesalahan) : $redirect->route('sdm.pelanggaran.data')->withErrors($kesalahan);
+                return $perujuk
+                    ? $redirect->to($perujuk)->withErrors($kesalahan)
+                    : $redirect->route('sdm.pelanggaran.data')->withErrors($kesalahan);
             }
 
-            $data = $validasi->safe()->except('sanksi_berkas');
+            $valid = $validasi->safe()->all()[0];
+
+            $data = Arr::except($valid, ['sanksi_berkas']);
 
             SDMDBQuery::ubahDataSanksiSDM($uuid, $data);
 
-            $berkas = $validasi->safe()->only('sanksi_berkas')['sanksi_berkas'] ?? false;
+            $berkas = Arr::only($valid, ['sanksi_berkas'])['sanksi_berkas'] ?? false;
 
             if ($berkas) {
-                $berkas->storeAs('sdm/sanksi/berkas', $sanksiLama->sanksi_no_absen . ' - '  . $validasi->safe()->only('sanksi_jenis')['sanksi_jenis'] . ' - ' . $validasi->safe()->only('sanksi_mulai')['sanksi_mulai'] . '.pdf');
+                $namaBerkas = $sanksiLama->sanksi_no_absen . ' - '  . Arr::only($valid, ['sanksi_jenis'])['sanksi_jenis'] . ' - ' . Arr::only($valid, ['sanksi_mulai'])['sanksi_mulai'] . '.pdf';
+
+                SDMBerkas::simpanBerkasSanksiSDM($berkas, $namaBerkas);
             }
 
             SDMCache::hapusCachePelanggaranSDM();
             SDMCache::hapusCacheSanksiSDM();
+
+            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah data Sanksi SDM nomor absen '
+                . $sanksiLama->sanksi_no_absen . ' tanggal ' . Arr::only($valid, ['sanksi_mulai'])['sanksi_mulai']
+                . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
+
             $pesan = Rangka::statusBerhasil();
 
-            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);
+            return $perujuk
+                ? $redirect->to($perujuk)->with('pesan', $pesan)
+                : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);
         }
 
         $data = [
@@ -402,6 +413,9 @@ class Sanksi
 
         $HtmlPenuh = $app->view->make('sdm.sanksi.tambah-ubah', $data);
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 }

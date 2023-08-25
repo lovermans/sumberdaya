@@ -549,7 +549,12 @@ class SDMValidasi
     public static function pesanKesalahanValidasiSanksiSDM()
     {
         return [
-            // perlu dikerjakan
+            '*.sanksi_jenis.*' => 'Jenis Sanksi urutan ke-:position tidak terdaftar.',
+            '*.sanksi_mulai.*' => 'Tanggal Mulai Sanksi urutan ke-:position wajib berupa tanggal.',
+            '*.sanksi_selesai.*' => 'Tanggal Selesai Sanksi urutan ke-:position wajib berupa tanggal setelah Tanggal Mulai Sanksi.',
+            '*.sanksi_tambahan.*' => 'Sanksi Tambahan urutan ke-:position wajib berupa karakter.',
+            '*.sanksi_keterangan.*' => 'Keterangan Sanksi urutan ke-:position wajib berupa karakter.',
+            '*.sanksi_berkas.*' => 'Berkas Sanksi urutan ke-:position wajib berupa berkas format PDF.',
         ];
     }
 
@@ -562,7 +567,8 @@ class SDMValidasi
             [
                 '*.sanksi_id_pengubah' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 ...static::dasarValidasiSanksiSDM()
-            ]
+            ],
+            static::pesanKesalahanValidasiSanksiSDM()
         );
     }
 }
