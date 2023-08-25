@@ -12,25 +12,12 @@ class Umum implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
     /**
      * Create a new event instance.
      */
-    public function __construct(
-        string $message
-    ) {
-        $this->message = $message;
+    public function __construct(public string $message)
+    {
     }
-
-    // public function broadcastAs(): string
-    // {
-    //     return 'Umum';
-    // }
-
-    // public function broadcasQueues(): string
-    // {
-    //     return 'broadcastable';
-    // }
 
     /**
      * Get the channels the event should broadcast on.
