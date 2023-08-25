@@ -531,4 +531,38 @@ class SDMValidasi
             static::pesanKesalahanValidasiLapPelanggaranSDM()
         );
     }
+
+    public static function dasarValidasiSanksiSDM()
+    {
+        return [
+            '*.sanksi_jenis' => ['required', 'string', Rule::exists('aturs', 'atur_butir')->where(function ($query) {
+                return $query->where('atur_jenis', 'SANKSI SDM');
+            })],
+            '*.sanksi_mulai' => ['required', 'date'],
+            '*.sanksi_selesai' => ['required', 'date', 'after:sanksi_mulai'],
+            '*.sanksi_tambahan' => ['sometimes', 'nullable', 'string'],
+            '*.sanksi_keterangan' => ['sometimes', 'nullable', 'string'],
+            '*.sanksi_berkas' => ['sometimes', 'file', 'mimetypes:application/pdf'],
+        ];
+    }
+
+    public static function pesanKesalahanValidasiSanksiSDM()
+    {
+        return [
+            // perlu dikerjakan
+        ];
+    }
+
+    public static function validasiUbahDataSanksiSDM($permintaan)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            [
+                '*.sanksi_id_pengubah' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                ...static::dasarValidasiSanksiSDM()
+            ]
+        );
+    }
 }
