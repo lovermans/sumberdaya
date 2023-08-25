@@ -658,6 +658,29 @@ class SDMDBQuery
             ->from('sanksisdms');
     }
 
+    public static function ambilDataSanksiSDM($uuid, $lingkupIjin)
+    {
+        return static::ambilSanksiSDM()
+            ->addSelect('langgar_status')
+            ->leftJoin('pelanggaransdms', 'sanksi_lap_no', '=', 'langgar_lap_no')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak_t', function ($join) {
+                $join->on('sanksi_no_absen', '=', 'kontrak_t.penempatan_no_absen');
+            })
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin);
+                });
+            })
+            ->where('sanksi_uuid', $uuid)->first();
+    }
+
+    public static function ubahDataSanksiSDM($uuid, $data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('sanksisdms')->where('sanksi_uuid', $uuid)->update($data);
+    }
+
     public static function ambilPengingatSanksiSDMTerkini()
     {
         extract(Rangka::obyekPermintaanRangka());

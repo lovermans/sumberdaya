@@ -179,4 +179,18 @@ class SDMCache
             return SDMDBQuery::ambilDBPosisiSDM()->orderBy('posisi_nama')->get();
         });
     }
+
+    public static function hapusCachePelanggaranSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('PengingatPelanggaran');
+    }
+
+    public static function hapusCacheSanksiSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('PengingatSanksi - ' . $app->date->today()->format('Y-m-d'));
+    }
 }

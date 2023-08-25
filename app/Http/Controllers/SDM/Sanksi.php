@@ -4,9 +4,11 @@ namespace App\Http\Controllers\SDM;
 
 use App\Interaksi\Rangka;
 use App\Tambahan\FungsiStatis;
+use App\Interaksi\SDM\SDMCache;
 use Illuminate\Validation\Rule;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Http\Controllers\SDM\Berkas;
+use App\Interaksi\Cache;
 
 class Sanksi
 {
@@ -342,32 +344,13 @@ class Sanksi
         return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
     }
 
-    public function ubah(FungsiStatis $fungsiStatis, $uuid = null)
+    public function ubah($uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
+        extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
-
-        $database = $app->db;
-
-        $kontrak = $this->dataKontrak($database);
-
-        $sanksiLama = $this->dataDasar($database)->addSelect('langgar_status')
-            ->leftJoin('pelanggaransdms', 'sanksi_lap_no', '=', 'langgar_lap_no')
-            ->leftJoinSub($kontrak, 'kontrak_t', function ($join) {
-                $join->on('sanksi_no_absen', '=', 'kontrak_t.penempatan_no_absen');
-            })
-            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-                $query->where(function ($group) use ($lingkupIjin) {
-                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin);
-                });
-            })
-            ->where('sanksi_uuid', $uuid)->first();
+        $sanksiLama = SDMDBQuery::ambilDataSanksiSDM($uuid, array_filter(explode(',', $pengguna->sdm_ijin_akses)));
 
         abort_unless($sanksiLama, 404, 'Data Laporan Pelanggaran tidak ditemukan.');
 
@@ -397,7 +380,7 @@ class Sanksi
 
             $data = $validasi->safe()->except('sanksi_berkas');
 
-            $database->table('sanksisdms')->where('sanksi_uuid', $uuid)->update($data);
+            SDMDBQuery::ubahDataSanksiSDM($uuid, $data);
 
             $berkas = $validasi->safe()->only('sanksi_berkas')['sanksi_berkas'] ?? false;
 
@@ -405,18 +388,16 @@ class Sanksi
                 $berkas->storeAs('sdm/sanksi/berkas', $sanksiLama->sanksi_no_absen . ' - '  . $validasi->safe()->only('sanksi_jenis')['sanksi_jenis'] . ' - ' . $validasi->safe()->only('sanksi_mulai')['sanksi_mulai'] . '.pdf');
             }
 
-            $fungsiStatis->hapusCachePelanggaranSDM();
-            $fungsiStatis->hapusCacheSanksiSDM();
-            $pesan = $fungsiStatis->statusBerhasil();
+            SDMCache::hapusCachePelanggaranSDM();
+            SDMCache::hapusCacheSanksiSDM();
+            $pesan = Rangka::statusBerhasil();
 
             return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);
         }
 
-        $aturs = $fungsiStatis->ambilCacheAtur();
-
         $data = [
             'sanksiLama' => $sanksiLama,
-            'sanksis' => $aturs->where('atur_jenis', 'SANKSI SDM')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'desc']),
+            'sanksis' => Cache::ambilCacheAtur()->where('atur_jenis', 'SANKSI SDM')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'desc']),
         ];
 
         $HtmlPenuh = $app->view->make('sdm.sanksi.tambah-ubah', $data);
