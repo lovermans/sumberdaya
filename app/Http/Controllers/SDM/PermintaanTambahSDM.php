@@ -297,17 +297,15 @@ class PermintaanTambahSDM
 
             $dataValid = $validasi->validated();
 
-            $dataHapus = [
+            SDMDBQuery::hapusDataPermintaanTambahSDM($uuid);
+
+            Excel::cadangkanPenghapusanDatabase([
                 'Permintaan Tambah SDM',
                 collect($permin)->toJson(),
                 $dataValid['id_penghapus'],
                 $dataValid['waktu_dihapus']->format('Y-m-d H:i:s'),
                 $dataValid['alasan']
-            ];
-
-            SDMDBQuery::hapusDataPermintaanTambahSDM($uuid);
-
-            Excel::cadangkanPenghapusanDatabase($dataHapus);
+            ]);
 
             SDMBerkas::hapusBerkasPermintaanTambahSDM($permin->tambahsdm_no);
 

@@ -166,7 +166,7 @@ class SDMBerkas
 
     public static function hapusBerkasPermintaanTambahSDM($berkas)
     {
-        extract(Rangka::obyekPermintaanRangka(true));
+        extract(Rangka::obyekPermintaanRangka());
 
         $namaBerkas = 'sdm/permintaan-tambah-sdm/berkas/' . $berkas . '.pdf';
 
@@ -175,5 +175,10 @@ class SDMBerkas
         if ($storage->exists($namaBerkas)) {
             $storage->delete($namaBerkas);
         }
+    }
+
+    public static function simpanBerkasSanksiSDM($berkas, $namaBerkas)
+    {
+        $berkas->storeAs('sdm/sanksi/berkas', $namaBerkas);
     }
 }
