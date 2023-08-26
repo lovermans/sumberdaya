@@ -121,20 +121,20 @@
     </div>
 
     <script>
+        if (navigator.onLine) {
         (async () => {
             while (!window.aplikasiSiap) {
                 await new Promise((resolve, reject) =>
                 setTimeout(resolve, 1000));
             }
 
-            if (navigator.onLine) {
                 lemparXHR({
                     tujuan: "#mulai-aplikasi",
                     tautan: "{!! $app->url->route('mulai-aplikasi', [ 'aplikasivalet' => $app->config->get('app.aplikasivalet')]) !!}",
                     topview: true
                 });
-            }
-        })();
+            })();
+        };
     </script>
 </div>
 @endsection

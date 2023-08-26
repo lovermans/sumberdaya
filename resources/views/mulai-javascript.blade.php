@@ -39,6 +39,11 @@
             halaman.setAttribute('data-tematerang', e.currentTarget.checked);
         }));
 
+        if (location.href == "{{ $app->url->route('mulai') . '/' }}" && !navigator.onLine) {
+            document.getElementById("isi").prepend(document.createRange().createContextualFragment("<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $app->url->route('mulai') . '/' }}'>Hubungkan Aplikasi</a>.</p>"));
+            scrollTo(0, 0);
+        };
+
         (async () => {
             while (!window.aplikasiSiap) {
                 await new Promise((resolve, reject) =>
