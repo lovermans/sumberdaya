@@ -3,14 +3,16 @@
 @section('isi')
 <div class="pesan-internal">
     {{-- <p>{{__('Page Expired')}}.</p> --}}
-    <div class="judul-form">
-        <h4 class="form">Permintaan Kadaluarsa.</h4>
+    <div class="pesan-internal-kepala">
+        <div class="judul-form">
+            <h4 class="form">Permintaan Kadaluarsa.</h4>
 
-        <a class="tutup-i">
-            <svg viewbox="0 0 24 24">
-                <use href="#ikontutup"></use>
-            </svg>
-        </a>
+            <a class="tutup-i">
+                <svg viewbox="0 0 24 24">
+                    <use href="#ikontutup"></use>
+                </svg>
+            </a>
+        </div>
     </div>
 
     <p>

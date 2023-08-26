@@ -2,14 +2,16 @@
 
 @section('isi')
 <div class="pesan-internal">
-    <div class="judul-form">
-        <h4 class="form">Terdapat Kesalahan Fungsi Aplikasi.</h4>
+    <div class="pesan-internal-kepala">
+        <div class="judul-form">
+            <h4 class="form">Terdapat Kesalahan Fungsi Aplikasi.</h4>
 
-        <a class="tutup-i">
-            <svg viewbox="0 0 24 24">
-                <use href="#ikontutup"></use>
-            </svg>
-        </a>
+            <a class="tutup-i">
+                <svg viewbox="0 0 24 24">
+                    <use href="#ikontutup"></use>
+                </svg>
+            </a>
+        </div>
     </div>
 
     <p>

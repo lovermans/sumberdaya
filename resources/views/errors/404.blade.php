@@ -3,16 +3,17 @@
 @section('isi')
 <div class="pesan-internal">
     {{-- <p>{{__('Not Found')}}.</p> --}}
-    <div class="judul-form">
-        <h4 class="form">Tidak Ditemukan.</h4>
+    <div class="pesan-internal-kepala">
+        <div class="judul-form">
+            <h4 class="form">Tidak Ditemukan.</h4>
 
-        <a class="tutup-i">
-            <svg viewbox="0 0 24 24">
-                <use href="#ikontutup"></use>
-            </svg>
-        </a>
+            <a class="tutup-i">
+                <svg viewbox="0 0 24 24">
+                    <use href="#ikontutup"></use>
+                </svg>
+            </a>
+        </div>
     </div>
-
     <p>
         <small>
             {{ $exception->getMessage() ? $exception->getMessage() . ' Coba periksa permintaan.' : 'Coba periksa

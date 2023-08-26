@@ -3,15 +3,16 @@
 @section('isi')
 <div class="pesan-internal">
     {{-- <p>{{__('Service Unavailable')}}.</p> --}}
-    <p><span class="merah">Aplikasi Sedang Tidak Dapat Digunakan.</span></p>
-    <div class="judul-form">
-        <h4 class="form">Aplikasi Sedang Tidak Dapat Digunakan.</h4>
+    <div class="pesan-internal-kepala">
+        <div class="judul-form">
+            <h4 class="form">Aplikasi Sedang Tidak Dapat Digunakan.</h4>
 
-        <a class="tutup-i">
-            <svg viewbox="0 0 24 24">
-                <use href="#ikontutup"></use>
-            </svg>
-        </a>
+            <a class="tutup-i">
+                <svg viewbox="0 0 24 24">
+                    <use href="#ikontutup"></use>
+                </svg>
+            </a>
+        </div>
     </div>
 
     <p>
