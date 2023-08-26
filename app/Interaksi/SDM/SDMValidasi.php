@@ -466,6 +466,7 @@ class SDMValidasi
             '*.langgar_isi.*' => 'Isi Laporan wajib berupa karakter.',
             '*.langgar_keterangan.*' => 'Keterangan wajib berupa karakter.',
             '*.langgar_id_pembuat.*' => 'ID Pembuat maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.langgar_id_pengubah.*' => 'ID Pengubah maksimal 10 karakter dan terdaftar di data SDM.',
         ];
     }
 
@@ -555,6 +556,10 @@ class SDMValidasi
             '*.sanksi_tambahan.*' => 'Sanksi Tambahan urutan ke-:position wajib berupa karakter.',
             '*.sanksi_keterangan.*' => 'Keterangan Sanksi urutan ke-:position wajib berupa karakter.',
             '*.sanksi_berkas.*' => 'Berkas Sanksi urutan ke-:position wajib berupa berkas format PDF.',
+            '*.sanksi_lap_no.*' => 'Nomor Laporan Pelanggaran urutan ke-:position sudah dikenai sanksi.',
+            '*.sanksi_id_pengubah.*' => 'ID Pembuat maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.sanksi_id_pembuat.*' => 'ID Pengubah maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.sanksi_no_absen.*' => 'No Absen penerima sanksi maksimal 10 karakter dan terdaftar di data SDM.',
         ];
     }
 
@@ -566,6 +571,22 @@ class SDMValidasi
             $permintaan,
             [
                 '*.sanksi_id_pengubah' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                ...static::dasarValidasiSanksiSDM()
+            ],
+            static::pesanKesalahanValidasiSanksiSDM()
+        );
+    }
+
+    public static function validasiTambahDataSanksiSDM($permintaan)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->validator->make(
+            $permintaan,
+            [
+                '*.sanksi_lap_no' => ['required', 'string', 'max:20', 'unique:sanksisdms,sanksi_lap_no'],
+                '*.sanksi_id_pembuat' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                '*.sanksi_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 ...static::dasarValidasiSanksiSDM()
             ],
             static::pesanKesalahanValidasiSanksiSDM()

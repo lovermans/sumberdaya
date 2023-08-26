@@ -586,9 +586,43 @@ class SDMDBQuery
             });
     }
 
-    public static function ambilDataPelanggaran_SanksiSDM()
+    public static function ambilDataLapPelanggaranSDM()
     {
         return static::ambilLaporanPelanggaranSDM()
+            ->join('sdms as a', 'langgar_no_absen', '=', 'a.sdm_no_absen')
+            ->join('sdms as b', 'langgar_pelapor', '=', 'b.sdm_no_absen')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak_t', function ($join) {
+                $join->on('langgar_no_absen', '=', 'kontrak_t.penempatan_no_absen');
+            })
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak_p', function ($join) {
+                $join->on('langgar_pelapor', '=', 'kontrak_p.penempatan_no_absen');
+            })
+            ->leftJoinSub(static::ambilSanksiSDMTerkini(), 'sanksilama', function ($join) {
+                $join->on('langgar_no_absen', '=', 'sanksilama.sanksi_no_absen')
+                    ->on('sanksilama.sanksi_selesai', '>=', 'langgar_tanggal')
+                    ->on('langgar_lap_no', '!=', 'sanksilama.sanksi_lap_no');
+            })
+            ->leftJoin('sanksisdms', function ($join) {
+                $join->on('langgar_no_absen', '=', 'sanksisdms.sanksi_no_absen')
+                    ->on('langgar_lap_no', '=', 'sanksisdms.sanksi_lap_no');
+            });
+    }
+
+    public static function ambilDataPelanggaranSDM($uuid, $lingkupIjin)
+    {
+        return static::ambilDataLapPelanggaranSDM()
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin)
+                        ->orWhereIn('kontrak_p.penempatan_lokasi', $lingkupIjin);
+                });
+            })
+            ->where('sanksi_uuid', $uuid)->first();
+    }
+
+    public static function ambilDataPelanggaran_SanksiSDM()
+    {
+        return static::ambilDataLapPelanggaranSDM()
             ->addSelect(
                 'a.sdm_uuid as langgar_tsdm_uuid',
                 'a.sdm_nama as langgar_tsdm_nama',
@@ -612,24 +646,7 @@ class SDMDBQuery
                 'sanksisdms.sanksi_selesai as final_sanksi_selesai',
                 'sanksisdms.sanksi_tambahan as final_sanksi_tambahan',
                 'sanksisdms.sanksi_keterangan as final_sanksi_keterangan'
-            )
-            ->join('sdms as a', 'langgar_no_absen', '=', 'a.sdm_no_absen')
-            ->join('sdms as b', 'langgar_pelapor', '=', 'b.sdm_no_absen')
-            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak_t', function ($join) {
-                $join->on('langgar_no_absen', '=', 'kontrak_t.penempatan_no_absen');
-            })
-            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak_p', function ($join) {
-                $join->on('langgar_pelapor', '=', 'kontrak_p.penempatan_no_absen');
-            })
-            ->leftJoinSub(static::ambilSanksiSDMTerkini(), 'sanksilama', function ($join) {
-                $join->on('langgar_no_absen', '=', 'sanksilama.sanksi_no_absen')
-                    ->on('sanksilama.sanksi_selesai', '>=', 'langgar_tanggal')
-                    ->on('langgar_lap_no', '!=', 'sanksilama.sanksi_lap_no');
-            })
-            ->leftJoin('sanksisdms', function ($join) {
-                $join->on('langgar_no_absen', '=', 'sanksisdms.sanksi_no_absen')
-                    ->on('langgar_lap_no', '=', 'sanksisdms.sanksi_lap_no');
-            });
+            );
     }
 
     public static function ambilPelanggaranSDMTerkini()
@@ -672,6 +689,13 @@ class SDMDBQuery
                 });
             })
             ->where('sanksi_uuid', $uuid)->first();
+    }
+
+    public static function tambahDataSanksiSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $database->table('sanksisdms')->insert($data);
     }
 
     public static function ubahDataSanksiSDM($uuid, $data)
