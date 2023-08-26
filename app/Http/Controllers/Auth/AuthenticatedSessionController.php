@@ -19,10 +19,9 @@ class AuthenticatedSessionController extends Controller
     {
         $app = app();
 
-        $HtmlPenuh = $app->view->make('mulai');
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $app->request->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')
-            ->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlIsi;
+        abort_unless($app->request->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('mulai-aplikasi'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'mulai-aplikasi']);
     }
 
     /**
@@ -50,18 +49,15 @@ class AuthenticatedSessionController extends Controller
                 $request->session()->put(['spanduk' => 'Sandi Anda kurang aman.']);
             }
 
-            $request->session()->now('pesan', 'Berhasil masuk aplikasi.');
+            $request->session()->now('pesan', 'Selamat datang ' . $pengguna->sdm_nama . '.');
+
+            $pesanSoket = $pengguna?->sdm_nama . ' telah berhasil masuk aplikasi pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
         }
 
-        $pesanSoket = $pengguna?->sdm_nama . ' telah berhasil masuk aplikasi pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
-        Websoket::siaranUmum($pesanSoket);
-
-
-        $HtmlPenuh = $app->view->make('mulai');
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $request->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')
-            ->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']) : $HtmlIsi;
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('mulai-aplikasi'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'mulai-aplikasi']);
     }
 
     /**
@@ -78,6 +74,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return app()->redirect->route('mulai')->with('pesan', 'Berhasil keluar aplikasi.');
+        return app()->redirect->route('mulai');
     }
 }

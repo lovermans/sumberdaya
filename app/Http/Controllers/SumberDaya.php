@@ -21,13 +21,15 @@ class SumberDaya
         extract(Rangka::obyekPermintaanRangka());
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
-            ->make($app->view->make('rangka'))
+            ->make($app->view->make('mulai'))
             ->withHeaders(['Vary' => 'Accept']);
     }
 
     public function mulaiAplikasi()
     {
         extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
         if ($pengguna) {
             $sandi = $pengguna->password;
@@ -40,15 +42,12 @@ class SumberDaya
                 $sesi->put(['spanduk' => 'Sandi Anda kurang aman.']);
             }
 
-            $sesi->now('pesan', 'Berhasil masuk aplikasi.');
+            $sesi->now('pesan', 'Selamat datang ' . $pengguna->sdm_nama . '.');
         }
 
-        $HtmlPenuh = $app->view->make('mulai');
-        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-
-        return $reqs->pjax()
-            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
-            : $HtmlPenuh;
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
+            ->make($app->view->make('mulai-aplikasi'))
+            ->withHeaders(['Vary' => 'Accept']);
     }
 
     public function tentangAplikasi()

@@ -39,14 +39,6 @@
             halaman.setAttribute('data-tematerang', e.currentTarget.checked);
         }));
 
-        if (location.href == "{{ $app->url->route('mulai') . '/' }}" && !navigator.onLine) {
-            document.getElementById("isi").innerHTML = "<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $app->url->route('mulai') }}'>Hubungkan Aplikasi</a>.</p>";
-        };
-
-        if (location.href == "{{ $app->url->route('tentang-aplikasi') }}") {
-            cariElemen("nav a[href='{{ $app->url->route('tentang-aplikasi') }}']").then((el) => { el.classList.add("aktif"); });
-        };
-
         (async () => {
             while (!window.aplikasiSiap) {
                 await new Promise((resolve, reject) =>
@@ -58,14 +50,6 @@
                 tautan: "{!! $app->url->asset($app->make('Illuminate\Foundation\Mix')('/ikon.svg')) !!}",
                 normalview: true
             });
-
-            if (location.href == "{{ $app->url->route('mulai').'/' }}" && navigator.onLine) {
-                lemparXHR({
-                    tujuan: "#isi",
-                    tautan: "{!! $app->url->route('mulai-aplikasi', [ 'aplikasivalet' => $app->config->get('app.aplikasivalet')]) !!}",
-                    normalview: true
-                });
-            };
 
             document.getElementById('sambutan').remove();
 

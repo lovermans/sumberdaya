@@ -143,6 +143,10 @@
         </a>
     </div>
 
+    <script>
+        document.querySelector("nav a[href='{{ $app->url->route('tentang-aplikasi') }}']").classList.add("aktif");
+    </script>
+
     @include('pemberitahuan')
     @include('komponen')
 </div>
