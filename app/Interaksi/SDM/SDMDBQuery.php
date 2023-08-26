@@ -695,7 +695,7 @@ class SDMDBQuery
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $database->table('sanksisdms')->insert($data);
+        $app->db->table('sanksisdms')->insert($data);
     }
 
     public static function ubahDataSanksiSDM($uuid, $data)
