@@ -33,7 +33,7 @@
             KIRIM WHATSAPP
         </a>
 
-        <a class="utama" href="{{ $app->url->route('mulai') }}">BERANDA</a>
+        <a class="utama" href="{{ $app->url->route('mulai') . '/' }}">BERANDA</a>
     </div>
 </div>
 @endsection

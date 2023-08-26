@@ -51,7 +51,7 @@
             </svg>
         </label>
 
-        <a class="isi-xhr" href="{{ $app->url->route('mulai') }}">
+        <a class="isi-xhr" href="{{ $app->url->route('mulai') . '/' }}">
             <img id="logo"
                 src="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/Logo Perusahaan.webp')) }}"
                 title="{{ $app->config->get('app.usaha') }}" alt="{{ $app->config->get('app.usaha') }}"

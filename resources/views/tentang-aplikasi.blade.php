@@ -136,7 +136,7 @@
             </svg>
         </a>
 
-        <a class="isi-xhr" data-tn="true" href="{{ $app->url->route('mulai') }}">
+        <a class="isi-xhr" data-tn="true" href="{{ $app->url->route('mulai') . '/' }}">
             <svg viewBox="0 0 24 24">
                 <use href="#ikonrumah"></use>
             </svg>

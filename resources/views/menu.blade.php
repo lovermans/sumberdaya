@@ -73,7 +73,7 @@ loading="lazy">
 @fragment('menu-aplikasi')
 @if($app->request->user())
 <div class="menu-akun">
-    <a class="menu-xhr" href="{{ $app->url->route('mulai') }}">
+    <a class="menu-xhr" href="{{ $app->url->route('mulai') . '/' }}">
         <svg viewBox="0 0 24 24">
             <use href="#ikonrumah"></use>
         </svg>
@@ -99,7 +99,7 @@ loading="lazy">
 
 <script>
     if (location.href == "{{$app->url->route('mulai') . '/' }}")
-    cariElemen(".menu-akun a[href='{{ $app->url->route('mulai') }}']")
+    cariElemen(".menu-akun a[href='{{ $app->url->route('mulai') . '/' }}']")
     .then((el) => {el.classList.add("aktif");});
 
     if (location.href.includes("{{$app->url->route('sdm.mulai') }}"))
