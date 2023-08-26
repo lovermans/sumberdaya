@@ -149,4 +149,27 @@ class SDMExcel
 
         return EksporExcel::eksporExcelStream(...$argumen);
     }
+
+    public static function eksporExcelPencarianSanksiSDM($data)
+    {
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $argumen = [
+            'namaBerkas' => 'eksporsanksisdm-',
+            'dataEkspor' => $data,
+            'pengecualian' => [
+                'sanksi_uuid',
+                'langgar_tsdm_uuid',
+                'langgar_psdm_uuid'
+            ],
+            'pesanData' => ' data sanksi SDM',
+            'binder' => new CustomValueBinder(),
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet,
+            'chunk' => 100
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
+    }
 }

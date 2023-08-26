@@ -850,6 +850,61 @@ class SDMDBQuery
         $app->db->table('posisis')->where('posisi_uuid', $uuid)->update($data);
     }
 
+    public static function cariDataSanksiSDM($permintaan, $hariIni, $kataKunci, $uuid, $lingkupIjin, $uruts)
+    {
+        return static::ambilDBSanksiSDM()
+            ->when($permintaan->sanksi_jenis, function ($query) use ($permintaan) {
+                $query->whereIn('sanksi_jenis', (array) $permintaan->sanksi_jenis);
+            })
+            ->when($permintaan->sanksi_status == 'AKTIF', function ($query) use ($hariIni) {
+                $query->where('sanksi_selesai', '>=', $hariIni);
+            })
+            ->when($permintaan->sanksi_status == 'BERAKHIR', function ($query) use ($hariIni) {
+                $query->where('sanksi_selesai', '<', $hariIni);
+            })
+            ->when($permintaan->sanksi_penempatan, function ($query) use ($permintaan) {
+                $query->where(function ($group) use ($permintaan) {
+                    $group->whereIn('kontrak_t.penempatan_lokasi', (array) $permintaan->sanksi_penempatan)
+                        ->orWhereIn('kontrak_p.penempatan_lokasi', (array) $permintaan->sanksi_penempatan);
+                });
+            })
+            ->when($permintaan->status_sdm, function ($query) use ($permintaan) {
+                $query->where(function ($group) use ($permintaan) {
+                    $group->whereIn('kontrak_t.penempatan_kontrak', (array) $permintaan->status_sdm);
+                });
+            })
+            ->when($kataKunci, function ($query, $kataKunci) {
+                $query->where(function ($group) use ($kataKunci) {
+                    $group->where('sanksi_no_absen', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('a.sdm_nama', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('b.sdm_nama', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('sanksi_tambahan', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('sanksi_keterangan', 'like', '%' . $kataKunci . '%');
+                });
+            })
+            ->when($permintaan->tgl_sanksi_mulai && $permintaan->tgl_sanksi_sampai, function ($query) use ($permintaan) {
+                $query->whereBetween('sanksi_mulai', [$permintaan->tgl_sanksi_mulai, $permintaan->tgl_sanksi_sampai]);
+            })
+            ->when($uuid, function ($query) use ($uuid) {
+                $query->where('a.sdm_uuid', $uuid);
+            })
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin)
+                        ->orWhereIn('kontrak_p.penempatan_lokasi', $lingkupIjin);
+                });
+            })
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->latest('sanksi_mulai');
+                }
+            );
+    }
+
     public static function ambilDBSanksiSDM()
     {
         return static::ambilSanksiSDM()

@@ -526,6 +526,11 @@ class SDMValidasi
             '*.sanksi_id_pengubah.*' => 'ID Pembuat maksimal 10 karakter dan terdaftar di data SDM.',
             '*.sanksi_id_pembuat.*' => 'ID Pengubah maksimal 10 karakter dan terdaftar di data SDM.',
             '*.sanksi_no_absen.*' => 'No Absen penerima sanksi maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.tgl_sanksi_mulai.*' => 'Tanggal Mulai Sanksi wajib berupa tanggal.',
+            '*.tgl_sanksi_sampai.*' => 'Tanggal Akhir Sanksi wajib berupa tanggal dan lebih lama dari Tanggal Mulai Sanksi.',
+            '*.sanksi_penempatan.*' => 'Lokasi Penempatan wajib berupa karakter.',
+            '*.status_sdm.*' => 'Status Penempatan wajib berupa karakter.',
+            '*.status_sanksi.*' => 'Status Sanksi tidak sesuai daftar.',
         ];
     }
 
@@ -552,6 +557,28 @@ class SDMValidasi
                 ...static::dasarValidasiSanksiSDM()
             ],
             static::pesanKesalahanValidasiSanksiSDM()
+        );
+    }
+
+    public static function validasiPencarianSanksiSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                ...static::dasarValidasiPencarianSDM(),
+                '*.tgl_sanksi_mulai' => ['sometimes', 'nullable', 'date'],
+                '*.tgl_sanksi_sampai' => ['sometimes', 'nullable', 'required_with:tgl_sanksi_mulai', 'date', 'after:tgl_sanksi_mulai'],
+                '*.sanksi_jenis.*' => ['required', 'string', Rule::exists('aturs', 'atur_butir')->where(function ($query) {
+                    return $query->where('atur_jenis', 'SANKSI SDM');
+                })],
+                '*.sanksi_penempatan.*' => ['sometimes', 'nullable', 'string'],
+                '*.status_sdm.*' => ['sometimes', 'nullable', 'string'],
+                '*.status_sanksi' => ['sometimes', 'nullable', 'string', Rule::in(['AKTIF', 'BERAKHIR'])],
+            ],
+            [
+                ...static::pesanKesalahanValidasiPencarianSDM(),
+                ...static::pesanKesalahanValidasiSanksiSDM()
+            ]
         );
     }
 }
