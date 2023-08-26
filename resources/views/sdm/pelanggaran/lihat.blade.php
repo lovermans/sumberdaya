@@ -54,14 +54,15 @@
         <div class="isian gspan-4">
             <h3>Bukti Pendukung Laporan</h3>
 
-            @if ($app->filesystem->exists('sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))
+            @if ($app->filesystem->exists($berkasLapPelanggaran = 'sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no .
+            '.pdf'))
             <iframe class="berkas tcetak"
-                src="{{ $app->url->route('sdm.pelanggaran.berkas', ['berkas' => $langgar->langgar_lap_no . '.pdf' . '?' . filemtime(storage_path('app/sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))]) }}"
+                src="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasLapPelanggaran . '?' . filemtime(storage_path('app/' . $berkasLapPelanggaran))]) }}"
                 title="Bukti Pendukung Laporan Pelanggaran SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                href="{{ $app->url->route('sdm.pelanggaran.berkas', ['berkas' => $langgar->langgar_lap_no . '.pdf' . '?' . filemtime(storage_path('app/sdm/pelanggaran/berkas/' . $langgar->langgar_lap_no . '.pdf'))]) }}">
+                href="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasLapPelanggaran . '?' . filemtime(storage_path('app/' . $berkasLapPelanggaran))]) }}">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonunduh"></use>
                 </svg>

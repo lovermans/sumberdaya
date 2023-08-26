@@ -59,14 +59,15 @@
         <div class="isian gspan-4">
             <h3>Bukti Pendukung Laporan</h3>
 
-            @if ($app->filesystem->exists('sdm/pelanggaran/berkas/' . $sanksi->sanksi_lap_no . '.pdf'))
+            @if ($app->filesystem->exists($berkasLap_Pelanggaran = 'sdm/pelanggaran/berkas/' . $sanksi->sanksi_lap_no .
+            '.pdf'))
             <iframe class="berkas tcetak"
-                src="{{ $app->url->route('sdm.pelanggaran.berkas', ['berkas' => $sanksi->sanksi_lap_no . '.pdf' . '?' . filemtime(storage_path('app/sdm/pelanggaran/berkas/' . $sanksi->sanksi_lap_no . '.pdf'))]) }}"
+                src="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasLap_Pelanggaran . '?' . filemtime(storage_path('app/' . $berkasLap_Pelanggaran))]) }}"
                 title="Bukti Pendukung Laporan Pelanggaran SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                href="{{ $app->url->route('sdm.pelanggaran.berkas', ['berkas' => $sanksi->sanksi_lap_no . '.pdf' . '?' . filemtime(storage_path('app/sdm/pelanggaran/berkas/' . $sanksi->sanksi_lap_no . '.pdf'))]) }}">
+                href="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasLap_Pelanggaran . '?' . filemtime(storage_path('app/' . $berkasLap_Pelanggaran))]) }}">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonunduh"></use>
                 </svg>
@@ -97,15 +98,15 @@
         <div class="isian gspan-4">
             <h3>Berkas Pemberian Sanksi</h3>
 
-            @if ($app->filesystem->exists('sdm/sanksi/berkas/' . $sanksi->sanksi_no_absen . ' - ' .
+            @if ($app->filesystem->exists($berkasSanksi = 'sdm/sanksi/berkas/' . $sanksi->sanksi_no_absen . ' - ' .
             $sanksi->sanksi_jenis . ' - ' . $sanksi->sanksi_mulai . '.pdf'))
             <iframe class="berkas tcetak"
-                src="{{ $app->url->route('sdm.sanksi.berkas', ['berkas' => $sanksi->sanksi_no_absen . ' - ' . $sanksi->sanksi_jenis . ' - ' . $sanksi->sanksi_mulai . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $sanksi->sanksi_no_absen . ' - ' . $sanksi->sanksi_jenis . ' - ' . $sanksi->sanksi_mulai . '.pdf'))]) }}"
+                src="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasSanksi . '?' . filemtime(storage_path('app/' . $berkasSanksi))]) }}"
                 title="Dokumen Sanksi SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                href="{{ $app->url->route('sdm.sanksi.berkas', ['berkas' => $sanksi->sanksi_no_absen . ' - ' . $sanksi->sanksi_jenis . ' - ' . $sanksi->sanksi_mulai . '.pdf' . '?' . filemtime(storage_path('app/sdm/sanksi/berkas/' . $sanksi->sanksi_no_absen . ' - ' . $sanksi->sanksi_jenis . ' - ' . $sanksi->sanksi_mulai . '.pdf'))]) }}">
+                href="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasSanksi . '?' . filemtime(storage_path('app/' . $berkasSanksi))]) }}">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonunduh"></use>
                 </svg>
