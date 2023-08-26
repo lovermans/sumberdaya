@@ -2,7 +2,7 @@
 
 namespace App\Interaksi\SDM;
 
-use App\Interaksi\Rangka;
+use App\Interaksi\Validasi;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -11,9 +11,7 @@ class SDMValidasi
 {
     public static function validasiTambahDataSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 '*.sdm_no_absen' => ['required', 'string', 'max:10', 'unique:sdms,sdm_no_absen'],
@@ -27,9 +25,7 @@ class SDMValidasi
 
     public static function validasiUbahDataSDM($uuid, $permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 '*.sdm_no_absen' => ['required', 'string', 'max:10', Rule::unique('sdms')->where(fn ($query) => $query->whereNot('sdm_uuid', $uuid))],
@@ -44,9 +40,7 @@ class SDMValidasi
 
     public static function validasiUbahSandi($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 'password_lama' => ['required', 'string', 'current_password'],
@@ -61,9 +55,7 @@ class SDMValidasi
 
     public static function validasiImporDataSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 '*.sdm_no_absen' => ['required', 'string', 'max:10'],
@@ -77,9 +69,7 @@ class SDMValidasi
 
     public static function validasiBerkasImporDataSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 'unggah_profil_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
@@ -269,9 +259,7 @@ class SDMValidasi
 
     public static function validasiPencarianPosisiSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 ...static::dasarValidasiPencarianSDM(),
@@ -290,9 +278,7 @@ class SDMValidasi
 
     public static function validasiTambahDataPosisiSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 '*.posisi_nama' => ['required', 'string', 'unique:posisis,posisi_nama'],
@@ -305,9 +291,7 @@ class SDMValidasi
 
     public static function validasiUbahDataPosisiSDM($permintaan, $uuid)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 '*.posisi_nama' => ['required', 'string', 'max:40', Rule::unique('posisis')->where(fn ($query) => $query->whereNot('posisi_uuid', $uuid))],
@@ -320,9 +304,7 @@ class SDMValidasi
 
     public static function validasiBerkasImporDataPosisiSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 'posisi_unggah' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
@@ -335,9 +317,7 @@ class SDMValidasi
 
     public static function validasiImporDataPosisiSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 '*.posisi_nama' => ['required', 'string', 'max:40'],
@@ -389,9 +369,7 @@ class SDMValidasi
 
     public static function validasiPencarianPermintaanTambahSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 ...static::dasarValidasiPencarianSDM(),
@@ -414,9 +392,7 @@ class SDMValidasi
 
     public static function validasiTambahDataPermintaanTambahSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 '*.tambahsdm_no' => ['required', 'string', 'max:20', 'unique:tambahsdms,tambahsdm_no'],
@@ -429,9 +405,7 @@ class SDMValidasi
 
     public static function validasiUbahDataPermintaanTambahSDM($permintaan, $aturan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             $aturan,
             static::pesanKesalahanValidasiPermintaanTambahSDM()
@@ -472,9 +446,7 @@ class SDMValidasi
 
     public static function validasiPencarianLapPelanggaranSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 ...static::dasarValidasiPencarianSDM(),
@@ -494,9 +466,7 @@ class SDMValidasi
 
     public static function validasiTambahDataLapPelanggaranSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 ...static::dasarValidasiLapPelanggaranSDM(),
@@ -509,9 +479,7 @@ class SDMValidasi
 
     public static function validasiBerkasLapPelanggaranSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 'berkas_laporan' => ['sometimes', 'file', 'mimetypes:application/pdf'],
@@ -524,9 +492,7 @@ class SDMValidasi
 
     public static function validasiUbahDataLapPelanggaranSDM($permintaan, $aturan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             $aturan,
             static::pesanKesalahanValidasiLapPelanggaranSDM()
@@ -565,9 +531,7 @@ class SDMValidasi
 
     public static function validasiUbahDataSanksiSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 '*.sanksi_id_pengubah' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
@@ -579,9 +543,7 @@ class SDMValidasi
 
     public static function validasiTambahDataSanksiSDM($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return Validasi::validasiUmum(
             $permintaan,
             [
                 '*.sanksi_lap_no' => ['required', 'string', 'max:20', 'unique:sanksisdms,sanksi_lap_no'],

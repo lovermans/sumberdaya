@@ -6,11 +6,16 @@ use Illuminate\Validation\Rule;
 
 class Validasi
 {
-    public static function validasiPermintaanDataPengaturan($permintaan)
+    public static function validasiUmum($sumber, $aturan, $pesanKesalahan)
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        return $app->validator->make(
+        return $app->validator->make($sumber, $aturan, $pesanKesalahan);
+    }
+
+    public static function validasiPermintaanDataPengaturan($permintaan)
+    {
+        return static::validasiUmum(
             $permintaan,
             [
                 '*.kata_kunci' => ['sometimes', 'nullable', 'string'],
@@ -26,13 +31,11 @@ class Validasi
 
     public static function validasiTambahDataPengaturan($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return static::validasiUmum(
             $permintaan,
             [
-                '*.atur_butir' => ['required', 'string', 'max:40', Rule::unique('aturs')->where(function ($query) use ($reqs) {
-                    $query->where('atur_jenis', $reqs->atur_jenis);
+                '*.atur_butir' => ['required', 'string', 'max:40', Rule::unique('aturs')->where(function ($query) use ($permintaan) {
+                    $query->where('atur_jenis', $permintaan[0]['atur_jenis']);
                 })],
                 '*.atur_id_pembuat' => ['reqquired', 'string', 'exists:sdms,sdm_no_absen'],
                 ...static::dasarValidasiPengaturan()
@@ -43,15 +46,13 @@ class Validasi
 
     public static function validasiUbahDataPengaturan($uuid, $permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return static::validasiUmum(
             $permintaan,
             [
-                '*.atur_butir' => ['required', 'string', 'max:40', Rule::unique('aturs')->where(function ($query) use ($reqs, $uuid) {
-                    $query->where('atur_jenis', $reqs->atur_jenis)->whereNot('atur_uuid', $uuid);
+                '*.atur_butir' => ['required', 'string', 'max:40', Rule::unique('aturs')->where(function ($query) use ($permintaan, $uuid) {
+                    $query->where('atur_jenis', $permintaan[0]['atur_jenis'])->whereNot('atur_uuid', $uuid);
                 })],
-                '*.atur_id_pengubah.*' => ['required', 'string', 'exists:sdms,sdm_no_absen'],
+                '*.atur_id_pengubah' => ['required', 'string', 'exists:sdms,sdm_no_absen'],
                 ...static::dasarValidasiPengaturan()
             ],
             static::pesanValidasiArrayPengaturan()
@@ -86,9 +87,7 @@ class Validasi
 
     public static function validasiBerkasImporDataPengaturan($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return static::validasiUmum(
             $permintaan,
             [
                 'atur_unggah' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
@@ -101,9 +100,7 @@ class Validasi
 
     public static function validasiImporDataPengaturan($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return static::validasiUmum(
             $permintaan,
             [
                 '*.atur_butir' => ['required', 'string', 'max:40'],
@@ -117,9 +114,7 @@ class Validasi
 
     public static function validasiHapusDataDB($permintaan)
     {
-        extract(Rangka::obyekPermintaanRangka());
-
-        return $app->validator->make(
+        return static::validasiUmum(
             $permintaan,
             [
                 'alasan' => ['required', 'string'],
@@ -127,9 +122,9 @@ class Validasi
                 'waktu_dihapus' => ['required', 'date'],
             ],
             [
-                'alasan' => 'Alasan Penghapusan',
-                'id_penghapus' => 'ID Penghapus',
-                'waktu_dihapus' => 'Waktu Dihapus',
+                'alasan' => 'Alasan Penghapusan wajib diisi.',
+                'id_penghapus' => 'ID Penghapus tidak tersedia.',
+                'waktu_dihapus' => 'Waktu Dihapus tidak tersedia.',
             ]
         );
     }
