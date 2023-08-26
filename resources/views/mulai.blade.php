@@ -1,8 +1,8 @@
 @extends('rangka')
 
 @section('isi')
-<div id="beranda">
-    <div id="mulai-aplikasi"></div>
+<div id="beranda" class="scroll-margin">
+    <div id="mulai-aplikasi" class="tcetak scroll-margin"></div>
 
     <div class="kartu">
         <h2>Sejarah</h2>
@@ -131,7 +131,7 @@
                 lemparXHR({
                     tujuan: "#mulai-aplikasi",
                     tautan: "{!! $app->url->route('mulai-aplikasi', [ 'aplikasivalet' => $app->config->get('app.aplikasivalet')]) !!}",
-                    normalview: true
+                    topview: true
                 });
             }
         })();

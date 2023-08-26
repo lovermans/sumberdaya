@@ -65,7 +65,8 @@ self.addEventListener('fetch', function (event) {
     event.respondWith(
         (async () => {
             try {
-                const cachedResponse = await caches.match(event.request, { ignoreSearch: true, ignoreVary: true });
+                const cacheOffline = await caches.open(CURRENT_CACHES.prefetch);
+                const cachedResponse = await cacheOffline.match(event.request, { ignoreSearch: true, ignoreVary: true });
                 if (cachedResponse) return cachedResponse;
 
                 const networkResponse = await fetch(event.request);
