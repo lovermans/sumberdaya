@@ -255,8 +255,6 @@ class Sanksi
 
         abort_unless($pengguna && $lap_uuid && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-        $database = $app->db;
-
         $laporan = SDMDBQuery::ambilDataPelanggaranSDM($lap_uuid, array_filter(explode(',', $pengguna->sdm_ijin_akses)));
 
         abort_unless($laporan, 404, 'Data Laporan Pelanggaran tidak ditemukan.');
@@ -287,9 +285,9 @@ class Sanksi
 
             $valid = $validasi->safe()->all()[0];
 
-            $data =  Arr::except($valid, ['sanksi_berkas']);
+            $data = Arr::except($valid, ['sanksi_berkas']);
 
-            $database->table('sanksisdms')->insert($data);
+            SDMDBQuery::tambahDataSanksiSDM($data);
 
             $berkas = Arr::only($valid, ['sanksi_berkas'])['sanksi_berkas'] ?? false;
 
@@ -301,6 +299,13 @@ class Sanksi
 
             SDMCache::hapusCachePelanggaranSDM();
             SDMCache::hapusCacheSanksiSDM();
+
+            $pesanSoket = $pengguna?->sdm_nama . ' telah menambah data Sanksi SDM nomor absen '
+                . Arr::only($valid, ['sanksi_no_absen'])['sanksi_no_absen'] . ' tanggal ' . Arr::only($valid, ['sanksi_mulai'])['sanksi_mulai']
+                . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
+
             $pesan = Rangka::statusBerhasil();
 
             return $perujuk

@@ -617,7 +617,7 @@ class SDMDBQuery
                         ->orWhereIn('kontrak_p.penempatan_lokasi', $lingkupIjin);
                 });
             })
-            ->where('sanksi_uuid', $uuid)->first();
+            ->where('langgar_uuid', $uuid)->first();
     }
 
     public static function ambilDataPelanggaran_SanksiSDM()
