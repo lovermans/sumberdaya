@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\SDM;
 
+use App\Interaksi\Rangka;
 use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\SDM\Berkas;
+use App\Interaksi\SDM\SDMDBQuery;
 
 class Penilaian
 {
@@ -208,41 +210,20 @@ class Penilaian
 
     public function lihat($uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
+        extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
-
-        $database = $app->db;
-
-        $kontrak = $this->dataKontrak($database);
-
-        $nilai = $this->dataDasar($database)
-            ->addSelect('sdm_uuid', 'sdm_nama', 'sdm_tgl_berhenti', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', $database->raw('(IFNULL(nilaisdm_bobot_hadir, 0) + IFNULL(nilaisdm_bobot_sikap, 0) + IFNULL(nilaisdm_bobot_target, 0)) as nilaisdm_total'))
-            ->leftJoin('sdms', 'nilaisdm_no_absen', '=', 'sdm_no_absen')
-            ->leftJoinSub($kontrak, 'kontrak', function ($join) {
-                $join->on('nilaisdm_no_absen', '=', 'kontrak.penempatan_no_absen');
-            })
-            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-                $query->where(function ($group) use ($lingkupIjin) {
-                    $group->whereIn('kontrak.penempatan_lokasi', $lingkupIjin);
-                });
-            })
-            ->where('nilaisdm_uuid', $uuid)->first();
+        $nilai = SDMDBQuery::ambilDataPenilaianSDM($uuid, array_filter(explode(',', $pengguna->sdm_ijin_akses)));
 
         abort_unless($nilai, 404, 'Data Penialain SDM tidak ditemukan.');
 
-        $data = [
-            'nilai' => $nilai
-        ];
-
-        $HtmlPenuh = $app->view->make('sdm.penilaian.lihat', $data);
+        $HtmlPenuh = $app->view->make('sdm.penilaian.lihat', compact('nilai'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 
     public function tambah(FungsiStatis $fungsiStatis)
