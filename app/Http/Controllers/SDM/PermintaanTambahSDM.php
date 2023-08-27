@@ -271,9 +271,7 @@ class PermintaanTambahSDM
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        $str = str();
-
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
