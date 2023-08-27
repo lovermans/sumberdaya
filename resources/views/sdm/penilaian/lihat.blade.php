@@ -63,17 +63,15 @@
         <div class="isian gspan-4">
             <h3>Berkas Penilaian</h3>
 
-            @if ($app->filesystem->exists('sdm/penilaian/berkas/' . $nilai->nilaisdm_no_absen . ' - ' .
+            @if ($app->filesystem->exists($berkasNilai = 'sdm/penilaian/berkas/' . $nilai->nilaisdm_no_absen . ' - ' .
             $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf'))
-            <iframe class="berkas tcetak" src="{{ $app->url->route('sdm.penilaian.berkas', ['berkas' => $nilai->nilaisdm_no_absen . ' - ' .
-                $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf' . '?' . filemtime(storage_path('app/sdm/penilaian/berkas/' . $nilai->nilaisdm_no_absen . ' - ' .
-            $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf'))]) }}"
+            <iframe class="berkas tcetak"
+                src="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasNilai . '?' . filemtime(storage_path('app/' . $berkasNilai))]) }}"
                 title="Bukti Pendukung Laporan Penilaian SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
-            <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah" href="{{ $app->url->route('sdm.penilaian.berkas', ['berkas' => $nilai->nilaisdm_no_absen . ' - ' .
-                $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf' . '?' . filemtime(storage_path('app/sdm/penilaian/berkas/' . $nilai->nilaisdm_no_absen . ' - ' .
-            $nilai->nilaisdm_tahun . ' - ' . $nilai->nilaisdm_periode . '.pdf'))]) }}">
+            <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
+                href="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasNilai . '?' . filemtime(storage_path('app/' . $berkasNilai))]) }}">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonunduh"></use>
                 </svg>
