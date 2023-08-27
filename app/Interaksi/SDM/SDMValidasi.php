@@ -640,6 +640,8 @@ class SDMValidasi
             '*.nilai_berkas.*' => 'Berkas Penilaian urutan ke-:position wajib berupa berkas format PDF.',
             '*.nilaisdm_id_pengubah.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.nilaisdm_id_pembuat.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.nilaisdm_kontrak.*' => 'Jenis Kontrak urutan ke-:position wajib berupa karakter.',
+            '*.nilaisdm_penempatan.*' => 'Lokasi urutan ke-:position wajib berupa karakter.',
         ];
     }
 
@@ -665,6 +667,24 @@ class SDMValidasi
                 ...static::dasarValidasiNilaiSDM()
             ],
             static::pesanKesalahanValidasiNilaiSDM()
+        );
+    }
+
+    public static function validasiPencarianNilaiSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                ...static::dasarValidasiPencarianSDM(),
+                '*.nilaisdm_tahun.*' => ['sometimes', 'nullable', 'date_format:Y'],
+                '*.nilaisdm_periode.*' => ['sometimes', 'nullable', 'string'],
+                '*.nilaisdm_kontrak.*' =>  ['sometimes', 'nullable', 'string'],
+                '*.nilaisdm_penempatan.*' => ['sometimes', 'nullable', 'string'],
+            ],
+            [
+                ...static::pesanKesalahanValidasiPencarianSDM(),
+                ...static::pesanKesalahanValidasiNilaiSDM()
+            ]
         );
     }
 }

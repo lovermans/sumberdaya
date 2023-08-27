@@ -213,4 +213,23 @@ class SDMExcel
 
         return EksporExcel::eksporExcelStream(...$argumen);
     }
+
+    public static function eksporExcelPencarianNilaiSDM($data)
+    {
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $argumen = [
+            'namaBerkas' => 'eksporpenilaiansdm-',
+            'dataEkspor' => $data,
+            'pengecualian' => ['nilaisdm_uuid', 'sdm_uuid'],
+            'pesanData' => ' data penilaian SDM',
+            'binder' => new CustomValueBinder(),
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet,
+            'chunk' => 100
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
+    }
 }

@@ -763,7 +763,7 @@ class SDMDBQuery
             ->from('penilaiansdms');
     }
 
-    public static function ambilDataPenilaianSDM($uuid, $lingkupIjin)
+    public static function ambilDBPenilaianSDM()
     {
         return static::ambilPenilaianSDM()
             ->addSelect(
@@ -778,7 +778,65 @@ class SDMDBQuery
             ->leftJoin('sdms', 'nilaisdm_no_absen', '=', 'sdm_no_absen')
             ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
                 $join->on('nilaisdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            });
+    }
+
+    public static function cariPenilaianSDM($permintaan, $kataKunci, $uuid, $lingkupIjin, $uruts)
+    {
+        return static::ambilDBPenilaianSDM()
+            ->when($permintaan->nilaisdm_penempatan, function ($query) use ($permintaan) {
+                $query->where(function ($group) use ($permintaan) {
+                    $group->whereIn('kontrak.penempatan_lokasi', (array) $permintaan->nilaisdm_penempatan);
+                });
             })
+            ->when($permintaan->nilaisdm_kontrak, function ($query) use ($permintaan) {
+                $query->where(function ($group) use ($permintaan) {
+                    $group->whereIn('kontrak.penempatan_kontrak', (array) $permintaan->nilaisdm_kontrak);
+                });
+            })
+            ->when($permintaan->nilaisdm_tahun, function ($query) use ($permintaan) {
+                $query->where(function ($group) use ($permintaan) {
+                    $group->whereIn('nilaisdm_tahun', (array) $permintaan->nilaisdm_tahun);
+                });
+            })
+            ->when($permintaan->nilaisdm_periode, function ($query) use ($permintaan) {
+                $query->where(function ($group) use ($permintaan) {
+                    $group->whereIn('nilaisdm_periode', (array) $permintaan->nilaisdm_periode);
+                });
+            })
+            ->when($kataKunci, function ($query, $kataKunci) {
+                $query->where(function ($group) use ($kataKunci) {
+                    $group->where('nilaisdm_no_absen', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('sdm_nama', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('nilaisdm_tindak_lanjut', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('nilaisdm_keterangan', 'like', '%' . $kataKunci . '%');
+                });
+            })
+            ->when($permintaan->tgl_sanksi_mulai && $permintaan->tgl_sanksi_sampai, function ($query) use ($permintaan) {
+                $query->whereBetween('sanksi_mulai', [$permintaan->tgl_sanksi_mulai, $permintaan->tgl_sanksi_sampai]);
+            })
+            ->when($uuid, function ($query) use ($uuid) {
+                $query->where('sdm_uuid', $uuid);
+            })
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('kontrak.penempatan_lokasi', $lingkupIjin);
+                });
+            })
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->orderBy('penilaiansdms.id', 'desc');
+                }
+            );
+    }
+
+    public static function ambilDataPenilaianSDM($uuid, $lingkupIjin)
+    {
+        return static::ambilDBPenilaianSDM()
             ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 $query->where(function ($group) use ($lingkupIjin) {
                     $group->whereIn('kontrak.penempatan_lokasi', $lingkupIjin);
