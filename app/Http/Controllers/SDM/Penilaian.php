@@ -230,14 +230,11 @@ class Penilaian
             : $HtmlPenuh;
     }
 
-    public function tambah(FungsiStatis $fungsiStatis)
+    public function tambah()
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
+        extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
@@ -245,50 +242,45 @@ class Penilaian
 
             $reqs->merge(['nilaisdm_id_pembuat' => $pengguna->sdm_no_absen]);
 
-            $validasi = $app->validator->make(
-                $reqs->all(),
-                [
-                    'nilaisdm_id_pembuat' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                    'nilaisdm_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                    ...$this->dasarValidasi()
-                ],
-                [],
-                $this->atributInput()
-            );
+            $validasi = SDMValidasi::validasiTambahDataNilaiSDM([$reqs->all()]);
 
             $validasi->validate();
 
-            $redirect = $app->redirect;
-            $perujuk = $reqs->session()->get('tautan_perujuk');
+            $valid = $validasi->safe()->all()[0];
 
-            $data = $validasi->safe()->except('nilai_berkas');
+            $data = Arr::except($valid, ['nilai_berkas']);
 
-            $app->db->table('penilaiansdms')->insert($data);
+            SDMDBQuery::tambahDataNilaiSDM($data);
 
-            $berkas = $validasi->safe()->only('nilai_berkas')['nilai_berkas'] ?? false;
+            $berkas = Arr::only($valid, ['nilai_berkas'])['nilai_berkas'] ?? false;
 
             if ($berkas) {
-                $berkas->storeAs('sdm/penilaian/berkas', $validasi->safe()->only('nilaisdm_no_absen')['nilaisdm_no_absen'] . ' - '  . $validasi->safe()->only('nilaisdm_tahun')['nilaisdm_tahun'] . ' - ' . $validasi->safe()->only('nilaisdm_periode')['nilaisdm_periode'] . '.pdf');
+                $namaBerkas = Arr::only($valid, ['nilaisdm_no_absen'])['nilaisdm_no_absen'] . ' - '  . Arr::only($valid, ['nilaisdm_tahun'])['nilaisdm_tahun'] . ' - ' . Arr::only($valid, ['nilaisdm_periode'])['nilaisdm_periode'] . '.pdf';
+
+                SDMBerkas::simpanBerkasNilaiSDM($berkas, $namaBerkas);
             }
 
-            $fungsiStatis->hapusCacheNilaiSDM();
+            SDMCache::hapusCacheNilaiSDM();
 
-            $pesan = $fungsiStatis->statusBerhasil();
+            $perujuk = $reqs->session()->get('tautan_perujuk');
+            $redirect = $app->redirect;
+            $pesan = Rangka::statusBerhasil();
 
-            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.penilaian.data')->with('pesan', $pesan);
+            return $perujuk
+                ? $redirect->to($perujuk)->with('pesan', $pesan)
+                : $redirect->route('sdm.penilaian.data')->with('pesan', $pesan);
         }
 
-        $sdms = $fungsiStatis->ambilCacheSDM()->when($lingkupIjin, function ($c) use ($lingkupIjin) {
-            return $c->whereIn('penempatan_lokasi', [null, ...$lingkupIjin]);
-        });
-
-        $data = [
-            'sdms' => $sdms,
-        ];
-
-        $HtmlPenuh = $app->view->make('sdm.penilaian.tambah-ubah', $data);
+        $HtmlPenuh = $app->view->make('sdm.penilaian.tambah-ubah', [
+            'sdms' => SDMCache::ambilCacheSDM()->when($lingkupIjin, function ($c) use ($lingkupIjin) {
+                return $c->whereIn('penempatan_lokasi', [null, ...$lingkupIjin]);
+            }),
+        ]);
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 
     public function ubah($uuid = null)

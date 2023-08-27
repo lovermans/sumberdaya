@@ -629,6 +629,7 @@ class SDMValidasi
     public static function pesanKesalahanValidasiNilaiSDM()
     {
         return [
+            '*.nilaisdm_no_absen.*' => 'Nomor Absen urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.nilaisdm_tahun.*' => 'Tahun Penilaian SDM urutan ke-:position wajib berupa Tahun.',
             '*.nilaisdm_periode.*' => 'Periode Penilaian Berkala SDM urutan ke-:position wajib berupa karakter.',
             '*.nilaisdm_bobot_hadir.*' => 'Bobot Nilai Kehadiran urutan ke-:position wajib berupa angka.',
@@ -637,7 +638,8 @@ class SDMValidasi
             '*.nilaisdm_tindak_lanjut.*' => 'Tindak Lanjut Penilaian SDM urutan ke-:position wajib berupa karakter.',
             '*.nilaisdm_keterangan.*' => 'Keterangan Penilaian SDM Penilaian SDM urutan ke-:position wajib berupa karakter.',
             '*.nilai_berkas.*' => 'Berkas Penilaian urutan ke-:position wajib berupa berkas format PDF.',
-            '*.nilaisdm_id_pengubah.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.nilaisdm_id_pengubah.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.nilaisdm_id_pembuat.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
         ];
     }
 
@@ -647,6 +649,19 @@ class SDMValidasi
             $permintaan,
             [
                 '*.nilaisdm_id_pengubah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                ...static::dasarValidasiNilaiSDM()
+            ],
+            static::pesanKesalahanValidasiNilaiSDM()
+        );
+    }
+
+    public static function validasiTambahDataNilaiSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                '*.nilaisdm_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                '*.nilaisdm_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 ...static::dasarValidasiNilaiSDM()
             ],
             static::pesanKesalahanValidasiNilaiSDM()
