@@ -15,25 +15,6 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx as ExcelWriter;
 
 class Berkas
 {
-    public function berkas($berkas = null)
-    {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $permintaanBerkas = urldecode($reqs->path());
-
-        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
-
-        abort_unless($berkas && $app->filesystem->exists("{$permintaanBerkas}"), 404, 'Berkas tidak ditemukan.');
-
-        $jalur = $app->storagePath("app/{$permintaanBerkas}");
-
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->file($jalur, [
-            'Content-Disposition' => 'inline',
-            'Content-Type' => $app->files->mimeType($jalur),
-        ]);
-    }
-
     public function eksporExcelStream($namaBerkas, $dataEkspor, $pengecualian, $pesanData, $app, $binder, $spreadsheet, $worksheet, $chunk = 100, $tabelStart = null, $namaTabel = null, $spreadsheet2 = null)
     {
         set_time_limit(0);
@@ -128,106 +109,6 @@ class Berkas
             'dataEkspor' => $cari->clone(),
             'pengecualian' => ['id'],
             'pesanData' =>  ' data penempatan SDM',
-            'app' => $app,
-            'binder' => $binder,
-            'spreadsheet' => $spreadsheet,
-            'worksheet' => $worksheet
-        ];
-
-        return $this->eksporExcelStream(...$argumen);
-    }
-
-    public function contohUnggahSanksiSDM()
-    {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
-
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
-
-        $storage = $app->filesystem;
-
-        $berkasContoh = 'unggah-umum.xlsx';
-
-        abort_unless($storage->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
-
-        $binder = new CustomValueBinder();
-        $reader = new ExcelReader();
-        $spreadsheet = $reader->load($app->storagePath("app/contoh/{$berkasContoh}"));
-        $worksheet = $spreadsheet->getSheet(1);
-
-        $database = $app->db;
-
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
-
-        $kontrak = $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_posisi', 'penempatan_lokasi', 'penempatan_kontrak', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_keterangan')
-            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
-                $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
-            });
-
-        $cari = $database->query()->select('sdm_nama', 'sanksi_no_absen', 'sanksi_jenis', 'sanksi_mulai', 'sanksi_selesai', 'sanksi_lap_no', 'sanksi_tambahan', 'sanksi_keterangan')
-            ->from('sanksisdms')
-            ->join('sdms', 'sanksi_no_absen', '=', 'sdm_no_absen')
-            ->leftJoinSub($kontrak, 'kontrak_t', function ($join) {
-                $join->on('sanksi_no_absen', '=', 'kontrak_t.penempatan_no_absen');
-            })
-            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-                $query->where(function ($group) use ($lingkupIjin) {
-                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin);
-                });
-            })
-            ->orderBy('sanksisdms.id');
-
-        $argumen = [
-            'namaBerkas' => 'unggahsanksisdm-',
-            'dataEkspor' => $cari->clone(),
-            'pengecualian' => ['id', 'sanksi_lap_no'],
-            'pesanData' =>  ' data sanksi SDM',
-            'app' => $app,
-            'binder' => $binder,
-            'spreadsheet' => $spreadsheet,
-            'worksheet' => $worksheet
-        ];
-
-        return $this->eksporExcelStream(...$argumen);
-    }
-
-    public function unduhIndexPosisiSDMExcel($cari, $app)
-    {
-        abort_unless($app->request->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
-
-        $binder = new CustomValueBinder();
-        $spreadsheet = new Spreadsheet();
-        $worksheet = $spreadsheet->getActiveSheet();
-
-        $argumen = [
-            'namaBerkas' => 'eksporjabatansdm-',
-            'dataEkspor' => $cari->clone(),
-            'pengecualian' => ['posisi_uuid'],
-            'pesanData' =>  ' data jabatan SDM',
-            'app' => $app,
-            'binder' => $binder,
-            'spreadsheet' => $spreadsheet,
-            'worksheet' => $worksheet
-        ];
-
-        return $this->eksporExcelStream(...$argumen);
-    }
-
-    public function unduhIndexPermintaanTambahSDMExcel($cari, $app)
-    {
-        abort_unless($app->request->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
-
-        $binder = new CustomValueBinder();
-        $spreadsheet = new Spreadsheet();
-        $worksheet = $spreadsheet->getActiveSheet();
-
-        $argumen = [
-            'namaBerkas' => 'eksporpermintaansdm-',
-            'dataEkspor' => $cari->clone(),
-            'pengecualian' => ['sdm_uuid', 'tambahsdm_uuid'],
-            'pesanData' =>  ' data permintaan tambah SDM',
             'app' => $app,
             'binder' => $binder,
             'spreadsheet' => $spreadsheet,
