@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SDM;
 
 use App\Interaksi\Rangka;
+use App\Interaksi\Websoket;
 use Illuminate\Support\Arr;
 use App\Tambahan\FungsiStatis;
 use App\Interaksi\SDM\SDMCache;
@@ -262,6 +263,12 @@ class Penilaian
 
             SDMCache::hapusCacheNilaiSDM();
 
+            $pesanSoket = $pengguna?->sdm_nama . ' telah menambah data Penilaian SDM nomor absen '
+                . Arr::only($valid, ['nilaisdm_no_absen'])['nilaisdm_no_absen'] . ' Tahun/Periode ' . Arr::only($valid, ['nilaisdm_tahun'])['nilaisdm_tahun'] . '/' . Arr::only($valid, ['nilaisdm_periode'])['nilaisdm_periode']
+                . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
+
             $perujuk = $reqs->session()->get('tautan_perujuk');
             $redirect = $app->redirect;
             $pesan = Rangka::statusBerhasil();
@@ -316,6 +323,12 @@ class Penilaian
             }
 
             SDMCache::hapusCacheNilaiSDM();
+
+            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah data Penilaian SDM nomor absen '
+                . $nilai->nilaisdm_no_absen . ' Tahun/Periode ' . Arr::only($valid, ['nilaisdm_tahun'])['nilaisdm_tahun'] . '/' . Arr::only($valid, ['nilaisdm_periode'])['nilaisdm_periode']
+                . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
 
             $perujuk = $reqs->session()->get('tautan_perujuk');
             $redirect = $app->redirect;
