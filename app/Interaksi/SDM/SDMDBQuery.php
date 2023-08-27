@@ -845,6 +845,17 @@ class SDMDBQuery
             ->where('nilaisdm_uuid', $uuid)->first();
     }
 
+    public static function contohImporSanksiSDM($lingkupIjin)
+    {
+        return static::ambilDBPenilaianSDM()
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin);
+                });
+            })
+            ->orderBy('penilaiansdms.id');
+    }
+
     public static function ambilPengingatPenilaianSDMTerkini()
     {
         extract(Rangka::obyekPermintaanRangka());
@@ -1081,7 +1092,22 @@ class SDMDBQuery
             $database->table('sanksisdms')->upsert(
                 $data,
                 ['sanksi_no_absen', 'sanksi_jenis', 'sanksi_mulai'],
-                ['sanksi_selesai', 'sanksi_tambahan', 'sanksi_keterangan', 'sanksi_id_pengunggah']
+                ['sanksi_selesai', 'sanksi_tambahan', 'sanksi_keterangan', 'sanksi_id_pengunggah', 'nilaisdm_diunggah']
+            );
+        });
+    }
+
+    public static function imporNilaiSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $database = $app->db;
+
+        $database->transaction(function () use ($database, $data) {
+            $database->table('penilaiansdms')->upsert(
+                $data,
+                ['nilaisdm_no_absen', 'nilaisdm_tahun', 'nilaisdm_periode'],
+                ['nilaisdm_bobot_hadir', 'nilaisdm_bobot_sikap', 'nilaisdm_bobot_target', 'nilaisdm_tindak_lanjut', 'nilaisdm_keterangan', 'nilaisdm_id_pengunggah', 'nilaisdm_diunggah']
             );
         });
     }

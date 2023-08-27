@@ -328,6 +328,19 @@ class SDMValidasi
         );
     }
 
+    public static function validasiBerkasImporDataNilaiSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                'unggah_nilai_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+            ],
+            [
+                'unggah_nilai_sdm.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).'
+            ]
+        );
+    }
+
     public static function validasiImporDataPosisiSDM($permintaan)
     {
         return Validasi::validasiUmum(
@@ -640,8 +653,10 @@ class SDMValidasi
             '*.nilai_berkas.*' => 'Berkas Penilaian urutan ke-:position wajib berupa berkas format PDF.',
             '*.nilaisdm_id_pengubah.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.nilaisdm_id_pembuat.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.nilaisdm_id_pengunggah.*' => 'ID Pengunggah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.nilaisdm_kontrak.*' => 'Jenis Kontrak urutan ke-:position wajib berupa karakter.',
             '*.nilaisdm_penempatan.*' => 'Lokasi urutan ke-:position wajib berupa karakter.',
+            '*.nilaisdm_diunggah.*' => 'Tanggal Unggah Sanksi urutan ke-:position wajib berupa tanggal.'
         ];
     }
 
@@ -685,6 +700,20 @@ class SDMValidasi
                 ...static::pesanKesalahanValidasiPencarianSDM(),
                 ...static::pesanKesalahanValidasiNilaiSDM()
             ]
+        );
+    }
+
+    public static function validasiImporDataNilaiSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                '*.nilaisdm_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                '*.nilaisdm_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                '*.nilaisdm_diunggah' => ['required', 'nullable', 'date'],
+                ...static::dasarValidasiNilaiSDM()
+            ],
+            static::pesanKesalahanValidasiNilaiSDM()
         );
     }
 }

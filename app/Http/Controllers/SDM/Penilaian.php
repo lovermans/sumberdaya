@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\SDM;
 
 use App\Interaksi\Cache;
+use App\Interaksi\Berkas;
 use App\Interaksi\Rangka;
 use App\Interaksi\Websoket;
 use Illuminate\Support\Arr;
 use App\Interaksi\SDM\SDMCache;
+use App\Interaksi\SDM\SDMExcel;
 use App\Interaksi\SDM\SDMBerkas;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMValidasi;
-use App\Interaksi\SDM\SDMExcel;
 
 class Penilaian
 {
@@ -198,6 +199,48 @@ class Penilaian
         }
 
         $HtmlPenuh = $app->view->make('sdm.penilaian.tambah-ubah', compact('nilai'));
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
+    }
+
+    public function contohUnggahPenilaianSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        abort_unless($app->filesystem->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
+
+        $cari = SDMDBQuery::contohImporSanksiSDM(array_filter(explode(',', $pengguna->sdm_ijin_akses)));
+
+        return SDMExcel::eksporExcelContohUnggahNilaiSDM($cari);
+    }
+
+    public function unggahPenilaianSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        if ($reqs->isMethod('post')) {
+            $validasifile = SDMValidasi::validasiBerkasImporDataNilaiSDM($reqs->all());;
+
+            $validasifile->validate();
+
+            $file = $validasifile->safe()->only('unggah_nilai_sdm')['unggah_nilai_sdm'];
+            $namafile = 'unggahnilaisdm-' . date('YmdHis') . '.xlsx';
+
+            Berkas::simpanBerkasImporExcelSementara($file, $namafile);
+
+            $fileexcel = Berkas::ambilBerkasImporExcelSementara($namafile);
+
+            return SDMExcel::imporExcelDataNilaiSDM($fileexcel);
+        };
+
+        $HtmlPenuh = $app->view->make('sdm.penilaian.unggah');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
 
         return $reqs->pjax()

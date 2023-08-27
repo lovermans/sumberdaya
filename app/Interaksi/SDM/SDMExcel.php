@@ -68,6 +68,25 @@ class SDMExcel
         return SDMImporExcel::imporExcelStream(...$argumen);
     }
 
+    public static function imporExcelDataNilaiSDM($fileexcel)
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        $argumen = [
+            'reader' => new ExcelReader(),
+            'fileexcel' => $fileexcel,
+            'validasiImpor' => 'validasiImporDataNilaiSDM',
+            'databaseImpor' => 'imporNilaiSDM',
+            'cacheImpor' => 'hapusCacheNilaiSDM',
+            'rute' => 'sdm.penilaian.data',
+            'kolomPengunggah' => 'nilaisdm_id_pengunggah',
+            'waktuUnggah' => 'nilaisdm_diunggah',
+            'pesanSoket' => $pengguna?->sdm_nama . ' telah mengimpor data Penilaian SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'))
+        ];
+
+        return SDMImporExcel::imporExcelStream(...$argumen);
+    }
+
     public static function eksporExcelContohUnggahSDM($data)
     {
         extract(Rangka::obyekPermintaanRangka());
@@ -223,6 +242,38 @@ class SDMExcel
             'namaBerkas' => 'eksporpenilaiansdm-',
             'dataEkspor' => $data,
             'pengecualian' => ['nilaisdm_uuid', 'sdm_uuid'],
+            'pesanData' => ' data penilaian SDM',
+            'binder' => new CustomValueBinder(),
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet,
+            'chunk' => 100
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
+    }
+
+    public static function eksporExcelContohUnggahNilaiSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $reader = new ExcelReader();
+        $spreadsheet = $reader->load($app->storagePath('app/contoh/unggah-umum.xlsx'));
+        $worksheet = $spreadsheet->getSheet(1);
+
+        $argumen = [
+            'namaBerkas' => 'unggahnilaisdm-',
+            'dataEkspor' => $data,
+            'pengecualian' => [
+                'id',
+                'nilaisdm_uuid',
+                'sdm_uuid',
+                'sdm_tgl_berhenti',
+                'nilaisdm_total',
+                'sdm_nama',
+                'penempatan_posisi',
+                'penempatan_lokasi',
+                'penempatan_kontrak'
+            ],
             'pesanData' => ' data penilaian SDM',
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
