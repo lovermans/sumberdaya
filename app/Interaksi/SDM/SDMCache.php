@@ -203,4 +203,11 @@ class SDMCache
         $cache->forget('PengingatSanksi - ' . $app->date->today()->format('Y-m-d'));
         $cache->forget('PengingatPelanggaran');
     }
+
+    public static function hapusCacheNilaiSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('PengingatNilai - ' . $app->date->today()->format('Y'));
+    }
 }

@@ -194,4 +194,9 @@ class SDMBerkas
     {
         $berkas->storeAs('sdm/sanksi/berkas', $namaBerkas);
     }
+
+    public static function simpanBerkasNilaiSDM($berkas, $namaBerkas)
+    {
+        $berkas->storeAs('sdm/penilaian/berkas', $namaBerkas);
+    }
 }

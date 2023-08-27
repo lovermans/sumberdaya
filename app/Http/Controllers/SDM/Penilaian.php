@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\SDM;
 
 use App\Interaksi\Rangka;
+use Illuminate\Support\Arr;
 use App\Tambahan\FungsiStatis;
+use App\Interaksi\SDM\SDMCache;
 use Illuminate\Validation\Rule;
-use App\Http\Controllers\SDM\Berkas;
+use App\Interaksi\SDM\SDMBerkas;
 use App\Interaksi\SDM\SDMDBQuery;
+use App\Interaksi\SDM\SDMValidasi;
+use App\Http\Controllers\SDM\Berkas;
 
 class Penilaian
 {
@@ -287,31 +291,13 @@ class Penilaian
         return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
     }
 
-    public function ubah(FungsiStatis $fungsiStatis, $uuid = null)
+    public function ubah($uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
+        extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
-
-        $database = $app->db;
-
-        $kontrak = $this->dataKontrak($database);
-
-        $nilai = $this->dataDasar($database)
-            ->leftJoinSub($kontrak, 'kontrak', function ($join) {
-                $join->on('nilaisdm_no_absen', '=', 'kontrak.penempatan_no_absen');
-            })
-            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-                $query->where(function ($group) use ($lingkupIjin) {
-                    $group->whereIn('kontrak.penempatan_lokasi', $lingkupIjin);
-                });
-            })
-            ->where('nilaisdm_uuid', $uuid)->first();
+        $nilai = SDMDBQuery::ambilDataPenilaianSDM($uuid, array_filter(explode(',', $pengguna->sdm_ijin_akses)));
 
         abort_unless($nilai, 404, 'Data Penilaian tidak ditemukan.');
 
@@ -319,44 +305,40 @@ class Penilaian
 
             $reqs->merge(['nilaisdm_id_pengubah' => $pengguna->sdm_no_absen]);
 
-            $validasi = $app->validator->make(
-                $reqs->all(),
-                [
-                    'nilaisdm_id_pengubah' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                    ...$this->dasarValidasi()
-                ],
-                [],
-                $this->atributInput()
-            );
+            $validasi = SDMValidasi::validasiUbahDataNilaiSDM([$reqs->all()]);
 
             $validasi->validate();
 
-            $redirect = $app->redirect;
-            $perujuk = $reqs->session()->get('tautan_perujuk');
+            $valid = $validasi->safe()->all()[0];
 
-            $data = $validasi->safe()->except('nilai_berkas');
+            $data = Arr::except($valid, ['nilai_berkas']);
 
-            $database->table('penilaiansdms')->where('nilaisdm_uuid', $uuid)->update($data);
+            SDMDBQuery::ubahDataNilaiSDM($uuid, $data);
 
-            $berkas = $validasi->safe()->only('nilai_berkas')['nilai_berkas'] ?? false;
+            $berkas = Arr::only($valid, ['nilai_berkas'])['nilai_berkas'] ?? false;
 
             if ($berkas) {
-                $berkas->storeAs('sdm/penilaian/berkas', $nilai->nilaisdm_no_absen . ' - '  . $validasi->safe()->only('nilaisdm_tahun')['nilaisdm_tahun'] . ' - ' . $validasi->safe()->only('nilaisdm_periode')['nilaisdm_periode'] . '.pdf');
+                $namaBerkas = $nilai->nilaisdm_no_absen . ' - '  . Arr::only($valid, ['nilaisdm_tahun'])['nilaisdm_tahun'] . ' - ' . Arr::only($valid, ['nilaisdm_periode'])['nilaisdm_periode'] . '.pdf';
+
+                SDMBerkas::simpanBerkasNilaiSDM($berkas, $namaBerkas);
             }
 
-            $fungsiStatis->hapusCacheNilaiSDM();
+            SDMCache::hapusCacheNilaiSDM();
 
-            $pesan = $fungsiStatis->statusBerhasil();
+            $perujuk = $reqs->session()->get('tautan_perujuk');
+            $redirect = $app->redirect;
+            $pesan = Rangka::statusBerhasil();
 
-            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.penilaian.data')->with('pesan', $pesan);
+            return $perujuk
+                ? $redirect->to($perujuk)->with('pesan', $pesan)
+                : $redirect->route('sdm.penilaian.data')->with('pesan', $pesan);
         }
 
-        $data = [
-            'nilai' => $nilai,
-        ];
-
-        $HtmlPenuh = $app->view->make('sdm.penilaian.tambah-ubah', $data);
+        $HtmlPenuh = $app->view->make('sdm.penilaian.tambah-ubah', compact('nilai'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 }

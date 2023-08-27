@@ -708,6 +708,13 @@ class SDMDBQuery
         $app->db->table('sanksisdms')->where('sanksi_uuid', $uuid)->update($data);
     }
 
+    public static function ubahDataNilaiSDM($uuid, $data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('penilaiansdms')->where('nilaisdm_uuid', $uuid)->update($data);
+    }
+
     public static function ambilPengingatSanksiSDMTerkini()
     {
         extract(Rangka::obyekPermintaanRangka());

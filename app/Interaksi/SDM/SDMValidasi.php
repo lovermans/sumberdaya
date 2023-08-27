@@ -611,4 +611,45 @@ class SDMValidasi
             static::pesanKesalahanValidasiSanksiSDM()
         );
     }
+
+    public static function dasarValidasiNilaiSDM()
+    {
+        return [
+            '*.nilaisdm_tahun' => ['required', 'date_format:Y'],
+            '*.nilaisdm_periode' => ['required', 'string'],
+            '*.nilaisdm_bobot_hadir' => ['sometimes', 'nullable', 'numeric'],
+            '*.nilaisdm_bobot_sikap' => ['sometimes', 'nullable', 'numeric'],
+            '*.nilaisdm_bobot_target' => ['sometimes', 'nullable', 'numeric'],
+            '*.nilaisdm_tindak_lanjut' => ['sometimes', 'nullable', 'string'],
+            '*.nilaisdm_keterangan' => ['sometimes', 'nullable', 'string'],
+            '*.nilai_berkas' => ['sometimes', 'file', 'mimetypes:application/pdf'],
+        ];
+    }
+
+    public static function pesanKesalahanValidasiNilaiSDM()
+    {
+        return [
+            '*.nilaisdm_tahun.*' => 'Tahun Penilaian SDM urutan ke-:position wajib berupa Tahun.',
+            '*.nilaisdm_periode.*' => 'Periode Penilaian Berkala SDM urutan ke-:position wajib berupa karakter.',
+            '*.nilaisdm_bobot_hadir.*' => 'Bobot Nilai Kehadiran urutan ke-:position wajib berupa angka.',
+            '*.nilaisdm_bobot_sikap.*' => 'Bobot Nilai Sikap Kerja urutan ke-:position wajib berupa angka.',
+            '*.nilaisdm_bobot_target.*' => 'Bobot Nilai Target Kerja urutan ke-:position wajib berupa angka.',
+            '*.nilaisdm_tindak_lanjut.*' => 'Tindak Lanjut Penilaian SDM urutan ke-:position wajib berupa karakter.',
+            '*.nilaisdm_keterangan.*' => 'Keterangan Penilaian SDM Penilaian SDM urutan ke-:position wajib berupa karakter.',
+            '*.nilai_berkas.*' => 'Berkas Penilaian urutan ke-:position wajib berupa berkas format PDF.',
+            '*.nilaisdm_id_pengubah.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+        ];
+    }
+
+    public static function validasiUbahDataNilaiSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                '*.nilaisdm_id_pengubah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                ...static::dasarValidasiNilaiSDM()
+            ],
+            static::pesanKesalahanValidasiNilaiSDM()
+        );
+    }
 }
