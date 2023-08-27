@@ -250,17 +250,17 @@
         <div class="isian gspan-4">
             <label>Berkas Penempatan</label>
 
-            @if ($app->filesystem->exists('sdm/penempatan/berkas/'.$app->request->old('sdm_no_absen',
-            $penem->sdm_no_absen
-            ??
-            null).' - '.$app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))
+            @if ($app->filesystem->exists($berkas_penempatan =
+            'sdm/penempatan/berkas/'.$app->request->old('sdm_no_absen',
+            $penem->sdm_no_absen ?? null).' - '.$app->request->old('penempatan_mulai', $penem->penempatan_mulai ??
+            null).'.pdf'))
             <iframe class="berkas tcetak"
-                src="{{ $app->url->route('sdm.penempatan.berkas', ['berkas' => $app->request->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf' . '?' . filemtime($app->storagePath('app/sdm/penempatan/berkas/' . $app->request->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))]) }}"
+                src="{{ $app->url->route('sdm.berkas', ['berkas' => $berkas_penempatan . '?' . filemtime($app->storagePath('app/' . $berkas_penempatan))]) }}"
                 title="Berkas Penempatan SDM" loading="lazy"
                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
             <a class="sekunder tcetak" target="_blank" title="Unduh Berkas Terunggah"
-                href="{{ $app->url->route('sdm.penempatan.berkas', ['berkas' => $app->request->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf' . '?' . filemtime($app->storagePath('app/sdm/penempatan/berkas/' . $app->request->old('sdm_no_absen', $penem->sdm_no_absen ?? null).' - '.$app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? null).'.pdf'))]) }}">
+                href="{{ $app->url->route('sdm.berkas', ['berkas' => $berkas_penempatan . '?' . filemtime($app->storagePath('app/' . $berkas_penempatan))]) }}">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonunduh"></use>
                 </svg>
