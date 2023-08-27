@@ -15,6 +15,24 @@
             </a>
         </div>
 
+        @if (count($lapPelanggaran))
+        <div class="isian gspan-4">
+            <label for="sanksi_lap_no">Nomor Laporan</label>
+
+            <select id="sanksi_lap_no" name="sanksi_lap_no" class="pil-cari" required>
+                @foreach ($lapPelanggaran as $lapPel)
+                <option @selected($lapPel->langgar_lap_no == $app->request->old('sanksi_lap_no',
+                    $sanksiLama->sanksi_lap_no ?? null)) value="{{ $lapPel->langgar_lap_no }}">
+                    {{ $lapPel->langgar_lap_no }} - {{ $lapPel->langgar_tanggal }} - {{ $lapPel->langgar_tsdm_nama }}
+                    {{$lapPel->langgar_isi }} oleh {{ $lapPel->langgar_psdm_nama }}
+                </option>
+                @endforeach
+            </select>
+
+            <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
+        </div>
+        @endif
+
         <div class="isian normal">
             <label for="sanksi_jenis">Jenis Sanksi</label>
 

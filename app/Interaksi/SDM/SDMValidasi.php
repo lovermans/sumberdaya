@@ -315,6 +315,19 @@ class SDMValidasi
         );
     }
 
+    public static function validasiBerkasImporDataSanksiSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                'unggah_sanksi_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+            ],
+            [
+                'unggah_sanksi_sdm.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).'
+            ]
+        );
+    }
+
     public static function validasiImporDataPosisiSDM($permintaan)
     {
         return Validasi::validasiUmum(
@@ -523,14 +536,16 @@ class SDMValidasi
             '*.sanksi_keterangan.*' => 'Keterangan Sanksi urutan ke-:position wajib berupa karakter.',
             '*.sanksi_berkas.*' => 'Berkas Sanksi urutan ke-:position wajib berupa berkas format PDF.',
             '*.sanksi_lap_no.*' => 'Nomor Laporan Pelanggaran urutan ke-:position sudah dikenai sanksi.',
-            '*.sanksi_id_pengubah.*' => 'ID Pembuat maksimal 10 karakter dan terdaftar di data SDM.',
-            '*.sanksi_id_pembuat.*' => 'ID Pengubah maksimal 10 karakter dan terdaftar di data SDM.',
-            '*.sanksi_no_absen.*' => 'No Absen penerima sanksi maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.sanksi_id_pengubah.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.sanksi_id_pembuat.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.sanksi_no_absen.*' => 'No Absen penerima sanksi urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.tgl_sanksi_mulai.*' => 'Tanggal Mulai Sanksi wajib berupa tanggal.',
             '*.tgl_sanksi_sampai.*' => 'Tanggal Akhir Sanksi wajib berupa tanggal dan lebih lama dari Tanggal Mulai Sanksi.',
             '*.sanksi_penempatan.*' => 'Lokasi Penempatan wajib berupa karakter.',
             '*.status_sdm.*' => 'Status Penempatan wajib berupa karakter.',
             '*.status_sanksi.*' => 'Status Sanksi tidak sesuai daftar.',
+            '*.sanksi_id_pengunggah.*' => 'ID Pengunggah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.sanksi_diunggah.*' => 'Tanggal Unggah Sanksi urutan ke-:position wajib berupa tanggal.',
         ];
     }
 
@@ -540,6 +555,7 @@ class SDMValidasi
             $permintaan,
             [
                 '*.sanksi_id_pengubah' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                '*.sanksi_lap_no' => ['sometimes', 'string', 'max:20', 'unique:sanksisdms,sanksi_lap_no'],
                 ...static::dasarValidasiSanksiSDM()
             ],
             static::pesanKesalahanValidasiSanksiSDM()
@@ -579,6 +595,20 @@ class SDMValidasi
                 ...static::pesanKesalahanValidasiPencarianSDM(),
                 ...static::pesanKesalahanValidasiSanksiSDM()
             ]
+        );
+    }
+
+    public static function validasiImporDataSanksiSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                '*.sanksi_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                '*.sanksi_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                '*.sanksi_diunggah' => ['sometimes', 'nullable', 'date'],
+                ...Arr::except(static::dasarValidasiSanksiSDM(), ['*.sanksi_berkas'])
+            ],
+            static::pesanKesalahanValidasiSanksiSDM()
         );
     }
 }

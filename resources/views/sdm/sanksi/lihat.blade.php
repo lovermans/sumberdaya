@@ -123,6 +123,9 @@
             href="{{ $app->url->route('sdm.sanksi.ubah', ['uuid' => $sanksi->sanksi_uuid]) }}">UBAH
             SANKSI</a>
 
+        <a class="sekunder isi-xhr" data-rekam="false" data-tujuan="#sanksi_sdm_lihat_sematan"
+            href="{{ $app->url->route('sdm.sanksi.hapus', ['uuid' => $sanksi->sanksi_uuid]) }}">HAPUS</a>
+
         @endisset
     </div>
 

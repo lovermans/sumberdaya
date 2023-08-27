@@ -193,4 +193,14 @@ class SDMCache
 
         $app->cache->forget('PengingatSanksi - ' . $app->date->today()->format('Y-m-d'));
     }
+
+    public static function hapusCachePelanggaran_SanksiSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $cache = $app->cache;
+
+        $cache->forget('PengingatSanksi - ' . $app->date->today()->format('Y-m-d'));
+        $cache->forget('PengingatPelanggaran');
+    }
 }

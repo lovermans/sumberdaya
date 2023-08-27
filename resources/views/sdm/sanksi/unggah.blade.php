@@ -16,9 +16,15 @@
             </a>
         </div>
 
-        <p>Unduh <a class="isi-xhr" href="{{ $app->url->route('sdm.sanksi.contoh-unggah') }}" data-rekam="false"
+        <p class="merah">
+            Gunakan hanya untuk mengunggah data sanksi baru saja.
+        </p>
+
+        <p>
+            Unduh <a class="isi-xhr" href="{{ $app->url->route('sdm.sanksi.contoh-unggah') }}" data-rekam="false"
                 data-tujuan="#sanksi_unggah" data-laju="true">contoh</a> excel, isi sesuai
-            petunjuk dalam excel lalu unggah kembali.</p>
+            petunjuk dalam excel lalu unggah kembali.
+        </p>
 
         <div class="isian">
             <label for="unggah_sanksirkas">Berkas</label>

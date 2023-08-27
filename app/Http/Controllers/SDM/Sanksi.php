@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\SDM;
 
 use App\Interaksi\Cache;
+use App\Interaksi\Excel;
+use App\Interaksi\Berkas;
 use App\Interaksi\Rangka;
+use App\Interaksi\Validasi;
 use App\Interaksi\Websoket;
 use Illuminate\Support\Arr;
 use App\Interaksi\SDM\SDMCache;
@@ -228,15 +231,132 @@ class Sanksi
 
             return $perujuk
                 ? $redirect->to($perujuk)->with('pesan', $pesan)
-                : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);
+                : $redirect->route('sdm.sanksi.data')->with('pesan', $pesan);
         }
 
         $data = [
             'sanksiLama' => $sanksiLama,
             'sanksis' => Cache::ambilCacheAtur()->where('atur_jenis', 'SANKSI SDM')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'desc']),
+            'lapPelanggaran' => SDMDBQuery::ambilPelanggaranSDMTerkini()->where('langgar_no_absen', $sanksiLama->sanksi_no_absen)->get()
         ];
 
         $HtmlPenuh = $app->view->make('sdm.sanksi.tambah-ubah', $data);
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
+    }
+
+    public function contohUnggahSanksiSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        abort_unless($app->filesystem->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
+
+        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+
+        $cari = SDMDBQuery::ambilSanksiSDM()
+            ->addSelect('sdm_nama')
+            ->join('sdms', 'sanksi_no_absen', '=', 'sdm_no_absen')
+            ->leftJoinSub(SDMDBQuery::ambilDBPenempatanSDMTerkini(), 'kontrak_t', function ($join) {
+                $join->on('sanksi_no_absen', '=', 'kontrak_t.penempatan_no_absen');
+            })
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('kontrak_t.penempatan_lokasi', $lingkupIjin);
+                });
+            })
+            ->orderBy('sanksisdms.id');
+
+        return SDMExcel::eksporExcelContohUnggahSanksiSDM($cari);
+    }
+
+    public function unggahSanksiSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        if ($reqs->isMethod('post')) {
+            $validasifile = SDMValidasi::validasiBerkasImporDataSanksiSDM($reqs->all());
+
+            $validasifile->validate();
+
+            $file = $validasifile->safe()->only('unggah_sanksi_sdm')['unggah_sanksi_sdm'];
+            $namafile = 'unggahsanksisdm-' . date('YmdHis') . '.xlsx';
+
+            Berkas::simpanBerkasImporExcelSementara($file, $namafile);
+
+            $fileexcel = Berkas::ambilBerkasImporExcelSementara($namafile);
+
+            return SDMExcel::imporExcelDataSanksiSDM($fileexcel);
+        };
+
+        $HtmlPenuh = $app->view->make('sdm.sanksi.unggah');
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
+    }
+
+    public function hapus($uuid = null)
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+
+        $sanksi = SDMDBQuery::ambilDataSanksiSDM($uuid, array_filter(explode(',', $pengguna->sdm_ijin_akses)));
+
+        abort_unless($sanksi, 404, 'Data Sanksi SDM tidak ditemukan.');
+
+        if ($reqs->isMethod('post')) {
+            abort_unless($app->filesystem->exists('contoh/data-dihapus.xlsx'), 404, 'Berkas riwayat penghapusan tidak ditemukan.');
+
+            $reqs->merge(['id_penghapus' => $pengguna->sdm_no_absen, 'waktu_dihapus' => $app->date->now()]);
+
+            $validasi = Validasi::validasiHapusDataDB($reqs->all());
+
+            $validasi->validate();
+
+            $dataValid = $validasi->validated();
+
+            Excel::cadangkanPenghapusanDatabase([
+                'Sanksi SDM',
+                collect($sanksi)->toJson(),
+                $dataValid['id_penghapus'],
+                $dataValid['waktu_dihapus']->format('Y-m-d H:i:s'),
+                $dataValid['alasan']
+            ]);
+
+            SDMDBQuery::hapusDataSanksiSDM($uuid);
+
+            $namaBerkas = $sanksi->sanksi_no_absen . ' - '  . $sanksi->sanksi_jenis . ' - ' . $sanksi->sanksi_mulai . '.pdf';
+
+            SDMBerkas::hapusBerkasSanksiSDM($namaBerkas);
+
+            SDMCache::hapusCachePelanggaranSDM();
+            SDMCache::hapusCacheSanksiSDM();
+
+            $pesanSoket = $pengguna?->sdm_nama . ' telah menghapus data Sanksi SDM ' . $sanksi->sanksi_no_absen . ' - '  . $sanksi->sanksi_jenis . ' - ' . $sanksi->sanksi_mulai . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
+
+            $perujuk = $reqs->session()->get('tautan_perujuk');
+            $pesan = 'Data berhasil dihapus';
+            $redirect = $app->redirect;
+
+            return $perujuk
+                ? $redirect->to($perujuk)->with('pesan', $pesan)
+                : $redirect->route('sdm.sanksi.data')->with('pesan', $pesan);
+        }
+
+        $HtmlPenuh = $app->view->make('sdm.sanksi.hapus', compact('sanksi'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
 
         return $reqs->pjax()

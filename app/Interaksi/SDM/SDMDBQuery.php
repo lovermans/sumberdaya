@@ -148,6 +148,13 @@ class SDMDBQuery
         $app->db->table('tambahsdms')->where('tambahsdm_uuid', $uuid)->delete();
     }
 
+    public static function hapusDataSanksiSDM($uuid)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('sanksisdms')->where('sanksi_uuid', $uuid)->delete();
+    }
+
     public static function ambilDBPenempatanSDMTerkini()
     {
         extract(Rangka::obyekPermintaanRangka());
@@ -970,6 +977,21 @@ class SDMDBQuery
                 $data,
                 ['posisi_nama'],
                 ['posisi_wlkp', 'posisi_status', 'posisi_keterangan', 'posisi_id_pengunggah', 'posisi_diunggah']
+            );
+        });
+    }
+
+    public static function imporSanksiSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $database = $app->db;
+
+        $database->transaction(function () use ($database, $data) {
+            $database->table('sanksisdms')->upsert(
+                $data,
+                ['sanksi_no_absen', 'sanksi_jenis', 'sanksi_mulai'],
+                ['sanksi_selesai', 'sanksi_tambahan', 'sanksi_keterangan', 'sanksi_id_pengunggah']
             );
         });
     }

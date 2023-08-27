@@ -49,6 +49,25 @@ class SDMExcel
         return SDMImporExcel::imporExcelStream(...$argumen);
     }
 
+    public static function imporExcelDataSanksiSDM($fileexcel)
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        $argumen = [
+            'reader' => new ExcelReader(),
+            'fileexcel' => $fileexcel,
+            'validasiImpor' => 'validasiImporDataSanksiSDM',
+            'databaseImpor' => 'imporSanksiSDM',
+            'cacheImpor' => 'hapusCachePelanggaran_SanksiSDM',
+            'rute' => 'sdm.sanksi.data',
+            'kolomPengunggah' => 'sanksi_id_pengunggah',
+            'waktuUnggah' => 'sanksi_diunggah',
+            'pesanSoket' => $pengguna?->sdm_nama . ' telah mengimpor data Sanksi SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'))
+        ];
+
+        return SDMImporExcel::imporExcelStream(...$argumen);
+    }
+
     public static function eksporExcelContohUnggahSDM($data)
     {
         extract(Rangka::obyekPermintaanRangka());
@@ -165,6 +184,28 @@ class SDMExcel
             ],
             'pesanData' => ' data sanksi SDM',
             'binder' => new CustomValueBinder(),
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet,
+            'chunk' => 100
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
+    }
+
+    public static function eksporExcelContohUnggahSanksiSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $reader = new ExcelReader();
+        $spreadsheet = $reader->load($app->storagePath('app/contoh/unggah-umum.xlsx'));
+        $worksheet = $spreadsheet->getSheet(1);
+
+        $argumen = [
+            'namaBerkas' => 'unggahsanksisdm-',
+            'dataEkspor' => $data,
+            'pengecualian' => ['id', 'sanksi_lap_no', 'sanksi_uuid'],
+            'pesanData' => ' data sanksi SDM',
+            'binder' => new StringValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
             'chunk' => 100
