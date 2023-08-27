@@ -17,7 +17,7 @@ class SDMImporExcel
         $rute,
         $kolomPengunggah,
         $waktuUnggah,
-        $pesanSoket = 'Terdapat Pengguna Mengimpor Data Ke Aplikasi',
+        $pesanSoket = 'Terdapat Pengguna Mengimpor Data SDM Ke Aplikasi',
         $chunkSize = 25
     ) {
         extract(Rangka::obyekPermintaanRangka(true));
