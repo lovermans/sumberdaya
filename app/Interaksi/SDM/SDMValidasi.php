@@ -716,4 +716,49 @@ class SDMValidasi
             static::pesanKesalahanValidasiNilaiSDM()
         );
     }
+
+    public static function dasarValidasiPencarianPenempatanSDM()
+    {
+        return [
+            '*.lokasi.*' => ['sometimes', 'nullable', 'string', 'max:40'],
+            '*.kontrak.*' => ['sometimes', 'nullable', 'string', 'max:40'],
+            '*.kategori.*' => ['sometimes', 'nullable', 'string', 'max:40'],
+            '*.pangkat.*' => ['sometimes', 'nullable', 'string', 'max:40'],
+            '*.kelamin.*' => ['sometimes', 'nullable', 'string', 'max:40'],
+            '*.agama.*' => ['sometimes', 'nullable', 'string', 'max:40'],
+            '*.kawin.*' => ['sometimes', 'nullable', 'string', 'max:40'],
+            '*.pendidikan.*' => ['sometimes', 'nullable', 'string', 'max:40'],
+            '*.warganegara.*' => ['sometimes', 'nullable', 'string', 'max:40'],
+            '*.disabilitas.*' => ['sometimes', 'nullable', 'string', 'max:40'],
+            '*.posisi.*' => ['sometimes', 'nullable', 'string'],
+            ...static::dasarValidasiPencarianSDM()
+        ];
+    }
+
+    public static function pesanKesalahanPencarianPenempatanSDM()
+    {
+        return [
+            '*.lokasi.*' => 'Lokasi Penempatan wajib berupa karakter.',
+            '*.kontrak.*' => 'Kontrak SDM wajib berupa karakter.',
+            '*.kategori.*' => 'Kategori Penempatan wajib berupa karakter.',
+            '*.pangkat.*' => 'Pangkar SDM wajib berupa karakter.',
+            '*.kelamin.*' => 'Jenis Kelamin SDM wajib berupa karakter.',
+            '*.agama.*' => 'Agama SDM wajib berupa karakter.',
+            '*.kawin.*' => 'Status Kawin SDM wajib berupa karakter.',
+            '*.pendidikan.*' => 'Pendidikan SDM wajib berupa karakter.',
+            '*.warganegara.*' => 'Warga Negara SDM wajib berupa karakter.',
+            '*.disabilitas.*' => 'Disabilitas SDM wajib berupa karakter.',
+            '*.posisi.*' => 'Jabatan SDM wajib berupa karakter.',
+            ...static::pesanKesalahanValidasiPencarianSDM()
+        ];
+    }
+
+    public static function validasiPencarianPenempatanSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            static::dasarValidasiPencarianPenempatanSDM(),
+            static::pesanKesalahanPencarianPenempatanSDM()
+        );
+    }
 }

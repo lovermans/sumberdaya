@@ -2,26 +2,23 @@
 
 namespace App\Http\Controllers\SDM;
 
+use App\Interaksi\Rangka;
 use App\Tambahan\FungsiStatis;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\SDM\Berkas;
+use App\Interaksi\SDM\SDMValidasi;
 
 class Penempatan
 {
     public function index(FungsiStatis $fungsiStatis, Berkas $berkas, $uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
+        extract(Rangka::obyekPermintaanRangka(true));
+
         $str = str();
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) || ($pengguna?->sdm_uuid == $uuid && $pengguna?->sdm_uuid !== null), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $validator = $app->validator->make(
-            $reqs->all(),
-            $this->dasarValidasiPencarian(),
-            $this->atributInputPencarian(),
-        );
+        $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.riwayat')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
@@ -177,11 +174,7 @@ class Penempatan
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $validator = $app->validator->make(
-            $reqs->all(),
-            $this->dasarValidasiPencarian(),
-            $this->atributInputPencarian(),
-        );
+        $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.riwayat-nyata')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
@@ -336,11 +329,7 @@ class Penempatan
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $validator = $app->validator->make(
-            $reqs->all(),
-            $this->dasarValidasiPencarian(),
-            $this->atributInputPencarian(),
-        );
+        $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.data-aktif')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
@@ -486,11 +475,7 @@ class Penempatan
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $validator = $app->validator->make(
-            $reqs->all(),
-            $this->dasarValidasiPencarian(),
-            $this->atributInputPencarian(),
-        );
+        $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.data-nonaktif')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
@@ -636,11 +621,7 @@ class Penempatan
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $validator = $app->validator->make(
-            $reqs->all(),
-            $this->dasarValidasiPencarian(),
-            $this->atributInputPencarian(),
-        );
+        $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.data-akanhabis')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
@@ -792,11 +773,7 @@ class Penempatan
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-        $validator = $app->validator->make(
-            $reqs->all(),
-            $this->dasarValidasiPencarian(),
-            $this->atributInputPencarian(),
-        );
+        $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.data-kadaluarsa')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
@@ -945,11 +922,7 @@ class Penempatan
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $validator = $app->validator->make(
-            $reqs->all(),
-            $this->dasarValidasiPencarian(),
-            $this->atributInputPencarian(),
-        );
+        $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.data-baru')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
@@ -1078,11 +1051,7 @@ class Penempatan
 
         abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
-        $validator = $app->validator->make(
-            $reqs->all(),
-            $this->dasarValidasiPencarian(),
-            $this->atributInputPencarian(),
-        );
+        $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.data-batal')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
@@ -1222,27 +1191,6 @@ class Penempatan
         ];
     }
 
-    public function atributInputPencarian()
-    {
-        return [
-            'lokasi.*' => 'Lokasi harus berupa karakter dan maksimal 40 karakter.',
-            'kontrak.*' => 'Kontrak harus berupa karakter dan maksimal 40 karakter.',
-            'kategori.*' => 'Kategori harus berupa karakter dan maksimal 40 karakter.',
-            'pangkat.*' => 'Pangkat harus berupa karakter dan maksimal 40 karakter.',
-            'kelamin.*' => 'Kelamin harus berupa karakter dan maksimal 40 karakter.',
-            'agama.*' => 'Agama harus berupa karakter dan maksimal 40 karakter.',
-            'kawin.*' => 'Status Kawin harus berupa karakter dan maksimal 40 karakter.',
-            'pendidikan.*' => 'Pendidikan harus berupa karakter dan maksimal 40 karakter.',
-            'warganegara.*' => 'Warganegara harus berupa karakter dan maksimal 40 karakter.',
-            'disabilitas.*' => 'Disabilitas harus berupa karakter dan maksimal 40 karakter.',
-            'posisi.*' => 'Jabatan harus berupa karakter.',
-            'unduh.*' => 'Format ekspor tidak dikenali.',
-            'kata_kunci.*' => 'Kata Kunci Pencarian harus berupa karakter.',
-            'bph.*' => 'Baris Per halaman tidak sesuai daftar.',
-            'urut.*.string' => 'Butir Pengaturan urutan #:position wajib berupa karakter.'
-        ];
-    }
-
     public function dataDasar()
     {
         $database = app('db');
@@ -1322,28 +1270,6 @@ class Penempatan
             'penempatan_grup' => ['nullable', 'string', 'max:40'],
             'penempatan_keterangan' => ['nullable', 'string'],
             'penempatan_berkas' => ['sometimes', 'file', 'mimetypes:application/pdf'],
-        ];
-    }
-
-    public function dasarValidasiPencarian()
-    {
-        $rule = app('Illuminate\Validation\Rule');
-        return [
-            'lokasi.*' => ['sometimes', 'nullable', 'string', 'max:40'],
-            'kontrak.*' => ['sometimes', 'nullable', 'string', 'max:40'],
-            'kategori.*' => ['sometimes', 'nullable', 'string', 'max:40'],
-            'pangkat.*' => ['sometimes', 'nullable', 'string', 'max:40'],
-            'kelamin.*' => ['sometimes', 'nullable', 'string', 'max:40'],
-            'agama.*' => ['sometimes', 'nullable', 'string', 'max:40'],
-            'kawin.*' => ['sometimes', 'nullable', 'string', 'max:40'],
-            'pendidikan.*' => ['sometimes', 'nullable', 'string', 'max:40'],
-            'warganegara.*' => ['sometimes', 'nullable', 'string', 'max:40'],
-            'disabilitas.*' => ['sometimes', 'nullable', 'string', 'max:40'],
-            'posisi.*' => ['sometimes', 'nullable', 'string'],
-            'unduh' => ['sometimes', 'nullable', 'string', $rule->in(['excel'])],
-            'kata_kunci' => ['sometimes', 'nullable', 'string'],
-            'bph' => ['sometimes', 'nullable', 'numeric', $rule->in([100, 250, 500, 1000])],
-            'urut.*' => ['sometimes', 'nullable', 'string']
         ];
     }
 
