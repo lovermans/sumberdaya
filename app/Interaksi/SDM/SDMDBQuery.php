@@ -6,16 +6,24 @@ use App\Interaksi\Rangka;
 
 class SDMDBQuery
 {
-    public static function ambilDBPermintaanTambahSDM()
+    public static function ambilPermintaanTambahSDM()
     {
         extract(Rangka::obyekPermintaanRangka());
 
         return $app->db->query()
             ->select(
-                'tambahsdm_uuid',
                 'tambahsdm_no',
-                'tambahsdm_sdm_id',
                 'tambahsdm_penempatan',
+            )
+            ->from('tambahsdms');
+    }
+
+    public static function ambilDBPermintaanTambahSDM()
+    {
+        return static::ambilPermintaanTambahSDM()
+            ->addSelect(
+                'tambahsdm_uuid',
+                'tambahsdm_sdm_id',
                 'tambahsdm_posisi',
                 'tambahsdm_jumlah',
                 'tambahsdm_status',
@@ -28,7 +36,6 @@ class SDMDBQuery
                 'tambahsdm_dibuat',
             )
             ->selectRaw('COUNT(a.sdm_no_permintaan) as tambahsdm_terpenuhi, MAX(a.sdm_tgl_gabung) as pemenuhan_terkini')
-            ->from('tambahsdms')
             ->leftJoin('sdms as a', 'tambahsdm_no', '=', 'a.sdm_no_permintaan')
             ->join('sdms as b', 'tambahsdm_sdm_id', '=', 'b.sdm_no_absen')
             ->groupBy('tambahsdm_no');
@@ -327,7 +334,7 @@ class SDMDBQuery
         });
     }
 
-    public static function contohImporDatabaseSDM($lingkup)
+    public static function ambilDBSDM()
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
@@ -380,7 +387,127 @@ class SDMDBQuery
                 'sdm_ket_berhenti',
                 'sdm_id_atasan'
             )
-            ->from('sdms')
+            ->from('sdms');
+    }
+
+    public static function dataSDMKTPTerlama()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        return $app->db->query()
+            ->select(
+                'sdm_no_permintaan',
+                's1.sdm_tgl_gabung',
+                's1.sdm_no_ktp'
+            )
+            ->from('sdms as s1')
+            ->where('sdm_tgl_gabung', '=', function ($query) {
+                $query->selectRaw('MIN(sdm_tgl_gabung)')
+                    ->from('sdms as s2')
+                    ->whereColumn('s1.sdm_no_ktp', 's2.sdm_no_ktp');
+            })->groupBy('sdm_no_ktp');
+    }
+
+    public static function ambilSemuaRiwayatPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, $uruts, $uuid)
+    {
+        return static::ambilDBSDM()
+            ->addSelect(
+                'sdms.id',
+                'sdm_uuid',
+                'penempatan_uuid',
+                'penempatan_no_absen',
+                'penempatan_mulai',
+                'penempatan_selesai',
+                'penempatan_ke',
+                'penempatan_lokasi',
+                'penempatan_posisi',
+                'penempatan_kategori',
+                'penempatan_kontrak',
+                'penempatan_pangkat',
+                'penempatan_golongan',
+                'penempatan_grup',
+                'penempatan_keterangan',
+                'posisi_wlkp',
+            )
+            ->selectRaw('IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, sdm_tgl_berhenti)) as masa_kerja, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, penempatan_mulai, NOW()),TIMESTAMPDIFF(YEAR, penempatan_mulai, sdm_tgl_berhenti)) as masa_aktif, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, sdm_tgl_berhenti)) as usia')
+            ->leftJoinSub(static::ambilDBPenempatanSDM(), 'penem', function ($join) {
+                $join->on('sdm_no_absen', '=', 'penem.penempatan_no_absen');
+            })
+            ->leftJoinSub(static::ambilDBPosisiSDM()
+                ->addSelect('posisi_wlkp'), 'pos', function ($join) {
+                $join->on('penempatan_posisi', '=', 'pos.posisi_nama');
+            })
+            ->leftJoinSub(static::ambilPermintaanTambahSDM(), 'tsdm', function ($join) {
+                $join->on('sdm_no_permintaan', '=', 'tsdm.tambahsdm_no');
+            })
+            ->when($permintaan->kontrak, function ($query) use ($permintaan) {
+                $query->whereIn('penempatan_kontrak', (array) $permintaan->kontrak);
+            })
+            ->when($kataKunci, function ($query, $kataKunci) {
+                $query->where(function ($group) use ($kataKunci) {
+                    $group->where('sdm_no_absen', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('penempatan_no_absen', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('sdm_no_permintaan', $kataKunci)
+                        ->orWhere('sdm_no_ktp', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('sdm_nama', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('penempatan_posisi', 'like', '%' . $kataKunci . '%')
+                        ->orWhere('penempatan_keterangan', 'like', '%' . $kataKunci . '%');
+                });
+            })
+            ->when($uuid, function ($query) use ($uuid) {
+                $query->where('sdm_uuid', $uuid);
+            })
+            ->when($lingkupIjin, function ($query, $lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('tambahsdm_penempatan', $lingkupIjin)
+                        ->orWhereIn('penempatan_lokasi', $lingkupIjin)
+                        ->orWhereNull('penempatan_lokasi');
+                });
+            })
+            ->when($permintaan->lokasi, function ($query) use ($permintaan) {
+                $query->whereIn('penempatan_lokasi', (array) $permintaan->lokasi);
+            })
+            ->when($permintaan->kategori, function ($query) use ($permintaan) {
+                $query->whereIn('penempatan_kategori', (array) $permintaan->kategori);
+            })
+            ->when($permintaan->pangkat, function ($query) use ($permintaan) {
+                $query->whereIn('penempatan_pangkat', (array) $permintaan->pangkat);
+            })
+            ->when($permintaan->kelamin, function ($query) use ($permintaan) {
+                $query->where('sdm_kelamin', $permintaan->kelamin);
+            })
+            ->when($permintaan->posisi, function ($query) use ($permintaan) {
+                $query->whereIn('penempatan_posisi', (array) $permintaan->posisi);
+            })
+            ->when($permintaan->agama, function ($query)  use ($permintaan) {
+                $query->whereIn('sdm_agama', (array) $permintaan->agama);
+            })
+            ->when($permintaan->kawin, function ($query)  use ($permintaan) {
+                $query->whereIn('sdm_status_kawin', (array) $permintaan->kawin);
+            })
+            ->when($permintaan->warganegara, function ($query)  use ($permintaan) {
+                $query->whereIn('sdm_warganegara', (array) $permintaan->warganegara);
+            })
+            ->when($permintaan->pendidikan, function ($query)  use ($permintaan) {
+                $query->whereIn('sdm_pendidikan', (array) $permintaan->pendidikan);
+            })
+            ->when($permintaan->disabilitas, function ($query)  use ($permintaan) {
+                $query->whereIn('sdm_disabilitas', (array) $permintaan->disabilitas);
+            })
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->latest('penempatan_mulai')->orderBy('sdm_no_absen', 'desc');
+                }
+            );
+    }
+
+    public static function contohImporDatabaseSDM($lingkup)
+    {
+        return static::ambilDBSDM()
             ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
                 $join->on('sdm_no_absen', '=', 'kontrak.penempatan_no_absen');
             })
@@ -465,7 +592,7 @@ class SDMDBQuery
             ->latest('penempatan_selesai');
     }
 
-    public static function ambilPerubahanStatusKontrakTerbaru()
+    public static function ambilDBPenempatanSDM()
     {
         extract(Rangka::obyekPermintaanRangka());
 
@@ -484,11 +611,20 @@ class SDMDBQuery
                 'penempatan_golongan',
                 'penempatan_grup',
                 'penempatan_keterangan',
+            )
+            ->from('penempatans');
+    }
+
+    public static function ambilPerubahanStatusKontrakTerbaru()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return static::ambilDBPenempatanSDM()
+            ->addSelect(
                 'sdm_uuid',
                 'sdm_no_absen',
                 'sdm_nama'
             )
-            ->from('penempatans')
             ->join('sdms', 'sdm_no_absen', '=', 'penempatan_no_absen')
             ->where('penempatan_mulai', '>=', $app->date->today()->subDays(40)->toDateString())
             ->latest('penempatan_mulai');

@@ -720,6 +720,7 @@ class SDMValidasi
     public static function dasarValidasiPencarianPenempatanSDM()
     {
         return [
+            ...Arr::except(static::dasarValidasiPencarianSDM(), ['*.bph']),
             '*.lokasi.*' => ['sometimes', 'nullable', 'string', 'max:40'],
             '*.kontrak.*' => ['sometimes', 'nullable', 'string', 'max:40'],
             '*.kategori.*' => ['sometimes', 'nullable', 'string', 'max:40'],
@@ -731,7 +732,7 @@ class SDMValidasi
             '*.warganegara.*' => ['sometimes', 'nullable', 'string', 'max:40'],
             '*.disabilitas.*' => ['sometimes', 'nullable', 'string', 'max:40'],
             '*.posisi.*' => ['sometimes', 'nullable', 'string'],
-            ...static::dasarValidasiPencarianSDM()
+            '*.bph' => ['sometimes', 'nullable', 'numeric', Rule::in([100, 250, 500, 1000])],
         ];
     }
 
