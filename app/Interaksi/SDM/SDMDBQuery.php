@@ -6,6 +6,64 @@ use App\Interaksi\Rangka;
 
 class SDMDBQuery
 {
+    public static function ambilKTPTerlamaSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->select(
+                'sdm_no_permintaan',
+                's1.sdm_tgl_gabung',
+                's1.sdm_no_ktp'
+            )
+            ->from('sdms as s1')
+            ->where('sdm_tgl_gabung', '=', function ($query) {
+                $query->selectRaw('MIN(sdm_tgl_gabung)')
+                    ->from('sdms as s2')
+                    ->whereColumn('s1.sdm_no_ktp', 's2.sdm_no_ktp');
+            })
+            ->groupBy('sdm_no_ktp');
+    }
+
+    public static function ambilKTPTerkiniSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->select(
+                's3.sdm_uuid as uuid',
+                's3.sdm_no_absen as no_absen',
+                's3.sdm_tgl_lahir as tgl_lahir',
+                's3.sdm_tempat_lahir as tempat_lahir',
+                's3.sdm_no_ktp as no_ktp',
+                's3.sdm_nama as nama',
+                's3.sdm_kelamin as kelamin',
+                's3.sdm_tgl_berhenti as tgl_berhenti',
+                's3.sdm_jenis_berhenti as jenis_berhenti',
+                's3.sdm_ket_berhenti as ket_berhenti',
+                's3.sdm_disabilitas as disabilitas',
+                's3.sdm_agama as agama',
+                's3.sdm_status_kawin as status_kawin',
+                's3.sdm_pendidikan as pendidikan',
+                's3.sdm_warganegara as warganegara',
+                's3.sdm_uk_seragam as uk_seragam',
+                's3.sdm_uk_sepatu as uk_sepatu',
+                's3.sdm_jurusan as jurusan',
+                's3.sdm_telepon as telepon',
+                's3.email as sdm_email',
+                's3.sdm_id_atasan as id_atasan',
+                's3.sdm_no_bpjs as no_bpjs',
+                's3.sdm_no_jamsostek as no_jamsostek',
+                's3.sdm_jml_anak as jml_anak'
+            )
+            ->from('sdms as s3')
+            ->where('s3.sdm_tgl_gabung', '=', function ($query) {
+                $query->selectRaw('MAX(s4.sdm_tgl_gabung)')
+                    ->from('sdms as s4')
+                    ->whereColumn('s3.sdm_no_ktp', 's4.sdm_no_ktp');
+            });
+    }
+
     public static function ambilPermintaanTambahSDM()
     {
         extract(Rangka::obyekPermintaanRangka());
@@ -336,7 +394,7 @@ class SDMDBQuery
 
     public static function ambilDBSDM()
     {
-        extract(Rangka::obyekPermintaanRangka(true));
+        extract(Rangka::obyekPermintaanRangka());
 
         return $app->db->query()
             ->select(
@@ -392,7 +450,7 @@ class SDMDBQuery
 
     public static function dataSDMKTPTerlama()
     {
-        extract(Rangka::obyekPermintaanRangka(true));
+        extract(Rangka::obyekPermintaanRangka());
 
         return $app->db->query()
             ->select(
@@ -408,7 +466,7 @@ class SDMDBQuery
             })->groupBy('sdm_no_ktp');
     }
 
-    public static function ambilSemuaRiwayatPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, $uruts, $uuid)
+    public static function dasarSemuaRiwayatPenempatanSDM()
     {
         return static::ambilDBSDM()
             ->addSelect(
@@ -439,10 +497,12 @@ class SDMDBQuery
             })
             ->leftJoinSub(static::ambilPermintaanTambahSDM(), 'tsdm', function ($join) {
                 $join->on('sdm_no_permintaan', '=', 'tsdm.tambahsdm_no');
-            })
-            ->when($permintaan->kontrak, function ($query) use ($permintaan) {
-                $query->whereIn('penempatan_kontrak', (array) $permintaan->kontrak);
-            })
+            });
+    }
+
+    public static function dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, $fungsiDasar)
+    {
+        return static::$fungsiDasar()
             ->when($kataKunci, function ($query, $kataKunci) {
                 $query->where(function ($group) use ($kataKunci) {
                     $group->where('sdm_no_absen', 'like', '%' . $kataKunci . '%')
@@ -454,15 +514,15 @@ class SDMDBQuery
                         ->orWhere('penempatan_keterangan', 'like', '%' . $kataKunci . '%');
                 });
             })
-            ->when($uuid, function ($query) use ($uuid) {
-                $query->where('sdm_uuid', $uuid);
-            })
             ->when($lingkupIjin, function ($query, $lingkupIjin) {
                 $query->where(function ($group) use ($lingkupIjin) {
                     $group->whereIn('tambahsdm_penempatan', $lingkupIjin)
                         ->orWhereIn('penempatan_lokasi', $lingkupIjin)
                         ->orWhereNull('penempatan_lokasi');
                 });
+            })
+            ->when($permintaan->kontrak, function ($query) use ($permintaan) {
+                $query->whereIn('penempatan_kontrak', (array) $permintaan->kontrak);
             })
             ->when($permintaan->lokasi, function ($query) use ($permintaan) {
                 $query->whereIn('penempatan_lokasi', (array) $permintaan->lokasi);
@@ -493,6 +553,14 @@ class SDMDBQuery
             })
             ->when($permintaan->disabilitas, function ($query)  use ($permintaan) {
                 $query->whereIn('sdm_disabilitas', (array) $permintaan->disabilitas);
+            });
+    }
+
+    public static function ambilSemuaRiwayatPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, $uruts, $uuid)
+    {
+        return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarSemuaRiwayatPenempatanSDM')
+            ->when($uuid, function ($query) use ($uuid) {
+                $query->where('sdm_uuid', $uuid);
             })
             ->when(
                 $uruts,
@@ -501,6 +569,98 @@ class SDMDBQuery
                 },
                 function ($query) {
                     $query->latest('penempatan_mulai')->orderBy('sdm_no_absen', 'desc');
+                }
+            );
+    }
+
+    public static function dasarMasaKerjaNyataSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->addSelect(
+                'sdmlama.*',
+                'penempatan_uuid',
+                'penempatan_no_absen',
+                'penempatan_mulai',
+                'penempatan_selesai',
+                'penempatan_ke',
+                'penempatan_lokasi',
+                'penempatan_posisi',
+                'penempatan_kategori',
+                'penempatan_kontrak',
+                'penempatan_pangkat',
+                'penempatan_golongan',
+                'penempatan_grup',
+                'penempatan_keterangan',
+                'posisi_wlkp',
+                'uuid as sdm_uuid',
+                'no_absen as sdm_no_absen',
+                'tgl_lahir as sdm_tgl_lahir',
+                'tempat_lahir as sdm_tempat_lahir',
+                'no_ktp as sdm_no_ktp',
+                'nama as sdm_nama',
+                'kelamin as sdm_kelamin',
+                'tgl_berhenti as sdm_tgl_berhenti',
+                'jenis_berhenti as sdm_jenis_berhenti',
+                'ket_berhenti as sdm_ket_berhenti',
+                'disabilitas as sdm_disabilitas',
+                'agama as sdm_agama',
+                'status_kawin as sdm_status_kawin',
+                'pendidikan as sdm_pendidikan',
+                'warganegara as sdm_warganegara',
+                'uk_seragam as sdm_uk_seragam',
+                'uk_sepatu as sdm_uk_sepatu',
+                'jurusan as sdm_jurusan',
+                'telepon as sdm_telepon',
+                'sdm_email as email',
+                'id_atasan as sdm_id_atasan',
+                'no_bpjs as sdm_no_bpjs',
+                'no_jamsostek as sdm_no_jamsostek',
+                'jml_anak as sdm_jml_anak',
+            )
+            ->selectRaw('IF(tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, tgl_berhenti)) as masa_kerja, IF(tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, penempatan_mulai, NOW()),TIMESTAMPDIFF(YEAR, penempatan_mulai, tgl_berhenti)) as masa_aktif, IF(tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, tgl_lahir, NOW()),TIMESTAMPDIFF(YEAR, tgl_lahir, tgl_berhenti)) as usia')
+            ->fromSub(static::ambilKTPTerlamaSDM(), 'sdmlama')
+            ->joinSub(static::ambilKTPTerkiniSDM(), 'sdmbaru', function ($join) {
+                $join->on('sdmlama.sdm_no_ktp', '=', 'sdmbaru.no_ktp');
+            })
+            ->joinSub(static::ambilDBPenempatanSDMTerkini()
+                ->addSelect(
+                    'penempatan_uuid',
+                    'penempatan_mulai',
+                    'penempatan_selesai',
+                    'penempatan_ke',
+                    'penempatan_kategori',
+                    'penempatan_pangkat',
+                    'penempatan_golongan',
+                    'penempatan_grup',
+                    'penempatan_keterangan'
+                ), 'penem', function ($join) {
+                $join->on('sdmbaru.no_absen', '=', 'penem.penempatan_no_absen');
+            })
+            ->leftjoinSub(static::ambilDBPosisiSDM()
+                ->addSelect(
+                    'posisi_wlkp'
+                ), 'pos', function ($join) {
+                $join->on('penempatan_posisi', '=', 'pos.posisi_nama');
+            })
+            ->leftJoinSub(static::ambilPermintaanTambahSDM(), 'tsdm', function ($join) {
+                $join->on('sdm_no_permintaan', '=', 'tsdm.tambahsdm_no');
+            });
+    }
+
+    public static function ambilMasaKerjaNyataSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
+    {
+        return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarMasaKerjaNyataSDM')
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->latest('sdm_tgl_gabung')
+                        ->latest('penempatan_mulai')
+                        ->orderBy('sdm_no_absen', 'desc');
                 }
             );
     }
