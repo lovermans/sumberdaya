@@ -43,25 +43,14 @@ class Penempatan
             ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
         ];
 
-        if (!isset($uuid)) {
-            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
-        }
-
-        $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
-        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
-
-        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
-            ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
-            : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
+        return $this->tampilkanDataPenempatanSDM($data, $uuid);
     }
 
     public function indexMasaKerjaNyata()
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        $str = str();
-
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
 
@@ -85,16 +74,7 @@ class Penempatan
             ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
         ];
 
-        if (!isset($uuid)) {
-            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
-        }
-
-        $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
-        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
-
-        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
-            ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
-            : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
+        return $this->tampilkanDataPenempatanSDM($data);
     }
 
     public function indexAktif(FungsiStatis $fungsiStatis, Berkas $berkas)
@@ -1431,5 +1411,21 @@ class Penempatan
             'jumlahOS' => $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'like', 'OS-%')->count(),
             'jumlahOrganik' => $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'not like', 'OS-%')->count(),
         ];
+    }
+
+    protected function tampilkanDataPenempatanSDM($data, $uuid = null)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        if (!isset($uuid)) {
+            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        }
+
+        $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+
+        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+            ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
+            : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
 }
