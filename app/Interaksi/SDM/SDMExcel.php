@@ -328,6 +328,25 @@ class SDMExcel
         return EksporExcel::eksporExcelStream(...$argumen);
     }
 
+    public static function eksporExcelPenempatanSDMAkanHabis($data)
+    {
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $argumen = [
+            'namaBerkas' => 'eksporsdmakanhabis-',
+            'dataEkspor' => $data,
+            'pengecualian' => ['id', 'sdm_uuid', 'penempatan_uuid'],
+            'pesanData' => ' data PKWT SDM akan habis',
+            'binder' => new CustomValueBinder(),
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet,
+            'chunk' => 500
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
+    }
+
     public static function eksporExcelContohUnggahNilaiSDM($data)
     {
         extract(Rangka::obyekPermintaanRangka());

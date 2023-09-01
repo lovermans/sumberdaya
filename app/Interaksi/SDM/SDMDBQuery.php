@@ -639,7 +639,7 @@ class SDMDBQuery
             });
     }
 
-    public static function dasarPenempatanSDMAktif()
+    public static function dasarPenempatanSDM()
     {
         return static::ambilDBPenempatanSDMTerkini()
             ->addSelect(
@@ -697,7 +697,7 @@ class SDMDBQuery
 
     public static function ambilPenempatanAktifSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
     {
-        return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarPenempatanSDMAktif')
+        return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarPenempatanSDM')
             ->whereNull('sdm_tgl_berhenti')
             ->when(
                 $uruts,
@@ -713,7 +713,7 @@ class SDMDBQuery
 
     public static function ambilPenempatanNonAktifSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
     {
-        return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarPenempatanSDMAktif')
+        return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarPenempatanSDM')
             ->whereNotNull('sdm_tgl_berhenti')
             ->when(
                 $uruts,
@@ -727,6 +727,23 @@ class SDMDBQuery
             );
     }
 
+    public static function ambilPKWTAkanHabisSDM($permintaan, $kataKunci, $lingkupIjin, $uruts, $rentang)
+    {
+        return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarPenempatanSDM')
+            ->where('penempatan_kontrak', 'not like', 'OS-%')
+            ->whereNull('sdm_tgl_berhenti')
+            ->whereBetween('penempatan_selesai', $rentang)
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->latest('penempatan_selesai')
+                        ->orderBy('penempatan_no_absen', 'desc');
+                }
+            );
+    }
 
     public static function ambilMasaKerjaNyataSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
     {
