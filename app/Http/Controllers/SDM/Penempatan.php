@@ -506,24 +506,26 @@ class Penempatan
 
     public function tambah(FungsiStatis $fungsiStatis, $uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
+        extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $database = $app->db;
 
-        $dasar = $database->query()->select('penempatan_no_absen', 'penempatan_lokasi')->from('penempatans');
+        $dasar = $database->query()
+            ->select('penempatan_no_absen', 'penempatan_lokasi')
+            ->from('penempatans');
 
         $ijin_akses = $pengguna->sdm_ijin_akses;
         $lingkupIjin = array_filter(explode(',', $ijin_akses));
 
-        $penem = $database->query()->select('sdm_uuid', 'sdm_no_absen', 'sdm_nama', 'penempatan_lokasi')
-            ->from('sdms')->leftJoinSub($dasar, 'dasar', function ($join) {
+        $penem = $database->query()
+            ->select('sdm_uuid', 'sdm_no_absen', 'sdm_nama', 'penempatan_lokasi')
+            ->from('sdms')
+            ->leftJoinSub($dasar, 'dasar', function ($join) {
                 $join->on('sdm_no_absen', '=', 'dasar.penempatan_no_absen');
-            })->when($lingkupIjin, function ($query, $lingkupIjin) {
+            })
+            ->when($lingkupIjin, function ($query, $lingkupIjin) {
                 $query->where(function ($group) use ($lingkupIjin) {
                     $group->orWhereIn('penempatan_lokasi', $lingkupIjin)
                         ->orWhereNull('penempatan_lokasi');
