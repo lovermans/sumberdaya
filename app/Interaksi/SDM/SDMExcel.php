@@ -375,7 +375,26 @@ class SDMExcel
             'namaBerkas' => 'eksporsdmbaru-',
             'dataEkspor' => $data,
             'pengecualian' => ['id', 'sdm_uuid', 'penempatan_uuid'],
-            'pesanData' => ' data PKWT SDM kadaluarsa',
+            'pesanData' => ' data SDM belum ditempatkan',
+            'binder' => new CustomValueBinder(),
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet,
+            'chunk' => 500
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
+    }
+
+    public static function eksporExcelSDMBatalBergabung($data)
+    {
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $argumen = [
+            'namaBerkas' => 'eksporsdmbatal-',
+            'dataEkspor' => $data,
+            'pengecualian' => ['id', 'sdm_uuid', 'penempatan_uuid'],
+            'pesanData' => ' data SDM batal bergabung',
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,

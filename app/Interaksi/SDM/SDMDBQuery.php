@@ -828,6 +828,23 @@ class SDMDBQuery
             );
     }
 
+    public static function ambilSDMBatalBergabung($permintaan, $kataKunci, $lingkupIjin, $uruts)
+    {
+        return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarRiwayatPenempatanSDMTerkini')
+            ->whereNull('penempatan_lokasi')
+            ->whereNotNull('sdm_tgl_berhenti')
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->latest('sdm_tgl_berhenti')
+                        ->orderBy('sdm_no_absen', 'desc');
+                }
+            );
+    }
+
     public static function contohImporDatabaseSDM($lingkup)
     {
         return static::ambilDBSDM()
