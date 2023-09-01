@@ -407,6 +407,7 @@ class SDMExcel
     public static function eksporStatistikSDM($data)
     {
         extract(Rangka::obyekPermintaanRangka());
+
         $reader = new ExcelReader();
         $spreadsheet2 = $reader->load($app->storagePath('app/contoh/statistik-sdm.xlsx'));
         $spreadsheet = new Spreadsheet();

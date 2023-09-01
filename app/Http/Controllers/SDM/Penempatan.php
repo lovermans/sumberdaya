@@ -482,27 +482,14 @@ class Penempatan
 
     public function lihat($uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
+        extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
-
-        $database = $app->db;
-
-        $dasar = $database->query()->select('a.sdm_uuid', 'a.sdm_no_absen', 'a.sdm_nama', 'a.sdm_tgl_gabung', 'a.sdm_tgl_berhenti')->from('sdms', 'a');
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $ijin_akses = $pengguna->sdm_ijin_akses;
         $lingkupIjin = array_filter(explode(',', $ijin_akses));
 
-        $penem = $database->query()->select('sdm_no_absen', 'sdm_nama', 'sdm_tgl_gabung', 'sdm_tgl_berhenti', 'penempatan_uuid', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan')
-            ->from('penempatans')->joinSub($dasar, 'dasar', function ($join) {
-                $join->on('penempatan_no_absen', '=', 'dasar.sdm_no_absen');
-            })->when($lingkupIjin, function ($query, $lingkupIjin) {
-                $query->whereIn('penempatan_lokasi', $lingkupIjin);
-            })
-            ->where('penempatan_uuid', $uuid)->first();
+        $penem = SDMDBQuery::ambilDataPenempatanSDM($lingkupIjin, $uuid);
 
         $lingkup_lokasi = collect($penem?->penempatan_lokasi);
         $lingkup_akses = $lingkup_lokasi->unique()->intersect($lingkupIjin)->count();
@@ -511,7 +498,10 @@ class Penempatan
 
         $HtmlPenuh = $app->view->make('sdm.penempatan.lihat', compact('penem'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 
     public function tambah(FungsiStatis $fungsiStatis, $uuid = null)

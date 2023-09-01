@@ -603,7 +603,7 @@ class SDMDBQuery
             ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 $query->whereIn('penempatan_lokasi', $lingkupIjin);
             })
-            ->orderBy('sdm.id');
+            ->orderBy('sdm_no_absen');
     }
 
     public static function dasarMasaKerjaNyataSDM()
@@ -956,6 +956,29 @@ class SDMDBQuery
                 'penempatan_keterangan',
             )
             ->from('penempatans');
+    }
+
+    public static function ambilDataPenempatanSDM($lingkupIjin, $uuid)
+    {
+        return static::ambilDBPenempatanSDM()
+            ->addSelect(
+                'sdm_uuid',
+                'sdm_no_absen',
+                'sdm_nama',
+                'sdm_tgl_gabung',
+                'sdm_tgl_berhenti'
+            )
+            ->joinSub(static::ambilDBSDM()
+                ->addSelect(
+                    'sdm_uuid'
+                ), 'dasar', function ($join) {
+                $join->on('penempatan_no_absen', '=', 'dasar.sdm_no_absen');
+            })
+            ->when($lingkupIjin, function ($query, $lingkupIjin) {
+                $query->whereIn('penempatan_lokasi', $lingkupIjin);
+            })
+            ->where('penempatan_uuid', $uuid)
+            ->first();
     }
 
     public static function ambilPerubahanStatusKontrakTerbaru()
