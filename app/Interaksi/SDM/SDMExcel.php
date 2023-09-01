@@ -404,6 +404,31 @@ class SDMExcel
         return EksporExcel::eksporExcelStream(...$argumen);
     }
 
+    public static function eksporStatistikSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+        $reader = new ExcelReader();
+        $spreadsheet2 = $reader->load($app->storagePath('app/contoh/statistik-sdm.xlsx'));
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $argumen = [
+            'namaBerkas' => 'statistik-sdm-',
+            'dataEkspor' => $data,
+            'pengecualian' => ['id', 'sdm_uuid', 'penempatan_uuid'],
+            'pesanData' =>  ' data statistik penempatan SDM',
+            'binder' => new CustomValueBinder(),
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet,
+            'chunk' => 500,
+            'tabelStart' => 'A1:',
+            'namaTabel' => 'Penempatan',
+            'spreadsheet2' => $spreadsheet2
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
+    }
+
     public static function eksporExcelContohUnggahNilaiSDM($data)
     {
         extract(Rangka::obyekPermintaanRangka());

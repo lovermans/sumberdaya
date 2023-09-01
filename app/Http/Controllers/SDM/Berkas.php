@@ -118,66 +118,6 @@ class Berkas
         return $this->eksporExcelStream(...$argumen);
     }
 
-    public function statistikPenempatanSDM()
-    {
-        $app = app();
-        $pengguna = $app->request->user();
-        $str = str();
-
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
-
-        $reader = new ExcelReader();
-        $spreadsheet2 = $reader->load($app->storagePath('app/contoh/statistik-sdm.xlsx'));
-        $spreadsheet = new Spreadsheet();
-        $binder = new CustomValueBinder();
-        $worksheet = $spreadsheet->getActiveSheet();
-        $database = $app->db;
-
-        // $rumusMasaKerja = '=IF([@sdm_tgl_berhenti]="",DATEDIF([@sdm_tgl_gabung],TODAY(),"Y"),DATEDIF([@sdm_tgl_gabung],[@sdm_tgl_berhenti],"Y"))';
-        // $rumusUsia = '=IF([@sdm_tgl_berhenti]="",DATEDIF([@sdm_tgl_lahir],TODAY(),"Y"),DATEDIF([@sdm_tgl_lahir],[@sdm_tgl_berhenti],"Y"))';
-
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
-
-        $penempatanTerkini = $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan')
-            ->from('penempatans as p1')->where('penempatan_mulai', '=', function ($query) use ($database) {
-                $query->select($database->raw('MAX(penempatan_mulai)'))->from('penempatans as p2')->whereColumn('p1.penempatan_no_absen', 'p2.penempatan_no_absen');
-            });
-
-        $dataSDM = $database->query()->select('id', 'sdm_uuid', 'sdm_no_absen', 'sdm_no_permintaan', 'sdm_tgl_lahir', 'sdm_tempat_lahir', 'sdm_tgl_gabung', 'sdm_no_ktp', 'sdm_nama', 'sdm_kelamin', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_kary', 'sdm_ket_berhenti', 'sdm_alamat', 'sdm_alamat_rt', 'sdm_alamat_rw', 'sdm_alamat_kelurahan', 'sdm_alamat_kecamatan', 'sdm_alamat_kota', 'sdm_alamat_provinsi', 'sdm_alamat_kodepos', 'sdm_disabilitas', 'sdm_agama', 'sdm_status_kawin', 'sdm_pendidikan', 'sdm_warganegara', 'sdm_uk_seragam', 'sdm_uk_sepatu', 'sdm_jurusan', 'sdm_telepon', 'email', 'sdm_id_atasan', 'sdm_no_bpjs', 'sdm_no_jamsostek', 'sdm_jml_anak')
-            ->from('sdms');
-
-        $dataPosisi = $database->query()->select('posisi_nama', 'posisi_wlkp')->from('posisis');
-
-        $cari = $penempatanTerkini->clone()->addSelect('posisi_wlkp', 'sdm_uuid', 'sdm_no_absen', 'sdm_tgl_lahir', 'sdm_tgl_gabung', 'sdm_no_ktp', 'sdm_nama', 'sdm_kelamin', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_berhenti', 'sdm_kelamin', 'sdm_disabilitas', 'sdm_agama', 'sdm_status_kawin', 'sdm_pendidikan', 'sdm_warganegara', $app->db->raw('IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, sdm_tgl_berhenti)) as masa_kerja, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, sdm_tgl_berhenti)) as usia'))
-            ->joinSub($dataSDM, 'sdm', function ($join) {
-                $join->on('penempatan_no_absen', '=', 'sdm.sdm_no_absen');
-            })
-            ->leftJoinSub($dataPosisi, 'pos', function ($join) {
-                $join->on('penempatan_posisi', '=', 'pos.posisi_nama');
-            })
-            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-                $query->whereIn('penempatan_lokasi', $lingkupIjin);
-            })
-            ->orderBy('sdm.id');
-
-        $argumen = [
-            'namaBerkas' => 'statistik-sdm-',
-            'dataEkspor' => $cari->clone(),
-            'pengecualian' => ['id', 'sdm_uuid', 'penempatan_uuid'],
-            'pesanData' =>  ' data statistik penempatan SDM',
-            'app' => $app,
-            'binder' => $binder,
-            'spreadsheet' => $spreadsheet,
-            'worksheet' => $worksheet,
-            'chunk' => 500,
-            'tabelStart' => 'A1:',
-            'namaTabel' => 'Penempatan',
-            'spreadsheet2' => $spreadsheet2
-        ];
-
-        return $this->eksporExcelStream(...$argumen);
-    }
-
     public function isiFormulir($app, $contoh, $data, $filename)
     {
         set_time_limit(0);

@@ -407,8 +407,8 @@ class SDMDBQuery
 
         return $app->db->query()
             ->select(
-                'sdm_no_permintaan',
                 'sdm_no_absen',
+                'sdm_no_permintaan',
                 'sdm_tgl_gabung',
                 'sdm_warganegara',
                 'sdm_no_ktp',
@@ -579,7 +579,7 @@ class SDMDBQuery
             });
     }
 
-    public static function ambilSemuaRiwayatPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, $uruts, $uuid)
+    public static function ambilSemuaRiwayatPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, $uruts, $uuid = null)
     {
         return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarSemuaRiwayatPenempatanSDM')
             ->when($uuid, function ($query) use ($uuid) {
@@ -595,6 +595,15 @@ class SDMDBQuery
                         ->orderBy('sdm_no_absen', 'desc');
                 }
             );
+    }
+
+    public static function ambilStatistikPenempatanSDM($lingkupIjin)
+    {
+        return static::dasarPenempatanSDM()
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->whereIn('penempatan_lokasi', $lingkupIjin);
+            })
+            ->orderBy('sdm.id');
     }
 
     public static function dasarMasaKerjaNyataSDM()
