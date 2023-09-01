@@ -117,7 +117,7 @@ class Penempatan
         $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
 
         if ($validator->fails()) {
-            return $app->redirect->route('sdm.penempatan.riwayat-nyata-aktif')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
+            return $app->redirect->route('sdm.penempatan.riwayat-nyata-nonaktif')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
 
         $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
@@ -170,14 +170,11 @@ class Penempatan
         return $this->tampilkanDataPenempatanSDM($data);
     }
 
-    public function indexNonAktif(FungsiStatis $fungsiStatis, Berkas $berkas)
+    public function indexNonAktif()
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
+        extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
 
@@ -185,135 +182,23 @@ class Penempatan
             return $app->redirect->route('sdm.penempatan.data-nonaktif')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
         };
 
+        $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
         $urutArray = $reqs->urut;
-        $uruts = $urutArray ? implode(',', array_filter($urutArray)) : null;
-        $kataKunci = $reqs->kata_kunci;
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+        $kunciUrut = array_filter((array) $urutArray);
+        $uruts = $urutArray ? implode(',', $kunciUrut) : null;
 
-        $cari = $this->dataPenempatanTerkini()->clone()->addSelect('sdm_uuid', 'sdm_no_absen', 'sdm_no_permintaan', 'sdm_tempat_lahir', 'sdm_tgl_lahir', 'sdm_tgl_gabung', 'sdm_no_ktp', 'sdm_nama', 'sdm_kelamin', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_berhenti', 'posisi_wlkp', 'sdm_disabilitas', 'sdm_ket_kary', 'sdm_alamat', 'sdm_alamat_rt', 'sdm_alamat_rw', 'sdm_alamat_kelurahan', 'sdm_alamat_kecamatan', 'sdm_alamat_kota', 'sdm_alamat_provinsi', 'sdm_alamat_kodepos', 'sdm_agama', 'sdm_status_kawin', 'sdm_pendidikan', 'sdm_warganegara', 'sdm_uk_seragam', 'sdm_uk_sepatu', 'sdm_jurusan', 'sdm_telepon', 'email', 'sdm_id_atasan', 'sdm_no_bpjs', 'sdm_no_jamsostek', 'sdm_jml_anak', $app->db->raw('IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, sdm_tgl_berhenti)) as masa_kerja, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, penempatan_mulai, NOW()),TIMESTAMPDIFF(YEAR, penempatan_mulai, sdm_tgl_berhenti)) as masa_aktif, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, sdm_tgl_berhenti)) as usia'))
-            ->joinSub($this->dataSDM(), 'sdm', function ($join) {
-                $join->on('penempatan_no_absen', '=', 'sdm.sdm_no_absen');
-            })
-            ->leftJoinSub($this->dataPosisi(), 'pos', function ($join) {
-                $join->on('penempatan_posisi', '=', 'pos.posisi_nama');
-            })
-            ->when($kataKunci, function ($query, $kataKunci) {
-                $query->where(function ($group) use ($kataKunci) {
-                    $group->where('sdm_no_absen', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('penempatan_no_absen', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('sdm_no_permintaan', $kataKunci)
-                        ->orWhere('sdm_no_ktp', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('sdm_nama', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('penempatan_posisi', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('penempatan_keterangan', 'like', '%' . $kataKunci . '%');
-                });
-            })
-            ->when($reqs->kontrak, function ($query)  use ($reqs) {
-                $query->whereIn('penempatan_kontrak', (array) $reqs->kontrak);
-            })
-            ->when($lingkupIjin, function ($query, $lingkupIjin) {
-                $query->whereIn('penempatan_lokasi', $lingkupIjin);
-            })
-            ->when($reqs->lokasi, function ($query) use ($reqs) {
-                $query->whereIn('penempatan_lokasi', (array) $reqs->lokasi);
-            })
-            ->when($reqs->kategori, function ($query) use ($reqs) {
-                $query->whereIn('penempatan_kategori', (array) $reqs->kategori);
-            })
-            ->when($reqs->pangkat, function ($query) use ($reqs) {
-                $query->whereIn('penempatan_pangkat', (array) $reqs->pangkat);
-            })
-            ->when($reqs->kelamin, function ($query) use ($reqs) {
-                $query->where('sdm_kelamin', $reqs->kelamin);
-            })
-            ->when($reqs->posisi, function ($query) use ($reqs) {
-                $query->whereIn('penempatan_posisi', (array) $reqs->posisi);
-            })
-            ->when($reqs->agama, function ($query)  use ($reqs) {
-                $query->whereIn('sdm_agama', (array) $reqs->agama);
-            })
-            ->when($reqs->kawin, function ($query)  use ($reqs) {
-                $query->whereIn('sdm_status_kawin', (array) $reqs->kawin);
-            })
-            ->when($reqs->warganegara, function ($query)  use ($reqs) {
-                $query->whereIn('sdm_warganegara', (array) $reqs->warganegara);
-            })
-            ->when($reqs->pendidikan, function ($query)  use ($reqs) {
-                $query->whereIn('sdm_pendidikan', (array) $reqs->pendidikan);
-            })
-            ->when($reqs->disabilitas, function ($query)  use ($reqs) {
-                $query->whereIn('sdm_disabilitas', (array) $reqs->disabilitas);
-            })
-            ->whereNotNull('sdm_tgl_berhenti')
-            ->when(
-                $uruts,
-                function ($query, $uruts) {
-                    $query->orderByRaw($uruts);
-                },
-                function ($query) {
-                    $query->latest('sdm_tgl_berhenti')->orderBy('penempatan_no_absen', 'desc');
-                }
-            );
+        $cari = SDMDBQuery::ambilPenempatanNonAktifSDM($reqs, $reqs->kata_kunci, $lingkupIjin, $uruts);
 
         if ($reqs->unduh == 'excel') {
-            return $berkas->unduhIndexPenempatanSDMNonAktif($cari, $app);
+            return SDMExcel::eksporExcelPenempatanNonAktifSDM($cari);
         }
-
-        $kunciUrut = array_filter((array) $urutArray);
-
-        $urutAbsen = $str->contains($uruts, 'sdm_no_absen');
-        $indexAbsen = (head(array_keys($kunciUrut, 'sdm_no_absen ASC')) + head(array_keys($kunciUrut, 'sdm_no_absen DESC')) + 1);
-        $urutMasuk = $str->contains($uruts, 'sdm_tgl_gabung');
-        $indexMasuk = (head(array_keys($kunciUrut, 'sdm_tgl_gabung ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_gabung DESC')) + 1);
-        $urutLahir = $str->contains($uruts, 'sdm_tgl_lahir');
-        $indexLahir = (head(array_keys($kunciUrut, 'sdm_tgl_lahir ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_lahir DESC')) + 1);
-        $urutKeluar = $str->contains($uruts, 'sdm_tgl_berhenti');
-        $indexKeluar = (head(array_keys($kunciUrut, 'sdm_tgl_berhenti ASC')) + head(array_keys($kunciUrut, 'sdm_tgl_berhenti DESC')) + 1);
-
-        $jumlahOS = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'like', 'OS-%')->count();
-        $jumlahOrganik = $cari->clone()->whereNotNull('penempatan_kontrak')->where('penempatan_kontrak', 'not like', 'OS-%')->count();
-
-        $tabels = $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']);
-
-        $aturs = $fungsiStatis->ambilCacheAtur();
-        $posisis = $fungsiStatis->ambilCachePosisiSDM();
 
         $data = [
-            'tabels' => $tabels,
-            'penempatans' => $aturs->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-                return $query->whereIn('atur_butir', $lingkupIjin);
-            })->sortBy(['atur_butir', 'asc']),
-            'kontraks' => $aturs->where('atur_jenis', 'STATUS KONTRAK')->sortBy(['atur_butir', 'asc']),
-            'kategoris' => $aturs->where('atur_jenis', 'KATEGORI')->sortBy(['atur_butir', 'asc']),
-            'pangkats' => $aturs->where('atur_jenis', 'PANGKAT')->sortBy(['atur_butir', 'asc']),
-            'kelamins' => $aturs->where('atur_jenis', 'KELAMIN')->sortBy(['atur_butir', 'asc']),
-            'agamas' => $aturs->where('atur_jenis', 'AGAMA')->sortBy(['atur_butir', 'asc']),
-            'kawins' => $aturs->where('atur_jenis', 'STATUS MENIKAH')->sortBy(['atur_butir', 'asc']),
-            'pendidikans' => $aturs->where('atur_jenis', 'PENDIDIKAN')->sortBy(['atur_butir', 'asc']),
-            'warganegaras' => $aturs->where('atur_jenis', 'NEGARA')->sortBy(['atur_butir', 'asc']),
-            'disabilitases' => $aturs->where('atur_jenis', 'DISABILITAS')->sortBy(['atur_butir', 'asc']),
-            'posisis' => $posisis,
-            'urutAbsen' => $urutAbsen,
-            'indexAbsen' => $indexAbsen,
-            'urutMasuk' => $urutMasuk,
-            'indexMasuk' => $indexMasuk,
-            'urutLahir' => $urutLahir,
-            'indexLahir' => $indexLahir,
-            'urutKeluar' => $urutKeluar,
-            'indexKeluar' => $indexKeluar,
-            'jumlahOS' => $jumlahOS,
-            'jumlahOrganik' => $jumlahOrganik
+            'tabels' => $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']),
+            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
         ];
 
-        if (!isset($uuid)) {
-            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
-        }
-
-        $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
-        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
-        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
-            ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
-            : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
+        return $this->tampilkanDataPenempatanSDM($data);
     }
 
     public function indexAkanHabis(FungsiStatis $fungsiStatis, Berkas $berkas)

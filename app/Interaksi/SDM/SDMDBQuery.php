@@ -711,6 +711,23 @@ class SDMDBQuery
             );
     }
 
+    public static function ambilPenempatanNonAktifSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
+    {
+        return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarPenempatanSDMAktif')
+            ->whereNotNull('sdm_tgl_berhenti')
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->latest('sdm_tgl_berhenti')
+                        ->orderBy('penempatan_no_absen', 'desc');
+                }
+            );
+    }
+
+
     public static function ambilMasaKerjaNyataSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
     {
         return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarMasaKerjaNyataSDM')
