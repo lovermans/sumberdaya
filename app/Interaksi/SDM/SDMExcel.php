@@ -290,6 +290,25 @@ class SDMExcel
         return EksporExcel::eksporExcelStream(...$argumen);
     }
 
+    public static function eksporExcelPenempatanAktifSDM($data)
+    {
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $argumen = [
+            'namaBerkas' => 'eksporsdmaktif-',
+            'dataEkspor' => $data,
+            'pengecualian' => ['id', 'sdm_uuid', 'penempatan_uuid'],
+            'pesanData' => ' data penempatan aktif SDM',
+            'binder' => new CustomValueBinder(),
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet,
+            'chunk' => 500
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
+    }
+
     public static function eksporExcelContohUnggahNilaiSDM($data)
     {
         extract(Rangka::obyekPermintaanRangka());

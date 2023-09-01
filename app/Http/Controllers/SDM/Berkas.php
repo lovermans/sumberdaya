@@ -118,29 +118,6 @@ class Berkas
         return $this->eksporExcelStream(...$argumen);
     }
 
-    public function unduhIndexPenempatanSDMAktif($cari, $app)
-    {
-        abort_unless($app->request->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
-
-        $binder = new CustomValueBinder();
-        $spreadsheet = new Spreadsheet();
-        $worksheet = $spreadsheet->getActiveSheet();
-
-        $argumen = [
-            'namaBerkas' => 'eksporsdmaktif-',
-            'dataEkspor' => $cari->clone(),
-            'pengecualian' => ['id', 'sdm_uuid', 'penempatan_uuid'],
-            'pesanData' =>  ' data riwayat penempatan SDM',
-            'app' => $app,
-            'binder' => $binder,
-            'spreadsheet' => $spreadsheet,
-            'worksheet' => $worksheet,
-            'chunk' => 500
-        ];
-
-        return $this->eksporExcelStream(...$argumen);
-    }
-
     public function unduhIndexPenempatanSDMNonAktif($cari, $app)
     {
         abort_unless($app->request->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
