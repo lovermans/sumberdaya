@@ -248,7 +248,17 @@
 
                     <option
                         value="{{ $app->url->route('sdm.penempatan.riwayat-nyata', $app->request->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
-                        @selected($app->request->routeIs('sdm.penempatan.riwayat-nyata'))>MASA KERJA NYATA</option>
+                        @selected($app->request->routeIs('sdm.penempatan.riwayat-nyata'))>MASA KERJA NYATA (SEMUA)
+                    </option>
+                    <option
+                        value="{{ $app->url->route('sdm.penempatan.riwayat-nyata-aktif', $app->request->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
+                        @selected($app->request->routeIs('sdm.penempatan.riwayat-nyata-aktif'))>MASA KERJA NYATA (AKTIF)
+                    </option>
+                    <option
+                        value="{{ $app->url->route('sdm.penempatan.riwayat-nyata-nonaktif', $app->request->merge(['fragment' => 'riwa-penem-sdm_tabels'])->except(['unduh', 'page', 'bph'])) }}"
+                        @selected($app->request->routeIs('sdm.penempatan.riwayat-nyata-nonaktif'))>MASA KERJA NYATA
+                        (NON-AKTIF)
+                    </option>
                 </select>
             </div>
 

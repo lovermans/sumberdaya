@@ -727,6 +727,18 @@ class SDMDBQuery
             );
     }
 
+    public static function ambilMasaKerjaNyataSDMAktif($permintaan, $kataKunci, $lingkupIjin, $uruts)
+    {
+        return static::ambilMasaKerjaNyataSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
+            ->whereNull('tgl_berhenti');
+    }
+
+    public static function ambilMasaKerjaNyataSDMNonAktif($permintaan, $kataKunci, $lingkupIjin, $uruts)
+    {
+        return static::ambilMasaKerjaNyataSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
+            ->whereNotNull('tgl_berhenti');
+    }
+
     public static function contohImporDatabaseSDM($lingkup)
     {
         return static::ambilDBSDM()

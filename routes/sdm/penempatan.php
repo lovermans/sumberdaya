@@ -9,6 +9,8 @@ $route->get('/data-kadaluarsa', 'Penempatan@indexKadaluarsa')->name('data-kadalu
 $route->get('/data-akanhabis', 'Penempatan@indexAkanHabis')->name('data-akanhabis');
 $route->get('/riwayat/{uuid?}', 'Penempatan@index')->name('riwayat');
 $route->get('/riwayat-nyata', 'Penempatan@indexMasaKerjaNyata')->name('riwayat-nyata');
+$route->get('/riwayat-nyata-aktif', 'Penempatan@indexMasaKerjaNyataAktif')->name('riwayat-nyata-aktif');
+$route->get('/riwayat-nyata-nonaktif', 'Penempatan@indexMasaKerjaNyataNonAktif')->name('riwayat-nyata-nonaktif');
 $route->get('/lihat/{uuid?}', 'Penempatan@lihat')->name('lihat');
 $route->match(['get', 'post'], '/tambah/{uuid?}', 'Penempatan@tambah')->name('tambah');
 $route->match(['get', 'post'], '/ubah/{uuid?}', 'Penempatan@ubah')->name('ubah');

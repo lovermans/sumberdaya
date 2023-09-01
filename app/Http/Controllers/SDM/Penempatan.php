@@ -77,13 +77,73 @@ class Penempatan
         return $this->tampilkanDataPenempatanSDM($data);
     }
 
+    public function indexMasaKerjaNyataAktif()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+
+        $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
+
+        if ($validator->fails()) {
+            return $app->redirect->route('sdm.penempatan.riwayat-nyata-aktif')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
+        };
+
+        $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
+        $urutArray = $reqs->urut;
+        $kunciUrut = array_filter((array) $urutArray);
+        $uruts = $urutArray ? implode(',', $kunciUrut) : null;
+
+        $cari = SDMDBQuery::ambilMasaKerjaNyataSDMAktif($reqs, $reqs->kata_kunci, $lingkupIjin, $uruts);
+
+        if ($reqs->unduh == 'excel') {
+            return SDMExcel::eksporExcelMasaKerjaNyataSDM($cari);
+        }
+
+        $data = [
+            'tabels' => $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']),
+            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
+        ];
+
+        return $this->tampilkanDataPenempatanSDM($data);
+    }
+
+    public function indexMasaKerjaNyataNonAktif()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+
+        $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
+
+        if ($validator->fails()) {
+            return $app->redirect->route('sdm.penempatan.riwayat-nyata-aktif')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
+        };
+
+        $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
+        $urutArray = $reqs->urut;
+        $kunciUrut = array_filter((array) $urutArray);
+        $uruts = $urutArray ? implode(',', $kunciUrut) : null;
+
+        $cari = SDMDBQuery::ambilMasaKerjaNyataSDMNonAktif($reqs, $reqs->kata_kunci, $lingkupIjin, $uruts);
+
+        if ($reqs->unduh == 'excel') {
+            return SDMExcel::eksporExcelMasaKerjaNyataSDM($cari);
+        }
+
+        $data = [
+            'tabels' => $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']),
+            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
+        ];
+
+        return $this->tampilkanDataPenempatanSDM($data);
+    }
+
     public function indexAktif()
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
-        $str = str();
-
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
 
         $validator = SDMValidasi::validasiPencarianPenempatanSDM([$reqs->all()]);
 
