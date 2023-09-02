@@ -584,29 +584,16 @@ class Penempatan
             : $HtmlPenuh;
     }
 
-    public function ubah(FungsiStatis $fungsiStatis, $uuid = null)
+    public function ubah($uuid = null)
     {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
+        extract(Rangka::obyekPermintaanRangka(true));
 
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
-
-        $database = $app->db;
-
-        $dasar = $database->query()->select('a.sdm_uuid', 'a.sdm_no_absen', 'a.sdm_nama')->from('sdms', 'a');
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $ijin_akses = $pengguna->sdm_ijin_akses;
         $lingkupIjin = array_filter(explode(',', $ijin_akses));
 
-        $penem = $database->query()->select('sdm_no_absen', 'sdm_nama', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan')
-            ->from('penempatans')->joinSub($dasar, 'dasar', function ($join) {
-                $join->on('penempatan_no_absen', '=', 'dasar.sdm_no_absen');
-            })->when($lingkupIjin, function ($query, $lingkupIjin) {
-                $query->whereIn('penempatan_lokasi', $lingkupIjin);
-            })
-            ->where('penempatan_uuid', $uuid)->first();
+        $penem = SDMDBQuery::ambilIDUbahPenempatanSDM($lingkupIjin, $uuid);
 
         $lingkup_lokasi = collect($penem?->penempatan_lokasi);
         $lingkup_akses = $lingkup_lokasi->unique()->intersect($lingkupIjin)->count();
@@ -615,42 +602,42 @@ class Penempatan
 
         if ($reqs->isMethod('post')) {
             $reqs->merge(['penempatan_id_pengubah' => $pengguna->sdm_no_absen]);
-            $validasi = $app->validator->make(
-                $reqs->all(),
-                [
-                    'penempatan_mulai' => ['required', 'date', Rule::unique('penempatans')->where(function ($query) use ($reqs, $uuid) {
-                        $query->where('penempatan_no_absen', $reqs->penempatan_no_absen)->whereNot('penempatan_uuid', $uuid);
-                    })],
-                    'penempatan_id_pengubah' => ['nullable', 'string', 'exists:sdms,sdm_no_absen'],
-                    ...$this->dasarValidasi()
-                ],
-                [],
-                $this->atributInput()
-            );
+
+            $validasi = SDMValidasi::validasiUbahPenempatanSDM([$reqs->all()], $uuid);
 
             $validasi->validate();
 
-            $data = $validasi->safe()->except('penempatan_berkas');
+            $valid = $validasi->safe()->all()[0];
 
-            $database->table('penempatans')->where('penempatan_uuid', $uuid)->update($data);
+            $data = Arr::except($valid, ['penempatan_berkas']);
 
-            $berkas = $validasi->safe()->only('penempatan_berkas')['penempatan_berkas'] ?? false;
+            SDMDBQuery::ubahDataPenempatanSDM($data, $uuid);
+
+            $berkas = Arr::only($valid, ['penempatan_berkas'])['penempatan_berkas'] ?? false;
 
             if ($berkas) {
-                $berkas->storeAs('sdm/penempatan/berkas', $validasi->safe()->only('penempatan_no_absen')['penempatan_no_absen'] . ' - ' . $validasi->safe()->only('penempatan_mulai')['penempatan_mulai'] . '.pdf');
+                $namaBerkas = Arr::only($valid, ['penempatan_no_absen'])['penempatan_no_absen'] . ' - '  . Arr::only($valid, ['penempatan_mulai'])['penempatan_mulai'] . '.pdf';
+
+                SDMBerkas::simpanBerkasPenempatanSDM($berkas, $namaBerkas);
             }
 
-            $fungsiStatis->hapusCacheSDMUmum();
+            SDMCache::hapusCacheSDMUmum();
+
+            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah data Penempatan SDM nomor absen '
+                . Arr::only($valid, ['penempatan_no_absen'])['penempatan_no_absen'] . ' terhitung mulai tanggal ' . Arr::only($valid, ['penempatan_mulai'])['penempatan_mulai'] . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
 
             $perujuk = $reqs->session()->get('tautan_perujuk');
-            $pesan = $fungsiStatis->statusBerhasil();
+            $pesan = Rangka::statusBerhasil();
             $redirect = $app->redirect;
 
-            return $perujuk ? $redirect->to($perujuk)->with('pesan', $pesan) : $redirect->route('sdm.penempatan.riwayat')->with('pesan', $pesan);
+            return $perujuk
+                ? $redirect->to($perujuk)->with('pesan', $pesan)
+                : $redirect->route('sdm.penempatan.riwayat')->with('pesan', $pesan);
         }
 
-        $aturs = $fungsiStatis->ambilCacheAtur();
-        $posisis = $fungsiStatis->ambilCachePosisiSDM();
+        $aturs = Cache::ambilCacheAtur();
 
         $data = [
             'penempatans' => $aturs->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
@@ -660,13 +647,16 @@ class Penempatan
             'kategoris' => $aturs->where('atur_jenis', 'KATEGORI')->sortBy(['atur_butir', 'asc']),
             'pangkats' => $aturs->where('atur_jenis', 'PANGKAT')->sortBy(['atur_butir', 'asc']),
             'golongans' => $aturs->where('atur_jenis', 'GOLONGAN')->sortBy(['atur_butir', 'asc']),
-            'posisis' => $posisis,
+            'posisis' => SDMCache::ambilCachePosisiSDM(),
             'penem' => $penem
         ];
 
         $HtmlPenuh = $app->view->make('sdm.penempatan.tambah-ubah', $data);
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
-        return $reqs->pjax() ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept']) : $HtmlPenuh;
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 
     public function hapus(FungsiStatis $fungsiStatis, Berkas $berkas, $uuid = null)

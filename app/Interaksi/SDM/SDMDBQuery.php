@@ -1711,10 +1711,46 @@ class SDMDBQuery
             ->first();
     }
 
+    public static function ambilIDUbahPenempatanSDM($lingkupIjin, $uuid)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->select(
+                'sdm_no_absen',
+                'sdm_nama',
+                'penempatan_mulai',
+                'penempatan_selesai',
+                'penempatan_ke',
+                'penempatan_lokasi',
+                'penempatan_posisi',
+                'penempatan_kategori',
+                'penempatan_kontrak',
+                'penempatan_pangkat',
+                'penempatan_golongan',
+                'penempatan_grup',
+                'penempatan_keterangan'
+            )
+            ->from('penempatans')
+            ->join('sdms', 'penempatan_no_absen', '=', 'sdm_no_absen')
+            ->when($lingkupIjin, function ($query, $lingkupIjin) {
+                $query->whereIn('penempatan_lokasi', $lingkupIjin);
+            })
+            ->where('penempatan_uuid', $uuid)
+            ->first();
+    }
+
     public static function tambahDataPenempatanSDM($data)
     {
         extract(Rangka::obyekPermintaanRangka());
 
         $app->db->table('penempatans')->insert($data);
+    }
+
+    public static function ubahDataPenempatanSDM($data, $uuid)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('penempatans')->where('penempatan_uuid', $uuid)->update($data);
     }
 }

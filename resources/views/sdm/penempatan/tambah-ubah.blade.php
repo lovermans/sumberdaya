@@ -238,15 +238,6 @@
                 diunggah akan menindih berkas unggahan lama).' : '' }}</span>
         </div>
 
-        <div class="isian gspan-4">
-            <label for="penempatan_keterangan">Keterangan</label>
-
-            <textarea id="penempatan_keterangan" name="penempatan_keterangan"
-                rows="3">{{ $app->request->old('penempatan_keterangan', $penem->penempatan_keterangan ?? null) }}</textarea>
-
-            <span class="t-bantu">Isi catatan rincian penempatan</span>
-        </div>
-
         @if ($app->request->routeIs('sdm.penempatan.ubah'))
         <div class="isian gspan-4">
             <label>Berkas Penempatan</label>
@@ -274,6 +265,15 @@
             @endif
         </div>
         @endif
+
+        <div class="isian gspan-4">
+            <label for="penempatan_keterangan">Keterangan</label>
+
+            <textarea id="penempatan_keterangan" name="penempatan_keterangan"
+                rows="3">{{ $app->request->old('penempatan_keterangan', $penem->penempatan_keterangan ?? null) }}</textarea>
+
+            <span class="t-bantu">Isi catatan rincian penempatan</span>
+        </div>
 
         <div class="gspan-4"></div>
 

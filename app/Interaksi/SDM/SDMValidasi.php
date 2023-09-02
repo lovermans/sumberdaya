@@ -780,6 +780,7 @@ class SDMValidasi
             '*.posisi.*' => 'Jabatan SDM wajib berupa karakter.',
             '*.penempatan_mulai.*' => 'Tanggal Mulai Penempatan urutan ke-:position wajib berupa tanggal.',
             '*.penempatan_id_pembuat.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.penempatan_id_pengubah.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.penempatan_no_absen.*' => 'Nomor Absen urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.penempatan_selesai.*' => 'Tanggal Selesai Penempatan urutan ke-:position wajib berupa tanggal dan lebih lama dari Tanggal Mulai Penempatan jika Jenis Kontrak berupa PKWT atau PERCOBAAN.',
             '*.penempatan_ke.*' => 'Nomor Urut Penempatan urutan ke-:position wajib berupa angka jika Jenis Kontrak berupa PKWT atau PERCOBAAN.',
@@ -813,7 +814,22 @@ class SDMValidasi
                 '*.penempatan_mulai' => ['required', 'date', Rule::unique('penempatans')->where(function ($query) use ($permintaan) {
                     $query->where('penempatan_no_absen', $permintaan[0]['penempatan_no_absen']);
                 })],
-                '*.penempatan_id_pembuat' => ['required', 'string', 'exists:sdms,sdm_no_absen'],
+                '*.penempatan_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                ...static::dasarValidasiPenempatanSDM($permintaan)
+            ],
+            static::pesanKesalahanPencarianPenempatanSDM()
+        );
+    }
+
+    public static function validasiUbahPenempatanSDM($permintaan, $uuid)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                '*.penempatan_mulai' => ['required', 'date', Rule::unique('penempatans')->where(function ($query) use ($permintaan, $uuid) {
+                    $query->where('penempatan_no_absen', $permintaan[0]['penempatan_no_absen'])->whereNot('penempatan_uuid', $uuid);
+                })],
+                '*.penempatan_id_pengubah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 ...static::dasarValidasiPenempatanSDM($permintaan)
             ],
             static::pesanKesalahanPencarianPenempatanSDM()
