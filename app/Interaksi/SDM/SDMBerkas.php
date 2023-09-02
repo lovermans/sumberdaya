@@ -199,4 +199,9 @@ class SDMBerkas
     {
         $berkas->storeAs('sdm/penilaian/berkas', $namaBerkas);
     }
+
+    public static function simpanBerkasPenempatanSDM($berkas, $namaBerkas)
+    {
+        $berkas->storeAs('sdm/penempatan/berkas', $namaBerkas);
+    }
 }

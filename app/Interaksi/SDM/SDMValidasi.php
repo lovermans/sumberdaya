@@ -736,6 +736,34 @@ class SDMValidasi
         ];
     }
 
+    public static function dasarValidasiPenempatanSDM($permintaan)
+    {
+        return [
+            '*.penempatan_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+            '*.penempatan_selesai' => ['sometimes', 'nullable', Rule::requiredIf(in_array(Arr::pluck($permintaan, '*.penempatan_kontrak'), ['PKWT', 'PERCOBAAN'])), 'date', 'after:penempatan_mulai'],
+            '*.penempatan_ke' => ['sometimes', 'nullable', Rule::requiredIf(in_array(Arr::pluck($permintaan, '*.penempatan_kontrak'), ['PKWT', 'PERCOBAAN'])), 'numeric', 'min:0'],
+            '*.penempatan_lokasi' => ['required', 'string', 'max:40', Rule::exists('aturs', 'atur_butir')->where(function ($query) {
+                return $query->where('atur_jenis', 'PENEMPATAN');
+            })],
+            '*.penempatan_posisi' => ['required', 'string', 'max:40', 'exists:posisis,posisi_nama'],
+            '*.penempatan_kategori' => ['required', 'string', 'max:40', Rule::exists('aturs', 'atur_butir')->where(function ($query) {
+                return $query->where('atur_jenis', 'KATEGORI');
+            })],
+            '*.penempatan_kontrak' => ['required', 'string', 'max:40', Rule::exists('aturs', 'atur_butir')->where(function ($query) {
+                return $query->where('atur_jenis', 'STATUS KONTRAK');
+            })],
+            '*.penempatan_pangkat' => ['required', 'string', 'max:40', Rule::exists('aturs', 'atur_butir')->where(function ($query) {
+                return $query->where('atur_jenis', 'PANGKAT');
+            })],
+            '*.penempatan_golongan' => ['required', 'string', 'max:40', Rule::exists('aturs', 'atur_butir')->where(function ($query) {
+                return $query->where('atur_jenis', 'GOLONGAN');
+            })],
+            '*.penempatan_grup' => ['sometimes', 'nullable', 'string', 'max:40'],
+            '*.penempatan_keterangan' => ['sometimes', 'nullable', 'string'],
+            '*.penempatan_berkas' => ['sometimes', 'file', 'mimetypes:application/pdf'],
+        ];
+    }
+
     public static function pesanKesalahanPencarianPenempatanSDM()
     {
         return [
@@ -750,6 +778,20 @@ class SDMValidasi
             '*.warganegara.*' => 'Warga Negara SDM wajib berupa karakter.',
             '*.disabilitas.*' => 'Disabilitas SDM wajib berupa karakter.',
             '*.posisi.*' => 'Jabatan SDM wajib berupa karakter.',
+            '*.penempatan_mulai.*' => 'Tanggal Mulai Penempatan urutan ke-:position wajib berupa tanggal.',
+            '*.penempatan_id_pembuat.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.penempatan_no_absen.*' => 'Nomor Absen urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.penempatan_selesai.*' => 'Tanggal Selesai Penempatan urutan ke-:position wajib berupa tanggal dan lebih lama dari Tanggal Mulai Penempatan jika Jenis Kontrak berupa PKWT atau PERCOBAAN.',
+            '*.penempatan_ke.*' => 'Nomor Urut Penempatan urutan ke-:position wajib berupa angka jika Jenis Kontrak berupa PKWT atau PERCOBAAN.',
+            '*.penempatan_lokasi.*' => 'Lokasi Penempatan urutan ke-:position maksimal 40 karakter dan terdaftar.',
+            '*.penempatan_posisi.*' => 'Jabatan Penempatan urutan ke-:position maksimal 40 karakter dan terdaftar.',
+            '*.penempatan_kategori.*' => 'Kategori Penempatan urutan ke-:position maksimal 40 karakter dan terdaftar.',
+            '*.penempatan_kontrak.*' => 'Jenis Kontrak urutan ke-:position maksimal 40 karakter dan terdaftar.',
+            '*.penempatan_pangkat.*' => 'Pangkat Penempatan urutan ke-:position maksimal 40 karakter dan terdaftar.',
+            '*.penempatan_golongan.*' => 'Golongan Penempatan urutan ke-:position maksimal 40 karakter dan terdaftar.',
+            '*.penempatan_grup.*' => 'Grup Penempatan urutan ke-:position wajib berupa karakter.',
+            '*.penempatan_keterangan.*' => 'Keterangan Penempatan urutan ke-:position wajib berupa karakter.',
+            '*.penempatan_berkas.*' => 'Berkas Penempatan urutan ke-:position wajib berupa berkas format PDF.',
             ...static::pesanKesalahanValidasiPencarianSDM()
         ];
     }
@@ -759,6 +801,21 @@ class SDMValidasi
         return Validasi::validasiUmum(
             $permintaan,
             static::dasarValidasiPencarianPenempatanSDM(),
+            static::pesanKesalahanPencarianPenempatanSDM()
+        );
+    }
+
+    public static function validasiTambahPenempatanSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                '*.penempatan_mulai' => ['required', 'date', Rule::unique('penempatans')->where(function ($query) use ($permintaan) {
+                    $query->where('penempatan_no_absen', $permintaan[0]['penempatan_no_absen']);
+                })],
+                '*.penempatan_id_pembuat' => ['required', 'string', 'exists:sdms,sdm_no_absen'],
+                ...static::dasarValidasiPenempatanSDM($permintaan)
+            ],
             static::pesanKesalahanPencarianPenempatanSDM()
         );
     }

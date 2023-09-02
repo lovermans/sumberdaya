@@ -1692,4 +1692,29 @@ class SDMDBQuery
             ->orWhere('langgar_lap_no', 'like', date('Y') . date('m') . '%')
             ->count();
     }
+
+    public static function ambilIDTambahPenempatanSDM($lingkupIjin, $uuid)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->select('sdm_uuid', 'sdm_no_absen', 'sdm_nama', 'penempatan_lokasi')
+            ->from('sdms')
+            ->leftJoin('penempatans', 'sdm_no_absen', '=', 'penempatan_no_absen')
+            ->when($lingkupIjin, function ($query, $lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->orWhereIn('penempatan_lokasi', $lingkupIjin)
+                        ->orWhereNull('penempatan_lokasi');
+                });
+            })
+            ->where('sdm_uuid', $uuid)
+            ->first();
+    }
+
+    public static function tambahDataPenempatanSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('penempatans')->insert($data);
+    }
 }
