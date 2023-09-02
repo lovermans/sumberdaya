@@ -190,6 +190,19 @@ class SDMBerkas
         }
     }
 
+    public static function hapusBerkasPenempatanSDM($berkas)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $namaBerkas = 'sdm/penempatan/berkas/' . $berkas . '.pdf';
+
+        $storage = $app->filesystem;
+
+        if ($storage->exists($namaBerkas)) {
+            $storage->delete($namaBerkas);
+        }
+    }
+
     public static function simpanBerkasSanksiSDM($berkas, $namaBerkas)
     {
         $berkas->storeAs('sdm/sanksi/berkas', $namaBerkas);

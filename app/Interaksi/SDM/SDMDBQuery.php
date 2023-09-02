@@ -218,6 +218,13 @@ class SDMDBQuery
         $app->db->table('sanksisdms')->where('sanksi_uuid', $uuid)->delete();
     }
 
+    public static function hapusDataPenempatanSDM($uuid)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('penempatans')->where('penempatan_uuid', $uuid)->delete();
+    }
+
     public static function ambilDBPenempatanSDMTerkini()
     {
         extract(Rangka::obyekPermintaanRangka());
@@ -1711,7 +1718,7 @@ class SDMDBQuery
             ->first();
     }
 
-    public static function ambilIDUbahPenempatanSDM($lingkupIjin, $uuid)
+    public static function ambilIDUbah_HapusPenempatanSDM($lingkupIjin, $uuid)
     {
         extract(Rangka::obyekPermintaanRangka());
 
