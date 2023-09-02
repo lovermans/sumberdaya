@@ -85,26 +85,6 @@
             <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
         </div>
 
-        <div class="isian pendek">
-            <label for="penempatan_mulai">Tanggal Mulai</label>
-
-            <input id="penempatan_mulai" type="date" name="penempatan_mulai"
-                value="{{ $app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? today()->toDateString()) }}"
-                required>
-
-            <span class="t-bantu">Isi tanggal</span>
-        </div>
-
-        <div class="isian pendek">
-            <label for="penempatan_selesai">Tanggal Selesai</label>
-
-            <input id="penempatan_selesai" type="date" name="penempatan_selesai"
-                value="{{ $app->request->old('penempatan_selesai', $penem->penempatan_selesai ?? null) }}"
-                @required(!str()->contains($app->request->old('penempatan_kontrak', $penem->penempatan_kontrak ??
-            null), ['PKWTT', 'OS-']))>
-            <span class="t-bantu">Kosongi jika PKWTT atau OS</span>
-        </div>
-
         <div class="isian normal">
             <label for="penempatan_kontrak">Status Kontrak</label>
 
@@ -128,6 +108,27 @@
             </select>
 
             <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
+        </div>
+
+        <div class="isian pendek">
+            <label for="penempatan_mulai">Tanggal Mulai</label>
+
+            <input id="penempatan_mulai" type="date" name="penempatan_mulai"
+                value="{{ $app->request->old('penempatan_mulai', $penem->penempatan_mulai ?? today()->toDateString()) }}"
+                required>
+
+            <span class="t-bantu">Isi tanggal</span>
+        </div>
+
+        <div class="isian pendek">
+            <label for="penempatan_selesai">Tanggal Selesai</label>
+
+            <input id="penempatan_selesai" type="date" name="penempatan_selesai"
+                value="{{ $app->request->old('penempatan_selesai', $penem->penempatan_selesai ?? null) }}"
+                @required(!str()->contains($app->request->old('penempatan_kontrak', $penem->penempatan_kontrak ??
+            null), ['PKWTT', 'OS-']) && $app->request->old('penempatan_kontrak', $penem->penempatan_kontrak ??
+            null))>
+            <span class="t-bantu">Kosongi jika PKWTT atau OS</span>
         </div>
 
         <div class="isian kecil">
