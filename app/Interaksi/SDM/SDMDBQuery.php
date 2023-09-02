@@ -1365,9 +1365,9 @@ class SDMDBQuery
         return static::ambilPenilaianSDM()
             ->addSelect(
                 'penempatan_lokasi',
-                'penempatan_kontrak',
-                $app->db->raw('(IFNULL(nilaisdm_bobot_hadir, 0) + IFNULL(nilaisdm_bobot_sikap, 0) + IFNULL(nilaisdm_bobot_target, 0)) as nilaisdm_total')
+                'penempatan_kontrak'
             )
+            ->selectRaw('(IFNULL(nilaisdm_bobot_hadir, 0) + IFNULL(nilaisdm_bobot_sikap, 0) + IFNULL(nilaisdm_bobot_target, 0)) as nilaisdm_total')
             ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak_t', function ($join) {
                 $join->on('nilaisdm_no_absen', '=', 'kontrak_t.penempatan_no_absen');
             })
@@ -1396,9 +1396,9 @@ class SDMDBQuery
                 'posisi_atasan',
                 'posisi_wlkp',
                 'posisi_keterangan',
-                'posisi_dibuat',
-                $app->db->raw('COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NULL THEN sdm_no_absen END) jml_aktif, COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NOT NULL THEN sdm_no_absen END) jml_nonaktif')
+                'posisi_dibuat'
             )
+            ->selectRaw('COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NULL THEN sdm_no_absen END) jml_aktif, COUNT(DISTINCT CASE WHEN sdm_tgl_berhenti IS NOT NULL THEN sdm_no_absen END) jml_nonaktif')
             ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
                 $join->on('posisi_nama', '=', 'kontrak.penempatan_posisi');
             })
