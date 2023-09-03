@@ -287,4 +287,35 @@ class SDMWord
 
         return EksporWord::eksporWordStream(...$argumen);
     }
+
+    public static function formulirPerubahanStatusSDM($uuid = null)
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+
+        $permin = SDMDBQuery::ambilDataPenempatanSDM(array_filter(explode(',', $pengguna->sdm_ijin_akses)), $uuid);
+
+        abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
+
+        $no_absen = $permin->penempatan_no_absen;
+
+        $data = [
+            'sdm_nama' => str($permin->sdm_nama)->limit(30),
+            'sdm_no_absen' => $no_absen,
+            'sdm_jabatan' => $permin->penempatan_posisi,
+            'sdm_kontrak' => $permin->penempatan_kontrak,
+            'sdm_ke' => $permin->penempatan_ke,
+            'sdm_golongan' => $permin->penempatan_golongan,
+            'sdm_lokasi' => $permin->penempatan_lokasi,
+        ];
+
+        $argumen = [
+            'contoh' => 'perubahan-status-sdm.docx',
+            'data' => $data,
+            'filename' => 'perubahan-status-sdm-' . $no_absen . '.docx'
+        ];
+
+        return EksporWord::eksporWordStream(...$argumen);
+    }
 }
