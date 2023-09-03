@@ -24,8 +24,9 @@
                 pattern="^(?=[^A-Z\s]*[A-Z])(?=[^a-z\s]*[a-z])(?=[^\d\s]*\d)(?=\w*[\W_])\S{8,}$"
                 title="Minimal 8 karakter terdiri dari 1 huruf besar, 1 huruf kecil, 1 angka dan 1 simbol">
 
-            <span class="t-bantu">Minimal 8 karakter terdiri dari 1 huruf besar, 1 huruf kecil, 1 angka dan 1
-                simbol</span>
+            <span class="t-bantu">
+                Minimal 8 karakter terdiri dari 1 huruf besar, 1 huruf kecil, 1 angka dan 1 simbol
+            </span>
         </div>
 
         <div class="isian normal">

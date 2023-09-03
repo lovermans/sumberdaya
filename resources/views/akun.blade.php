@@ -9,6 +9,7 @@
             @isset($akun)
             <div class="isian pendek">
                 <h3>Foto Profil</h3>
+
                 <img @class(['svg'=> !$app->filesystem->exists('sdm/foto-profil/' . $akun->sdm_no_absen . '.webp')])
                 src="{{
                 $app->filesystem->exists('sdm/foto-profil/' . $akun->sdm_no_absen . '.webp')
@@ -415,9 +416,10 @@
 
             @if(str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS'))
             <div class="isian tcetak" id="akun-cetakFormulir">
+                <h3>Cetak Dokumen SDM</h3>
                 <select class="pil-saja tombol"
                     onchange="if (this.value !== '') lemparXHR({tujuan : '#akun-cetakFormulirStatus', tautan : this.value, strim : true})">
-                    <option value="">CETAK FORMULIR</option>
+                    <option value="">---</option>
 
                     <option
                         value="{{$app->url->route('sdm.formulir-serah-terima-sdm-baru', ['uuid' => $akun->sdm_uuid])}}">
@@ -500,8 +502,11 @@
             }
             
             pilSaja('#akun-cetakFormulir .pil-saja');
+
             lemparXHR({tujuan : "#riwa-penem-sdm_tabels", tautan : "{{ $app->url->route('sdm.penempatan.riwayat', ['uuid' => $akun->sdm_uuid, 'fragment' => 'riwa-penem-sdm_tabels']) }}", normalview : true, fragmen : true});
+
             lemparXHR({tujuan : "#nilai-sdm_tabels", tautan : "{{ $app->url->route('sdm.penilaian.data', ['uuid' => $akun->sdm_uuid, 'fragment' => 'nilai-sdm_tabels']) }}", normalview : true, fragmen : true});
+            
             lemparXHR({tujuan : "#sanksi-sdm_tabels", tautan : "{{ $app->url->route('sdm.sanksi.data', ['uuid' => $akun->sdm_uuid, 'fragment' => 'sanksi-sdm_tabels']) }}", normalview : true, fragmen : true});
         })();
     </script>

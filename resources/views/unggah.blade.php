@@ -22,8 +22,7 @@
                 data-tujuan="#unggah_profil_sdm" data-laju="true">
                 contoh
             </a>
-            excel, isi sesuai petunjuk dalam excel
-            lalu unggah kembali.
+            excel, isi sesuai petunjuk dalam excel lalu unggah kembali.
         </p>
 
         <div class="isian">

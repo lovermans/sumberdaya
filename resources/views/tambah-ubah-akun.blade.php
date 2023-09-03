@@ -46,8 +46,8 @@
                 $permintaanSdms->pluck('tambahsdm_no')->toArray()) && $app->request->old('sdm_no_permintaan',
                 $sdm->sdm_no_permintaan ?? null))
                 <option value="{{ $app->request->old('sdm_no_permintaan', $sdm->sdm_no_permintaan ?? null) }}"
-                    class="merah" selected>{{ $app->request->old('sdm_no_permintaan', $sdm->sdm_no_permintaan ?? null)
-                    }}
+                    class="merah" selected>
+                    {{ $app->request->old('sdm_no_permintaan', $sdm->sdm_no_permintaan ?? null) }}
                 </option>
                 @endif
 
@@ -76,9 +76,8 @@
 
             <input id="sdm_no_absen" type="text" name="sdm_no_absen"
                 value="{{ $app->request->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) }}" pattern="^[0-9]{8}$"
-                inputmode="numeric" {{str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS') ?
-            'required' :
-            'readonly'}}>
+                inputmode="numeric" {{ str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS') ?
+            'required' : 'readonly' }}>
 
             <span class="t-bantu">8 digit nomor absen</span>
         </div>
@@ -95,7 +94,8 @@
                 ??
                 null))
                 <option value="{{ $app->request->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null) }}" class="merah"
-                    selected>{{ $app->request->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null) }}
+                    selected>
+                    {{ $app->request->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null) }}
                 </option>
                 @endif
 
@@ -117,8 +117,7 @@
 
             <input id="sdm_tgl_gabung" type="date" name="sdm_tgl_gabung"
                 value="{{ $app->request->old('sdm_tgl_gabung', $sdm->sdm_tgl_gabung ?? $app->date->today()->toDateString()) }}"
-                {{str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' :
-            'readonly'}}>
+                {{str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' : 'readonly'}}>
 
             <span class="t-bantu">Pilih atau isi tanggal</span>
         </div>
@@ -127,12 +126,11 @@
             <label for="sdm_warganegara">Warganegara</label>
 
             <select id="sdm_warganegara" name="sdm_warganegara" class="pil-cari"
-                {{str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' :
-                'readonly'}}>
+                {{str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' : 'readonly'}}>
+
                 @if (!in_array($app->request->old('sdm_warganegara', $sdm->sdm_warganegara ?? null),
                 $negaras->pluck('atur_butir')->toArray()) && $app->request->old('sdm_warganegara', $sdm->sdm_warganegara
-                ??
-                null))
+                ?? null))
                 <option value="{{ $app->request->old('sdm_warganegara', $sdm->sdm_warganegara ?? null) }}" class="merah"
                     selected>
                     {{ $app->request->old('sdm_warganegara', $sdm->sdm_warganegara ?? null) }}
@@ -141,8 +139,7 @@
 
                 @foreach ($negaras as $negara)
                 <option {{ ($app->request->old('sdm_warganegara', $sdm->sdm_warganegara ?? null) == $negara->atur_butir)
-                    ?
-                    'selected' : (!$app->request->old('sdm_warganegara', $sdm->sdm_warganegara ?? null) &&
+                    ? 'selected' : (!$app->request->old('sdm_warganegara', $sdm->sdm_warganegara ?? null) &&
                     $negara->atur_butir == 'INDONESIA' ? 'selected' : '') }} @class(['merah' => $negara->atur_status ==
                     'NON-AKTIF'])>
                     {{ $negara->atur_butir }}
@@ -195,6 +192,7 @@
             <label for="sdm_kelamin">Kelamin</label>
 
             <select id="sdm_kelamin" name="sdm_kelamin" class="pil-saja" required>
+
                 @if (!in_array($app->request->old('sdm_kelamin', $sdm->sdm_kelamin ?? null),
                 $kelamins->pluck('atur_butir')->toArray()) && $app->request->old('sdm_kelamin', $sdm->sdm_kelamin ??
                 null))
@@ -207,8 +205,7 @@
                 @foreach ($kelamins as $kelamin)
                 <option {{ ($app->request->old('sdm_kelamin', $sdm->sdm_kelamin ?? null) == $kelamin->atur_butir) ?
                     'selected' : (!$app->request->old('sdm_kelamin', $sdm->sdm_kelamin ?? null) &&$kelamin->atur_butir
-                    ==
-                    'L' ? 'selected' : '') }} @class(['merah' => $kelamin->atur_status == 'NON-AKTIF'])>
+                    == 'L' ? 'selected' : '') }} @class(['merah' => $kelamin->atur_status == 'NON-AKTIF'])>
                     {{ $kelamin->atur_butir }}
                 </option>
                 @endforeach
@@ -234,8 +231,7 @@
 
                 @foreach ($gdarahs as $gdarah)
                 <option @selected($app->request->old('sdm_gol_darah', $sdm->sdm_gol_darah ?? null) ==
-                    $gdarah->atur_butir)
-                    @class(['merah' => $gdarah->atur_status == 'NON-AKTIF'])>
+                    $gdarah->atur_butir) @class(['merah' => $gdarah->atur_status == 'NON-AKTIF'])>
                     {{ $gdarah->atur_butir }}
                 </option>
                 @endforeach
@@ -333,8 +329,7 @@
 
                 @foreach ($agamas as $agama)
                 <option {{ ($app->request->old('sdm_agama', $sdm->sdm_agama ?? null) == $agama->atur_butir) ? 'selected'
-                    :
-                    (!$app->request->old('sdm_agama', $sdm->sdm_agama ?? null) && $agama->atur_butir == 'ISLAM' ?
+                    : (!$app->request->old('sdm_agama', $sdm->sdm_agama ?? null) && $agama->atur_butir == 'ISLAM' ?
                     'selected' : '') }} @class(['merah' => $agama->atur_status == 'NON-AKTIF'])>
                     {{ $agama->atur_butir }}
                 </option>
@@ -359,20 +354,18 @@
             <select id="sdm_status_kawin" name="sdm_status_kawin" class="pil-cari" required>
                 @if (!in_array($app->request->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null),
                 $kawins->pluck('atur_butir')->toArray()) && $app->request->old('sdm_status_kawin',
-                $sdm->sdm_status_kawin
-                ?? null))
+                $sdm->sdm_status_kawin ?? null))
                 <option value="{{ $app->request->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null) }}"
                     class="merah" selected>
                     {{ $app->request->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null) }}
                 </option>
                 @endif
+
                 @foreach ($kawins as $kawin)
                 <option {{ ($app->request->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null) ==
-                    $kawin->atur_butir)
-                    ?
-                    'selected' : (!$app->request->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null) &&
-                    $kawin->atur_butir == 'LAJANG' ? 'selected' : '') }} @class(['merah' => $kawin->atur_status ==
-                    'NON-AKTIF'])>
+                    $kawin->atur_butir) ? 'selected' : (!$app->request->old('sdm_status_kawin', $sdm->sdm_status_kawin
+                    ?? null) && $kawin->atur_butir == 'LAJANG' ? 'selected' : '') }} @class(['merah' =>
+                    $kawin->atur_status == 'NON-AKTIF'])>
                     {{ $kawin->atur_butir }}
                 </option>
                 @endforeach
@@ -398,8 +391,7 @@
 
                 @if (!in_array($app->request->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null),
                 $pendidikans->pluck('atur_butir')->toArray()) && $app->request->old('sdm_pendidikan',
-                $sdm->sdm_pendidikan
-                ?? null))
+                $sdm->sdm_pendidikan ?? null))
                 <option value="{{ $app->request->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null) }}" class="merah"
                     selected>
                     {{ $app->request->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null) }}
@@ -462,19 +454,18 @@
 
                 @foreach ($disabilitas as $difabel)
                 <option {{ ($app->request->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null) ==
-                    $difabel->atur_butir)
-                    ?
-                    'selected' : (!$app->request->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null) &&
-                    $difabel->atur_butir == 'NORMAL' ? 'selected' : '') }} @class(['merah' => $difabel->atur_status ==
-                    'NON-AKTIF'])>
+                    $difabel->atur_butir) ? 'selected' : (!$app->request->old('sdm_disabilitas', $sdm->sdm_disabilitas
+                    ?? null) && $difabel->atur_butir == 'NORMAL' ? 'selected' : '') }} @class(['merah' =>
+                    $difabel->atur_status == 'NON-AKTIF'])>
                     {{ $difabel->atur_butir }}
                 </option>
                 @endforeach
             </select>
 
-            <span class="t-bantu">{{str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS') ?
-                'Disarankan tidak
-                memilih pilihan berwarna merah' : 'Perubahan tidak akan tersimpan'}}</span>
+            <span class="t-bantu">
+                {{str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS') ?
+                'Disarankan tidak memilih pilihan berwarna merah' : 'Perubahan tidak akan tersimpan'}}
+            </span>
         </div>
 
         <div class="isian normal">
@@ -612,8 +603,7 @@
 
                 @if (!in_array($app->request->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null),
                 $seragams->pluck('atur_butir')->toArray()) && $app->request->old('sdm_uk_seragam', $sdm->sdm_uk_seragam
-                ??
-                null))
+                ?? null))
                 <option value="{{ $app->request->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null) }}" class="merah"
                     selected>
                     {{ $app->request->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null) }}
@@ -662,8 +652,7 @@
                 @foreach (array_unique(array_merge($perans->pluck('atur_butir')->toArray(), explode(',',
                 $app->request->old('sdm_hak_akses', $sdm->sdm_hak_akses ?? null)))) as $peran)
                 <option @selected(in_array($peran, explode(',', $app->request->old('sdm_hak_akses', $sdm->sdm_hak_akses
-                    ??
-                    null)))) @class(['merah' => in_array($peran, $perans->where('atur_status',
+                    ?? null)))) @class(['merah' => in_array($peran, $perans->where('atur_status',
                     'NON-AKTIF')->pluck('atur_butir')->toArray())])>
                     {{ $peran }}
                 </option>
@@ -708,8 +697,7 @@
 
                 @if (!in_array($app->request->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null),
                 $phks->pluck('atur_butir')->toArray()) && $app->request->old('sdm_jenis_berhenti',
-                $sdm->sdm_jenis_berhenti
-                ?? null))
+                $sdm->sdm_jenis_berhenti ?? null))
                 <option value="{{ $app->request->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null) }}"
                     class="merah" selected>
                     {{ $app->request->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null) }}
@@ -803,6 +791,7 @@
             pilDasar('#form_tambahUbahAkun .pil-dasar');
             formatIsian('#form_tambahUbahAkun .isian :is(textarea,input[type=text],input[type=search])');
         })();
+        
         function siapkanFoto(berkas) {
             if (!window.SiapkanFoto) {
                 import("{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/siapkan-foto-es.js')) }}").then(({default : SF}) => {
