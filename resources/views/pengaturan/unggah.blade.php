@@ -16,13 +16,20 @@
             </a>
         </div>
 
-        <p>Data <b><i>Jenis Aturan</i></b> dan <b><i>Butir Aturan</i></b> dilindungi dari perubahan data. Jika
+        <p>
+            Data <b><i>Jenis Aturan</i></b> dan <b><i>Butir Aturan</i></b> dilindungi dari perubahan data. Jika
             terdapat data identik dari <b><i>Jenis Aturan</i></b> dan <b><i>Butir Aturan</i></b>, maka hanya akan
-            mengubah data isian lainnya selain kedua data tersebut.</p>
+            mengubah data isian lainnya selain kedua data tersebut.
+        </p>
 
-        <p>Unduh <a class="isi-xhr" href="{{ $app->url->route('atur.contoh-unggah') }}" data-rekam="false"
-                data-tujuan="#atur_unggah" data-laju="true">contoh</a> excel, isi sesuai petunjuk dalam excel lalu
-            unggah kembali.</p>
+        <p>
+            Unduh
+            <a class="isi-xhr" href="{{ $app->url->route('atur.contoh-unggah') }}" data-rekam="false"
+                data-tujuan="#atur_unggah" data-laju="true">
+                contoh
+            </a>
+            excel, isi sesuai petunjuk dalam excel lalu unggah kembali.
+        </p>
 
         <div class="isian">
             <label for="atur_unggahBerkas">Berkas</label>

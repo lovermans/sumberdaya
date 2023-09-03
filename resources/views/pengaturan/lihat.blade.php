@@ -41,7 +41,9 @@
         <div class="gspan-4"></div>
 
         <a class="utama isi-xhr" data-rekam="false" data-tujuan="#atur_lihat"
-            href="{{ $app->url->route('atur.ubah', ['uuid' => $atur->atur_uuid]) }}">UBAH</a>
+            href="{{ $app->url->route('atur.ubah', ['uuid' => $atur->atur_uuid]) }}">
+            UBAH
+        </a>
 
         @else
         <div class="isian">

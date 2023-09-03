@@ -37,9 +37,12 @@
             <label for="atur_tambahUbahStatus">Status</label>
 
             <select id="atur_tambahUbahStatus" name="atur_status" class="pil-saja" required>
-                <option default @selected($app->request->old('atur_butir', $atur->atur_status ?? null) == 'AKTIF')>AKTIF
+                <option default @selected($app->request->old('atur_butir', $atur->atur_status ?? null) == 'AKTIF')>
+                    AKTIF
                 </option>
-                <option @selected($app->request->old('atur_butir', $atur->atur_status ?? null) == 'NON-AKTIF')>NON-AKTIF
+
+                <option @selected($app->request->old('atur_butir', $atur->atur_status ?? null) == 'NON-AKTIF')>
+                    NON-AKTIF
                 </option>
             </select>
 
@@ -49,8 +52,9 @@
         <div class="isian gspan-4">
             <label for="atur_tambahUbahKeterangan">Keterangan</label>
 
-            <textarea id="atur_tambahUbahKeterangan" name="atur_detail"
-                cols="3">{{ $app->request->old('atur_detail', $atur->atur_detail ?? null) }}</textarea>
+            <textarea id="atur_tambahUbahKeterangan" name="atur_detail" cols="3">
+                {{ $app->request->old('atur_detail', $atur->atur_detail ?? null) }}
+            </textarea>
 
             <span class="t-bantu">Isi catatan detail aturan</span>
         </div>

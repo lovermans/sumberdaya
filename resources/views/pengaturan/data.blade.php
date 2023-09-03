@@ -19,8 +19,7 @@
             <input type="hidden" name="fragment" value="atur_tabels">
 
             <details class="gspan-4" {{ $app->request->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' :
-                ''
-                }}>
+                ''}}>
 
                 <summary class="cari">
                     <div class="isian gspan-4">
@@ -43,7 +42,8 @@
                         <select id="atur_data_cariStatus" name="atur_status[]" class="pil-dasar" multiple
                             onchange="getElementById('tombol_cari_atur').click()">
                             @foreach ($statuses as $status)
-                            <option @selected(in_array($status, (array) $app->request->atur_status))>{{ $status }}
+                            <option @selected(in_array($status, (array) $app->request->atur_status))>
+                                {{ $status }}
                             </option>
                             @endforeach
                         </select>
@@ -58,7 +58,8 @@
                             @disabled($jenises->count() < 1) multiple
                                 onchange="getElementById('tombol_cari_atur').click()">
                                 @foreach ($jenises as $jenis)
-                                <option @selected(in_array($jenis, (array) $app->request->atur_jenis))>{{ $jenis }}
+                                <option @selected(in_array($jenis, (array) $app->request->atur_jenis))>
+                                    {{ $jenis }}
                                 </option>
                                 @endforeach
                         </select>
@@ -72,7 +73,8 @@
                         <select id="atur_data_cariButir" name="atur_butir[]" class="pil-cari" @disabled($butirs->count()
                             < 1) multiple onchange="getElementById('tombol_cari_atur').click()">
                                 @foreach ($butirs as $butir)
-                                <option @selected(in_array($butir, (array) $app->request->atur_butir))>{{ $butir }}
+                                <option @selected(in_array($butir, (array) $app->request->atur_butir))>
+                                    {{ $butir }}
                                 </option>
                                 @endforeach
                         </select>
@@ -85,7 +87,8 @@
                     <button id="tombol_saring_atur" class="utama pelengkap" type="submit" title="Saring Data">
                         <svg viewbox="0 0 24 24">
                             <use href="#ikoncari"></use>
-                        </svg> Saring
+                        </svg>
+                        SARING
                     </button>
                 </div>
             </details>
@@ -109,9 +112,10 @@
                 </select>
             </span>
 
-            <span class="ket">{{number_format($tabels->firstItem(), 0, ',', '.')}} -
-                {{number_format($tabels->lastItem(), 0, ',', '.')}} dari {{number_format($tabels->total(), 0, ',',
-                '.')}} data</span>
+            <span class="ket">
+                {{number_format($tabels->firstItem(), 0, ',', '.')}} - {{number_format($tabels->lastItem(), 0, ',',
+                '.')}} dari {{number_format($tabels->total(), 0, ',', '.')}} data
+            </span>
 
             @if($tabels->hasPages())
             <span class="trek">
@@ -161,10 +165,16 @@
                         <select id="atur_data_cariUrutJenis" name="urut[]" class="pil-dasar" form="form_atur_data_cari"
                             onchange="getElementById('tombol_cari_atur').click()">
                             <option selected disabled></option>
+
                             <option @selected(in_array('atur_jenis ASC', (array) $app->request->urut))
-                                value="atur_jenis ASC">A - Z</option>
+                                value="atur_jenis ASC">
+                                A - Z
+                            </option>
+
                             <option @selected(in_array('atur_jenis DESC', (array) $app->request->urut))
-                                value="atur_jenis DESC">Z - A</option>
+                                value="atur_jenis DESC">
+                                Z - A
+                            </option>
                         </select>
 
                         <span class="t-bantu">Pilih satu</span>
@@ -176,10 +186,16 @@
                         <select id="atur_data_cariUrutButir" name="urut[]" class="pil-dasar" form="form_atur_data_cari"
                             onchange="getElementById('tombol_cari_atur').click()">
                             <option selected disabled></option>
+
                             <option @selected(in_array('atur_butir ASC', (array) $app->request->urut))
-                                value="atur_butir ASC">A - Z</option>
+                                value="atur_butir ASC">
+                                A - Z
+                            </option>
+
                             <option @selected(in_array('atur_butir DESC', (array) $app->request->urut))
-                                value="atur_butir DESC">Z - A</option>
+                                value="atur_butir DESC">
+                                Z - A
+                            </option>
                         </select>
 
                         <span class="t-bantu">Pilih satu</span>
@@ -192,10 +208,16 @@
                         <select id="atur_data_cariUrutStatus" name="urut[]" class="pil-dasar" form="form_atur_data_cari"
                             onchange="getElementById('tombol_cari_atur').click()">
                             <option selected disabled></option>
+
                             <option @selected(in_array('atur_status ASC', (array) $app->request->urut))
-                                value="atur_status ASC">A - Z</option>
+                                value="atur_status ASC">
+                                A - Z
+                            </option>
+
                             <option @selected(in_array('atur_status DESC', (array) $app->request->urut))
-                                value="atur_status DESC">Z - A</option>
+                                value="atur_status DESC">
+                                Z - A
+                            </option>
                         </select>
 
                         <span class="t-bantu">Pilih satu</span>
