@@ -482,12 +482,37 @@ class SDMDBQuery
             })->groupBy('sdm_no_ktp');
     }
 
-    public static function dasarRiwayatPenempatanSDM()
+    public static function dasarRiwayatPenempatanSDM($fungsi)
     {
-        return static::ambilDBSDM()
-            ->addSelect(
+        return static::$fungsi()
+            ->select(
                 'sdms.id',
                 'sdm_uuid',
+                'sdm_no_absen',
+                'sdm_tgl_gabung',
+                'sdm_tgl_lahir',
+                'sdm_tgl_berhenti',
+                'sdm_nama',
+                'sdm_no_permintaan',
+                'sdm_jenis_berhenti',
+                'sdm_ket_berhenti',
+                'sdm_no_ktp',
+                'sdm_warganegara',
+                'sdm_tempat_lahir',
+                'sdm_kelamin',
+                'sdm_agama',
+                'sdm_status_kawin',
+                'sdm_pendidikan',
+                'sdm_jurusan',
+                'sdm_telepon',
+                'email',
+                'sdm_no_jamsostek',
+                'sdm_no_bpjs',
+                'sdm_jml_anak',
+                'sdm_uk_seragam',
+                'sdm_uk_sepatu',
+                'sdm_disabilitas',
+                'sdm_id_atasan',
                 'penempatan_uuid',
                 'penempatan_no_absen',
                 'penempatan_mulai',
@@ -508,30 +533,18 @@ class SDMDBQuery
 
     public static function dasarSemuaRiwayatPenempatanSDM()
     {
-        return static::dasarRiwayatPenempatanSDM()
-            ->leftJoinSub(static::ambilDBPenempatanSDM(), 'penem', function ($join) {
-                $join->on('sdm_no_absen', '=', 'penem.penempatan_no_absen');
-            })
-            ->leftJoinSub(static::ambilDBPosisiSDM()
-                ->addSelect(
-                    'posisi_wlkp'
-                ), 'pos', function ($join) {
-                $join->on('penempatan_posisi', '=', 'pos.posisi_nama');
-            });
+        return static::dasarRiwayatPenempatanSDM('ambilDBPenempatanSDM')
+            ->leftJoin('sdms', 'sdm_no_absen', '=', 'penempatan_no_absen')
+            ->leftJoin('posisis', 'penempatan_posisi', '=', 'posisi_nama');
     }
 
     public static function dasarRiwayatPenempatanSDMTerkini()
     {
-        return static::dasarRiwayatPenempatanSDM()
+        return static::dasarRiwayatPenempatanSDM('ambilDBSDM')
             ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'penem', function ($join) {
                 $join->on('sdm_no_absen', '=', 'penem.penempatan_no_absen');
             })
-            ->leftJoinSub(static::ambilDBPosisiSDM()
-                ->addSelect(
-                    'posisi_wlkp'
-                ), 'pos', function ($join) {
-                $join->on('penempatan_posisi', '=', 'pos.posisi_nama');
-            });
+            ->leftJoin('posisis', 'penempatan_posisi', '=', 'posisi_nama');
     }
 
     public static function dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, $fungsiDasar)
@@ -667,12 +680,7 @@ class SDMDBQuery
             ->joinSub(static::ambilDBPenempatanSDMTerkini(), 'penem', function ($join) {
                 $join->on('sdmbaru.no_absen', '=', 'penem.penempatan_no_absen');
             })
-            ->leftjoinSub(static::ambilDBPosisiSDM()
-                ->addSelect(
-                    'posisi_wlkp'
-                ), 'pos', function ($join) {
-                $join->on('penempatan_posisi', '=', 'pos.posisi_nama');
-            });
+            ->leftJoin('posisis', 'penempatan_posisi', '=', 'posisi_nama');
     }
 
     public static function dasarPenempatanSDM()
@@ -717,18 +725,8 @@ class SDMDBQuery
                 'sdm_jml_anak'
             )
             ->selectRaw('IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, sdm_tgl_berhenti)) as masa_kerja, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, penempatan_mulai, NOW()),TIMESTAMPDIFF(YEAR, penempatan_mulai, sdm_tgl_berhenti)) as masa_aktif, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, sdm_tgl_berhenti)) as usia')
-            ->joinSub(static::ambilDBSDM()
-                ->addSelect(
-                    'sdm_uuid'
-                ), 'sdm', function ($join) {
-                $join->on('penempatan_no_absen', '=', 'sdm.sdm_no_absen');
-            })
-            ->leftJoinSub(static::ambilDBPosisiSDM()
-                ->addSelect(
-                    'posisi_wlkp'
-                ), 'pos', function ($join) {
-                $join->on('penempatan_posisi', '=', 'pos.posisi_nama');
-            });
+            ->leftJoin('sdms', 'penempatan_no_absen', '=', 'sdm_no_absen')
+            ->leftJoin('posisis', 'penempatan_posisi', '=', 'posisi_nama');
     }
 
     public static function ambilPenempatanAktifSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
