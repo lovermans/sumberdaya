@@ -21,10 +21,18 @@ class Sanksi
     {
         extract(Rangka::obyekPermintaanRangka(true));
 
+        $aksesAkun = $uuid ? SDMDBQuery::aksesAkun($uuid) : null;
+
         $str = str();
 
-        abort_unless($pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN'])
-            || ($pengguna?->sdm_uuid == $uuid && $pengguna?->sdm_uuid !== null), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+        abort_unless(
+            $pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN'])
+                || ($pengguna?->sdm_uuid == $uuid && $pengguna?->sdm_uuid !== null)
+                || ($pengguna?->sdm_id_atasan == $aksesAkun?->sdm_no_absen)
+                || ($pengguna?->sdm_id_atasan == $aksesAkun?->sdm_id_atasan),
+            403,
+            'Akses dibatasi hanya untuk Pemangku SDM.'
+        );
 
         $validator = SDMValidasi::validasiPencarianSanksiSDM([$reqs->all()]);
 

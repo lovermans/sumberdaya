@@ -1758,4 +1758,15 @@ class SDMDBQuery
 
         $app->db->table('penempatans')->where('penempatan_uuid', $uuid)->update($data);
     }
+
+    public static function aksesAkun($uuid)
+    {
+        return static::ambilDBSDM()
+            ->select(
+                'sdm_no_absen',
+                'sdm_id_atasan'
+            )
+            ->where('sdm_uuid', $uuid)
+            ->first();
+    }
 }
