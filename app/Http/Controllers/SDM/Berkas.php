@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers\SDM;
 
-use App\Tambahan\FungsiStatis;
-use Illuminate\Validation\Rule;
-use App\Tambahan\ChunkReadFilter;
 use App\Tambahan\CustomValueBinder;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpWord\TemplateProcessor;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Table;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ExcelReader;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as ExcelWriter;
@@ -95,48 +91,6 @@ class Berkas
         return $app->redirect->to($storage->disk('local')->temporaryUrl("unduh/{$filename}", $app->date->now()->addMinutes(5)));
 
         exit();
-    }
-
-    public function formulirPenilaianSDM($uuid = null)
-    {
-        $app = app();
-        $reqs = $app->request;
-        $pengguna = $reqs->user();
-        $str = str();
-
-        abort_unless($pengguna && $uuid && $str->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
-
-        $database = $app->db;
-
-        $dataSDM = $database->query()->select('id', 'sdm_uuid', 'sdm_no_absen', 'sdm_no_permintaan', 'sdm_tgl_lahir', 'sdm_tempat_lahir', 'sdm_tgl_gabung', 'sdm_no_ktp', 'sdm_nama', 'sdm_kelamin', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_kary', 'sdm_ket_berhenti', 'sdm_alamat', 'sdm_alamat_rt', 'sdm_alamat_rw', 'sdm_alamat_kelurahan', 'sdm_alamat_kecamatan', 'sdm_alamat_kota', 'sdm_alamat_provinsi', 'sdm_alamat_kodepos', 'sdm_disabilitas', 'sdm_agama', 'sdm_status_kawin', 'sdm_pendidikan', 'sdm_warganegara', 'sdm_uk_seragam', 'sdm_uk_sepatu', 'sdm_jurusan', 'sdm_telepon', 'email', 'sdm_id_atasan', 'sdm_no_bpjs', 'sdm_no_jamsostek', 'sdm_jml_anak')
-            ->from('sdms');
-
-        $permin = $database->query()->select('penempatan_uuid', 'penempatan_no_absen', 'penempatan_mulai', 'penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan')
-            ->from('penempatans')->clone()->addSelect('sdm_nama')
-            ->joinSub($dataSDM, 'sdm', function ($join) {
-                $join->on('penempatan_no_absen', '=', 'sdm_no_absen');
-            })->where('penempatan_uuid', $uuid)->first();
-
-        abort_unless($permin, 404, 'Data Penempatan SDM tidak ditemukan.');
-
-        $no_absen = $permin->penempatan_no_absen;
-
-        $filename = 'penilaian-kinerja-' . $no_absen . '.docx';
-
-        $data = [
-            'sdm_nama' => str($permin->sdm_nama)->limit(30),
-            'sdm_no_absen' => $no_absen,
-            'sdm_jabatan' => $permin->penempatan_posisi
-        ];
-
-        $argumen = [
-            'app' => $app,
-            'contoh' => 'penilaian-kinerja.docx',
-            'data' => $data,
-            'filename' => $filename
-        ];
-
-        return $this->isiFormulir(...$argumen);
     }
 
     public function formulirPerubahanStatusSDM($uuid = null)

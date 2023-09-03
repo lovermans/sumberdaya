@@ -973,12 +973,7 @@ class SDMDBQuery
                 'sdm_tgl_gabung',
                 'sdm_tgl_berhenti'
             )
-            ->joinSub(static::ambilDBSDM()
-                ->addSelect(
-                    'sdm_uuid'
-                ), 'dasar', function ($join) {
-                $join->on('penempatan_no_absen', '=', 'dasar.sdm_no_absen');
-            })
+            ->leftJoin('sdms', 'penempatan_no_absen', '=', 'sdm_no_absen')
             ->when($lingkupIjin, function ($query, $lingkupIjin) {
                 $query->whereIn('penempatan_lokasi', $lingkupIjin);
             })

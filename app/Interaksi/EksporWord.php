@@ -12,18 +12,16 @@ class EksporWord
 
         abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
-        set_time_limit(0);
-        ob_implicit_flush();
-        ob_end_flush();
-        header('X-Accel-Buffering: no');
-
-        echo '<p>Memeriksa formulir.</p>';
-
         $storage = $app->filesystem;
 
         abort_unless($storage->exists("contoh/{$contoh}"), 404, 'Berkas Contoh Formulir Tidak Ditemukan.');
 
         $templateProcessor = new TemplateProcessor($app->storagePath("app/contoh/{$contoh}"));
+
+        set_time_limit(0);
+        ob_implicit_flush();
+        ob_end_flush();
+        header('X-Accel-Buffering: no');
 
         echo '<p>Menyiapkan formulir.</p>';
 

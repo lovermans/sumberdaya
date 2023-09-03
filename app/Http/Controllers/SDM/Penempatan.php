@@ -9,6 +9,7 @@ use App\Interaksi\Rangka;
 use App\Interaksi\Validasi;
 use App\Interaksi\Websoket;
 use Illuminate\Support\Arr;
+use App\Interaksi\SDM\SDMWord;
 use App\Interaksi\SDM\SDMCache;
 use App\Interaksi\SDM\SDMExcel;
 use App\Interaksi\SDM\SDMBerkas;
@@ -639,9 +640,7 @@ class Penempatan
         // $rumusMasaKerja = '=IF([@sdm_tgl_berhenti]="",DATEDIF([@sdm_tgl_gabung],TODAY(),"Y"),DATEDIF([@sdm_tgl_gabung],[@sdm_tgl_berhenti],"Y"))';
         // $rumusUsia = '=IF([@sdm_tgl_berhenti]="",DATEDIF([@sdm_tgl_lahir],TODAY(),"Y"),DATEDIF([@sdm_tgl_lahir],[@sdm_tgl_berhenti],"Y"))';
 
-        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
-
-        $cari = SDMDBQuery::ambilStatistikPenempatanSDM($lingkupIjin);
+        $cari = SDMDBQuery::ambilStatistikPenempatanSDM(array_filter(explode(',', $pengguna->sdm_ijin_akses)));
 
         return SDMExcel::eksporStatistikSDM($cari);
     }
@@ -686,5 +685,10 @@ class Penempatan
         return $reqs->pjax()
             ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
             : $HtmlPenuh;
+    }
+
+    public function formulirPenilaianSDM($uuid = null)
+    {
+        return SDMWord::formulirPenilaianSDM($uuid);
     }
 }
