@@ -696,4 +696,9 @@ class Penempatan
     {
         return SDMWord::formulirPerubahanStatusSDM($uuid);
     }
+
+    public function PKWTSDM($uuid = null)
+    {
+        return SDMWord::PKWTSDM($uuid);
+    }
 }

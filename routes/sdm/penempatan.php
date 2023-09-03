@@ -16,7 +16,7 @@ $route->match(['get', 'post'], '/tambah/{uuid?}', 'Penempatan@tambah')->name('ta
 $route->match(['get', 'post'], '/ubah/{uuid?}', 'Penempatan@ubah')->name('ubah');
 $route->get('/formulir-penilaian-sdm/{uuid?}', 'Penempatan@formulirPenilaianSDM')->name('formulir-penilaian-sdm');
 $route->get('/formulir-perubahan-status-sdm/{uuid?}', 'Penempatan@formulirPerubahanStatusSDM')->name('formulir-perubahan-status-sdm');
-$route->get('/pkwt-sdm/{uuid?}', 'Berkas@PKWTSDM')->name('pkwt-sdm');
+$route->get('/pkwt-sdm/{uuid?}', 'Penempatan@PKWTSDM')->name('pkwt-sdm');
 $route->get('/statistik', 'Penempatan@statistikPenempatanSDM')->name('statistik');
 $route->match(['get', 'post'], '/hapus/{uuid?}', 'Penempatan@hapus')->name('hapus');
 $route->match(['get', 'post'], '/unggah', 'Penempatan@unggahPenempatanSDM')->name('unggah');

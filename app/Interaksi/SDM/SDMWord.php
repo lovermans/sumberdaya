@@ -318,4 +318,35 @@ class SDMWord
 
         return EksporWord::eksporWordStream(...$argumen);
     }
+
+    public static function PKWTSDM($uuid = null)
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+
+        $permin = SDMDBQuery::ambilDataPenempatanSDM(array_filter(explode(',', $pengguna->sdm_ijin_akses)), $uuid);
+
+        abort_unless($permin, 404, 'Data Permintaan Tambah SDM tidak ditemukan.');
+
+        $date = $app->date;
+
+        $data = [
+            'sdm_nama' => str($permin->sdm_nama)->limit(30),
+            'sdm_jabatan' => $permin->penempatan_posisi,
+            'sdm_tgl_lahir' => $permin->sdm_tempat_lahir . ', ' . strtoupper($date->make($permin->sdm_tgl_lahir)?->translatedFormat('d F Y')),
+            'sdm_kelamin' => $permin->sdm_kelamin == 'L' ? 'LAKI - LAKI' : 'PEREMPUAN',
+            'sdm_alamat' => "{$permin->sdm_alamat}, {$permin->sdm_alamat_kelurahan}, {$permin->sdm_alamat_kecamatan}, {$permin->sdm_alamat_kota}, {$permin->sdm_alamat_provinsi}.",
+            'sdm_mulai' => strtoupper($date->make($permin->penempatan_mulai)?->translatedFormat('d F Y')),
+            'sdm_sampai' => strtoupper($date->make($permin->penempatan_selesai)?->translatedFormat('d F Y')),
+        ];
+
+        $argumen = [
+            'contoh' => 'pkwt.docx',
+            'data' => $data,
+            'filename' => 'pkwt-' . $permin->penempatan_no_absen . '.docx'
+        ];
+
+        return EksporWord::eksporWordStream(...$argumen);
+    }
 }

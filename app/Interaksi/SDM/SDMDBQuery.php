@@ -971,7 +971,15 @@ class SDMDBQuery
                 'sdm_no_absen',
                 'sdm_nama',
                 'sdm_tgl_gabung',
-                'sdm_tgl_berhenti'
+                'sdm_tgl_berhenti',
+                'sdm_tgl_lahir',
+                'sdm_tempat_lahir',
+                'sdm_kelamin',
+                'sdm_alamat',
+                'sdm_alamat_kelurahan',
+                'sdm_alamat_kecamatan',
+                'sdm_alamat_kota',
+                'sdm_alamat_provinsi'
             )
             ->leftJoin('sdms', 'penempatan_no_absen', '=', 'sdm_no_absen')
             ->when($lingkupIjin, function ($query, $lingkupIjin) {
