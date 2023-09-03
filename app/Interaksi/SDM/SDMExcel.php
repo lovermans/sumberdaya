@@ -4,7 +4,7 @@ namespace App\Interaksi\SDM;
 
 use App\Interaksi\Rangka;
 use App\Interaksi\EksporExcel;
-use App\Tambahan\CustomValueBinder;
+use App\Pendukung\Office\CustomValueBinder;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\StringValueBinder;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ExcelReader;

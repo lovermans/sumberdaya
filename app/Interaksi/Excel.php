@@ -2,7 +2,7 @@
 
 namespace App\Interaksi;
 
-use App\Tambahan\CustomValueBinder;
+use App\Pendukung\Office\CustomValueBinder;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ExcelReader;
 

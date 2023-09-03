@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tambahan;
+namespace App\Pendukung\Office;
 
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -25,7 +25,7 @@ class CustomValueBinder extends DefaultValueBinder implements IValueBinder
     public function bindValue(Cell $cell, $value = null)
     {
         // sanitize UTF-8 strings
-        if (is_string($value)||is_numeric($value)) {
+        if (is_string($value) || is_numeric($value)) {
             if (is_numeric($value) && !is_int($value) && !is_float($value + 0)) {
                 $cell->setValueExplicit((string) $value, DataType::TYPE_STRING);
                 return true;

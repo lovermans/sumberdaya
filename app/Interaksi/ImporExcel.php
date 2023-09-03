@@ -2,7 +2,7 @@
 
 namespace App\Interaksi;
 
-use App\Tambahan\ChunkReadFilter;
+use App\Pendukung\Office\ChunkReadFilter;
 
 class ImporExcel
 {

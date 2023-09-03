@@ -4,7 +4,7 @@ namespace App\Interaksi\SDM;
 
 use App\Interaksi\Rangka;
 use App\Interaksi\Websoket;
-use App\Tambahan\ChunkReadFilter;
+use App\Pendukung\Office\ChunkReadFilter;
 
 class SDMImporExcel
 {
