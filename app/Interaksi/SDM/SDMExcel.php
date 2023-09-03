@@ -87,6 +87,25 @@ class SDMExcel
         return SDMImporExcel::imporExcelStream(...$argumen);
     }
 
+    public static function imporExcelPenempatanSDM($fileexcel)
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        $argumen = [
+            'reader' => new ExcelReader(),
+            'fileexcel' => $fileexcel,
+            'validasiImpor' => 'validasiImporPenempatanSDM',
+            'databaseImpor' => 'imporPenempatanSDM',
+            'cacheImpor' => 'hapusCacheSDMUmum',
+            'rute' => 'sdm.penempatan.data-aktif',
+            'kolomPengunggah' => 'penempatan_id_pengunggah',
+            'waktuUnggah' => 'penempatan_diunggah',
+            'pesanSoket' => $pengguna?->sdm_nama . ' telah mengimpor data Penempatan SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'))
+        ];
+
+        return SDMImporExcel::imporExcelStream(...$argumen);
+    }
+
     public static function eksporExcelContohUnggahSDM($data)
     {
         extract(Rangka::obyekPermintaanRangka());
@@ -457,6 +476,28 @@ class SDMExcel
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
             'chunk' => 100
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
+    }
+
+    public static function eksporExcelContohUnggahPenempatanSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $reader = new ExcelReader();
+        $spreadsheet = $reader->load($app->storagePath('app/contoh/unggah-umum.xlsx'));
+        $worksheet = $spreadsheet->getSheet(1);
+
+        $argumen = [
+            'namaBerkas' => 'unggahpenempatansdm-',
+            'dataEkspor' => $data,
+            'pengecualian' => ['id', 'penempatan_uuid'],
+            'pesanData' => ' data penempatan SDM',
+            'binder' => new StringValueBinder(),
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet,
+            'chunk' => 500
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);

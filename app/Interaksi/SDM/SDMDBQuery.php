@@ -1361,6 +1361,18 @@ class SDMDBQuery
             ->orderBy('penilaiansdms.id');
     }
 
+    public static function contohImporPenempatanSDM($lingkup)
+    {
+        return static::ambilDBPenempatanSDM()
+            ->addSelect('sdm_nama')
+            ->join('sdms', 'penempatan_no_absen', '=', 'sdm_no_absen')
+            ->whereNull('sdm_tgl_berhenti')
+            ->when($lingkup, function ($c) use ($lingkup) {
+                return $c->whereIn('penempatan_lokasi', $lingkup);
+            })
+            ->orderBy('penempatans.id');
+    }
+
     public static function ambilPengingatPenilaianSDMTerkini()
     {
         extract(Rangka::obyekPermintaanRangka());
@@ -1613,6 +1625,21 @@ class SDMDBQuery
                 $data,
                 ['nilaisdm_no_absen', 'nilaisdm_tahun', 'nilaisdm_periode'],
                 ['nilaisdm_bobot_hadir', 'nilaisdm_bobot_sikap', 'nilaisdm_bobot_target', 'nilaisdm_tindak_lanjut', 'nilaisdm_keterangan', 'nilaisdm_id_pengunggah', 'nilaisdm_diunggah']
+            );
+        });
+    }
+
+    public static function imporPenempatanSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $database = $app->db;
+
+        $database->transaction(function () use ($database, $data) {
+            $database->table('penempatans')->upsert(
+                $data,
+                ['penempatan_no_absen', 'penempatan_mulai'],
+                ['penempatan_selesai', 'penempatan_ke', 'penempatan_lokasi', 'penempatan_posisi', 'penempatan_kategori', 'penempatan_kontrak', 'penempatan_pangkat', 'penempatan_golongan', 'penempatan_grup', 'penempatan_keterangan', 'penempatan_id_pengunggah', 'penempatan_diunggah']
             );
         });
     }

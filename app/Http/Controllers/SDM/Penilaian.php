@@ -235,7 +235,7 @@ class Penilaian
         abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         if ($reqs->isMethod('post')) {
-            $validasifile = SDMValidasi::validasiBerkasImporDataNilaiSDM($reqs->all());;
+            $validasifile = SDMValidasi::validasiBerkasImporDataNilaiSDM($reqs->all());
 
             $validasifile->validate();
 

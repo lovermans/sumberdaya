@@ -341,6 +341,19 @@ class SDMValidasi
         );
     }
 
+    public static function validasiBerkasImporPenempatanSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                'unggah_penempatan_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+            ],
+            [
+                'unggah_penempatan_sdm.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).'
+            ]
+        );
+    }
+
     public static function validasiImporDataPosisiSDM($permintaan)
     {
         return Validasi::validasiUmum(
@@ -781,6 +794,7 @@ class SDMValidasi
             '*.penempatan_mulai.*' => 'Tanggal Mulai Penempatan urutan ke-:position wajib berupa tanggal.',
             '*.penempatan_id_pembuat.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.penempatan_id_pengubah.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.penempatan_id_pengunggah.*' => 'ID Pengunggah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.penempatan_no_absen.*' => 'Nomor Absen urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.penempatan_selesai.*' => 'Tanggal Selesai Penempatan urutan ke-:position wajib berupa tanggal dan lebih lama dari Tanggal Mulai Penempatan jika Jenis Kontrak berupa PKWT atau PERCOBAAN.',
             '*.penempatan_ke.*' => 'Nomor Urut Penempatan urutan ke-:position wajib berupa angka jika Jenis Kontrak berupa PKWT atau PERCOBAAN.',
@@ -793,6 +807,7 @@ class SDMValidasi
             '*.penempatan_grup.*' => 'Grup Penempatan urutan ke-:position wajib berupa karakter.',
             '*.penempatan_keterangan.*' => 'Keterangan Penempatan urutan ke-:position wajib berupa karakter.',
             '*.penempatan_berkas.*' => 'Berkas Penempatan urutan ke-:position wajib berupa berkas format PDF.',
+            '*.penempatan_diunggah.*' => 'Tanggal Unggah Penempatan urutan ke-:position wajib berupa tanggal.',
             ...static::pesanKesalahanValidasiPencarianSDM()
         ];
     }
@@ -830,6 +845,20 @@ class SDMValidasi
                     $query->where('penempatan_no_absen', $permintaan[0]['penempatan_no_absen'])->whereNot('penempatan_uuid', $uuid);
                 })],
                 '*.penempatan_id_pengubah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                ...static::dasarValidasiPenempatanSDM($permintaan)
+            ],
+            static::pesanKesalahanPencarianPenempatanSDM()
+        );
+    }
+
+    public static function validasiImporPenempatanSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                '*.penempatan_mulai' => ['required', 'date'],
+                '*.penempatan_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                '*.penempatan_diunggah' => ['required', 'nullable', 'date'],
                 ...static::dasarValidasiPenempatanSDM($permintaan)
             ],
             static::pesanKesalahanPencarianPenempatanSDM()

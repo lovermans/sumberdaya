@@ -19,5 +19,5 @@ $route->get('/formulir-perubahan-status-sdm/{uuid?}', 'Berkas@formulirPerubahanS
 $route->get('/pkwt-sdm/{uuid?}', 'Berkas@PKWTSDM')->name('pkwt-sdm');
 $route->get('/statistik', 'Penempatan@statistikPenempatanSDM')->name('statistik');
 $route->match(['get', 'post'], '/hapus/{uuid?}', 'Penempatan@hapus')->name('hapus');
-$route->match(['get', 'post'], '/unggah', 'Berkas@unggahPenempatanSDM')->name('unggah');
-$route->get('/contoh-unggah', 'Berkas@contohUnggahPenempatanSDM')->name('contoh-unggah');
+$route->match(['get', 'post'], '/unggah', 'Penempatan@unggahPenempatanSDM')->name('unggah');
+$route->get('/contoh-unggah', 'Penempatan@contohUnggahPenempatanSDM')->name('contoh-unggah');

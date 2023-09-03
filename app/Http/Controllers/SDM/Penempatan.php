@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SDM;
 
 use App\Interaksi\Cache;
 use App\Interaksi\Excel;
+use App\Interaksi\Berkas;
 use App\Interaksi\Rangka;
 use App\Interaksi\Validasi;
 use App\Interaksi\Websoket;
@@ -643,5 +644,47 @@ class Penempatan
         $cari = SDMDBQuery::ambilStatistikPenempatanSDM($lingkupIjin);
 
         return SDMExcel::eksporStatistikSDM($cari);
+    }
+
+    public function contohUnggahPenempatanSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        abort_unless($app->filesystem->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
+
+        $cari = SDMDBQuery::contohImporPenempatanSDM(array_filter(explode(',', $pengguna->sdm_ijin_akses)));
+
+        return SDMExcel::eksporExcelContohUnggahPenempatanSDM($cari);
+    }
+
+    public function unggahPenempatanSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        if ($reqs->isMethod('post')) {
+            $validasifile = SDMValidasi::validasiBerkasImporPenempatanSDM($reqs->all());
+
+            $validasifile->validate();
+
+            $file = $validasifile->safe()->only('unggah_penempatan_sdm')['unggah_penempatan_sdm'];
+            $namafile = 'unggahpenempatansdm-' . date('YmdHis') . '.xlsx';
+
+            Berkas::simpanBerkasImporExcelSementara($file, $namafile);
+
+            $fileexcel = Berkas::ambilBerkasImporExcelSementara($namafile);
+
+            return SDMExcel::imporExcelPenempatanSDM($fileexcel);
+        }
+
+        $HtmlPenuh = $app->view->make('sdm.penempatan.unggah');
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 }
