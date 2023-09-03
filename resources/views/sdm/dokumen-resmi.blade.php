@@ -20,9 +20,13 @@
             @forelse ($app->filesystem->files($jalur) as $berkas)
             <li>
                 <a href="{{ $app->filesystem->disk('local')->temporaryUrl($berkas, $app->date->now()->addMinutes(5)) }}"
-                    target="_blank">{{ $app->files->name($berkas).'.'.$app->files->extension($berkas) }}</a>
+                    target="_blank">
+                    {{ $app->files->name($berkas).'.'.$app->files->extension($berkas) }}
+                </a>
             </li>
-            @empty Panduan Belum Tersedia.
+            @empty
+            Panduan Belum Tersedia.
+
             @endforelse
         </ol>
     </details>
@@ -43,7 +47,9 @@
             @forelse ($app->filesystem->files($jalur) as $berkas)
             <li>
                 <a href="{{ $app->filesystem->disk('local')->temporaryUrl($berkas, $app->date->now()->addMinutes(5)) }}"
-                    target="_blank">{{ $app->files->name($berkas).'.'.$app->files->extension($berkas) }}</a>
+                    target="_blank">
+                    {{ $app->files->name($berkas).'.'.$app->files->extension($berkas) }}
+                </a>
             </li>
             @empty Panduan Belum Tersedia.
             @endforelse
@@ -65,7 +71,9 @@
             @forelse ($app->filesystem->files($jalur) as $berkas)
             <li>
                 <a href="{{ $app->filesystem->disk('local')->temporaryUrl($berkas, $app->date->now()->addMinutes(5)) }}"
-                    target="_blank">{{ $app->files->name($berkas).'.'.$app->files->extension($berkas) }}</a>
+                    target="_blank">
+                    {{ $app->files->name($berkas).'.'.$app->files->extension($berkas) }}
+                </a>
             </li>
             @empty Panduan Belum Tersedia.
             @endforelse

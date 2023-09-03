@@ -10,24 +10,31 @@
     <div id="sdmIngatPtsb">
         <p class="kartu">Mengambil data permintaan tambah SDM...</p>
     </div>
+
     <div id="sdmIngatPkpd">
         <p class="kartu">Mengambil data perjanjian kerja perlu ditinjau...</p>
     </div>
+
     <div id="sdmIngatPstatus">
         <p class="kartu">Mengambil data perubahan status SDM...</p>
     </div>
+
     <div id="sdmIngatBaru">
         <p class="kartu">Mengambil data penambahan SDM...</p>
     </div>
+
     <div id="sdmIngatKeluar">
         <p class="kartu">Mengambil data pengurangan SDM...</p>
     </div>
+
     <div id="sdmIngatNilai">
         <p class="kartu">Mengambil data penilaian SDM...</p>
     </div>
+
     <div id="sdmIngatPelanggaran">
         <p class="kartu">Mengambil data pelanggaran SDM...</p>
     </div>
+
     <div id="sdmIngatSanksi">
         <p class="kartu">Mengambil data sanksi SDM...</p>
     </div>
@@ -45,42 +52,49 @@
                 normalview : true,
                 fragmen : true
             });
+
             lemparXHR({
                 tujuan : "#sdmIngatBaru",
                 tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatBaru']) }}",
                 normalview : true,
                 fragmen : true
             });
+
             lemparXHR({
                 tujuan : "#sdmIngatPstatus",
                 tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatPstatus']) }}",
                 normalview : true,
                 fragmen : true
             });
+
             lemparXHR({
                 tujuan : "#sdmIngatPkpd",
                 tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatPkpd']) }}",
                 normalview : true,
                 fragmen : true
             });
+
             lemparXHR({
                 tujuan : "#sdmIngatPtsb",
                 tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatPtsb']) }}",
                 normalview : true,
                 fragmen : true
             });
+
             lemparXHR({
                 tujuan : "#sdmIngatNilai",
                 tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatNilai']) }}",
                 normalview : true,
                 fragmen : true
             });
+
             lemparXHR({
                 tujuan : "#sdmIngatPelanggaran",
                 tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatPelanggaran']) }}",
                 normalview : true,
                 fragmen : true
             });
+
             lemparXHR({
                 tujuan : "#sdmIngatSanksi",
                 tautan : "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatSanksi']) }}",
@@ -141,13 +155,13 @@
         @endif
     </div>
 
-    @include('pemberitahuan')
-    @include('komponen')
-
     @if($app->request->user() && $app->request->pjax())
     <script>
         cariElemen("#navigasi-sdm a[href='{{ $app->url->route('sdm.mulai') }}']").then((el) => {el.classList.add("aktif");});
     </script>
     @endif
+
+    @include('pemberitahuan')
+    @include('komponen')
 </div>
 @endsection

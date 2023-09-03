@@ -1,5 +1,6 @@
 @if(str()->contains($app->request->user()->sdm_hak_akses, 'SDM'))
 <h2>Sumber Daya Manusia</h2>
+
 <div class="menu-t">
     <a class="nav-xhr" href="{{ $app->url->route('sdm.mulai') }}">
         <svg viewBox="0 0 24 24">
