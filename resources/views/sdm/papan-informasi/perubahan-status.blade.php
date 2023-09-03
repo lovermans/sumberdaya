@@ -1,10 +1,17 @@
 @isset($statuses)
 <details class="kartu">
-    <summary>Perubahan Status SDM 40 Hari Terakhir : {{number_format($statuses->count(), 0, ',','.')}} Personil
+    <summary>
+        Perubahan Status SDM 40 Hari Terakhir : {{number_format($statuses->count(), 0, ',','.')}} Personil
     </summary>
 
-    <b><i><small>Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
-                {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
+    <b>
+        <i>
+            <small>
+                Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
+                {{number_format($jumlahOS, 0, ',', '.')}} Personil.
+            </small>
+        </i>
+    </b>
 
     <div id="tabel_status_sematan" class="scroll-margin"></div>
 
@@ -37,11 +44,15 @@
                                 <div class="aksi">
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_status_sematan"
                                         href="{{ $app->url->route('sdm.penempatan.lihat', ['uuid' => $status->penempatan_uuid]) }}"
-                                        title="Lihat Data Penempatan">Lihat Penempatan</a>
+                                        title="Lihat Data Penempatan">
+                                        Lihat Penempatan
+                                    </a>
 
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_status_sematan"
                                         href="{{ $app->url->route('sdm.penempatan.ubah', ['uuid' => $status->penempatan_uuid]) }}"
-                                        title="Ubah Data Penempatan">Ubah Penempatan</a>
+                                        title="Ubah Data Penempatan">
+                                        Ubah Penempatan
+                                    </a>
                                 </div>
                             </div>
                         </th>

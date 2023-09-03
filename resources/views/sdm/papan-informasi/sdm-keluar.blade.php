@@ -1,9 +1,17 @@
 @isset($berhentis)
 <details class="kartu">
-    <summary>SDM Keluar Selama 40 Hari Terakhir : {{number_format($berhentis->count(), 0, ',','.')}} Personil</summary>
+    <summary>
+        SDM Keluar Selama 40 Hari Terakhir : {{number_format($berhentis->count(), 0, ',','.')}} Personil
+    </summary>
 
-    <b><i><small>Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
-                {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
+    <b>
+        <i>
+            <small>
+                Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
+                {{number_format($jumlahOS, 0, ',', '.')}} Personil.
+            </small>
+        </i>
+    </b>
 
     <div id="tabel_berhenti_sematan" class="scroll-margin"></div>
 
@@ -20,6 +28,7 @@
                         <th>Lainnya</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @forelse ($berhentis as $no => $henti)
                     <tr @class([ 'biru'=> str()->contains($henti->penempatan_kontrak, 'OS-') ])>
@@ -36,16 +45,22 @@
                                     @if($henti->penempatan_uuid)
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_berhenti_sematan"
                                         href="{{ $app->url->route('sdm.penempatan.lihat', ['uuid' => $henti->penempatan_uuid]) }}"
-                                        title="Lihat Data Penempatan">Lihat Penempatan</a>
+                                        title="Lihat Data Penempatan">
+                                        Lihat Penempatan
+                                    </a>
 
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_berhenti_sematan"
                                         href="{{ $app->url->route('sdm.penempatan.ubah', ['uuid' => $henti->penempatan_uuid]) }}"
-                                        title="Ubah Data Penempatan">Ubah Penempatan</a>
+                                        title="Ubah Data Penempatan">
+                                        Ubah Penempatan
+                                    </a>
                                     @endif
 
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_berhenti_sematan"
                                         href="{{ $app->url->route('sdm.penempatan.tambah', ['uuid' => $henti->sdm_uuid]) }}"
-                                        title="Tambah Data Penempatan">Tambah Penempatan</a>
+                                        title="Tambah Data Penempatan">
+                                        Tambah Penempatan
+                                    </a>
                                 </div>
                             </div>
                         </th>

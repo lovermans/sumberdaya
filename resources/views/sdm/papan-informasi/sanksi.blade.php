@@ -1,9 +1,17 @@
 @isset($sanksis)
 <details class="kartu">
-    <summary>Sanksi Aktif : {{number_format($sanksis->count(), 0, ',','.')}} Personil</summary>
+    <summary>
+        Sanksi Aktif : {{number_format($sanksis->count(), 0, ',','.')}} Personil
+    </summary>
 
-    <b><i><small>Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
-                {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
+    <b>
+        <i>
+            <small>
+                Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
+                {{number_format($jumlahOS, 0, ',', '.')}} Personil.
+            </small>
+        </i>
+    </b>
 
     <div id="tabel_sanksi_sdm_sematan" class="scroll-margin"></div>
 
@@ -21,6 +29,7 @@
                         <th>Pelapor</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @forelse ($sanksis as $no => $sanksi)
                     <tr @class([ 'biru'=> str()->contains($sanksi->langgar_tkontrak, 'OS-') ])>
@@ -36,7 +45,9 @@
                                 <div class="aksi">
                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_sanksi_sdm_sematan"
                                         href="{{ $app->url->route('sdm.sanksi.lihat', ['uuid' => $sanksi->sanksi_uuid]) }}"
-                                        title="Lihat/Ubah Sanksi">Lihat/Ubah Sanksi</a>
+                                        title="Lihat/Ubah Sanksi">
+                                        Lihat/Ubah Sanksi
+                                    </a>
                                 </div>
                             </div>
                         </th>
@@ -64,8 +75,7 @@
                                 {{$sanksi->sanksi_no_absen}} - {{$sanksi->langgar_tsdm_nama}} <br />
                                 {{$sanksi->langgar_tlokasi}} {{$sanksi->langgar_tkontrak}} -
                                 {{$sanksi->langgar_tposisi}} {{ $sanksi->langgar_tsdm_tgl_berhenti ? '(NON-AKTIF)'
-                                :
-                                '' }}
+                                : '' }}
                             </div>
                         </td>
 
@@ -83,8 +93,8 @@
                         <td>
                             <b>Nomor</b> : <u><a class="isi-xhr"
                                     href="{{ $app->url->route('sdm.pelanggaran.data', ['kata_kunci' => $sanksi->sanksi_lap_no]) }}"
-                                    aria-label="Lap Pelanggaran SDM No {{ $sanksi->sanksi_lap_no }}">{{
-                                    $sanksi->sanksi_lap_no }}</a></u><br />
+                                    aria-label="Lap Pelanggaran SDM No {{ $sanksi->sanksi_lap_no }}">
+                                    {{ $sanksi->sanksi_lap_no }}</a></u><br />
                             <b>Tanggal</b> : {{
                             strtoupper($app->date->make($sanksi->langgar_tanggal)?->translatedFormat('d F Y'))
                             }}<br />
@@ -114,8 +124,7 @@
                                 {{$sanksi->langgar_pelapor}} - {{$sanksi->langgar_psdm_nama}} <br />
                                 {{$sanksi->langgar_plokasi}} {{$sanksi->langgar_pkontrak}} -
                                 {{$sanksi->langgar_pposisi}} {{ $sanksi->langgar_psdm_tgl_berhenti ? '(NON-AKTIF)'
-                                :
-                                '' }}
+                                : '' }}
                             </div>
                             @endif
                         </td>

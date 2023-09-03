@@ -1,9 +1,17 @@
 @isset($ulangTahuns)
 <details class="kartu">
-    <summary>Hari Lahir SDM Dalam Waktu Dekat : {{number_format($ulangTahuns->count(), 0, ',','.')}} Personil</summary>
+    <summary>
+        Hari Lahir SDM Dalam Waktu Dekat : {{number_format($ulangTahuns->count(), 0, ',','.')}} Personil
+    </summary>
 
-    <b><i><small>Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
-                {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
+    <b>
+        <i>
+            <small>
+                Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
+                {{number_format($jumlahOS, 0, ',', '.')}} Personil.
+            </small>
+        </i>
+    </b>
 
     <div id="tabel_ultah_sematan" class="scroll-margin"></div>
 

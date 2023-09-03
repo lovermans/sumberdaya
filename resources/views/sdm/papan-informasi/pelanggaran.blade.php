@@ -1,11 +1,18 @@
 @isset($pelanggarans)
 <details class="kartu">
-    <summary>Laporan Pelanggaran Yang Perlu Ditindaklanjuti : {{number_format($pelanggarans->count(), 0, ',','.')}}
+    <summary>
+        Laporan Pelanggaran Yang Perlu Ditindaklanjuti : {{number_format($pelanggarans->count(), 0, ',','.')}}
         Laporan
     </summary>
 
-    <b><i><small>Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
-                {{number_format($jumlahOS, 0, ',', '.')}} Personil.</small></i></b>
+    <b>
+        <i>
+            <small>
+                Jumlah SDM : Organik = {{number_format($jumlahOrganik, 0, ',', '.')}} Personil | Outsource =
+                {{number_format($jumlahOS, 0, ',', '.')}} Personil.
+            </small>
+        </i>
+    </b>
 
     <div id="tabel_pelanggaranSDM_sematan" class="scroll-margin"></div>
 
@@ -64,13 +71,13 @@
                                     $pelanggaran->langgar_tsdm_nama
                                     ?? 'foto akun' }}" loading="lazy">
                                 </a>
+
                                 {{$pelanggaran->langgar_no_absen}} - {{$pelanggaran->langgar_tsdm_nama}} <br />
                                 {{$pelanggaran->langgar_tlokasi}} {{$pelanggaran->langgar_tkontrak}} -
                                 {{$pelanggaran->langgar_tposisi}} {{ $pelanggaran->langgar_tsdm_tgl_berhenti ?
-                                '(NON-AKTIF)'
-                                :
-                                '' }}
+                                '(NON-AKTIF)' : '' }}
                             </div>
+
                             <div @class(['merah'=> $pelanggaran->langgar_psdm_tgl_berhenti])>
                                 <b><i><u>Pelapor</u></i></b> :<br />
                                 <a class="isi-xhr taut-akun"
@@ -89,20 +96,19 @@
                                     $pelanggaran->langgar_psdm_nama
                                     ?? 'foto akun' }}" loading="lazy">
                                 </a>
+
                                 {{$pelanggaran->langgar_pelapor}} - {{$pelanggaran->langgar_psdm_nama}} <br />
                                 {{$pelanggaran->langgar_plokasi}} {{$pelanggaran->langgar_pkontrak}} -
                                 {{$pelanggaran->langgar_pposisi}} {{ $pelanggaran->langgar_psdm_tgl_berhenti ?
-                                '(NON-AKTIF)'
-                                :
-                                '' }}
+                                '(NON-AKTIF)' : '' }}
                             </div>
                         </td>
 
                         <td>
                             <b>Nomor</b> : {{$pelanggaran->langgar_lap_no}}<br />
-                            <b>Tanggal</b> : {{
-                            strtoupper($app->date->make($pelanggaran->langgar_tanggal)?->translatedFormat('d F Y'))
-                            }}<br />
+                            <b>Tanggal</b> :
+                            {{strtoupper($app->date->make($pelanggaran->langgar_tanggal)?->translatedFormat('d F Y')) }}
+                            <br />
                             <b>Aduan</b> : {!! nl2br($pelanggaran->langgar_isi) !!}<br />
                             <b>Keterangan</b> : {!! nl2br($pelanggaran->langgar_keterangan) !!}
                         </td>
@@ -111,20 +117,18 @@
                             <b><i><u>Sanksi Aktif Sebelumnya</u></i></b> :<br />
                             <b>No Laporan</b> : {{ $pelanggaran->lap_no_sebelumnya}}<br />
                             <b>Sanksi </b> : {{ $pelanggaran->sanksi_aktif_sebelumnya}}<br />
-                            <b>Berakhir pada </b> : {{
-                            strtoupper($app->date->make($pelanggaran->sanksi_selesai_sebelumnya)?->translatedFormat('d
-                            F
-                            Y')) }}<br /><br />
+                            <b>Berakhir pada </b> :
+                            {{strtoupper($app->date->make($pelanggaran->sanksi_selesai_sebelumnya)?->translatedFormat('d
+                            F Y')) }} <br />
                             <b><i><u>Sanksi Diberikan</u></i></b> :<br />
                             <b>Sanksi </b> : {{ $pelanggaran->final_sanksi_jenis}}<br />
                             <b>Tambahan </b> : {{ $pelanggaran->final_sanksi_tambahan}}<br />
-                            <b>Mulai </b> : {{
-                            strtoupper($app->date->make($pelanggaran->final_sanksi_mulai)?->translatedFormat('d F
+                            <b>Mulai </b> :
+                            {{strtoupper($app->date->make($pelanggaran->final_sanksi_mulai)?->translatedFormat('d F
                             Y'))}}<br />
-                            <b>Selesai </b> : {{
-                            strtoupper($app->date->make($pelanggaran->final_sanksi_selesai)?->translatedFormat('d F
-                            Y'))
-                            }}<br />
+                            <b>Selesai </b> :
+                            {{strtoupper($app->date->make($pelanggaran->final_sanksi_selesai)?->translatedFormat('d F
+                            Y'))}}<br />
                             <b>Keterangan </b> : {!! nl2br($pelanggaran->final_sanksi_keterangan) !!}
                         </td>
                     </tr>
