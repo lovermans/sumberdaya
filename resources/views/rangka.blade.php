@@ -6,12 +6,12 @@
     @include('informasi-meta')
 </head>
 
-<body data-tematerang="" id="badan-dokumen">
+<body id="badan-dokumen" data-tematerang="">
     <div id="ikonSVG"></div>
 
     <div id="sambutan">
         <img src="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/Lambang Perusahaan.webp')) }}"
-            alt="{{ $app->config->get('app.usaha') }}" title="{{ $app->config->get('app.usaha') }}">
+            title="{{ $app->config->get('app.usaha') }}" alt="{{ $app->config->get('app.usaha') }}">
         <p>
             <b>Memuat Aplikasi, Periksa Koneksi Internet</b>
             <br>
@@ -25,23 +25,23 @@
 
     <a class="skip-navigation tcetak" href="#main" tabindex="0">Langsung Ke Konten Utama</a>
 
-    <input class="tcetak" type="checkbox" id="nav" aria-label="Navigasi">
-    <input class="tcetak" type="checkbox" id="menu" aria-label="Menu">
-    <input class="tcetak" type="checkbox" id="pilih-aplikasi" aria-label="Aplikasi">
-    <input class="tcetak" type="checkbox" id="tema" aria-label="Tema">
+    <input class="tcetak" id="nav" type="checkbox" aria-label="Navigasi">
+    <input class="tcetak" id="menu" type="checkbox" aria-label="Menu">
+    <input class="tcetak" id="pilih-aplikasi" type="checkbox" aria-label="Aplikasi">
+    <input class="tcetak" id="tema" type="checkbox" aria-label="Tema">
 
-    <label for="nav" id="nav-kanvas" class="blok-kanvas"></label>
-    <label for="menu" id="menu-kanvas" class="blok-kanvas"></label>
-    <label for="pilih-aplikasi" id="aplikasi-kanvas" class="blok-kanvas"></label>
+    <label class="blok-kanvas" id="nav-kanvas" for="nav"></label>
+    <label class="blok-kanvas" id="menu-kanvas" for="menu"></label>
+    <label class="blok-kanvas" id="aplikasi-kanvas" for="pilih-aplikasi"></label>
 
-    <div id="memuat" class="mati">
+    <div class="mati" id="memuat">
         <div class="progress">
             <div class="indeterminate"></div>
         </div>
     </div>
 
-    <header id="header-rangka" class="tcetak">
-        <label for="nav" id="tbl-nav" title="Menu">
+    <header class="tcetak" id="header-rangka">
+        <label id="tbl-nav" for="nav" title="Menu">
             <svg class="on" viewBox="0 0 24 24">
                 <use href="#ikonmenu"></use>
             </svg>
@@ -54,14 +54,14 @@
         <a class="isi-xhr" href="{{ $app->url->route('mulai') . '/' }}">
             <img id="logo"
                 src="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/Logo Perusahaan.webp')) }}"
-                title="{{ $app->config->get('app.usaha') }}" alt="{{ $app->config->get('app.usaha') }}"
-                loading="lazy"></a>
+                title="{{ $app->config->get('app.usaha') }}" alt="{{ $app->config->get('app.usaha') }}" loading="lazy">
+        </a>
 
-        <label for="pilih-aplikasi" id="pilih-sumber_daya" onclick="" title="Pilih Aplikasi"></label>
+        <label id="pilih-sumber_daya" for="pilih-aplikasi" title="Pilih Aplikasi" onclick=""></label>
 
-        <label for="menu" id="tbl-menu" onclick="" title="Akun"></label>
+        <label id="tbl-menu" for="menu" title="Akun" onclick=""></label>
 
-        <label for="tema" id="tbl-tema" onclick="" title="Ubah Tema">
+        <label id="tbl-tema" for="tema" title="Ubah Tema" onclick="">
             <svg viewBox="0 0 24 24">
                 <use href="#ikontema"></use>
             </svg>
@@ -70,8 +70,8 @@
         <div class="bersih"></div>
     </header>
 
-    <aside id="menu-avatar" class="tcetak"></aside>
-    <aside id="menu-aplikasi" class="tcetak"></aside>
+    <aside class="tcetak" id="menu-avatar"></aside>
+    <aside class="tcetak" id="menu-aplikasi"></aside>
 
     <nav class="tcetak">
         <div id="nav-rangka">
@@ -92,14 +92,14 @@
         <section>
             @include('sematan')
 
-            <div id="isi" class="scroll-margin">
+            <div class="scroll-margin" id="isi">
                 @yield('isi')
             </div>
         </section>
     </main>
 
-    <div id="brand" class="tcetak"></div>
-    <div id="hiasan" class="tcetak"></div>
+    <div class="tcetak" id="brand"></div>
+    <div class="tcetak" id="hiasan"></div>
 
     <footer class="tcetak">
         <section></section>

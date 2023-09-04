@@ -1,10 +1,10 @@
-<div id="pemberitahuan" class="tcetak scroll-margin">
-    <div id="pemberitahuan-umum" class="tcetak scroll-margin"></div>
-    <div id="pemberitahuan-soket" class="tcetak scroll-margin"></div>
+<div class="tcetak scroll-margin" id="pemberitahuan">
+    <div class="tcetak scroll-margin" id="pemberitahuan-umum"></div>
+    <div class="tcetak scroll-margin" id="pemberitahuan-soket"></div>
 </div>
 
-<div id="sematan_javascript" class="tcetak"></div>
+<div class="tcetak" id="sematan_javascript"></div>
 
-<div id="sematan_umum" class="tcetak scroll-margin"></div>
+<div class="tcetak scroll-margin" id="sematan_umum"></div>
 
-<div id="sematan_websoket" class="tcetak"></div>
+<div class="tcetak" id="sematan_websoket"></div>

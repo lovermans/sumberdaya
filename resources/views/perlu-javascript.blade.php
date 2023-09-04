@@ -5,7 +5,7 @@
     @include('informasi-meta')
 </head>
 
-<body data-tematerang="" id="badan-dokumen">
+<body id="badan-dokumen" data-tematerang="">
     <p>Mohon aktifkan javascript pada browser</p>
 </body>
 
