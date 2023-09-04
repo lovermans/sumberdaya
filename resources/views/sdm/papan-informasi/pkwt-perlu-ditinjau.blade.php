@@ -1,34 +1,36 @@
 @isset($kontraks)
-<details class="kartu">
-    <summary>
-        Perjanjian Kerja Perlu Ditindaklanjuti : {{number_format($kontraks->count(), 0, ',','.')}} Personil
-    </summary>
+    <details class="kartu">
+        <summary>
+            Perjanjian Kerja Perlu Ditindaklanjuti : {{ number_format($kontraks->count(), 0, ',', '.') }} Personil
+        </summary>
 
-    <div id="tabel_kontrak_sematan" class="scroll-margin"></div>
+        <div class="scroll-margin" id="tabel_kontrak_sematan"></div>
 
-    <div id="tabel_kontrak" class="kartu">
-        <span class="biru">Biru</span> : Akan Habis = {{number_format($jmlAkanHabis, 0, ',','.')}} Personil.
-        <span class="oranye">Oranye</span> : Kadaluarsa = {{number_format($jmlKadaluarsa, 0, ',','.')}} Personil.
+        <div class="kartu" id="tabel_kontrak">
+            <span class="biru">Biru</span> : Akan Habis = {{ number_format($jmlAkanHabis, 0, ',', '.') }} Personil.
+            <span class="oranye">Oranye</span> : Kadaluarsa = {{ number_format($jmlKadaluarsa, 0, ',', '.') }} Personil.
 
-        <div class="data ringkas">
-            <table class="tabel">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>No</th>
-                        <th>Identitas</th>
-                        <th>PKWT</th>
-                        <th>Lainnya</th>
-                    </tr>
-                </thead>
+            <div class="data ringkas">
+                <table class="tabel">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>No</th>
+                            <th>Identitas</th>
+                            <th>PKWT</th>
+                            <th>Lainnya</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    @forelse ($kontraks as $no => $kontrak)
-                    <tr @class(['oranye'=> $kontrak->penempatan_selesai <= $app->date->today(), 'biru'=>
-                            ($kontrak->penempatan_selesai <= $app->date->today()->addDay(40))])>
+                    <tbody>
+                        @forelse ($kontraks as $no => $kontrak)
+                            <tr @class([
+                                'oranye' => $kontrak->penempatan_selesai <= $app->date->today(),
+                                'biru' => $kontrak->penempatan_selesai <= $app->date->today()->addDay(40),
+                            ])>
                                 <th>
                                     <div class="pil-aksi">
-                                        <button id="{{'aksi_pkwt_baris_' . $loop->iteration}}" title="Pilih Tindakan">
+                                        <button id="{{ 'aksi_pkwt_baris_' . $loop->iteration }}" title="Pilih Tindakan">
                                             <svg viewbox="0 0 24 24">
                                                 <use href="#ikonmenuvert"></use>
                                             </svg>
@@ -59,80 +61,75 @@
                                 <td>{{ $loop->iteration }}</td>
 
                                 <td>
-                                    <a class="isi-xhr taut-akun"
-                                        href="{{ $app->url->route('sdm.akun', ['uuid' => $kontrak->sdm_uuid]) }}">
-                                        <img @class(['akun', 'svg'=> !$app->filesystem->exists('sdm/foto-profil/'
-                                        .
-                                        $kontrak->sdm_no_absen . '.webp')]) src="{{
-                                        $app->filesystem->exists('sdm/foto-profil/' .
-                                        $kontrak->sdm_no_absen . '.webp') ?
-                                        $app->url->route('sdm.tautan-foto-profil',
-                                        ['berkas_foto_profil' => $kontrak->sdm_no_absen . '.webp' . '?' .
-                                        filemtime($app->storagePath('app/sdm/foto-profil/' .
-                                        $kontrak->sdm_no_absen . '.webp')), false])
-                                        :
-                                        $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp'))
-                                        }}" alt="{{
-                                        $kontrak->sdm_nama ?? 'foto akun' }}" title="{{ $kontrak->sdm_nama ??
-                                        'foto
-                                        akun'
-                                        }}" loading="lazy">
+                                    <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $kontrak->sdm_uuid]) }}">
+                                        <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $kontrak->sdm_no_absen . '.webp')
+                                            ? $app->url->route('sdm.tautan-foto-profil', [
+                                                'berkas_foto_profil' =>
+                                                    $kontrak->sdm_no_absen . '.webp' . '?id=' . filemtime($app->storagePath('app/sdm/foto-profil/' . $kontrak->sdm_no_absen . '.webp')),
+                                                false,
+                                            ])
+                                            : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
+                                            title="{{ $kontrak->sdm_nama ?? 'foto akun' }}" alt="{{ $kontrak->sdm_nama ?? 'foto akun' }}"
+                                            @class([
+                                                'akun',
+                                                'svg' => !$app->filesystem->exists(
+                                                    'sdm/foto-profil/' . $kontrak->sdm_no_absen . '.webp'),
+                                            ]) loading="lazy">
                                     </a>
 
-                                    {{ $kontrak->sdm_no_absen }}<br />
+                                    {{ $kontrak->sdm_no_absen }}<br>
 
                                     {{ $kontrak->sdm_nama }}
                                 </td>
 
                                 <td>
-                                    {{strtoupper($app->date->make($kontrak->penempatan_mulai)?->translatedFormat('d F
-                                    Y')) }} s.d
-                                    {{ strtoupper($app->date->make($kontrak->penempatan_selesai)?->translatedFormat('d F
-                                    Y')) }} <br />
+                                    {{ strtoupper($app->date->make($kontrak->penempatan_mulai)?->translatedFormat('d F Y')) }}
+                                    s.d
+                                    {{ strtoupper($app->date->make($kontrak->penempatan_selesai)?->translatedFormat('d F Y')) }}
+                                    <br>
                                     {{ $kontrak->penempatan_kontrak }} Ke : {{ $kontrak->penempatan_ke }}
                                 </td>
 
                                 <td>
-                                    {{ $kontrak->penempatan_lokasi }} <br />
+                                    {{ $kontrak->penempatan_lokasi }} <br>
                                     {{ $kontrak->penempatan_posisi }}
                                 </td>
-                    </tr>
+                            </tr>
 
-                    @empty
-                    <tr>
-                        <th></th>
-                        <td colspan="4">Tidak Ada Data</td>
-                    </tr>
+                        @empty
+                            <tr>
+                                <th></th>
+                                <td colspan="4">Tidak Ada Data</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
-                    @endforelse
-                </tbody>
-            </table>
+            @if ($kontraks->count() > 0)
+                <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
+
+                @if ($jmlAkanHabis > 0)
+                    <a class="isi-xhr utama" href="{{ $app->url->route('sdm.penempatan.data-akanhabis') }}">
+                        AKAN HABIS
+                    </a>&nbsp;
+                @endif
+
+                @if ($jmlKadaluarsa > 0)
+                    <a class="isi-xhr utama" href="{{ $app->url->route('sdm.penempatan.data-kadaluarsa') }}">KADALUARSA</a>
+                @endif
+            @endif
         </div>
+    </details>
 
-        @if ($kontraks->count() > 0)
-        <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
+    <script>
+        (async () => {
+            while (!window.aplikasiSiap) {
+                await new Promise((resolve, reject) =>
+                    setTimeout(resolve, 1000));
+            }
 
-        @if ($jmlAkanHabis > 0)
-        <a class="isi-xhr utama" href="{{ $app->url->route('sdm.penempatan.data-akanhabis') }}">
-            AKAN HABIS
-        </a>&nbsp;
-        @endif
-
-        @if ($jmlKadaluarsa > 0)
-        <a class="isi-xhr utama" href="{{ $app->url->route('sdm.penempatan.data-kadaluarsa') }}">KADALUARSA</a>
-        @endif
-        @endif
-    </div>
-</details>
-
-<script>
-    (async() => {
-        while(!window.aplikasiSiap) {
-            await new Promise((resolve,reject) =>
-            setTimeout(resolve, 1000));
-        }
-        
-        formatTabel('#tabel_kontrak thead th', '#tabel_kontrak tbody tr');
-    })();
-</script>
+            formatTabel('#tabel_kontrak thead th', '#tabel_kontrak tbody tr');
+        })();
+    </script>
 @endisset
