@@ -15,7 +15,7 @@
                                 'berkas_foto_profil' =>
                                     $akun->sdm_no_absen .
                                     '.webp' .
-                                    '?' .
+                                    '?id=' .
                                     filemtime($app->storagePath('app/sdm/foto-profil/' . $akun->sdm_no_absen . '.webp')),
                             ])
                             : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
@@ -43,7 +43,7 @@
                                             'berkas_foto_profil' =>
                                                 $akun->sdm_id_atasan .
                                                 '.webp' .
-                                                '?' .
+                                                '?id=' .
                                                 filemtime($app->storagePath('app/sdm/foto-profil/' . $akun->sdm_id_atasan . '.webp')),
                                         ])
                                         : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
@@ -380,7 +380,7 @@
                                                     'berkas_foto_profil' =>
                                                         $personil->sdm_no_absen .
                                                         '.webp' .
-                                                        '?' .
+                                                        '?id=' .
                                                         filemtime($app->storagePath('app/sdm/foto-profil/' . $personil->sdm_no_absen . '.webp')),
                                                 ])
                                                 : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
@@ -409,12 +409,12 @@
 
                         @if ($app->filesystem->exists($berkasSDM = 'sdm/berkas/' . $akun->sdm_no_absen . '.pdf'))
                             <iframe class="tcetak berkas"
-                                src="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasSDM . '?' . filemtime($app->storagePath('app/' . $berkasSDM))]) }}"
+                                src="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasSDM . '?id=' . filemtime($app->storagePath('app/' . $berkasSDM))]) }}"
                                 title="Berkas SDM" loading="lazy"
                                 onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
                             <a class="sekunder tcetak"
-                                href="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasSDM . '?' . filemtime($app->storagePath('app/' . $berkasSDM))]) }}"
+                                href="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasSDM . '?id=' . filemtime($app->storagePath('app/' . $berkasSDM))]) }}"
                                 title="Unduh Berkas Terunggah" target="_blank">
                                 <svg viewBox="0 0 24 24">
                                     <use href="#ikonunduh"></use>
