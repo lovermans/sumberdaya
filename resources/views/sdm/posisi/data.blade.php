@@ -68,7 +68,8 @@
                             <button class="utama pelengkap" id="tombol_saring_posisi_sdm" type="submit" title="Saring Data">
                                 <svg viewbox="0 0 24 24">
                                     <use href="#ikoncari"></use>
-                                </svg> Saring
+                                </svg>
+                                SARING
                             </button>
                         </div>
                     </details>
