@@ -24,9 +24,7 @@
 
         <div class="kartu">
             <p>
-                <a href="https://github.com/lovermans/sumberdaya" target="_blank" rel="noopener noreferrer">
-                    lovermans/sumberdaya
-                </a>.
+                <a href="https://github.com/lovermans/sumberdaya" target="_blank" rel="noopener noreferrer">lovermans/sumberdaya</a>.
             </p>
         </div>
 
@@ -45,37 +43,27 @@
                     <ul>
                         <li>
                             Laravel Breeze :
-                            <a href="https://github.com/laravel/breeze" target="_blank" rel="noopener noreferrer">
-                                laravel/breeze
-                            </a>.
+                            <a href="https://github.com/laravel/breeze" target="_blank" rel="noopener noreferrer">laravel/breeze</a>.
                         </li>
 
                         <li>
                             PHP Spreadsheet :
-                            <a href="https://github.com/PHPOffice/PhpSpreadsheet" target="_blank" rel="noopener noreferrer">
-                                PHPOffice/PhpSpreadsheet
-                            </a>.
+                            <a href="https://github.com/PHPOffice/PhpSpreadsheet" target="_blank" rel="noopener noreferrer">PHPOffice/PhpSpreadsheet</a>.
                         </li>
 
                         <li>
                             PHP Word :
-                            <a href="https://github.com/PHPOffice/PHPWord" target="_blank" rel="noopener noreferrer">
-                                PHPOffice/PHPWord
-                            </a>.
+                            <a href="https://github.com/PHPOffice/PHPWord" target="_blank" rel="noopener noreferrer">PHPOffice/PHPWord</a>.
                         </li>
 
                         <li>
                             PHP QRCode :
-                            <a href="https://github.com/aferrandini/PHPQRCode" target="_blank" rel="noopener noreferrer">
-                                aferrandini/PHPQRCode
-                            </a>.
+                            <a href="https://github.com/aferrandini/PHPQRCode" target="_blank" rel="noopener noreferrer">aferrandini/PHPQRCode</a>.
                         </li>
 
                         <li>
                             Pusher Websocket SDK-PHP :
-                            <a href="https://github.com/pusher/pusher-http-php" target="_blank" rel="noopener noreferrer">
-                                pusher/pusher-http-php
-                            </a>.
+                            <a href="https://github.com/pusher/pusher-http-php" target="_blank" rel="noopener noreferrer">pusher/pusher-http-php</a>.
                         </li>
                     </ul>
                 </li>
@@ -84,23 +72,17 @@
                     <ul>
                         <li>
                             Slim Select JS :
-                            <a href="https://github.com/brianvoe/slim-select" target="_blank" rel="noopener noreferrer">
-                                brianvoe/slim-select
-                            </a>.
+                            <a href="https://github.com/brianvoe/slim-select" target="_blank" rel="noopener noreferrer">brianvoe/slim-select</a>.
                         </li>
 
                         <li>
                             Laravel Echo JS :
-                            <a href="https://github.com/laravel/echo" target="_blank" rel="noopener noreferrer">
-                                laravel/echo
-                            </a>.
+                            <a href="https://github.com/laravel/echo" target="_blank" rel="noopener noreferrer">laravel/echo</a>.
                         </li>
 
                         <li>
                             Pusher JS :
-                            <a href="https://github.com/pusher/pusher-js" target="_blank" rel="noopener noreferrer">
-                                pusher/pusher-js
-                            </a>.
+                            <a href="https://github.com/pusher/pusher-js" target="_blank" rel="noopener noreferrer">pusher/pusher-js</a>.
                         </li>
                     </ul>
                 </li>
@@ -112,9 +94,7 @@
 
                 <li>
                     <i>DevOps</i> Lokal :
-                    <a href="https://github.com/leokhoa/laragon" target="_blank" rel="noopener noreferrer">
-                        leokhoa/laragon
-                    </a>.
+                    <a href="https://github.com/leokhoa/laragon" target="_blank" rel="noopener noreferrer">leokhoa/laragon</a>.
                 </li>
             </ul>
 
@@ -136,10 +116,8 @@
                 Uji Coba Versi 0.<br>
                 <a href="//www.kepuhkencanaarum.com/" target="_blank" rel="noopener noreferrer">PT. Kepuh Kencana Arum</a>
                 {{ '@ ' . date('Y') }}.<br>
-                Email : <a href="mailto:kka.hrga.adm@gmail.com" target="_blank"
-                    rel="noopener noreferrer">kka.hrga.adm@gmail.com</a>.<br>
-                Whatsapp : <a href="https://wa.me/6282234280128" target="_blank"
-                    rel="noopener noreferrer">6282234280128</a>.<br>
+                Email : <a href="mailto:kka.hrga.adm@gmail.com" target="_blank" rel="noopener noreferrer">kka.hrga.adm@gmail.com</a>.<br>
+                Whatsapp : <a href="https://wa.me/6282234280128" target="_blank" rel="noopener noreferrer">6282234280128</a>.<br>
             </p>
         </div>
 
