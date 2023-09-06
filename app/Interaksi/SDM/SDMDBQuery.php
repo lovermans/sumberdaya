@@ -110,7 +110,7 @@ class SDMDBQuery
                 $group->whereYear('tsdm.tambahsdm_dibuat', date('Y'))
                     ->whereMonth('tsdm.tambahsdm_dibuat', date('m'));
             })
-            ->orWhere('tsdm.tambahsdm_no', 'like', date('Y') . date('m') . '%')
+            ->orWhere('tsdm.tambahsdm_no', 'like', date('Y').date('m').'%')
             ->count();
     }
 
@@ -141,10 +141,10 @@ class SDMDBQuery
             })
             ->when($kataKunci, function ($query) use ($kataKunci) {
                 $query->where(function ($group) use ($kataKunci) {
-                    $group->where('tambahsdm_no', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('tambahsdm_posisi', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('tambahsdm_sdm_id', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('sdm_nama', 'like', '%' . $kataKunci . '%');
+                    $group->where('tambahsdm_no', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('tambahsdm_posisi', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('tambahsdm_sdm_id', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('sdm_nama', 'like', '%'.$kataKunci.'%');
                 });
             })
             ->when($permintaan->tgl_diusulkan_mulai && $permintaan->tgl_diusulkan_sampai, function ($query) use ($permintaan) {
@@ -552,17 +552,20 @@ class SDMDBQuery
         return static::$fungsiDasar()
             ->when($kataKunci, function ($query, $kataKunci) {
                 $query->where(function ($group) use ($kataKunci) {
-                    $group->where('sdm_no_absen', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('penempatan_no_absen', 'like', '%' . $kataKunci . '%')
+                    $group->where('sdm_no_absen', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('penempatan_no_absen', 'like', '%'.$kataKunci.'%')
                         ->orWhere('sdm_no_permintaan', $kataKunci)
-                        ->orWhere('sdm_no_ktp', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('sdm_nama', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('penempatan_posisi', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('penempatan_keterangan', 'like', '%' . $kataKunci . '%');
+                        ->orWhere('sdm_no_ktp', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('sdm_nama', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('penempatan_posisi', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('penempatan_keterangan', 'like', '%'.$kataKunci.'%');
                 });
             })
             ->when($lingkupIjin, function ($query, $lingkupIjin) {
-                $query->whereIn('penempatan_lokasi', $lingkupIjin);
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->orWhereIn('penempatan_lokasi', $lingkupIjin)
+                        ->orWhereNull('penempatan_lokasi');
+                });
             })
             ->when($permintaan->kontrak, function ($query) use ($permintaan) {
                 $query->whereIn('penempatan_kontrak', (array) $permintaan->kontrak);
@@ -582,19 +585,19 @@ class SDMDBQuery
             ->when($permintaan->posisi, function ($query) use ($permintaan) {
                 $query->whereIn('penempatan_posisi', (array) $permintaan->posisi);
             })
-            ->when($permintaan->agama, function ($query)  use ($permintaan) {
+            ->when($permintaan->agama, function ($query) use ($permintaan) {
                 $query->whereIn('sdm_agama', (array) $permintaan->agama);
             })
-            ->when($permintaan->kawin, function ($query)  use ($permintaan) {
+            ->when($permintaan->kawin, function ($query) use ($permintaan) {
                 $query->whereIn('sdm_status_kawin', (array) $permintaan->kawin);
             })
-            ->when($permintaan->warganegara, function ($query)  use ($permintaan) {
+            ->when($permintaan->warganegara, function ($query) use ($permintaan) {
                 $query->whereIn('sdm_warganegara', (array) $permintaan->warganegara);
             })
-            ->when($permintaan->pendidikan, function ($query)  use ($permintaan) {
+            ->when($permintaan->pendidikan, function ($query) use ($permintaan) {
                 $query->whereIn('sdm_pendidikan', (array) $permintaan->pendidikan);
             })
-            ->when($permintaan->disabilitas, function ($query)  use ($permintaan) {
+            ->when($permintaan->disabilitas, function ($query) use ($permintaan) {
                 $query->whereIn('sdm_disabilitas', (array) $permintaan->disabilitas);
             });
     }
@@ -1314,10 +1317,10 @@ class SDMDBQuery
             })
             ->when($kataKunci, function ($query, $kataKunci) {
                 $query->where(function ($group) use ($kataKunci) {
-                    $group->where('nilaisdm_no_absen', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('sdm_nama', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('nilaisdm_tindak_lanjut', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('nilaisdm_keterangan', 'like', '%' . $kataKunci . '%');
+                    $group->where('nilaisdm_no_absen', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('sdm_nama', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('nilaisdm_tindak_lanjut', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('nilaisdm_keterangan', 'like', '%'.$kataKunci.'%');
                 });
             })
             ->when($permintaan->tgl_sanksi_mulai && $permintaan->tgl_sanksi_sampai, function ($query) use ($permintaan) {
@@ -1447,10 +1450,10 @@ class SDMDBQuery
             })
             ->when($kataKunci, function ($query, $kataKunci) {
                 $query->where(function ($group) use ($kataKunci) {
-                    $group->where('posisi_nama', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('posisi_atasan', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('posisi_wlkp', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('posisi_keterangan', 'like', '%' . $kataKunci . '%');
+                    $group->where('posisi_nama', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('posisi_atasan', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('posisi_wlkp', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('posisi_keterangan', 'like', '%'.$kataKunci.'%');
                 });
             })
             ->when(
@@ -1503,11 +1506,11 @@ class SDMDBQuery
             })
             ->when($kataKunci, function ($query, $kataKunci) {
                 $query->where(function ($group) use ($kataKunci) {
-                    $group->where('sanksi_no_absen', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('a.sdm_nama', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('b.sdm_nama', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('sanksi_tambahan', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('sanksi_keterangan', 'like', '%' . $kataKunci . '%');
+                    $group->where('sanksi_no_absen', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('a.sdm_nama', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('b.sdm_nama', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('sanksi_tambahan', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('sanksi_keterangan', 'like', '%'.$kataKunci.'%');
                 });
             })
             ->when($permintaan->tgl_sanksi_mulai && $permintaan->tgl_sanksi_sampai, function ($query) use ($permintaan) {
@@ -1685,13 +1688,13 @@ class SDMDBQuery
             })
             ->when($kataKunci, function ($query) use ($kataKunci) {
                 $query->where(function ($group) use ($kataKunci) {
-                    $group->where('langgar_lap_no', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('langgar_no_absen', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('langgar_pelapor', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('a.sdm_nama', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('b.sdm_nama', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('langgar_isi', 'like', '%' . $kataKunci . '%')
-                        ->orWhere('langgar_keterangan', 'like', '%' . $kataKunci . '%');
+                    $group->where('langgar_lap_no', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('langgar_no_absen', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('langgar_pelapor', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('a.sdm_nama', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('b.sdm_nama', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('langgar_isi', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('langgar_keterangan', 'like', '%'.$kataKunci.'%');
                 });
             })
             ->when($permintaan->tgl_langgar_mulai && $permintaan->tgl_langgar_sampai, function ($query) use ($permintaan) {
@@ -1724,7 +1727,7 @@ class SDMDBQuery
                 $group->whereYear('langgar_dibuat', date('Y'))
                     ->whereMonth('langgar_dibuat', date('m'));
             })
-            ->orWhere('langgar_lap_no', 'like', date('Y') . date('m') . '%')
+            ->orWhere('langgar_lap_no', 'like', date('Y').date('m').'%')
             ->count();
     }
 
