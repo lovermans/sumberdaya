@@ -54,7 +54,16 @@ class SDMDBQuery
                 's3.sdm_id_atasan as id_atasan',
                 's3.sdm_no_bpjs as no_bpjs',
                 's3.sdm_no_jamsostek as no_jamsostek',
-                's3.sdm_jml_anak as jml_anak'
+                's3.sdm_jml_anak as jml_anak',
+                's3.sdm_ket_kary as ket_kary',
+                's3.sdm_alamat as alamat',
+                's3.sdm_alamat_rt as alamat_rt',
+                's3.sdm_alamat_rw as alamat_rw',
+                's3.sdm_alamat_kelurahan as alamat_kelurahan',
+                's3.sdm_alamat_kecamatan as alamat_kecamatan',
+                's3.sdm_alamat_kota as alamat_kota',
+                's3.sdm_alamat_provinsi as alamat_provinsi',
+                's3.sdm_alamat_kodepos as alamat_kodepos',
             )
             ->from('sdms as s3')
             ->where('s3.sdm_tgl_gabung', '=', function ($query) {
@@ -674,6 +683,15 @@ class SDMDBQuery
                 'no_bpjs as sdm_no_bpjs',
                 'no_jamsostek as sdm_no_jamsostek',
                 'jml_anak as sdm_jml_anak',
+                'ket_kary as sdm_ket_kary',
+                'alamat as sdm_alamat',
+                'alamat_rt as sdm_alamat_rt',
+                'alamat_rw as sdm_alamat_rw',
+                'alamat_kelurahan as sdm_alamat_kelurahan',
+                'alamat_kecamatan as sdm_alamat_kecamatan',
+                'alamat_kota as sdm_alamat_kota',
+                'alamat_provinsi as sdm_alamat_provinsi',
+                'alamat_kodepos as sdm_alamat_kodepos',
             )
             ->selectRaw('IF(tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, tgl_berhenti)) as masa_kerja, IF(tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, penempatan_mulai, NOW()),TIMESTAMPDIFF(YEAR, penempatan_mulai, tgl_berhenti)) as masa_aktif, IF(tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, tgl_lahir, NOW()),TIMESTAMPDIFF(YEAR, tgl_lahir, tgl_berhenti)) as usia')
             ->fromSub(static::ambilKTPTerlamaSDM(), 'sdmlama')
