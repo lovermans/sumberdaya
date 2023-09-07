@@ -12,15 +12,14 @@
 
         @isset($dokumenPengurusCabang)
             @forelse ($dokumenPengurusCabang as $jalur)
-                @if (blank($app->request->user()->sdm_ijin_akses) || $app->request->user()->sdm_ijin_akses == substr($jalur, 28))
+                @if (blank($app->request->user()->sdm_ijin_akses) || Str::contains($app->request->user()->sdm_ijin_akses, substr($jalur, 28)))
                     <details class="kartu">
                         <summary>Panduan Pengurus Cabang {{ substr($jalur, 28) }}</summary>
 
                         <ol>
                             @forelse ($app->filesystem->files($jalur) as $berkas)
                                 <li>
-                                    <a href="{{ $app->filesystem->disk('local')->temporaryUrl($berkas, $app->date->now()->addMinutes(5)) }}"
-                                        target="_blank">
+                                    <a href="{{ $app->filesystem->disk('local')->temporaryUrl($berkas, $app->date->now()->addMinutes(5)) }}" target="_blank">
                                         {{ $app->files->name($berkas) . '.' . $app->files->extension($berkas) }}
                                     </a>
                                 </li>
@@ -44,8 +43,7 @@
                     <ol>
                         @forelse ($app->filesystem->files($jalur) as $berkas)
                             <li>
-                                <a href="{{ $app->filesystem->disk('local')->temporaryUrl($berkas, $app->date->now()->addMinutes(5)) }}"
-                                    target="_blank">
+                                <a href="{{ $app->filesystem->disk('local')->temporaryUrl($berkas, $app->date->now()->addMinutes(5)) }}" target="_blank">
                                     {{ $app->files->name($berkas) . '.' . $app->files->extension($berkas) }}
                                 </a>
                             </li>
@@ -67,8 +65,7 @@
                     <ol>
                         @forelse ($app->filesystem->files($jalur) as $berkas)
                             <li>
-                                <a href="{{ $app->filesystem->disk('local')->temporaryUrl($berkas, $app->date->now()->addMinutes(5)) }}"
-                                    target="_blank">
+                                <a href="{{ $app->filesystem->disk('local')->temporaryUrl($berkas, $app->date->now()->addMinutes(5)) }}" target="_blank">
                                     {{ $app->files->name($berkas) . '.' . $app->files->extension($berkas) }}
                                 </a>
                             </li>
