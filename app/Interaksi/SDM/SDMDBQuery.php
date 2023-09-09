@@ -14,7 +14,7 @@ class SDMDBQuery
             ->select(
                 'sdm_no_permintaan',
                 's1.sdm_tgl_gabung',
-                's1.sdm_no_ktp'
+                's1.sdm_no_ktp as no_ktp'
             )
             ->from('sdms as s1')
             ->where('sdm_tgl_gabung', '=', function ($query) {
@@ -31,39 +31,39 @@ class SDMDBQuery
 
         return $app->db->query()
             ->select(
-                's3.sdm_uuid as uuid',
-                's3.sdm_no_absen as no_absen',
-                's3.sdm_tgl_lahir as tgl_lahir',
-                's3.sdm_tempat_lahir as tempat_lahir',
-                's3.sdm_no_ktp as no_ktp',
-                's3.sdm_nama as nama',
-                's3.sdm_kelamin as kelamin',
-                's3.sdm_tgl_berhenti as tgl_berhenti',
-                's3.sdm_jenis_berhenti as jenis_berhenti',
-                's3.sdm_ket_berhenti as ket_berhenti',
-                's3.sdm_disabilitas as disabilitas',
-                's3.sdm_agama as agama',
-                's3.sdm_status_kawin as status_kawin',
-                's3.sdm_pendidikan as pendidikan',
-                's3.sdm_warganegara as warganegara',
-                's3.sdm_uk_seragam as uk_seragam',
-                's3.sdm_uk_sepatu as uk_sepatu',
-                's3.sdm_jurusan as jurusan',
-                's3.sdm_telepon as telepon',
-                's3.email as sdm_email',
-                's3.sdm_id_atasan as id_atasan',
-                's3.sdm_no_bpjs as no_bpjs',
-                's3.sdm_no_jamsostek as no_jamsostek',
-                's3.sdm_jml_anak as jml_anak',
-                's3.sdm_ket_kary as ket_kary',
-                's3.sdm_alamat as alamat',
-                's3.sdm_alamat_rt as alamat_rt',
-                's3.sdm_alamat_rw as alamat_rw',
-                's3.sdm_alamat_kelurahan as alamat_kelurahan',
-                's3.sdm_alamat_kecamatan as alamat_kecamatan',
-                's3.sdm_alamat_kota as alamat_kota',
-                's3.sdm_alamat_provinsi as alamat_provinsi',
-                's3.sdm_alamat_kodepos as alamat_kodepos',
+                's3.sdm_uuid as sdm_uuid',
+                's3.sdm_no_absen as sdm_no_absen',
+                's3.sdm_tgl_lahir as sdm_tgl_lahir',
+                's3.sdm_tempat_lahir as sdm_tempat_lahir',
+                's3.sdm_no_ktp as sdm_no_ktp',
+                's3.sdm_nama as sdm_nama',
+                's3.sdm_kelamin as sdm_kelamin',
+                's3.sdm_tgl_berhenti as sdm_tgl_berhenti',
+                's3.sdm_jenis_berhenti as sdm_jenis_berhenti',
+                's3.sdm_ket_berhenti as sdm_ket_berhenti',
+                's3.sdm_disabilitas as sdm_disabilitas',
+                's3.sdm_agama as sdm_agama',
+                's3.sdm_status_kawin as sdm_status_kawin',
+                's3.sdm_pendidikan as sdm_pendidikan',
+                's3.sdm_warganegara as sdm_warganegara',
+                's3.sdm_uk_seragam as sdm_uk_seragam',
+                's3.sdm_uk_sepatu as sdm_uk_sepatu',
+                's3.sdm_jurusan as sdm_jurusan',
+                's3.sdm_telepon as sdm_telepon',
+                's3.email as email',
+                's3.sdm_id_atasan as sdm_id_atasan',
+                's3.sdm_no_bpjs as sdm_no_bpjs',
+                's3.sdm_no_jamsostek as sdm_no_jamsostek',
+                's3.sdm_jml_anak as sdm_jml_anak',
+                's3.sdm_ket_kary as sdm_ket_kary',
+                's3.sdm_alamat as sdm_alamat',
+                's3.sdm_alamat_rt as sdm_alamat_rt',
+                's3.sdm_alamat_rw as sdm_alamat_rw',
+                's3.sdm_alamat_kelurahan as sdm_alamat_kelurahan',
+                's3.sdm_alamat_kecamatan as sdm_alamat_kecamatan',
+                's3.sdm_alamat_kota as sdm_alamat_kota',
+                's3.sdm_alamat_provinsi as sdm_alamat_provinsi',
+                's3.sdm_alamat_kodepos as sdm_alamat_kodepos',
             )
             ->from('sdms as s3')
             ->where('s3.sdm_tgl_gabung', '=', function ($query) {
@@ -614,6 +614,7 @@ class SDMDBQuery
     public static function ambilSemuaRiwayatPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, $uruts, $uuid = null)
     {
         return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarSemuaRiwayatPenempatanSDM')
+            ->whereNotNull('sdm_no_absen')
             ->when($uuid, function ($query) use ($uuid) {
                 $query->where('sdm_uuid', $uuid);
             })
@@ -659,47 +660,15 @@ class SDMDBQuery
                 'penempatan_grup',
                 'penempatan_keterangan',
                 'posisi_wlkp',
-                'uuid as sdm_uuid',
-                'no_absen as sdm_no_absen',
-                'tgl_lahir as sdm_tgl_lahir',
-                'tempat_lahir as sdm_tempat_lahir',
-                'no_ktp as sdm_no_ktp',
-                'nama as sdm_nama',
-                'kelamin as sdm_kelamin',
-                'tgl_berhenti as sdm_tgl_berhenti',
-                'jenis_berhenti as sdm_jenis_berhenti',
-                'ket_berhenti as sdm_ket_berhenti',
-                'disabilitas as sdm_disabilitas',
-                'agama as sdm_agama',
-                'status_kawin as sdm_status_kawin',
-                'pendidikan as sdm_pendidikan',
-                'warganegara as sdm_warganegara',
-                'uk_seragam as sdm_uk_seragam',
-                'uk_sepatu as sdm_uk_sepatu',
-                'jurusan as sdm_jurusan',
-                'telepon as sdm_telepon',
-                'sdm_email as email',
-                'id_atasan as sdm_id_atasan',
-                'no_bpjs as sdm_no_bpjs',
-                'no_jamsostek as sdm_no_jamsostek',
-                'jml_anak as sdm_jml_anak',
-                'ket_kary as sdm_ket_kary',
-                'alamat as sdm_alamat',
-                'alamat_rt as sdm_alamat_rt',
-                'alamat_rw as sdm_alamat_rw',
-                'alamat_kelurahan as sdm_alamat_kelurahan',
-                'alamat_kecamatan as sdm_alamat_kecamatan',
-                'alamat_kota as sdm_alamat_kota',
-                'alamat_provinsi as sdm_alamat_provinsi',
-                'alamat_kodepos as sdm_alamat_kodepos',
+                'sdmbaru.*',
             )
-            ->selectRaw('IF(tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, tgl_berhenti)) as masa_kerja, IF(tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, penempatan_mulai, NOW()),TIMESTAMPDIFF(YEAR, penempatan_mulai, tgl_berhenti)) as masa_aktif, IF(tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, tgl_lahir, NOW()),TIMESTAMPDIFF(YEAR, tgl_lahir, tgl_berhenti)) as usia')
+            ->selectRaw('IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_gabung, sdm_tgl_berhenti)) as masa_kerja, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, penempatan_mulai, NOW()),TIMESTAMPDIFF(YEAR, penempatan_mulai, sdm_tgl_berhenti)) as masa_aktif, IF(sdm_tgl_berhenti IS NULL,TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, NOW()),TIMESTAMPDIFF(YEAR, sdm_tgl_lahir, sdm_tgl_berhenti)) as usia')
             ->fromSub(static::ambilKTPTerlamaSDM(), 'sdmlama')
             ->joinSub(static::ambilKTPTerkiniSDM(), 'sdmbaru', function ($join) {
-                $join->on('sdmlama.sdm_no_ktp', '=', 'sdmbaru.no_ktp');
+                $join->on('sdmlama.no_ktp', '=', 'sdmbaru.sdm_no_ktp');
             })
             ->joinSub(static::ambilDBPenempatanSDMTerkini(), 'penem', function ($join) {
-                $join->on('sdmbaru.no_absen', '=', 'penem.penempatan_no_absen');
+                $join->on('sdmbaru.sdm_no_absen', '=', 'penem.penempatan_no_absen');
             })
             ->leftJoin('posisis', 'penempatan_posisi', '=', 'posisi_nama');
     }
@@ -753,6 +722,7 @@ class SDMDBQuery
     public static function ambilPenempatanAktifSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
     {
         return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarPenempatanSDM')
+            ->whereNotNull('sdm_no_absen')
             ->whereNull('sdm_tgl_berhenti')
             ->when(
                 $uruts,
@@ -769,6 +739,7 @@ class SDMDBQuery
     public static function ambilPenempatanNonAktifSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
     {
         return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarPenempatanSDM')
+            ->whereNotNull('sdm_no_absen')
             ->whereNotNull('sdm_tgl_berhenti')
             ->when(
                 $uruts,
@@ -785,6 +756,7 @@ class SDMDBQuery
     public static function ambilPKWTAkanHabisSDM($permintaan, $kataKunci, $lingkupIjin, $uruts, $rentang)
     {
         return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarPenempatanSDM')
+            ->whereNotNull('sdm_no_absen')
             ->where('penempatan_kontrak', 'not like', 'OS-%')
             ->whereNull('sdm_tgl_berhenti')
             ->whereBetween('penempatan_selesai', $rentang)
@@ -803,6 +775,7 @@ class SDMDBQuery
     public static function ambilPKWTKadaluarsaSDM($permintaan, $kataKunci, $lingkupIjin, $uruts, $rentang)
     {
         return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarPenempatanSDM')
+            ->whereNotNull('sdm_no_absen')
             ->where('penempatan_kontrak', 'not like', 'OS-%')
             ->whereNull('sdm_tgl_berhenti')
             ->where('penempatan_selesai', '<=', $rentang)
@@ -821,6 +794,7 @@ class SDMDBQuery
     public static function ambilMasaKerjaNyataSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
     {
         return static::dasarSaringanPenempatanSDM($permintaan, $kataKunci, $lingkupIjin, 'dasarMasaKerjaNyataSDM')
+
             ->when(
                 $uruts,
                 function ($query, $uruts) {
@@ -837,13 +811,13 @@ class SDMDBQuery
     public static function ambilMasaKerjaNyataSDMAktif($permintaan, $kataKunci, $lingkupIjin, $uruts)
     {
         return static::ambilMasaKerjaNyataSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
-            ->whereNull('tgl_berhenti');
+            ->whereNull('sdm_tgl_berhenti');
     }
 
     public static function ambilMasaKerjaNyataSDMNonAktif($permintaan, $kataKunci, $lingkupIjin, $uruts)
     {
         return static::ambilMasaKerjaNyataSDM($permintaan, $kataKunci, $lingkupIjin, $uruts)
-            ->whereNotNull('tgl_berhenti');
+            ->whereNotNull('sdm_tgl_berhenti');
     }
 
     public static function ambilSDMAktifBelumDitempatkan($permintaan, $kataKunci, $lingkupIjin, $uruts)
