@@ -26,6 +26,7 @@
     --hitam-e1: #1d1d1d;
     --hitam-e8: #2d2d2d;
     --oranye: #ffb74d;
+    --hijau: #81c784;
     --taut-umum: #90caf9;
     --taut-fokus: #e57373;
     --bg-blend: soft-light;
@@ -64,6 +65,7 @@
     --hitam-e1: #f5f5f5;
     --hitam-e8: #fff;
     --oranye: #f57c00;
+    --hijau: #388e3c;
     --taut-umum: #1565c0;
     --taut-fokus: #d32f2f;
     --bg-blend: none;
@@ -334,7 +336,10 @@ main section {
     padding: 4em .5em
 }
 
-main a:link,
+main :is(a:link, a:active, a:visited) {
+    color: var(--hijau)
+}
+
 .isian :is(label, h3) {
     color: var(--taut-umum)
 }
@@ -343,11 +348,11 @@ a.utama {
     color: var(--taut-umum) !important
 }
 
-main :is(a:visited, h4) {
+main :is(a:hover, h4) {
     color: var(--oranye)
 }
 
-main :is(a:hover, h2) {
+main h2 {
     color: var(--taut-fokus)
 }
 
@@ -1866,6 +1871,7 @@ screen and (min-width:672rem) {
         --hitam-e1: #f5f5f5;
         --hitam-e8: #fff;
         --oranye: #e64a19;
+        --hijau: #388e3c;
         --taut-umum: #1565c0;
         --taut-fokus: #d32f2f;
         --bg-blend: none;
