@@ -125,7 +125,7 @@
                 <label for="penempatan_ke">Kontrak Ke</label>
 
                 <input id="penempatan_ke" name="penempatan_ke" type="number" value="{{ $app->request->old('penempatan_ke', $penem->penempatan_ke ?? null) }}"
-                    min="0" @required(str()->contains($app->request->old('penempatan_kontrak', $penem->penempatan_kontrak ?? null), ['PKWT', 'PERCOBAAN']))>
+                    min="0" @required(!str()->contains($app->request->old('penempatan_kontrak', $penem->penempatan_kontrak ?? null), ['PKWTT', 'OS-']) && $app->request->old('penempatan_kontrak', $penem->penempatan_kontrak ?? null))>
 
                 <span class="t-bantu">Angka</span>
             </div>
