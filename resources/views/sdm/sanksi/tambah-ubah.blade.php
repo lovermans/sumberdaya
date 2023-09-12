@@ -15,21 +15,23 @@
                 </a>
             </div>
 
-            @if (count($lapPelanggaran))
-                <div class="isian gspan-4">
-                    <label for="sanksi_lap_no">Nomor Laporan</label>
+            @if ($app->request->routeIs('sdm.sanksi.ubah'))
+                @if (count($lapPelanggaran))
+                    <div class="isian gspan-4">
+                        <label for="sanksi_lap_no">Nomor Laporan</label>
 
-                    <select class="pil-cari" id="sanksi_lap_no" name="sanksi_lap_no" required>
-                        @foreach ($lapPelanggaran as $lapPel)
-                            <option value="{{ $lapPel->langgar_lap_no }}" @selected($lapPel->langgar_lap_no == $app->request->old('sanksi_lap_no', $sanksiLama->sanksi_lap_no ?? null))>
-                                {{ $lapPel->langgar_lap_no }} - {{ $lapPel->langgar_tanggal }} - {{ $lapPel->langgar_tsdm_nama }}
-                                {{ $lapPel->langgar_isi }} oleh {{ $lapPel->langgar_psdm_nama }}
-                            </option>
-                        @endforeach
-                    </select>
+                        <select class="pil-cari" id="sanksi_lap_no" name="sanksi_lap_no" required>
+                            @foreach ($lapPelanggaran as $lapPel)
+                                <option value="{{ $lapPel->langgar_lap_no }}" @selected($lapPel->langgar_lap_no == $app->request->old('sanksi_lap_no', $sanksiLama->sanksi_lap_no ?? null))>
+                                    {{ $lapPel->langgar_lap_no }} - {{ $lapPel->langgar_tanggal }} - {{ $lapPel->langgar_tsdm_nama }}
+                                    {{ $lapPel->langgar_isi }} oleh {{ $lapPel->langgar_psdm_nama }}
+                                </option>
+                            @endforeach
+                        </select>
 
-                    <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
-                </div>
+                        <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
+                    </div>
+                @endif
             @endif
 
             <div class="isian normal">
@@ -74,9 +76,7 @@
             <div class="isian gspan-4">
                 <label for="sanksi_tambahan">Sanksi Tambahan</label>
 
-                <textarea id="sanksi_tambahan" name="sanksi_tambahan" rows="3">
-                    {{ $app->request->old('sanksi_tambahan', $sanksiLama->sanksi_tambahan ?? null) }}
-                </textarea>
+                <textarea id="sanksi_tambahan" name="sanksi_tambahan" rows="3">{{ $app->request->old('sanksi_tambahan', $sanksiLama->sanksi_tambahan ?? null) }}</textarea>
 
                 <span class="t-bantu">Sanksi tambahan dapat berupa denda, demosi/rotasi/mutasi</span>
             </div>
@@ -84,9 +84,7 @@
             <div class="isian gspan-4">
                 <label for="sanksi_keterangan">Keterangan Sanksi</label>
 
-                <textarea id="sanksi_keterangan" name="sanksi_keterangan" rows="3">
-                    {{ $app->request->old('sanksi_keterangan', $sanksiLama->sanksi_keterangan ?? null) }}
-                </textarea>
+                <textarea id="sanksi_keterangan" name="sanksi_keterangan" rows="3">{{ $app->request->old('sanksi_keterangan', $sanksiLama->sanksi_keterangan ?? null) }}</textarea>
 
                 <span class="t-bantu">Keterangan lain terkait informasi sanksi</span>
             </div>
