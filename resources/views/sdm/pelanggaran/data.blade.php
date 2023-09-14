@@ -271,7 +271,7 @@
                                             </div>
                                         </th>
                                         <td>{{ $tabels->firstItem() + $nomor }}</td>
-                                        <td>
+                                        <td class="profil">
                                             <div @class(['merah' => $tabel->langgar_tsdm_tgl_berhenti])>
                                                 <b><i><u>Terlapor</u></i></b> :<br>
                                                 <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $tabel->langgar_tsdm_uuid]) }}">
@@ -287,8 +287,10 @@
                                                             'svg' => !$app->filesystem->exists(
                                                                 'sdm/foto-profil/' . $tabel->langgar_no_absen . '.webp'),
                                                         ]) loading="lazy">
+
+                                                    <small>{{ $tabel->langgar_no_absen }} : {{ $tabel->langgar_tsdm_nama }}</small>
                                                 </a>
-                                                {{ $tabel->langgar_no_absen }} - {{ $tabel->langgar_tsdm_nama }} <br>
+                                                <br>
                                                 {{ $tabel->langgar_tlokasi }} {{ $tabel->langgar_tkontrak }} -
                                                 {{ $tabel->langgar_tposisi }}
                                                 {{ $tabel->langgar_tsdm_tgl_berhenti ? '(NON-AKTIF)' : '' }}
@@ -308,11 +310,12 @@
                                                             'svg' => !$app->filesystem->exists(
                                                                 'sdm/foto-profil/' . $tabel->langgar_pelapor . '.webp'),
                                                         ]) loading="lazy">
+
+                                                    <small>{{ $tabel->langgar_pelapor }} : {{ $tabel->langgar_psdm_nama }}</small>
                                                 </a>
-                                                {{ $tabel->langgar_pelapor }} - {{ $tabel->langgar_psdm_nama }} <br>
+                                                <br>
                                                 {{ $tabel->langgar_plokasi }} {{ $tabel->langgar_pkontrak }} -
-                                                {{ $tabel->langgar_pposisi }}
-                                                {{ $tabel->langgar_psdm_tgl_berhenti ? '(NON-AKTIF)' : '' }}
+                                                {{ $tabel->langgar_pposisi }} {{ $tabel->langgar_psdm_tgl_berhenti ? '(NON-AKTIF)' : '' }}
                                             </div>
                                         </td>
                                         <td>

@@ -280,7 +280,7 @@
                                                 <div class="aksi">
                                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#permintaan-sdm_sematan"
                                                         href="{{ $app->url->route('sdm.permintaan-tambah-sdm.lihat', ['uuid' => $tabel->tambahsdm_uuid]) }}"
-                                                        title="Lihat Data">Lihat Data</a>
+                                                        title="Lihat Data">Buka Data</a>
 
                                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#permintaan-sdm_sematan"
                                                         href="{{ $app->url->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $tabel->tambahsdm_uuid]) }}"
@@ -291,7 +291,8 @@
 
                                         <td>{{ $tabels->firstItem() + $nomor }}</td>
 
-                                        <td>
+                                        <td class="profil">
+                                            <b>Pemohon</b> : <br>
                                             <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $tabel->sdm_uuid]) }}">
                                                 <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $tabel->tambahsdm_sdm_id . '.webp')
                                                     ? $app->url->route('sdm.tautan-foto-profil', [
@@ -305,7 +306,10 @@
                                                         'svg' => !$app->filesystem->exists(
                                                             'sdm/foto-profil/' . $tabel->tambahsdm_sdm_id . '.webp'),
                                                     ]) loading="lazy">
+
+                                                <small>{{ $tabel->tambahsdm_sdm_id }} - {{ $tabel->sdm_nama }}</small>
                                             </a>
+                                            <br>
                                             <b>Nomor</b> : {{ $tabel->tambahsdm_no }}<br>
                                             <b>Pemohon</b> : {{ $tabel->tambahsdm_sdm_id }} - {{ $tabel->sdm_nama }}<br>
                                             <b>Diusulkan</b> :

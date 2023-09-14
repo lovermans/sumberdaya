@@ -12,15 +12,10 @@
 
                         <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $akun->sdm_no_absen . '.webp')
                             ? $app->url->route('sdm.tautan-foto-profil', [
-                                'berkas_foto_profil' =>
-                                    $akun->sdm_no_absen .
-                                    '.webp' .
-                                    '?id=' .
-                                    filemtime($app->storagePath('app/sdm/foto-profil/' . $akun->sdm_no_absen . '.webp')),
+                                'berkas_foto_profil' => $akun->sdm_no_absen . '.webp' . '?id=' . filemtime($app->storagePath('app/sdm/foto-profil/' . $akun->sdm_no_absen . '.webp')),
                             ])
                             : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
-                            title="{{ $akun->sdm_nama ?? 'foto akun' }}" alt="{{ $akun->sdm_nama ?? 'foto akun' }}"
-                            @class([
+                            title="{{ $akun->sdm_nama ?? 'foto akun' }}" alt="{{ $akun->sdm_nama ?? 'foto akun' }}" @class([
                                 'svg' => !$app->filesystem->exists(
                                     'sdm/foto-profil/' . $akun->sdm_no_absen . '.webp'),
                             ]) loading="lazy">
@@ -35,29 +30,24 @@
 
                         <p @class(['merah' => $akun->tgl_berhenti_atasan])>
                             @if ($akun->uuid_atasan)
-                                <a class="taut-akun isi-xhr"
-                                    href="{{ $app->url->route('sdm.akun', ['uuid' => $akun->uuid_atasan]) }}">
+                                <a class="taut-akun isi-xhr" href="{{ $app->url->route('sdm.akun', ['uuid' => $akun->uuid_atasan]) }}">
 
                                     <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $akun->sdm_id_atasan . '.webp')
                                         ? $app->url->route('sdm.tautan-foto-profil', [
-                                            'berkas_foto_profil' =>
-                                                $akun->sdm_id_atasan .
-                                                '.webp' .
-                                                '?id=' .
-                                                filemtime($app->storagePath('app/sdm/foto-profil/' . $akun->sdm_id_atasan . '.webp')),
+                                            'berkas_foto_profil' => $akun->sdm_id_atasan . '.webp' . '?id=' . filemtime($app->storagePath('app/sdm/foto-profil/' . $akun->sdm_id_atasan . '.webp')),
                                         ])
                                         : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
-                                        title="{{ $akun->nama_atasan ?? 'foto akun' }}"
-                                        alt="{{ $akun->nama_atasan ?? 'foto akun' }}" @class([
+                                        title="{{ $akun->nama_atasan ?? 'foto akun' }}" alt="{{ $akun->nama_atasan ?? 'foto akun' }}" @class([
                                             'akun',
                                             'svg' => !$app->filesystem->exists(
                                                 'sdm/foto-profil/' . $akun->sdm_id_atasan . '.webp'),
                                         ])
                                         loading="lazy">
-                                </a>
 
-                                {{ $akun->sdm_id_atasan }} - {{ $akun->nama_atasan }} - {{ $akun->lokasi_atasan }}
-                                - {{ $akun->posisi_atasan }} {{ $akun->tgl_berhenti_atasan ? '(NON-AKTIF)' : '' }}
+                                    {{ $akun->sdm_id_atasan }} : {{ $akun->nama_atasan }}
+                                </a>
+                                <br>
+                                {{ $akun->lokasi_atasan }} - {{ $akun->posisi_atasan }} {{ $akun->tgl_berhenti_atasan ? '(NON-AKTIF)' : '' }}
                             @endif
                         </p>
                     </div>
@@ -72,8 +62,7 @@
 
                             <p>
                                 <u>
-                                    <a class="isi-xhr"
-                                        href="{{ $app->url->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $akun->sdm_no_permintaan]) }}"
+                                    <a class="isi-xhr" href="{{ $app->url->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $akun->sdm_no_permintaan]) }}"
                                         aria-label="Permintaan Tambah SDM No {{ $akun->sdm_no_permintaan }}">
                                         {{ $akun->sdm_no_permintaan }}
                                     </a>
@@ -84,8 +73,7 @@
 
                             <p>
                                 <u>
-                                    <a class="isi-xhr"
-                                        href="{{ $app->url->route('sdm.penempatan.riwayat', ['kata_kunci' => $akun->sdm_no_ktp]) }}">
+                                    <a class="isi-xhr" href="{{ $app->url->route('sdm.penempatan.riwayat', ['kata_kunci' => $akun->sdm_no_ktp]) }}">
                                         {{ $akun->sdm_no_ktp }}
                                     </a>
                                 </u>
@@ -373,28 +361,24 @@
 
                                 @forelse ($personils as $personil)
                                     <li class="bersih">
-                                        <a class="taut-akun isi-xhr"
-                                            href="{{ $app->url->route('sdm.akun', ['uuid' => $personil->sdm_uuid]) }}">
+                                        <a class="taut-akun isi-xhr" href="{{ $app->url->route('sdm.akun', ['uuid' => $personil->sdm_uuid]) }}">
                                             <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $personil->sdm_no_absen . '.webp')
                                                 ? $app->url->route('sdm.tautan-foto-profil', [
                                                     'berkas_foto_profil' =>
-                                                        $personil->sdm_no_absen .
-                                                        '.webp' .
-                                                        '?id=' .
-                                                        filemtime($app->storagePath('app/sdm/foto-profil/' . $personil->sdm_no_absen . '.webp')),
+                                                        $personil->sdm_no_absen . '.webp' . '?id=' . filemtime($app->storagePath('app/sdm/foto-profil/' . $personil->sdm_no_absen . '.webp')),
                                                 ])
                                                 : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
-                                                title="{{ $personil->sdm_nama ?? 'foto akun' }}"
-                                                alt="{{ $personil->sdm_nama ?? 'foto akun' }}" @class([
+                                                title="{{ $personil->sdm_nama ?? 'foto akun' }}" alt="{{ $personil->sdm_nama ?? 'foto akun' }}"
+                                                @class([
                                                     'akun',
                                                     'svg' => !$app->filesystem->exists(
                                                         'sdm/foto-profil/' . $personil->sdm_no_absen . '.webp'),
-                                                ])
-                                                loading="lazy">
-                                        </a>
+                                                ]) loading="lazy">
 
-                                        {{ $personil->sdm_no_absen }} - {{ $personil->sdm_nama }} -
-                                        {{ $personil->penempatan_lokasi }} - {{ $personil->penempatan_posisi }}
+                                            {{ $personil->sdm_no_absen }}<br>
+                                            {{ $personil->sdm_nama }} - {{ $personil->penempatan_lokasi }} - {{ $personil->penempatan_posisi }}
+                                        </a>
+                                        <hr>
                                     </li>
 
                                 @empty
@@ -410,8 +394,7 @@
                         @if ($app->filesystem->exists($berkasSDM = 'sdm/berkas/' . $akun->sdm_no_absen . '.pdf'))
                             <iframe class="tcetak berkas"
                                 src="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasSDM . '?id=' . filemtime($app->storagePath('app/' . $berkasSDM))]) }}"
-                                title="Berkas SDM" loading="lazy"
-                                onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
+                                title="Berkas SDM" loading="lazy" onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()"></iframe>
 
                             <a class="sekunder tcetak"
                                 href="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasSDM . '?id=' . filemtime($app->storagePath('app/' . $berkasSDM))]) }}"
@@ -433,33 +416,27 @@
                                 onchange="if (this.value !== '') lemparXHR({tujuan : '#akun-cetakFormulirStatus', tautan : this.value, strim : true})">
                                 <option value="">---</option>
 
-                                <option
-                                    value="{{ $app->url->route('sdm.formulir-serah-terima-sdm-baru', ['uuid' => $akun->sdm_uuid]) }}">
+                                <option value="{{ $app->url->route('sdm.formulir-serah-terima-sdm-baru', ['uuid' => $akun->sdm_uuid]) }}">
                                     SERAH TERIMA SDM BARU
                                 </option>
 
-                                <option
-                                    value="{{ $app->url->route('sdm.formulir-persetujuan-gaji', ['uuid' => $akun->sdm_uuid]) }}">
+                                <option value="{{ $app->url->route('sdm.formulir-persetujuan-gaji', ['uuid' => $akun->sdm_uuid]) }}">
                                     PERSETUJUAN GAJI
                                 </option>
 
-                                <option
-                                    value="{{ $app->url->route('sdm.formulir-tt-dokumen-titipan', ['uuid' => $akun->sdm_uuid]) }}">
+                                <option value="{{ $app->url->route('sdm.formulir-tt-dokumen-titipan', ['uuid' => $akun->sdm_uuid]) }}">
                                     TANDA TERIMA DOKUMEN TITIPAN
                                 </option>
 
-                                <option
-                                    value="{{ $app->url->route('sdm.formulir-tt-inventaris', ['uuid' => $akun->sdm_uuid]) }}">
+                                <option value="{{ $app->url->route('sdm.formulir-tt-inventaris', ['uuid' => $akun->sdm_uuid]) }}">
                                     TANDA TERIMA SERAGAM/SEPATU/INVENTARIS
                                 </option>
 
-                                <option
-                                    value="{{ $app->url->route('sdm.formulir-pelepasan-sdm', ['uuid' => $akun->sdm_uuid]) }}">
+                                <option value="{{ $app->url->route('sdm.formulir-pelepasan-sdm', ['uuid' => $akun->sdm_uuid]) }}">
                                     PELEPASAN KARYAWAN
                                 </option>
 
-                                <option
-                                    value="{{ $app->url->route('sdm.surat-keterangan-sdm', ['uuid' => $akun->sdm_uuid]) }}">
+                                <option value="{{ $app->url->route('sdm.surat-keterangan-sdm', ['uuid' => $akun->sdm_uuid]) }}">
                                     SURAT KETERANGAN KERJA
                                 </option>
                             </select>
@@ -468,8 +445,7 @@
 
                     <div class="isian gspan-4 scroll-margin" id="akun-cetakFormulirStatus"></div>
 
-                    <a class="utama isi-xhr tcetak" data-tujuan="#profil-akun"
-                        href="{{ $app->url->route('sdm.ubah-akun', ['uuid' => $akun->sdm_uuid]) }}">
+                    <a class="utama isi-xhr tcetak" data-tujuan="#profil-akun" href="{{ $app->url->route('sdm.ubah-akun', ['uuid' => $akun->sdm_uuid]) }}">
                         UBAH
                     </a>
                 @else
@@ -501,8 +477,7 @@
                 </svg>
             </a>
 
-            <a href="{{ $app->url->route('sdm.unduh.kartu-sdm', ['uuid' => $akun->sdm_uuid]) }}"
-                title="Unduh Kartu Identitas">
+            <a href="{{ $app->url->route('sdm.unduh.kartu-sdm', ['uuid' => $akun->sdm_uuid]) }}" title="Unduh Kartu Identitas">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonkartuID"></use>
                 </svg>

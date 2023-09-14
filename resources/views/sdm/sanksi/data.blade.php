@@ -252,7 +252,7 @@
                                         </th>
                                         <td>{{ $tabels->firstItem() + $nomor }}</td>
                                         @unless ($halamanAkun ?? null)
-                                            <td>
+                                            <td class="profil">
                                                 <div @class(['merah' => $tabel->langgar_tsdm_tgl_berhenti])>
                                                     <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $tabel->langgar_tsdm_uuid]) }}">
                                                         <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $tabel->sanksi_no_absen . '.webp')
@@ -267,8 +267,10 @@
                                                                 'svg' => !$app->filesystem->exists(
                                                                     'sdm/foto-profil/' . $tabel->sanksi_no_absen . '.webp'),
                                                             ]) loading="lazy">
+
+                                                        <small>{{ $tabel->sanksi_no_absen }} : {{ $tabel->langgar_tsdm_nama }}</small>
                                                     </a>
-                                                    {{ $tabel->sanksi_no_absen }} - {{ $tabel->langgar_tsdm_nama }} <br>
+                                                    <br>
                                                     {{ $tabel->langgar_tlokasi }} {{ $tabel->langgar_tkontrak }} -
                                                     {{ $tabel->langgar_tposisi }}
                                                     {{ $tabel->langgar_tsdm_tgl_berhenti ? '(NON-AKTIF)' : '' }}
@@ -289,7 +291,7 @@
                                             <b>Tanggal</b> : {{ strtoupper($app->date->make($tabel->langgar_tanggal)?->translatedFormat('d F Y')) }}<br>
                                             <b>Aduan</b> : {!! nl2br($tabel->langgar_isi) !!}
                                         </td>
-                                        <td>
+                                        <td class="profil">
                                             @if ($tabel->langgar_psdm_uuid)
                                                 <div @class(['merah' => $tabel->langgar_psdm_tgl_berhenti])>
                                                     <b><i><u>Pelapor</u></i></b> :<br>
@@ -306,8 +308,10 @@
                                                                 'svg' => !$app->filesystem->exists(
                                                                     'sdm/foto-profil/' . $tabel->langgar_pelapor . '.webp'),
                                                             ]) loading="lazy">
+
+                                                        <small>{{ $tabel->langgar_pelapor }} - {{ $tabel->langgar_psdm_nama }}</small>
                                                     </a>
-                                                    {{ $tabel->langgar_pelapor }} - {{ $tabel->langgar_psdm_nama }} <br>
+                                                    <br>
                                                     {{ $tabel->langgar_plokasi }} {{ $tabel->langgar_pkontrak }} -
                                                     {{ $tabel->langgar_pposisi }}
                                                     {{ $tabel->langgar_psdm_tgl_berhenti ? '(NON-AKTIF)' : '' }}

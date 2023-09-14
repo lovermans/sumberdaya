@@ -52,7 +52,7 @@
 
                                 <td>{{ $loop->iteration }}</td>
 
-                                <td>
+                                <td class="profil">
                                     <div @class(['merah' => $sanksi->langgar_tsdm_tgl_berhenti])>
                                         <u>
                                             <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $sanksi->langgar_tsdm_uuid]) }}">
@@ -69,7 +69,7 @@
                                                             'sdm/foto-profil/' . $sanksi->sanksi_no_absen . '.webp'),
                                                     ]) loading="lazy">
 
-                                                <small>{{ $sanksi->sanksi_no_absen }} - {{ $sanksi->langgar_tsdm_nama }}</small>
+                                                <small>{{ $sanksi->sanksi_no_absen }} : {{ $sanksi->langgar_tsdm_nama }}</small>
                                             </a>
                                         </u>
                                         <br>
@@ -96,7 +96,7 @@
                                     <b>Aduan</b> : {!! nl2br($sanksi->langgar_isi) !!}
 
                                 </td>
-                                <td>
+                                <td class="profil">
                                     @if ($sanksi->langgar_psdm_uuid)
                                         <div @class(['merah' => $sanksi->langgar_psdm_tgl_berhenti])>
                                             <b><i><u>Pelapor</u></i></b> :<br>
@@ -114,7 +114,7 @@
                                                             'sdm/foto-profil/' . $sanksi->langgar_pelapor . '.webp'),
                                                     ]) loading="lazy">
 
-                                                <small>{{ $sanksi->langgar_pelapor }} - {{ $sanksi->langgar_psdm_nama }}</small>
+                                                <small>{{ $sanksi->langgar_pelapor }} : {{ $sanksi->langgar_psdm_nama }}</small>
                                             </a>
                                             <br>
                                             {{ $sanksi->langgar_plokasi }} {{ $sanksi->langgar_pkontrak }} -

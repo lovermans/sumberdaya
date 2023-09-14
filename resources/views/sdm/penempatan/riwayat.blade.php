@@ -465,7 +465,7 @@
                                                     @isset($tabel->penempatan_uuid)
                                                         <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan"
                                                             href="{{ $app->url->route('sdm.penempatan.lihat', ['uuid' => $tabel->penempatan_uuid]) }}" title="Lihat Data">
-                                                            Lihat Penempatan
+                                                            Buka Data
                                                         </a>
 
                                                         <a class="isi-xhr" data-rekam="false" data-tujuan="#sdm_penem_riwa_sematan"
@@ -493,7 +493,7 @@
                                         </td>
 
                                         @unless ($halamanAkun ?? null)
-                                            <td>
+                                            <td class="profil">
                                                 <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $tabel->sdm_uuid]) }}">
                                                     <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $tabel->sdm_no_absen . '.webp')
                                                         ? $app->url->route('sdm.tautan-foto-profil', [
@@ -506,17 +506,21 @@
                                                             'svg' => !$app->filesystem->exists(
                                                                 'sdm/foto-profil/' . $tabel->sdm_no_absen . '.webp'),
                                                         ]) loading="lazy">
+
+                                                    <small>{{ $tabel->sdm_no_absen }} : {{ $tabel->sdm_nama }}</small>
                                                 </a>
-                                                <b>No Absen</b> : {{ $tabel->sdm_no_absen }}<br>
-                                                <b>Nama</b> : {{ $tabel->sdm_nama }}<br>
+                                                <br>
                                                 <b>No Permintaan</b> :
-                                                <u>
-                                                    <a class="isi-xhr"
-                                                        href="{{ $app->url->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $tabel->sdm_no_permintaan]) }}"
-                                                        aria-label="Permintaan Tambah SDM No {{ $tabel->sdm_no_permintaan }}">
-                                                        {{ $tabel->sdm_no_permintaan }}
-                                                    </a>
-                                                </u><br>
+                                                @if ($tabel->sdm_no_permintaan)
+                                                    <u>
+                                                        <a class="isi-xhr"
+                                                            href="{{ $app->url->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $tabel->sdm_no_permintaan]) }}"
+                                                            aria-label="Permintaan Tambah SDM No {{ $tabel->sdm_no_permintaan }}">
+                                                            {{ $tabel->sdm_no_permintaan }}
+                                                        </a>
+                                                    </u>
+                                                @endif
+                                                <br>
                                                 <b>Tgl Masuk</b> : {{ strtoupper($app->date->make($tabel->sdm_tgl_gabung)?->translatedFormat('d F Y')) }}<br>
                                                 <b>Tgl Keluar</b> : {{ strtoupper($app->date->make($tabel->sdm_tgl_berhenti)?->translatedFormat('d F Y')) }}<br>
                                                 <b>PHK</b> : {{ $tabel->sdm_jenis_berhenti }}<br>

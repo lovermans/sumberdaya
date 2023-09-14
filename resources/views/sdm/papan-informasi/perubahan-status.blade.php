@@ -57,7 +57,7 @@
 
                                 <td>{{ $loop->iteration }}</td>
 
-                                <td>
+                                <td class="profil">
                                     <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $status->sdm_uuid]) }}">
                                         <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $status->sdm_no_absen . '.webp')
                                             ? $app->url->route('sdm.tautan-foto-profil', [
@@ -73,7 +73,7 @@
                                                     'sdm/foto-profil/' . $status->sdm_no_absen . '.webp'),
                                             ]) loading="lazy">
 
-                                        <small>{{ $status->sdm_no_absen }} - {{ $status->sdm_nama }}</small>
+                                        <small>{{ $status->sdm_no_absen }} : {{ $status->sdm_nama }}</small>
                                     </a>
                                 </td>
 
