@@ -54,7 +54,7 @@
 
                                 <td>{{ $loop->iteration }}</td>
 
-                                <td>
+                                <td class="profil">
                                     <div @class(['merah' => $pelanggaran->langgar_tsdm_tgl_berhenti])>
                                         <b><i><u>Terlapor</u></i></b> :<br>
                                         <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $pelanggaran->langgar_tsdm_uuid]) }}">
@@ -71,7 +71,7 @@
                                                         'sdm/foto-profil/' . $pelanggaran->langgar_no_absen . '.webp'),
                                                 ]) loading="lazy">
 
-                                            <small>{{ $pelanggaran->langgar_no_absen }} - {{ $pelanggaran->langgar_tsdm_nama }}</small>
+                                            <small>{{ $pelanggaran->langgar_no_absen }} <br> {{ $pelanggaran->langgar_tsdm_nama }}</small>
                                         </a>
                                         <br>
                                         {{ $pelanggaran->langgar_tlokasi }} {{ $pelanggaran->langgar_tkontrak }} -
@@ -95,7 +95,7 @@
                                                         'sdm/foto-profil/' . $pelanggaran->langgar_pelapor . '.webp'),
                                                 ]) loading="lazy">
 
-                                            <small>{{ $pelanggaran->langgar_pelapor }} - {{ $pelanggaran->langgar_psdm_nama }}</small>
+                                            <small>{{ $pelanggaran->langgar_pelapor }} : {{ $pelanggaran->langgar_psdm_nama }}</small>
                                         </a>
                                         <br>
                                         {{ $pelanggaran->langgar_plokasi }} {{ $pelanggaran->langgar_pkontrak }} -

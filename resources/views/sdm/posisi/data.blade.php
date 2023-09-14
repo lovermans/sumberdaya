@@ -236,7 +236,7 @@
                                                 <div class="aksi">
                                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan"
                                                         href="{{ $app->url->route('sdm.posisi.lihat', ['uuid' => $tabel->posisi_uuid]) }}" title="Lihat Data">
-                                                        Lihat Data
+                                                        Buka Data
                                                     </a>
 
                                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#posisi-sdm_sematan"

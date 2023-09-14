@@ -33,7 +33,7 @@
                             <tr @class(['biru' => str()->contains($ultah->penempatan_kontrak, 'OS-')])>
                                 <td>{{ $loop->iteration }}</td>
 
-                                <td>
+                                <td class="profil">
                                     <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $ultah->sdm_uuid]) }}">
                                         <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $ultah->sdm_no_absen . '.webp')
                                             ? $app->url->route('sdm.tautan-foto-profil', [
@@ -48,7 +48,7 @@
                                             ])
                                             loading="lazy">
 
-                                        <small>{{ $ultah->sdm_no_absen }} - {{ $ultah->sdm_nama }}</small>
+                                        <small>{{ $ultah->sdm_no_absen }} : {{ $ultah->sdm_nama }}</small>
                                     </a>
                                 </td>
 

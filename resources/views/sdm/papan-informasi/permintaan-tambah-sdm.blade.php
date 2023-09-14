@@ -48,7 +48,7 @@
 
                                 <td>{{ $loop->iteration }}</td>
 
-                                <td>
+                                <td class="profil">
                                     <b>Pemohon</b> : <br>
                                     <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $perminSDM->sdm_uuid]) }}">
                                         <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $perminSDM->tambahsdm_sdm_id . '.webp')
@@ -65,7 +65,7 @@
                                                     'sdm/foto-profil/' . $perminSDM->tambahsdm_sdm_id . '.webp'),
                                             ]) loading="lazy">
 
-                                        <small>{{ $perminSDM->tambahsdm_sdm_id }} - {{ $perminSDM->sdm_nama }}</small>
+                                        <small>{{ $perminSDM->tambahsdm_sdm_id }} : {{ $perminSDM->sdm_nama }}</small>
                                     </a>
                                     <br>
                                     <b>Nomor</b> : {{ $perminSDM->tambahsdm_no }}<br>

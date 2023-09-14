@@ -241,14 +241,14 @@
                                                 <div class="aksi">
                                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#nilai-sdm_sematan"
                                                         href="{{ $app->url->route('sdm.penilaian.lihat', ['uuid' => $tabel->nilaisdm_uuid]) }}" title="Lihat/Ubah">
-                                                        Lihat/Ubah
+                                                        Buka/Ubah Data
                                                     </a>
                                                 </div>
                                             </div>
                                         </th>
                                         <td>{{ $tabels->firstItem() + $nomor }}</td>
                                         @unless ($halamanAkun ?? null)
-                                            <td>
+                                            <td class="profil">
                                                 <div @class(['merah' => $tabel->sdm_tgl_berhenti])>
                                                     <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $tabel->sdm_uuid]) }}">
                                                         <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $tabel->nilaisdm_no_absen . '.webp')
@@ -263,8 +263,10 @@
                                                                 'svg' => !$app->filesystem->exists(
                                                                     'sdm/foto-profil/' . $tabel->nilaisdm_no_absen . '.webp'),
                                                             ]) loading="lazy">
+
+                                                        <small>{{ $tabel->nilaisdm_no_absen }} : {{ $tabel->sdm_nama }}</small>
                                                     </a>
-                                                    {{ $tabel->nilaisdm_no_absen }} - {{ $tabel->sdm_nama }} <br>
+                                                    <br>
                                                     {{ $tabel->penempatan_lokasi }} {{ $tabel->penempatan_kontrak }} -
                                                     {{ $tabel->penempatan_posisi }}
                                                     {{ $tabel->sdm_tgl_berhenti ? '(NON-AKTIF)' : '' }}

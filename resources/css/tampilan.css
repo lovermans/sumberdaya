@@ -1070,6 +1070,10 @@ nav h2 {
     vertical-align: top;
 }
 
+.data .tabel td.profil {
+    min-width: 25ch;
+}
+
 .biru,
 .oranye,
 .merah {
