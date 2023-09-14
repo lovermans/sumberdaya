@@ -2,7 +2,11 @@
 
 @section('isi')
     <div class="scroll-margin" id="beranda">
-        <div class="tcetak scroll-margin" id="mulai-aplikasi"></div>
+        {{-- <div class="tcetak scroll-margin" id="mulai-aplikasi">
+            <p class="kartu">Memeriksa Akun Pengguna...</p>
+        </div> --}}
+
+        @include('mulai-aplikasi')
 
         <div class="kartu">
             <h2>Sejarah</h2>
@@ -149,7 +153,7 @@
             </a>
         </div>
 
-        <script>
+        {{-- <script>
             if (navigator.onLine) {
                 (async () => {
                     while (!window.aplikasiSiap) {
@@ -164,6 +168,6 @@
                     });
                 })();
             };
-        </script>
+        </script> --}}
     </div>
 @endsection

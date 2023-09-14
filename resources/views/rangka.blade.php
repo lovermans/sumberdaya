@@ -7,7 +7,11 @@
 </head>
 
 <body id="badan-dokumen" data-tematerang="">
-    <div id="ikonSVG"></div>
+
+    <div>
+        <object type="image/svg+xml" data="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/ikon.svg')) }}"
+            onload="this.parentElement.id='ikonSVG';this.outerHTML = this.contentDocument.documentElement.outerHTML"></object>
+    </div>
 
     <div id="sambutan">
         <img src="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/Lambang Perusahaan.webp')) }}"
@@ -52,8 +56,7 @@
         </label>
 
         <a class="isi-xhr" href="{{ $app->url->route('mulai') . '/' }}">
-            <img id="logo"
-                src="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/Logo Perusahaan.webp')) }}"
+            <img id="logo" src="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/Logo Perusahaan.webp')) }}"
                 title="{{ $app->config->get('app.usaha') }}" alt="{{ $app->config->get('app.usaha') }}" loading="lazy">
         </a>
 

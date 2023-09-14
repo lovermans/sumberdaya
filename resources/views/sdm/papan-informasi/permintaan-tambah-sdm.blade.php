@@ -37,15 +37,11 @@
                                         <div class="aksi">
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_perminSDM_sematan"
                                                 href="{{ $app->url->route('sdm.permintaan-tambah-sdm.lihat', ['uuid' => $perminSDM->tambahsdm_uuid]) }}"
-                                                title="Lihat Permintaan SDM">
-                                                Lihat Data
-                                            </a>
+                                                title="Buka Permintaan SDM">Buka Data</a>
 
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_perminSDM_sematan"
                                                 href="{{ $app->url->route('sdm.permintaan-tambah-sdm.ubah', ['uuid' => $perminSDM->tambahsdm_uuid]) }}"
-                                                title="Ubah Permintaan SDM">
-                                                Ubah Data
-                                            </a>
+                                                title="Ubah Permintaan SDM">Ubah Data</a>
                                         </div>
                                     </div>
                                 </th>

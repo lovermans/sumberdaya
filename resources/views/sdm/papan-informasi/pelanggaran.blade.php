@@ -70,9 +70,10 @@
                                                     'svg' => !$app->filesystem->exists(
                                                         'sdm/foto-profil/' . $pelanggaran->langgar_no_absen . '.webp'),
                                                 ]) loading="lazy">
-                                        </a>
 
-                                        {{ $pelanggaran->langgar_no_absen }} - {{ $pelanggaran->langgar_tsdm_nama }} <br>
+                                            {{ $pelanggaran->langgar_no_absen }} - {{ $pelanggaran->langgar_tsdm_nama }}
+                                        </a>
+                                        <br>
                                         {{ $pelanggaran->langgar_tlokasi }} {{ $pelanggaran->langgar_tkontrak }} -
                                         {{ $pelanggaran->langgar_tposisi }}
                                         {{ $pelanggaran->langgar_tsdm_tgl_berhenti ? '(NON-AKTIF)' : '' }}
@@ -93,9 +94,10 @@
                                                     'svg' => !$app->filesystem->exists(
                                                         'sdm/foto-profil/' . $pelanggaran->langgar_pelapor . '.webp'),
                                                 ]) loading="lazy">
-                                        </a>
 
-                                        {{ $pelanggaran->langgar_pelapor }} - {{ $pelanggaran->langgar_psdm_nama }} <br>
+                                            {{ $pelanggaran->langgar_pelapor }} - {{ $pelanggaran->langgar_psdm_nama }}
+                                        </a>
+                                        <br>
                                         {{ $pelanggaran->langgar_plokasi }} {{ $pelanggaran->langgar_pkontrak }} -
                                         {{ $pelanggaran->langgar_pposisi }}
                                         {{ $pelanggaran->langgar_psdm_tgl_berhenti ? '(NON-AKTIF)' : '' }}

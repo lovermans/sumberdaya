@@ -21,7 +21,7 @@ class SumberDaya
         extract(Rangka::obyekPermintaanRangka());
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
-            ->make($app->view->make('mulai'))
+            ->make($app->view->make('rangka'))
             ->withHeaders(['Vary' => 'Accept']);
     }
 
@@ -42,11 +42,11 @@ class SumberDaya
                 $sesi->put(['spanduk' => 'Sandi Anda kurang aman.']);
             }
 
-            $sesi->now('pesan', 'Selamat datang ' . $pengguna->sdm_nama . '.');
+            $sesi->now('pesan', 'Selamat datang '.$pengguna->sdm_nama.'.');
         }
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
-            ->make($app->view->make('mulai-aplikasi'))
+            ->make(implode('', $app->view->make('mulai')->renderSections()))
             ->withHeaders(['Vary' => 'Accept']);
     }
 

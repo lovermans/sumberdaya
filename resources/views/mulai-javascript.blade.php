@@ -24,7 +24,8 @@
                 new SlimSelect(data) :
                 (function() {
                     alert(
-                        'Terjadi kesalahan dalam memuat tombol pilihan. Modul pemrosesan tombol pilihan tidak ditemukan. Harap hubungi Personalia Pusat.');
+                        'Terjadi kesalahan dalam memuat tombol pilihan. Modul pemrosesan tombol pilihan tidak ditemukan. Harap hubungi Personalia Pusat.'
+                    );
                 })();
         };
     };
@@ -45,7 +46,7 @@
         if (location.href == "{{ $app->url->route('mulai') . '/' }}" && !navigator.onLine) {
             document.getElementById("isi").prepend(document.createRange().createContextualFragment(
                 "<p class='kartu'>Tidak ada koneksi internet. Periksa koneksi internet lalu muat halaman : <a href='{{ $app->url->route('mulai') . '/' }}'>Hubungkan Aplikasi</a>.</p>"
-                ));
+            ));
             scrollTo(0, 0);
         };
 
@@ -55,11 +56,18 @@
                     setTimeout(resolve, 1000));
             }
 
-            lemparXHR({
+            /* lemparXHR({
                 tujuan: "#ikonSVG",
                 tautan: "{!! $app->url->asset($app->make('Illuminate\Foundation\Mix')('/ikon.svg')) !!}",
                 normalview: true
-            });
+            }); */
+
+            if (location.href == "{{ $app->url->route('mulai') . '/' }}" && navigator.onLine) {
+                lemparXHR({
+                    tautan: "{!! $app->url->route('mulai-aplikasi', ['aplikasivalet' => $app->config->get('app.aplikasivalet')]) !!}",
+                    topview: true
+                });
+            };
 
             document.getElementById('sambutan').remove();
 
