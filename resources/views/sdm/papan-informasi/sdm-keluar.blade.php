@@ -45,21 +45,16 @@
                                             @if ($henti->penempatan_uuid)
                                                 <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_berhenti_sematan"
                                                     href="{{ $app->url->route('sdm.penempatan.lihat', ['uuid' => $henti->penempatan_uuid]) }}"
-                                                    title="Lihat Data Penempatan">
-                                                    Lihat Penempatan
-                                                </a>
+                                                    title="Lihat Data Penempatan">Buka Data</a>
 
                                                 <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_berhenti_sematan"
                                                     href="{{ $app->url->route('sdm.penempatan.ubah', ['uuid' => $henti->penempatan_uuid]) }}"
-                                                    title="Ubah Data Penempatan">
-                                                    Ubah Penempatan
-                                                </a>
+                                                    title="Ubah Data Penempatan">Ubah Penempatan</a>
                                             @endif
 
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_berhenti_sematan"
-                                                href="{{ $app->url->route('sdm.penempatan.tambah', ['uuid' => $henti->sdm_uuid]) }}" title="Tambah Data Penempatan">
-                                                Tambah Penempatan
-                                            </a>
+                                                href="{{ $app->url->route('sdm.penempatan.tambah', ['uuid' => $henti->sdm_uuid]) }}"
+                                                title="Tambah Data Penempatan">Tambah Penempatan</a>
                                         </div>
                                     </div>
                                 </th>
@@ -80,11 +75,9 @@
                                                     'sdm/foto-profil/' . $henti->sdm_no_absen . '.webp'),
                                             ])
                                             loading="lazy">
+
+                                        <small>{{ $henti->sdm_no_absen }} - {{ $henti->sdm_nama }}</small>
                                     </a>
-
-                                    {{ $henti->sdm_no_absen }}<br>
-
-                                    {{ $henti->sdm_nama }}
                                 </td>
 
                                 <td>

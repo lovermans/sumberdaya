@@ -71,7 +71,7 @@
                                                         'sdm/foto-profil/' . $pelanggaran->langgar_no_absen . '.webp'),
                                                 ]) loading="lazy">
 
-                                            {{ $pelanggaran->langgar_no_absen }} - {{ $pelanggaran->langgar_tsdm_nama }}
+                                            <small>{{ $pelanggaran->langgar_no_absen }} - {{ $pelanggaran->langgar_tsdm_nama }}</small>
                                         </a>
                                         <br>
                                         {{ $pelanggaran->langgar_tlokasi }} {{ $pelanggaran->langgar_tkontrak }} -
@@ -95,7 +95,7 @@
                                                         'sdm/foto-profil/' . $pelanggaran->langgar_pelapor . '.webp'),
                                                 ]) loading="lazy">
 
-                                            {{ $pelanggaran->langgar_pelapor }} - {{ $pelanggaran->langgar_psdm_nama }}
+                                            <small>{{ $pelanggaran->langgar_pelapor }} - {{ $pelanggaran->langgar_psdm_nama }}</small>
                                         </a>
                                         <br>
                                         {{ $pelanggaran->langgar_plokasi }} {{ $pelanggaran->langgar_pkontrak }} -

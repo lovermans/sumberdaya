@@ -39,21 +39,15 @@
                                         <div class="aksi">
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_kontrak_sematan"
                                                 href="{{ $app->url->route('sdm.penempatan.lihat', ['uuid' => $kontrak->penempatan_uuid]) }}"
-                                                title="Lihat Data Penempatan">
-                                                Lihat Penempatan
-                                            </a>
+                                                title="Lihat Data Penempatan">Buka Data</a>
 
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_kontrak_sematan"
                                                 href="{{ $app->url->route('sdm.penempatan.ubah', ['uuid' => $kontrak->penempatan_uuid]) }}"
-                                                title="Ubah Data Penempatan">
-                                                Ubah Penempatan
-                                            </a>
+                                                title="Ubah Data Penempatan">Ubah Penempatan</a>
 
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_kontrak_sematan"
                                                 href="{{ $app->url->route('sdm.penempatan.tambah', ['uuid' => $kontrak->sdm_uuid]) }}"
-                                                title="Tambah Data Penempatan">
-                                                Tambah Penempatan
-                                            </a>
+                                                title="Tambah Data Penempatan">Tambah Penempatan</a>
                                         </div>
                                     </div>
                                 </th>
@@ -75,11 +69,9 @@
                                                 'svg' => !$app->filesystem->exists(
                                                     'sdm/foto-profil/' . $kontrak->sdm_no_absen . '.webp'),
                                             ]) loading="lazy">
+
+                                        <small>{{ $kontrak->sdm_no_absen }} - {{ $kontrak->sdm_nama }}</small>
                                     </a>
-
-                                    {{ $kontrak->sdm_no_absen }}<br>
-
-                                    {{ $kontrak->sdm_nama }}
                                 </td>
 
                                 <td>

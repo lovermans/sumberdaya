@@ -46,15 +46,11 @@
                                         <div class="aksi">
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_status_sematan"
                                                 href="{{ $app->url->route('sdm.penempatan.lihat', ['uuid' => $status->penempatan_uuid]) }}"
-                                                title="Lihat Data Penempatan">
-                                                Lihat Penempatan
-                                            </a>
+                                                title="Lihat Data Penempatan">Buka Data</a>
 
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_status_sematan"
                                                 href="{{ $app->url->route('sdm.penempatan.ubah', ['uuid' => $status->penempatan_uuid]) }}"
-                                                title="Ubah Data Penempatan">
-                                                Ubah Penempatan
-                                            </a>
+                                                title="Ubah Data Penempatan">Ubah Penempatan</a>
                                         </div>
                                     </div>
                                 </th>
@@ -76,11 +72,9 @@
                                                 'svg' => !$app->filesystem->exists(
                                                     'sdm/foto-profil/' . $status->sdm_no_absen . '.webp'),
                                             ]) loading="lazy">
+
+                                        <small>{{ $status->sdm_no_absen }} - {{ $status->sdm_nama }}</small>
                                     </a>
-
-                                    {{ $status->sdm_no_absen }}<br>
-
-                                    {{ $status->sdm_nama }}
                                 </td>
 
                                 <td>
