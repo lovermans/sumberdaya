@@ -49,21 +49,15 @@
                                             @if ($baru->penempatan_uuid)
                                                 <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_sdm_baru_sematan"
                                                     href="{{ $app->url->route('sdm.penempatan.lihat', ['uuid' => $baru->penempatan_uuid]) }}"
-                                                    title="Lihat Data Penempatan">
-                                                    Lihat Penempatan
-                                                </a>
+                                                    title="Lihat Data Penempatan">Buka Data</a>
 
                                                 <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_sdm_baru_sematan"
                                                     href="{{ $app->url->route('sdm.penempatan.ubah', ['uuid' => $baru->penempatan_uuid]) }}"
-                                                    title="Ubah Data Penempatan">
-                                                    Ubah Penempatan
-                                                </a>
+                                                    title="Ubah Data Penempatan">Ubah Penempatan</a>
                                             @else
                                                 <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_sdm_baru_sematan"
                                                     href="{{ $app->url->route('sdm.penempatan.tambah', ['uuid' => $baru->sdm_uuid]) }}"
-                                                    title="Tambah Data Penempatan">
-                                                    Tambah Penempatan
-                                                </a>
+                                                    title="Tambah Data Penempatan">Tambah Penempatan</a>
                                             @endif
                                         </div>
                                     </div>
@@ -85,11 +79,9 @@
                                                     'sdm/foto-profil/' . $baru->sdm_no_absen . '.webp'),
                                             ])
                                             loading="lazy">
+
+                                        <small>{{ $baru->sdm_no_absen }} - {{ $baru->sdm_nama }}</small>
                                     </a>
-
-                                    {{ $baru->sdm_no_absen }}<br>
-
-                                    {{ $baru->sdm_nama }}
                                 </td>
 
                                 <td>
@@ -101,13 +93,15 @@
                                         </a>
                                     </u><br>
                                     No Permintaan :
-                                    <u>
-                                        <a class="isi-xhr"
-                                            href="{{ $app->url->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $baru->sdm_no_permintaan]) }}"
-                                            title="No Permintaan SDM">
-                                            {{ $baru->sdm_no_permintaan }}
-                                        </a>
-                                    </u>
+                                    @if ($baru->sdm_no_permintaan)
+                                        <u>
+                                            <a class="isi-xhr"
+                                                href="{{ $app->url->route('sdm.permintaan-tambah-sdm.data', ['kata_kunci' => $baru->sdm_no_permintaan]) }}"
+                                                title="No Permintaan SDM">
+                                                {{ $baru->sdm_no_permintaan }}
+                                            </a>
+                                        </u>
+                                    @endif
                                 </td>
 
                                 <td>
@@ -131,9 +125,7 @@
                 <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
 
                 @if ($belumDitempatkan > 0)
-                    <a class="isi-xhr utama" href="{{ $app->url->route('sdm.penempatan.data-baru') }}">
-                        BELUM DITEMPATKAN
-                    </a>
+                    <a class="isi-xhr utama" href="{{ $app->url->route('sdm.penempatan.data-baru') }}">BELUM DITEMPATKAN</a>
                 @endif
             @endif
         </div>

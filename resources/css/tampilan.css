@@ -27,6 +27,7 @@
     --hitam-e8: #2d2d2d;
     --oranye: #ffb74d;
     --hijau: #81c784;
+    --cokelat: #bcaaa4;
     --taut-umum: #90caf9;
     --taut-fokus: #e57373;
     --bg-blend: soft-light;
@@ -66,6 +67,7 @@
     --hitam-e8: #fff;
     --oranye: #f57c00;
     --hijau: #388e3c;
+    --cokelat: #795548;
     --taut-umum: #1565c0;
     --taut-fokus: #d32f2f;
     --bg-blend: none;
@@ -340,6 +342,10 @@ main :is(a:link, a:active, a:visited) {
     color: var(--hijau)
 }
 
+main a:hover {
+    color: var(--cokelat)
+}
+
 .isian :is(label, h3) {
     color: var(--taut-umum)
 }
@@ -348,7 +354,7 @@ a.utama {
     color: var(--taut-umum) !important
 }
 
-main :is(a:hover, h4) {
+main h4 {
     color: var(--oranye)
 }
 
@@ -491,9 +497,10 @@ img.akun:hover {
     transform: scale(1.5);
 }
 
-.taut-akun {
+a.taut-akun {
     display: inline-block;
     vertical-align: middle;
+    text-decoration: underline;
 }
 
 nav {
@@ -1872,6 +1879,7 @@ screen and (min-width:672rem) {
         --hitam-e8: #fff;
         --oranye: #e64a19;
         --hijau: #388e3c;
+        --cokelat: #795548;
         --taut-umum: #1565c0;
         --taut-fokus: #d32f2f;
         --bg-blend: none;

@@ -49,6 +49,7 @@
                                 <td>{{ $loop->iteration }}</td>
 
                                 <td>
+                                    <b>Pemohon</b> : <br>
                                     <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $perminSDM->sdm_uuid]) }}">
                                         <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $perminSDM->tambahsdm_sdm_id . '.webp')
                                             ? $app->url->route('sdm.tautan-foto-profil', [
@@ -63,9 +64,11 @@
                                                 'svg' => !$app->filesystem->exists(
                                                     'sdm/foto-profil/' . $perminSDM->tambahsdm_sdm_id . '.webp'),
                                             ]) loading="lazy">
+
+                                        <small>{{ $perminSDM->tambahsdm_sdm_id }} - {{ $perminSDM->sdm_nama }}</small>
                                     </a>
+                                    <br>
                                     <b>Nomor</b> : {{ $perminSDM->tambahsdm_no }}<br>
-                                    <b>Pemohon</b> : {{ $perminSDM->tambahsdm_sdm_id }} - {{ $perminSDM->sdm_nama }}<br>
                                     <b>Diusulkan</b> :
                                     {{ strtoupper($app->date->make($perminSDM->tambahsdm_tgl_diusulkan)?->translatedFormat('d F Y')) }}<br>
                                     <b>Dibutuhkan</b> :

@@ -44,9 +44,8 @@
 
                                         <div class="aksi">
                                             <a class="isi-xhr" data-rekam="false" data-tujuan="#tabel_sanksi_sdm_sematan"
-                                                href="{{ $app->url->route('sdm.sanksi.lihat', ['uuid' => $sanksi->sanksi_uuid]) }}" title="Lihat/Ubah Sanksi">
-                                                Lihat/Ubah Sanksi
-                                            </a>
+                                                href="{{ $app->url->route('sdm.sanksi.lihat', ['uuid' => $sanksi->sanksi_uuid]) }}"
+                                                title="Lihat/Ubah Sanksi">Buka/Ubah Sanksi</a>
                                         </div>
                                     </div>
                                 </th>
@@ -55,21 +54,25 @@
 
                                 <td>
                                     <div @class(['merah' => $sanksi->langgar_tsdm_tgl_berhenti])>
-                                        <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $sanksi->langgar_tsdm_uuid]) }}">
-                                            <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $sanksi->sanksi_no_absen . '.webp')
-                                                ? $app->url->route('sdm.tautan-foto-profil', [
-                                                    'berkas_foto_profil' =>
-                                                        $sanksi->sanksi_no_absen . '.webp' . '?id=' . filemtime($app->storagePath('app/sdm/foto-profil/' . $sanksi->sanksi_no_absen . '.webp')),
-                                                ])
-                                                : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
-                                                title="{{ $sanksi->langgar_tsdm_nama ?? 'foto akun' }}"
-                                                alt="{{ $sanksi->langgar_tsdm_nama ?? 'foto akun' }}" @class([
-                                                    'akun',
-                                                    'svg' => !$app->filesystem->exists(
-                                                        'sdm/foto-profil/' . $sanksi->sanksi_no_absen . '.webp'),
-                                                ]) loading="lazy">
-                                        </a>
-                                        {{ $sanksi->sanksi_no_absen }} - {{ $sanksi->langgar_tsdm_nama }} <br>
+                                        <u>
+                                            <a class="isi-xhr taut-akun" href="{{ $app->url->route('sdm.akun', ['uuid' => $sanksi->langgar_tsdm_uuid]) }}">
+                                                <img src="{{ $app->filesystem->exists('sdm/foto-profil/' . $sanksi->sanksi_no_absen . '.webp')
+                                                    ? $app->url->route('sdm.tautan-foto-profil', [
+                                                        'berkas_foto_profil' =>
+                                                            $sanksi->sanksi_no_absen . '.webp' . '?id=' . filemtime($app->storagePath('app/sdm/foto-profil/' . $sanksi->sanksi_no_absen . '.webp')),
+                                                    ])
+                                                    : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
+                                                    title="{{ $sanksi->langgar_tsdm_nama ?? 'foto akun' }}" alt="{{ $sanksi->langgar_tsdm_nama ?? 'foto akun' }}"
+                                                    @class([
+                                                        'akun',
+                                                        'svg' => !$app->filesystem->exists(
+                                                            'sdm/foto-profil/' . $sanksi->sanksi_no_absen . '.webp'),
+                                                    ]) loading="lazy">
+
+                                                <small>{{ $sanksi->sanksi_no_absen }} - {{ $sanksi->langgar_tsdm_nama }}</small>
+                                            </a>
+                                        </u>
+                                        <br>
                                         {{ $sanksi->langgar_tlokasi }} {{ $sanksi->langgar_tkontrak }} -
                                         {{ $sanksi->langgar_tposisi }}
                                         {{ $sanksi->langgar_tsdm_tgl_berhenti ? '(NON-AKTIF)' : '' }}
@@ -104,14 +107,16 @@
                                                             $sanksi->langgar_pelapor . '.webp' . '?id=' . filemtime($app->storagePath('app/sdm/foto-profil/' . $sanksi->langgar_pelapor . '.webp')),
                                                     ])
                                                     : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
-                                                    title="{{ $sanksi->langgar_psdm_nama ?? 'foto akun' }}"
-                                                    alt="{{ $sanksi->langgar_psdm_nama ?? 'foto akun' }}" @class([
+                                                    title="{{ $sanksi->langgar_psdm_nama ?? 'foto akun' }}" alt="{{ $sanksi->langgar_psdm_nama ?? 'foto akun' }}"
+                                                    @class([
                                                         'akun',
                                                         'svg' => !$app->filesystem->exists(
                                                             'sdm/foto-profil/' . $sanksi->langgar_pelapor . '.webp'),
                                                     ]) loading="lazy">
+
+                                                <small>{{ $sanksi->langgar_pelapor }} - {{ $sanksi->langgar_psdm_nama }}</small>
                                             </a>
-                                            {{ $sanksi->langgar_pelapor }} - {{ $sanksi->langgar_psdm_nama }} <br>
+                                            <br>
                                             {{ $sanksi->langgar_plokasi }} {{ $sanksi->langgar_pkontrak }} -
                                             {{ $sanksi->langgar_pposisi }}
                                             {{ $sanksi->langgar_psdm_tgl_berhenti ? '(NON-AKTIF)' : '' }}

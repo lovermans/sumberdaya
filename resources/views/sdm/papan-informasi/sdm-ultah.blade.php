@@ -47,11 +47,9 @@
                                                     'sdm/foto-profil/' . $ultah->sdm_no_absen . '.webp'),
                                             ])
                                             loading="lazy">
+
+                                        <small>{{ $ultah->sdm_no_absen }} - {{ $ultah->sdm_nama }}</small>
                                     </a>
-
-                                    {{ $ultah->sdm_no_absen }}<br>
-
-                                    {{ $ultah->sdm_nama }}
                                 </td>
 
                                 <td>{{ strtoupper($app->date->make($ultah->sdm_tgl_lahir)?->translatedFormat('d F')) }}</td>
