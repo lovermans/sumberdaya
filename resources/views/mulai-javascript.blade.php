@@ -1,9 +1,14 @@
-<script>
+<script nonce="{{ $app->request->session()->get('sesiNonce') }}">
     async function cariElemen(el) {
         while (document.querySelector(el) === null) {
             await new Promise(resolve => requestAnimationFrame(resolve));
         };
         return document.querySelector(el);
+    };
+
+    function muatIkonSVG(el) {
+        el.parentElement.id = 'ikonSVG';
+        el.outerHTML = el.contentDocument.documentElement.outerHTML;
     };
 
     function ringkasTabel(el) {

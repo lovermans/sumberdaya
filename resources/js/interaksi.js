@@ -85,6 +85,12 @@ document.addEventListener('click', function (e) {
         e.stopImmediatePropagation();
         return e.target.closest('a.tutup-i').parentNode.parentNode.parentNode.remove();
     }
+    if (e.target.closest('.pesan-internal-tindaklanjut a')) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        localStorage.setItem('mengerti-mulai-aplikasi', true);
+        e.target.closest('.pesan-internal-tindaklanjut a').parentElement.parentElement.remove();
+    }
 });
 
 document.addEventListener('submit', function (e) {

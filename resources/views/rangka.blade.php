@@ -9,8 +9,7 @@
 <body id="badan-dokumen" data-tematerang="">
 
     <div>
-        <object type="image/svg+xml" data="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/ikon.svg')) }}"
-            onload="this.parentElement.id='ikonSVG';this.outerHTML = this.contentDocument.documentElement.outerHTML"></object>
+        <object type="image/svg+xml" data="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/ikon.svg')) }}" onload="muatIkonSVG(this)"></object>
     </div>
 
     <div id="sambutan">
@@ -60,11 +59,11 @@
                 title="{{ $app->config->get('app.usaha') }}" alt="{{ $app->config->get('app.usaha') }}" loading="lazy">
         </a>
 
-        <label id="pilih-sumber_daya" for="pilih-aplikasi" title="Pilih Aplikasi" onclick=""></label>
+        <label id="pilih-sumber_daya" for="pilih-aplikasi" title="Pilih Aplikasi"></label>
 
-        <label id="tbl-menu" for="menu" title="Akun" onclick=""></label>
+        <label id="tbl-menu" for="menu" title="Akun"></label>
 
-        <label id="tbl-tema" for="tema" title="Ubah Tema" onclick="">
+        <label id="tbl-tema" for="tema" title="Ubah Tema">
             <svg viewBox="0 0 24 24">
                 <use href="#ikontema"></use>
             </svg>
