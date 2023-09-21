@@ -313,7 +313,7 @@
                                 <div class="isian gspan-4">
                                     <h3>Keterangan</h3>
 
-                                    <p>{{ htmlspecialchars_decode(str_replace(["\r\n", "\n", "\r"], '<br>', $akun->sdm_ket_kary)) }}</p>
+                                    <p>{!! nl2br($akun->sdm_ket_kary) !!}</p>
                                 </div>
 
                                 <div class="isian">
