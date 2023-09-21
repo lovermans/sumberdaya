@@ -50,7 +50,7 @@
                 <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
             </div>
 
-            <div class="isian pendek">
+            <div class="isian normal">
                 <label for="permintambahsdmPenempatan">Penempatan Dibutuhkan</label>
 
                 <select class="pil-cari" id="permintambahsdmPenempatan" name="tambahsdm_penempatan" required>

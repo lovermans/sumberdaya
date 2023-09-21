@@ -23,7 +23,7 @@
                         </summary>
 
                         <div class="kartu form gspan-4">
-                            <div class="isian pendek">
+                            <div class="isian normal">
                                 <label for="sdm_posisi_cariStatus">Saring Status</label>
 
                                 <select class="pil-dasar" id="sdm_posisi_cariStatus" name="posisi_status">
@@ -35,7 +35,7 @@
                                 <span class="t-bantu">Pilih satu</span>
                             </div>
 
-                            <div class="isian pendek">
+                            <div class="isian normal">
                                 <label for="sdm_posisi_cariStatusPenempatanSDM">Saring Lokasi</label>
 
                                 <select class="pil-cari" id="sdm_posisi_cariStatusPenempatanSDM" name="lokasi[]" multiple>
@@ -49,7 +49,7 @@
                                 <span class="t-bantu">Pilih satu atau lebih</span>
                             </div>
 
-                            <div class="isian pendek">
+                            <div class="isian normal">
                                 <label for="sdm_posisi_StatusKontrakSDM">Saring Jenis Kontrak</label>
 
                                 <select class="pil-cari" id="sdm_posisi_StatusKontrakSDM" name="kontrak[]" multiple>
