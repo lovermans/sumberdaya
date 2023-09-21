@@ -14,7 +14,9 @@ class RingkasHTML
         if ((strtolower(strtok($response->headers->get('Content-Type'), ';')) === 'text/html')) {
             $html = $response->getContent();
 
-            $cspHeader = "default-src 'self';style-src 'self' 'sha256-dqBsqjGdRxpoUKczu4jMO60qqbU00ssW14SzomoBs78=';script-src 'self' 'unsafe-hashes' 'sha256-18gd7wHgIeacD0TOmyzrY/Ixn+v2aTVEe7Qf+knExWw=' 'nonce-{$request->session()->get('sesiNonce')}' 'strict-dynamic';img-src * data:";
+            $cspHeaderBasic = "default-src 'self' 'unsafe-inline';img-src 'self' * data:";
+
+            // $cspHeaderStrict = "default-src 'self';style-src 'self' 'sha256-dqBsqjGdRxpoUKczu4jMO60qqbU00ssW14SzomoBs78=';script-src 'self' 'unsafe-eval' 'unsafe-hashes' 'sha256-18gd7wHgIeacD0TOmyzrY/Ixn+v2aTVEe7Qf+knExWw=' 'nonce-{$request->session()->get('sesiNonce')}' 'strict-dynamic';img-src * data:";
 
             if (strpos($html, '<pre>') !== false) {
                 $replace = [
@@ -25,9 +27,9 @@ class RingkasHTML
                     "/>\n\s+</" => '><',
                 ];
             } else {
-                $response->headers->set('Content-Security-Policy', $cspHeader);
+                $response->headers->set('Content-Security-Policy', $cspHeaderBasic);
                 $replace = [
-                    '/<!--[^\[](.*?)[^\]]-->/s' => '',
+                    // '/<!--[^\[](.*?)[^\]]-->/s' => '',
                     "/<\?php/" => '<?php ',
                     "/\n([\S])/" => '$1',
                     "/\r/" => '',

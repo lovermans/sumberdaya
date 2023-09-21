@@ -108,7 +108,7 @@ document.addEventListener('click', function (e) {
     if (e.target.closest('button.ringkas-tabel')) {
         e.stopImmediatePropagation();
         e.preventDefault();
-        e.previousElementSibling.classList.toggle('ringkas');
+        e.target.closest('button.ringkas-tabel').previousElementSibling.classList.toggle('ringkas');
     }
 });
 

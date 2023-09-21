@@ -18,10 +18,16 @@ class AuthenticatedSessionController extends Controller
     public function create()
     {
         $app = app();
+        $reqs = $app->request;
 
-        abort_unless($app->request->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
+        abort_unless($reqs->pjax(), 404, 'Alamat hanya bisa dimuat dalam aktivitas aplikasi.');
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('mulai-aplikasi'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
+        $HtmlPenuh = $app->view->make('mulai');
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
+            : $HtmlPenuh;
     }
 
     /**
@@ -55,7 +61,12 @@ class AuthenticatedSessionController extends Controller
             Websoket::siaranUmum($pesanSoket);
         }
 
-        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($app->view->make('mulai'))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
+        $HtmlPenuh = $app->view->make('mulai');
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
+        return $request->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 
     /**
