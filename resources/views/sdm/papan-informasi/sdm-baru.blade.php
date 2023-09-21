@@ -122,7 +122,7 @@
             </div>
 
             @if ($barus->count() > 0)
-                <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
+                <button class="sekunder tcetak ringkas-tabel">Panjang/Pendekkan Tampilan Tabel</button>
 
                 @if ($belumDitempatkan > 0)
                     <a class="isi-xhr utama" href="{{ $app->url->route('sdm.penempatan.data-baru') }}">BELUM DITEMPATKAN</a>
@@ -131,7 +131,7 @@
         </div>
     </details>
 
-    <script>
+    <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
         (async () => {
             while (!window.aplikasiSiap) {
                 await new Promise((resolve, reject) =>

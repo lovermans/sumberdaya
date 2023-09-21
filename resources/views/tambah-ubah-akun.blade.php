@@ -7,24 +7,17 @@
 
             <div class="isian pendek">
                 <img id="foto"
-                    src="{{ $app->filesystem->exists(
-                        'sdm/foto-profil/' . $app->request->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp',
-                    )
+                    src="{{ $app->filesystem->exists('sdm/foto-profil/' . $app->request->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp')
                         ? $app->url->route('sdm.tautan-foto-profil', [
                             'berkas_foto_profil' =>
                                 $app->request->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) .
                                 '.webp' .
                                 '?id=' .
-                                filemtime(
-                                    $app->storagePath(
-                                        'app/sdm/foto-profil/' . $app->request->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp',
-                                    ),
-                                ),
+                                filemtime($app->storagePath('app/sdm/foto-profil/' . $app->request->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp')),
                         ])
                         : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
                     title="{{ $app->request->old('sdm_no_absen', $sdm->sdm_nama ?? 'foto akun') }}"
-                    alt="{{ $app->request->old('sdm_no_absen', $sdm->sdm_nama ?? 'foto akun') }}"
-                    @class([
+                    alt="{{ $app->request->old('sdm_no_absen', $sdm->sdm_nama ?? 'foto akun') }}" @class([
                         'svg' => !$app->filesystem->exists(
                             'sdm/foto-profil/' .
                                 $app->request->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) .
@@ -35,14 +28,11 @@
             <div class="isian normal">
                 <label for="foto_profil">Foto Profil</label>
 
-                <input id="foto_profil" name="foto_profil" type="file" accept="image/*" capture
-                    onchange="siapkanFoto(this)">
+                <input id="foto_profil" name="foto_profil" type="file" accept="image/*" capture>
 
                 <span class="t-bantu">
                     Pilih gambar atau ambil dari kamera
-                    {{ $app->filesystem->exists(
-                        'sdm/foto-profil/' . $app->request->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp',
-                    )
+                    {{ $app->filesystem->exists('sdm/foto-profil/' . $app->request->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.webp')
                         ? '(berkas yang diunggah akan menindih berkas unggahan lama).'
                         : '' }}
                 </span>
@@ -56,23 +46,19 @@
                         <option selected></option>
 
                         @if (
-                            !in_array(
-                                $app->request->old('sdm_no_permintaan', $sdm->sdm_no_permintaan ?? null),
-                                (array) $permintaanSdms->pluck('tambahsdm_no')->toArray()) && $app->request->old('sdm_no_permintaan', $sdm->sdm_no_permintaan ?? null))
-                            <option class="merah"
-                                value="{{ $app->request->old('sdm_no_permintaan', $sdm->sdm_no_permintaan ?? null) }}"
-                                selected>
+                            !in_array($app->request->old('sdm_no_permintaan', $sdm->sdm_no_permintaan ?? null), (array) $permintaanSdms->pluck('tambahsdm_no')->toArray()) &&
+                                $app->request->old('sdm_no_permintaan', $sdm->sdm_no_permintaan ?? null))
+                            <option class="merah" value="{{ $app->request->old('sdm_no_permintaan', $sdm->sdm_no_permintaan ?? null) }}" selected>
                                 {{ $app->request->old('sdm_no_permintaan', $sdm->sdm_no_permintaan ?? null) }}
                             </option>
                         @endif
 
                         @foreach ($permintaanSdms as $permintaanSdm)
-                            <option value="{{ $permintaanSdm->tambahsdm_no }}" @selected($app->request->old('sdm_no_permintaan', $sdm->sdm_no_permintaan ?? null) == $permintaanSdm->tambahsdm_no)
-                                @class([
-                                    'merah' =>
-                                        $permintaanSdm->tambahsdm_status !== 'DISETUJUI' ||
-                                        $permintaanSdm->tambahsdm_jumlah < $permintaanSdm->tambahsdm_terpenuhi,
-                                ])>
+                            <option value="{{ $permintaanSdm->tambahsdm_no }}" @selected($app->request->old('sdm_no_permintaan', $sdm->sdm_no_permintaan ?? null) == $permintaanSdm->tambahsdm_no) @class([
+                                'merah' =>
+                                    $permintaanSdm->tambahsdm_status !== 'DISETUJUI' ||
+                                    $permintaanSdm->tambahsdm_jumlah < $permintaanSdm->tambahsdm_terpenuhi,
+                            ])>
                                 {{ $permintaanSdm->tambahsdm_no }} : {{ $permintaanSdm->tambahsdm_posisi }}
                                 {{ $permintaanSdm->tambahsdm_penempatan }}
                                 {{ $permintaanSdm->tambahsdm_jumlah > $permintaanSdm->tambahsdm_terpenuhi
@@ -91,10 +77,8 @@
             <div class="isian normal">
                 <label for="sdm_no_absen">Nomor Absen</label>
 
-                <input id="sdm_no_absen" name="sdm_no_absen" type="text"
-                    value="{{ $app->request->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) }}" pattern="^[0-9]{8}$"
-                    inputmode="numeric"
-                    {{ str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' : 'readonly' }}>
+                <input id="sdm_no_absen" name="sdm_no_absen" type="text" value="{{ $app->request->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) }}"
+                    pattern="^[0-9]{8}$" inputmode="numeric" {{ str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' : 'readonly' }}>
 
                 <span class="t-bantu">8 digit nomor absen</span>
             </div>
@@ -107,18 +91,15 @@
                         <option selected></option>
 
                         @if (
-                            !in_array(
-                                $app->request->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null),
-                                (array) $atasans->pluck('sdm_no_absen')->toArray()) && $app->request->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null))
-                            <option class="merah"
-                                value="{{ $app->request->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null) }}" selected>
+                            !in_array($app->request->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null), (array) $atasans->pluck('sdm_no_absen')->toArray()) &&
+                                $app->request->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null))
+                            <option class="merah" value="{{ $app->request->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null) }}" selected>
                                 {{ $app->request->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null) }}
                             </option>
                         @endif
 
                         @foreach ($atasans as $atasan)
-                            <option value="{{ $atasan->sdm_no_absen }}" @selected($app->request->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null) == $atasan->sdm_no_absen)
-                                @class(['merah' => $atasan->sdm_tgl_berhenti])>
+                            <option value="{{ $atasan->sdm_no_absen }}" @selected($app->request->old('sdm_id_atasan', $sdm->sdm_id_atasan ?? null) == $atasan->sdm_no_absen) @class(['merah' => $atasan->sdm_tgl_berhenti])>
                                 {{ $atasan->sdm_no_absen }} - {{ $atasan->sdm_nama }} - {{ $atasan->penempatan_posisi }}
                             </option>
                         @endforeach
@@ -145,11 +126,9 @@
                     {{ str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' : 'readonly' }}>
 
                     @if (
-                        !in_array(
-                            $app->request->old('sdm_warganegara', $sdm->sdm_warganegara ?? null),
-                            $negaras->pluck('atur_butir')->toArray()) && $app->request->old('sdm_warganegara', $sdm->sdm_warganegara ?? null))
-                        <option class="merah"
-                            value="{{ $app->request->old('sdm_warganegara', $sdm->sdm_warganegara ?? null) }}" selected>
+                        !in_array($app->request->old('sdm_warganegara', $sdm->sdm_warganegara ?? null), $negaras->pluck('atur_butir')->toArray()) &&
+                            $app->request->old('sdm_warganegara', $sdm->sdm_warganegara ?? null))
+                        <option class="merah" value="{{ $app->request->old('sdm_warganegara', $sdm->sdm_warganegara ?? null) }}" selected>
                             {{ $app->request->old('sdm_warganegara', $sdm->sdm_warganegara ?? null) }}
                         </option>
                     @endif
@@ -173,8 +152,7 @@
             <div class="isian normal">
                 <label for="sdm_no_ktp">Nomor E-KTP/Passport</label>
 
-                <input id="sdm_no_ktp" name="sdm_no_ktp" type="text"
-                    value="{{ $app->request->old('sdm_no_ktp', $sdm->sdm_no_ktp ?? null) }}" required>
+                <input id="sdm_no_ktp" name="sdm_no_ktp" type="text" value="{{ $app->request->old('sdm_no_ktp', $sdm->sdm_no_ktp ?? null) }}" required>
 
                 <span class="t-bantu">E-KTP/Passport valid</span>
             </div>
@@ -182,8 +160,7 @@
             <div class="isian panjang">
                 <label for="sdm_nama">Nama</label>
 
-                <input id="sdm_nama" name="sdm_nama" type="text"
-                    value="{{ $app->request->old('sdm_nama', $sdm->sdm_nama ?? null) }}" required maxlength="80">
+                <input id="sdm_nama" name="sdm_nama" type="text" value="{{ $app->request->old('sdm_nama', $sdm->sdm_nama ?? null) }}" required maxlength="80">
 
                 <span class="t-bantu">Nama Lengkap</span>
             </div>
@@ -192,8 +169,7 @@
                 <label for="sdm_tempat_lahir">Tempat Lahir</label>
 
                 <input id="sdm_tempat_lahir" name="sdm_tempat_lahir" type="text"
-                    value="{{ $app->request->old('sdm_tempat_lahir', $sdm->sdm_tempat_lahir ?? null) }}" required
-                    maxlength="40">
+                    value="{{ $app->request->old('sdm_tempat_lahir', $sdm->sdm_tempat_lahir ?? null) }}" required maxlength="40">
 
                 <span class="t-bantu">Nama Kota</span>
             </div>
@@ -202,8 +178,7 @@
                 <label for="sdm_tgl_lahir">Tanggal Lahir</label>
 
                 <input id="sdm_tgl_lahir" name="sdm_tgl_lahir" type="date"
-                    value="{{ $app->request->old('sdm_tgl_lahir',$sdm->sdm_tgl_lahir ??$app->date->today()->subYears(18)->toDateString()) }}"
-                    required>
+                    value="{{ $app->request->old('sdm_tgl_lahir',$sdm->sdm_tgl_lahir ??$app->date->today()->subYears(18)->toDateString()) }}" required>
 
                 <span class="t-bantu">Pilih atau isi tanggal</span>
             </div>
@@ -214,11 +189,9 @@
                 <select class="pil-saja" id="sdm_kelamin" name="sdm_kelamin" required>
 
                     @if (
-                        !in_array(
-                            $app->request->old('sdm_kelamin', $sdm->sdm_kelamin ?? null),
-                            $kelamins->pluck('atur_butir')->toArray()) && $app->request->old('sdm_kelamin', $sdm->sdm_kelamin ?? null))
-                        <option class="merah" value="{{ $app->request->old('sdm_kelamin', $sdm->sdm_kelamin ?? null) }}"
-                            selected>
+                        !in_array($app->request->old('sdm_kelamin', $sdm->sdm_kelamin ?? null), $kelamins->pluck('atur_butir')->toArray()) &&
+                            $app->request->old('sdm_kelamin', $sdm->sdm_kelamin ?? null))
+                        <option class="merah" value="{{ $app->request->old('sdm_kelamin', $sdm->sdm_kelamin ?? null) }}" selected>
                             {{ $app->request->old('sdm_kelamin', $sdm->sdm_kelamin ?? null) }}
                         </option>
                     @endif
@@ -246,11 +219,9 @@
                     <option selected></option>
 
                     @if (
-                        !in_array(
-                            $app->request->old('sdm_gol_darah', $sdm->sdm_gol_darah ?? null),
-                            $gdarahs->pluck('atur_butir')->toArray()) && $app->request->old('sdm_gol_darah', $sdm->sdm_gol_darah ?? null))
-                        <option class="merah"
-                            value="{{ $app->request->old('sdm_gol_darah', $sdm->sdm_gol_darah ?? null) }}" selected>
+                        !in_array($app->request->old('sdm_gol_darah', $sdm->sdm_gol_darah ?? null), $gdarahs->pluck('atur_butir')->toArray()) &&
+                            $app->request->old('sdm_gol_darah', $sdm->sdm_gol_darah ?? null))
+                        <option class="merah" value="{{ $app->request->old('sdm_gol_darah', $sdm->sdm_gol_darah ?? null) }}" selected>
                             {{ $app->request->old('sdm_gol_darah', $sdm->sdm_gol_darah ?? null) }}
                         </option>
                     @endif
@@ -268,8 +239,8 @@
             <div class="isian panjang">
                 <label for="sdm_alamat">Alamat</label>
 
-                <input id="sdm_alamat" name="sdm_alamat" type="text"
-                    value="{{ $app->request->old('sdm_alamat', $sdm->sdm_alamat ?? null) }}" required maxlength="120">
+                <input id="sdm_alamat" name="sdm_alamat" type="text" value="{{ $app->request->old('sdm_alamat', $sdm->sdm_alamat ?? null) }}" required
+                    maxlength="120">
 
                 <span class="t-bantu">Alamat KTP/Passport</span>
             </div>
@@ -277,8 +248,8 @@
             <div class="isian kecil">
                 <label for="sdm_alamat_rt">RT</label>
 
-                <input id="sdm_alamat_rt" name="sdm_alamat_rt" type="number"
-                    value="{{ $app->request->old('sdm_alamat_rt', $sdm->sdm_alamat_rt ?? null) }}" min="0">
+                <input id="sdm_alamat_rt" name="sdm_alamat_rt" type="number" value="{{ $app->request->old('sdm_alamat_rt', $sdm->sdm_alamat_rt ?? null) }}"
+                    min="0">
 
                 <span class="t-bantu">Angka</span>
             </div>
@@ -286,8 +257,8 @@
             <div class="isian kecil">
                 <label for="sdm_alamat_rw">RW</label>
 
-                <input id="sdm_alamat_rw" name="sdm_alamat_rw" type="number"
-                    value="{{ $app->request->old('sdm_alamat_rw', $sdm->sdm_alamat_rw ?? null) }}" min="0">
+                <input id="sdm_alamat_rw" name="sdm_alamat_rw" type="number" value="{{ $app->request->old('sdm_alamat_rw', $sdm->sdm_alamat_rw ?? null) }}"
+                    min="0">
 
                 <span class="t-bantu">Angka</span>
             </div>
@@ -296,8 +267,7 @@
                 <label for="sdm_alamat_kelurahan">Kelurahan</label>
 
                 <input id="sdm_alamat_kelurahan" name="sdm_alamat_kelurahan" type="text"
-                    value="{{ $app->request->old('sdm_alamat_kelurahan', $sdm->sdm_alamat_kelurahan ?? null) }}" required
-                    maxlength="40">
+                    value="{{ $app->request->old('sdm_alamat_kelurahan', $sdm->sdm_alamat_kelurahan ?? null) }}" required maxlength="40">
 
                 <span class="t-bantu">Kelurahan</span>
             </div>
@@ -306,8 +276,7 @@
                 <label for="sdm_alamat_kecamatan">Kecamatan</label>
 
                 <input id="sdm_alamat_kecamatan" name="sdm_alamat_kecamatan" type="text"
-                    value="{{ $app->request->old('sdm_alamat_kecamatan', $sdm->sdm_alamat_kecamatan ?? null) }}" required
-                    maxlength="40">
+                    value="{{ $app->request->old('sdm_alamat_kecamatan', $sdm->sdm_alamat_kecamatan ?? null) }}" required maxlength="40">
 
                 <span class="t-bantu">Kecamatan</span>
             </div>
@@ -316,8 +285,7 @@
                 <label for="sdm_alamat_kota">Kota/Kabupaten</label>
 
                 <input id="sdm_alamat_kota" name="sdm_alamat_kota" type="text"
-                    value="{{ $app->request->old('sdm_alamat_kota', $sdm->sdm_alamat_kota ?? null) }}" required
-                    maxlength="40">
+                    value="{{ $app->request->old('sdm_alamat_kota', $sdm->sdm_alamat_kota ?? null) }}" required maxlength="40">
 
                 <span class="t-bantu">Kota/Kabupaten</span>
             </div>
@@ -326,8 +294,7 @@
                 <label for="sdm_alamat_provinsi">Provinsi</label>
 
                 <input id="sdm_alamat_provinsi" name="sdm_alamat_provinsi" type="text"
-                    value="{{ $app->request->old('sdm_alamat_provinsi', $sdm->sdm_alamat_provinsi ?? null) }}" required
-                    maxlength="40">
+                    value="{{ $app->request->old('sdm_alamat_provinsi', $sdm->sdm_alamat_provinsi ?? null) }}" required maxlength="40">
 
                 <span class="t-bantu">Provinsi</span>
             </div>
@@ -336,8 +303,7 @@
                 <label for="sdm_alamat_kodepos">Kode Pos</label>
 
                 <input id="sdm_alamat_kodepos" name="sdm_alamat_kodepos" type="text"
-                    value="{{ $app->request->old('sdm_alamat_kodepos', $sdm->sdm_alamat_kodepos ?? null) }}"
-                    maxlength="10">
+                    value="{{ $app->request->old('sdm_alamat_kodepos', $sdm->sdm_alamat_kodepos ?? null) }}" maxlength="10">
 
                 <span class="t-bantu">Kode Pos</span>
             </div>
@@ -349,8 +315,7 @@
                     @if (
                         !in_array($app->request->old('sdm_agama', $sdm->sdm_agama ?? null), $agamas->pluck('atur_butir')->toArray()) &&
                             $app->request->old('sdm_agama', $sdm->sdm_agama ?? null))
-                        <option class="merah" value="{{ $app->request->old('sdm_agama', $sdm->sdm_agama ?? null) }}"
-                            selected>
+                        <option class="merah" value="{{ $app->request->old('sdm_agama', $sdm->sdm_agama ?? null) }}" selected>
                             {{ $app->request->old('sdm_agama', $sdm->sdm_agama ?? null) }}
                         </option>
                     @endif
@@ -374,8 +339,7 @@
             <div class="isian normal">
                 <label for="sdm_no_kk">Nomor KK</label>
 
-                <input id="sdm_no_kk" name="sdm_no_kk" type="text"
-                    value="{{ $app->request->old('sdm_no_kk', $sdm->sdm_no_kk ?? null) }}">
+                <input id="sdm_no_kk" name="sdm_no_kk" type="text" value="{{ $app->request->old('sdm_no_kk', $sdm->sdm_no_kk ?? null) }}">
 
                 <span class="t-bantu">16 digit nomor KK</span>
             </div>
@@ -385,11 +349,9 @@
 
                 <select class="pil-cari" id="sdm_status_kawin" name="sdm_status_kawin" required>
                     @if (
-                        !in_array(
-                            $app->request->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null),
-                            $kawins->pluck('atur_butir')->toArray()) && $app->request->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null))
-                        <option class="merah"
-                            value="{{ $app->request->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null) }}" selected>
+                        !in_array($app->request->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null), $kawins->pluck('atur_butir')->toArray()) &&
+                            $app->request->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null))
+                        <option class="merah" value="{{ $app->request->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null) }}" selected>
                             {{ $app->request->old('sdm_status_kawin', $sdm->sdm_status_kawin ?? null) }}
                         </option>
                     @endif
@@ -413,8 +375,8 @@
             <div class="isian pendek">
                 <label for="sdm_jml_anak">Anak</label>
 
-                <input id="sdm_jml_anak" name="sdm_jml_anak" type="number"
-                    value="{{ $app->request->old('sdm_jml_anak', $sdm->sdm_jml_anak ?? null) }}" min="0">
+                <input id="sdm_jml_anak" name="sdm_jml_anak" type="number" value="{{ $app->request->old('sdm_jml_anak', $sdm->sdm_jml_anak ?? null) }}"
+                    min="0">
 
                 <span class="t-bantu">Angka</span>
             </div>
@@ -426,11 +388,9 @@
                     <option selected></option>
 
                     @if (
-                        !in_array(
-                            $app->request->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null),
-                            $pendidikans->pluck('atur_butir')->toArray()) && $app->request->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null))
-                        <option class="merah"
-                            value="{{ $app->request->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null) }}" selected>
+                        !in_array($app->request->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null), $pendidikans->pluck('atur_butir')->toArray()) &&
+                            $app->request->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null))
+                        <option class="merah" value="{{ $app->request->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null) }}" selected>
                             {{ $app->request->old('sdm_pendidikan', $sdm->sdm_pendidikan ?? null) }}
                         </option>
                     @endif
@@ -448,8 +408,8 @@
             <div class="isian normal">
                 <label for="sdm_jurusan">Jurusan</label>
 
-                <input id="sdm_jurusan" name="sdm_jurusan" type="text"
-                    value="{{ $app->request->old('sdm_jurusan', $sdm->sdm_jurusan ?? null) }}" maxlength="60">
+                <input id="sdm_jurusan" name="sdm_jurusan" type="text" value="{{ $app->request->old('sdm_jurusan', $sdm->sdm_jurusan ?? null) }}"
+                    maxlength="60">
 
                 <span class="t-bantu">Jurusan Pendidikan</span>
             </div>
@@ -457,9 +417,8 @@
             <div class="isian normal">
                 <label for="sdm_telepon">Telepon</label>
 
-                <input id="sdm_telepon" name="sdm_telepon" type="tel"
-                    value="{{ $app->request->old('sdm_telepon', $sdm->sdm_telepon ?? null) }}" maxlength="40"
-                    inputmode="tel" required>
+                <input id="sdm_telepon" name="sdm_telepon" type="tel" value="{{ $app->request->old('sdm_telepon', $sdm->sdm_telepon ?? null) }}"
+                    maxlength="40" inputmode="tel" required>
 
                 <span class="t-bantu">Nomor HP/WA atau</span>
             </div>
@@ -467,8 +426,7 @@
             <div class="isian normal">
                 <label for="email">Email</label>
 
-                <input id="email" name="email" type="email"
-                    value="{{ $app->request->old('email', $sdm->email ?? null) }}" required inputmode="email">
+                <input id="email" name="email" type="email" value="{{ $app->request->old('email', $sdm->email ?? null) }}" required inputmode="email">
 
                 <span class="t-bantu">Alamat email</span>
             </div>
@@ -479,11 +437,9 @@
                 <select class="pil-cari" id="sdm_disabilitas" name="sdm_disabilitas"
                     {{ str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS') ? 'required' : 'readonly' }}>
                     @if (
-                        !in_array(
-                            $app->request->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null),
-                            $disabilitas->pluck('atur_butir')->toArray()) && $app->request->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null))
-                        <option class="merah"
-                            value="{{ $app->request->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null) }}" selected>
+                        !in_array($app->request->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null), $disabilitas->pluck('atur_butir')->toArray()) &&
+                            $app->request->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null))
+                        <option class="merah" value="{{ $app->request->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null) }}" selected>
                             {{ $app->request->old('sdm_disabilitas', $sdm->sdm_disabilitas ?? null) }}
                         </option>
                     @endif
@@ -511,8 +467,8 @@
             <div class="isian normal">
                 <label for="sdm_no_bpjs">BPJS Kesehatan</label>
 
-                <input id="sdm_no_bpjs" name="sdm_no_bpjs" type="text"
-                    value="{{ $app->request->old('sdm_no_bpjs', $sdm->sdm_no_bpjs ?? null) }}" maxlength="30">
+                <input id="sdm_no_bpjs" name="sdm_no_bpjs" type="text" value="{{ $app->request->old('sdm_no_bpjs', $sdm->sdm_no_bpjs ?? null) }}"
+                    maxlength="30">
 
                 <span class="t-bantu">Nomor atau keterangan</span>
             </div>
@@ -529,8 +485,8 @@
             <div class="isian normal">
                 <label for="sdm_no_npwp">NPWP</label>
 
-                <input id="sdm_no_npwp" name="sdm_no_npwp" type="text"
-                    value="{{ $app->request->old('sdm_no_npwp', $sdm->sdm_no_npwp ?? null) }}" maxlength="30">
+                <input id="sdm_no_npwp" name="sdm_no_npwp" type="text" value="{{ $app->request->old('sdm_no_npwp', $sdm->sdm_no_npwp ?? null) }}"
+                    maxlength="30">
 
                 <span class="t-bantu">Nomor atau keterangan</span>
             </div>
@@ -543,11 +499,9 @@
                         <option selected></option>
 
                         @if (
-                            !in_array(
-                                $app->request->old('sdm_nama_bank', $sdm->sdm_nama_bank ?? null),
-                                $banks->pluck('atur_butir')->toArray()) && $app->request->old('sdm_nama_bank', $sdm->sdm_nama_bank ?? null))
-                            <option class="merah"
-                                value="{{ $app->request->old('sdm_nama_bank', $sdm->sdm_nama_bank ?? null) }}" selected>
+                            !in_array($app->request->old('sdm_nama_bank', $sdm->sdm_nama_bank ?? null), $banks->pluck('atur_butir')->toArray()) &&
+                                $app->request->old('sdm_nama_bank', $sdm->sdm_nama_bank ?? null))
+                            <option class="merah" value="{{ $app->request->old('sdm_nama_bank', $sdm->sdm_nama_bank ?? null) }}" selected>
                                 {{ $app->request->old('sdm_nama_bank', $sdm->sdm_nama_bank ?? null) }}
                             </option>
                         @endif
@@ -566,8 +520,7 @@
                     <label for="sdm_cabang_bank">Cabang Bank</label>
 
                     <input id="sdm_cabang_bank" name="sdm_cabang_bank" type="text"
-                        value="{{ $app->request->old('sdm_cabang_bank', $sdm->sdm_cabang_bank ?? null) }}"
-                        maxlength="50">
+                        value="{{ $app->request->old('sdm_cabang_bank', $sdm->sdm_cabang_bank ?? null) }}" maxlength="50">
 
                     <span class="t-bantu">Kantor Cabang Rekening</span>
                 </div>
@@ -575,8 +528,8 @@
                 <div class="isian normal">
                     <label for="sdm_rek_bank">Rekening Bank</label>
 
-                    <input id="sdm_rek_bank" name="sdm_rek_bank" type="text"
-                        value="{{ $app->request->old('sdm_rek_bank', $sdm->sdm_rek_bank ?? null) }}" maxlength="40">
+                    <input id="sdm_rek_bank" name="sdm_rek_bank" type="text" value="{{ $app->request->old('sdm_rek_bank', $sdm->sdm_rek_bank ?? null) }}"
+                        maxlength="40">
 
                     <span class="t-bantu">Nomor rekening</span>
                 </div>
@@ -584,8 +537,8 @@
                 <div class="isian panjang">
                     <label for="sdm_an_rek">A.n Rekening</label>
 
-                    <input id="sdm_an_rek" name="sdm_an_rek" type="text"
-                        value="{{ $app->request->old('sdm_an_rek', $sdm->sdm_an_rek ?? null) }}" maxlength="80">
+                    <input id="sdm_an_rek" name="sdm_an_rek" type="text" value="{{ $app->request->old('sdm_an_rek', $sdm->sdm_an_rek ?? null) }}"
+                        maxlength="80">
 
                     <span class="t-bantu">Nama pemilik rekening</span>
                 </div>
@@ -593,8 +546,8 @@
                 <div class="isian panjang">
                     <label for="sdm_nama_dok">Judul Dokumen</label>
 
-                    <input id="sdm_nama_dok" name="sdm_nama_dok" type="text"
-                        value="{{ $app->request->old('sdm_nama_dok', $sdm->sdm_nama_dok ?? null) }}" maxlength="50">
+                    <input id="sdm_nama_dok" name="sdm_nama_dok" type="text" value="{{ $app->request->old('sdm_nama_dok', $sdm->sdm_nama_dok ?? null) }}"
+                        maxlength="50">
 
                     <span class="t-bantu">Nama dokumen titipan</span>
                 </div>
@@ -612,8 +565,7 @@
                     <label for="sdm_penerbit_dok">Penerbit Dokumen</label>
 
                     <input id="sdm_penerbit_dok" name="sdm_penerbit_dok" type="text"
-                        value="{{ $app->request->old('sdm_penerbit_dok', $sdm->sdm_penerbit_dok ?? null) }}"
-                        maxlength="60">
+                        value="{{ $app->request->old('sdm_penerbit_dok', $sdm->sdm_penerbit_dok ?? null) }}" maxlength="60">
 
                     <span class="t-bantu">Penerbit dokumen titipan</span>
                 </div>
@@ -621,8 +573,8 @@
                 <div class="isian panjang">
                     <label for="sdm_an_dok">A.n Dokumen</label>
 
-                    <input id="sdm_an_dok" name="sdm_an_dok" type="text"
-                        value="{{ $app->request->old('sdm_an_dok', $sdm->sdm_an_dok ?? null) }}" maxlength="80">
+                    <input id="sdm_an_dok" name="sdm_an_dok" type="text" value="{{ $app->request->old('sdm_an_dok', $sdm->sdm_an_dok ?? null) }}"
+                        maxlength="80">
 
                     <span class="t-bantu">Nama pemilik dokumen titipan</span>
                 </div>
@@ -644,11 +596,9 @@
                     <option selected></option>
 
                     @if (
-                        !in_array(
-                            $app->request->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null),
-                            $seragams->pluck('atur_butir')->toArray()) && $app->request->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null))
-                        <option class="merah"
-                            value="{{ $app->request->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null) }}" selected>
+                        !in_array($app->request->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null), $seragams->pluck('atur_butir')->toArray()) &&
+                            $app->request->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null))
+                        <option class="merah" value="{{ $app->request->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null) }}" selected>
                             {{ $app->request->old('sdm_uk_seragam', $sdm->sdm_uk_seragam ?? null) }}
                         </option>
                     @endif
@@ -666,8 +616,8 @@
             <div class="isian pendek">
                 <label for="sdm_uk_sepatu">No Sepatu</label>
 
-                <input id="sdm_uk_sepatu" name="sdm_uk_sepatu" type="number"
-                    value="{{ $app->request->old('sdm_uk_sepatu', $sdm->sdm_uk_sepatu ?? null) }}" min="0">
+                <input id="sdm_uk_sepatu" name="sdm_uk_sepatu" type="number" value="{{ $app->request->old('sdm_uk_sepatu', $sdm->sdm_uk_sepatu ?? null) }}"
+                    min="0">
 
                 <span class="t-bantu">Angka</span>
             </div>
@@ -747,12 +697,9 @@
                             <option selected></option>
 
                             @if (
-                                !in_array(
-                                    $app->request->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null),
-                                    $phks->pluck('atur_butir')->toArray()) && $app->request->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null))
-                                <option class="merah"
-                                    value="{{ $app->request->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null) }}"
-                                    selected>
+                                !in_array($app->request->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null), $phks->pluck('atur_butir')->toArray()) &&
+                                    $app->request->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null))
+                                <option class="merah" value="{{ $app->request->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null) }}" selected>
                                     {{ $app->request->old('sdm_jenis_berhenti', $sdm->sdm_jenis_berhenti ?? null) }}
                                 </option>
                             @endif
@@ -783,8 +730,7 @@
                         @if ($app->filesystem->exists($berkasSDM = 'sdm/berkas/' . $sdm->sdm_no_absen . '.pdf'))
                             <iframe class="berkas tcetak"
                                 src="{{ $app->url->route('sdm.berkas', ['berkas' => $berkasSDM . '?' . filemtime($app->storagePath('app/' . $berkasSDM))]) }}"
-                                title="Berkas SDM" loading="lazy"
-                                onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()">
+                                title="Berkas SDM" loading="lazy" onload="if (this.contentDocument.body.id == 'badan-dokumen') this.remove()">
                             </iframe>
 
                             <a class="sekunder tcetak"
@@ -811,9 +757,7 @@
                     <span class="t-bantu">
                         Scan PDF data isian pelamar, lamaran, riwayat hidup, rangkuman tes, persetujuan gaji,
                         tanda terima dokumen titipan, serah terima, pengunduran diri dan pelepasan
-                        {{ $app->filesystem->exists(
-                            'sdm/berkas/' . $app->request->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.pdf',
-                        )
+                        {{ $app->filesystem->exists('sdm/berkas/' . $app->request->old('sdm_no_absen', $sdm->sdm_no_absen ?? null) . '.pdf')
                             ? '(berkas yang diunggah akan menindih berkas unggahan lama).'
                             : '' }}
                     </span>
@@ -825,16 +769,14 @@
             <button class="utama pelengkap" type="submit">SIMPAN</button>
 
             @if ($sdm->sdm_uuid ?? null)
-                <a class="sekunder isi-xhr"
-                    href="{{ $app->url->route('sdm.akun', ['uuid' => $sdm->sdm_uuid]) }}">TUTUP</a>
+                <a class="sekunder isi-xhr" href="{{ $app->url->route('sdm.akun', ['uuid' => $sdm->sdm_uuid]) }}">TUTUP</a>
             @else
-                <a class="sekunder isi-xhr"
-                    href="{{ $app->url->to($app->request->session()->get('tautan_perujuk') ?? '/') }}">TUTUP</a>
+                <a class="sekunder isi-xhr" href="{{ $app->url->to($app->request->session()->get('tautan_perujuk') ?? '/') }}">TUTUP</a>
             @endif
 
         </form>
 
-        <script>
+        <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
             (async () => {
                 while (!window.aplikasiSiap) {
                     await new Promise((resolve, reject) =>
@@ -847,18 +789,20 @@
                 formatIsian('#form_tambahUbahAkun .isian :is(textarea,input[type=text],input[type=search])');
             })();
 
-            function siapkanFoto(berkas) {
+            var inputFotoProfil = document.getElementById("foto_profil");
+
+            inputFotoProfil.onchange = function() {
                 if (!window.SiapkanFoto) {
                     import("{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/siapkan-foto-es.js')) }}")
                         .then(({
                             default: SF
                         }) => {
                             window.SiapkanFoto = SF;
-                            new SiapkanFoto(berkas);
+                            new SiapkanFoto(inputFotoProfil);
                         });
                 } else {
                     window.SiapkanFoto ?
-                        new SiapkanFoto(berkas) :
+                        new SiapkanFoto(inputFotoProfil) :
                         (function() {
                             document.getElementById('foto_profil').value = '';
                             alert(
@@ -866,7 +810,7 @@
                             );
                         })();
                 };
-            }
+            };
         </script>
 
         @include('pemberitahuan')

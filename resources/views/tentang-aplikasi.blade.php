@@ -122,7 +122,7 @@
         </div>
 
         <div class="pintasan tcetak">
-            <a href="#" title="Kembali Ke Atas" onclick="event.preventDefault();window.scrollTo(0,0)">
+            <a href="#" title="Kembali Ke Atas" class="tbl-btt">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonpanahatas"></use>
                 </svg>
@@ -135,7 +135,7 @@
             </a>
         </div>
 
-        <script>
+        <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
             document.querySelector("nav a[href='{{ $app->url->route('tentang-aplikasi') }}']").classList.add("aktif");
         </script>
 

@@ -5,16 +5,16 @@ namespace App\Http\Controllers\SDM;
 use App\Interaksi\Cache;
 use App\Interaksi\Excel;
 use App\Interaksi\Rangka;
+use App\Interaksi\SDM\SDMBerkas;
+use App\Interaksi\SDM\SDMCache;
+use App\Interaksi\SDM\SDMDBQuery;
+use App\Interaksi\SDM\SDMExcel;
+use App\Interaksi\SDM\SDMValidasi;
+use App\Interaksi\SDM\SDMWord;
 use App\Interaksi\Validasi;
 use App\Interaksi\Websoket;
 use Illuminate\Support\Arr;
-use App\Interaksi\SDM\SDMWord;
-use App\Interaksi\SDM\SDMCache;
-use App\Interaksi\SDM\SDMExcel;
 use Illuminate\Validation\Rule;
-use App\Interaksi\SDM\SDMBerkas;
-use App\Interaksi\SDM\SDMDBQuery;
-use App\Interaksi\SDM\SDMValidasi;
 
 class PermintaanTambahSDM
 {
@@ -30,7 +30,7 @@ class PermintaanTambahSDM
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.permintaan-tambah-sdm.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $kataKunci = $reqs->kata_kunci;
         $urutArray = $reqs->urut;
@@ -75,7 +75,7 @@ class PermintaanTambahSDM
         $HtmlPenuh = $app->view->make('sdm.permintaan-tambah-sdm.data', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
 
-        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        return $reqs->pjax() && (! $reqs->filled('fragment') || ! $reqs->header('X-Frag', false))
             ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
             : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
@@ -115,9 +115,11 @@ class PermintaanTambahSDM
 
             $hitungPermintaan = SDMDBQuery::ambilUrutanPermintaanTambahSDM();
 
-            $urutanPermintaan = $hitungPermintaan + 1;
+            $maxno = $hitungPermintaan->maxno ? (intval($hitungPermintaan->maxno) - (intval(date('Y').date('m')) * 10000)) : 0;
 
-            $nomorPermintaan = date('Y') . date('m') . str($urutanPermintaan)->padLeft(4, '0');
+            $urutanPermintaan = max($maxno, $hitungPermintaan->countno) + 1;
+
+            $nomorPermintaan = date('Y').date('m').str($urutanPermintaan)->padLeft(4, '0');
 
             $reqs->merge(['tambahsdm_id_pembuat' => $pengguna->sdm_no_absen, 'tambahsdm_no' => $nomorPermintaan]);
 
@@ -139,7 +141,7 @@ class PermintaanTambahSDM
 
             SDMCache::hapusCacheSDMUmum();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah menambah data Permintaan Tambah SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah menambah data Permintaan Tambah SDM pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -198,7 +200,7 @@ class PermintaanTambahSDM
             $aturan = [
                 '*.tambahsdm_no' => ['required', 'string', 'max:40', Rule::unique('tambahsdms')->where(fn ($query) => $query->whereNot('tambahsdm_uuid', $uuid))],
                 '*.tambahsdm_id_pengubah' => ['required', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...SDMValidasi::dasarValidasiPermintaanTambahSDM()
+                ...SDMValidasi::dasarValidasiPermintaanTambahSDM(),
             ];
 
             if ($reqs->header('X-Minta-Javascript', false)) {
@@ -224,7 +226,7 @@ class PermintaanTambahSDM
 
             SDMCache::hapusCacheSDMUmum();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah data Permintaan Tambah SDM nomor ' . $nomorPermintaan . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah mengubah data Permintaan Tambah SDM nomor '.$nomorPermintaan.' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -300,7 +302,7 @@ class PermintaanTambahSDM
                 collect($permin)->toJson(),
                 $dataValid['id_penghapus'],
                 $dataValid['waktu_dihapus']->format('Y-m-d H:i:s'),
-                $dataValid['alasan']
+                $dataValid['alasan'],
             ]);
 
             SDMDBQuery::hapusDataPermintaanTambahSDM($uuid);
@@ -309,7 +311,7 @@ class PermintaanTambahSDM
 
             SDMCache::hapusCacheSDMUmum();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah menghapus data Permintaan Tambah SDM nomor ' . $permin->tambahsdm_no . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah menghapus data Permintaan Tambah SDM nomor '.$permin->tambahsdm_no.' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 

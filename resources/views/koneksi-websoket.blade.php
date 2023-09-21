@@ -1,5 +1,5 @@
 @if ($app->request->user())
-    <script>
+    <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
         (async () => {
             while (!window.aplikasiSiap) {
                 await new Promise((resolve, reject) =>

@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\SDM;
 
-use App\Interaksi\Cache;
 use App\Interaksi\Berkas;
+use App\Interaksi\Cache;
 use App\Interaksi\Rangka;
+use App\Interaksi\SDM\SDMBerkas;
+use App\Interaksi\SDM\SDMCache;
+use App\Interaksi\SDM\SDMDBQuery;
+use App\Interaksi\SDM\SDMExcel;
+use App\Interaksi\SDM\SDMPapanInformasi;
+use App\Interaksi\SDM\SDMValidasi;
+use App\Interaksi\SDM\SDMWord;
 use App\Interaksi\Websoket;
 use Illuminate\Support\Arr;
-use App\Interaksi\SDM\SDMWord;
-use App\Interaksi\SDM\SDMCache;
-use App\Interaksi\SDM\SDMExcel;
-use App\Interaksi\SDM\SDMBerkas;
-use App\Interaksi\SDM\SDMDBQuery;
-use App\Interaksi\SDM\SDMValidasi;
-use App\Interaksi\SDM\SDMPapanInformasi;
 
 class Umum
 {
@@ -122,7 +122,7 @@ class Umum
                 || ($no_absen_sdm == $akun->sdm_no_absen)
                 || ($akun->sdm_no_absen == $no_absen_atasan)
                 || ($akun->sdm_id_atasan == $no_absen_sdm)
-                || (!blank($no_absen_atasan) && ($akun->sdm_id_atasan == $no_absen_atasan)),
+                || (! blank($no_absen_atasan) && ($akun->sdm_id_atasan == $no_absen_atasan)),
             403,
             'Ijin akses dibatasi.'
         );
@@ -140,7 +140,7 @@ class Umum
         $data = [
             'akun' => $akun,
             'personils' => $cacheSDM->where('sdm_id_atasan', $akun->sdm_no_absen),
-            'no_wa' =>  $no_wa ?: '0',
+            'no_wa' => $no_wa ?: '0',
             'batasi' => $str->contains($pengguna->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']) || $no_absen_sdm == $akun->sdm_no_absen,
         ];
 
@@ -205,11 +205,11 @@ class Umum
 
             $data = match (true) {
                 $pengurus && blank($ijin_akses) => Arr::except($valid, ['foto_profil', 'sdm_berkas']),
-                $pengurus && !blank($ijin_akses) => Arr::except($valid, [
-                    'foto_profil', 'sdm_berkas', 'sdm_hak_akses', 'sdm_ijin_akses'
+                $pengurus && ! blank($ijin_akses) => Arr::except($valid, [
+                    'foto_profil', 'sdm_berkas', 'sdm_hak_akses', 'sdm_ijin_akses',
                 ]),
                 default => Arr::except($valid, [
-                    'foto_profil', 'sdm_berkas', 'sdm_hak_akses', 'sdm_ijin_akses', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_berhenti', 'sdm_ket_kary', 'sdm_nama_dok', 'sdm_nomor_dok', 'sdm_penerbit_dok', 'sdm_an_dok', 'sdm_kadaluarsa_dok', 'sdm_no_permintaan', 'sdm_no_absen', 'sdm_id_atasan', 'sdm_tgl_gabung', 'sdm_warganegara', 'sdm_disabilitas', 'sdm_nama_bank', 'sdm_cabang_bank', 'sdm_rek_bank', 'sdm_an_bank'
+                    'foto_profil', 'sdm_berkas', 'sdm_hak_akses', 'sdm_ijin_akses', 'sdm_tgl_berhenti', 'sdm_jenis_berhenti', 'sdm_ket_berhenti', 'sdm_ket_kary', 'sdm_nama_dok', 'sdm_nomor_dok', 'sdm_penerbit_dok', 'sdm_an_dok', 'sdm_kadaluarsa_dok', 'sdm_no_permintaan', 'sdm_no_absen', 'sdm_id_atasan', 'sdm_tgl_gabung', 'sdm_warganegara', 'sdm_disabilitas', 'sdm_nama_bank', 'sdm_cabang_bank', 'sdm_rek_bank', 'sdm_an_bank',
                 ])
             };
 
@@ -239,7 +239,7 @@ class Umum
 
             SDMCache::hapusCacheSDMUmum();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah data SDM nomor absen ' . $no_absen . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah mengubah data SDM nomor absen '.$no_absen.' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -300,7 +300,7 @@ class Umum
 
             SDMDBQuery::ubahSandiPengguna($idPenguna, $sandiBaru);
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah kata sandinya pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah mengubah kata sandinya pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -323,7 +323,7 @@ class Umum
 
         abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, ['PENGURUS', 'MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku Aplikasi.');
 
-        abort_unless($app->filesystem->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
+        abort_unless($app->filesystem->exists('contoh/unggah-umum.xlsx'), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
 
         $lingkup = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
 
@@ -344,7 +344,7 @@ class Umum
             $validasifile->validate();
 
             $file = $validasifile->safe()->only('unggah_profil_sdm')['unggah_profil_sdm'];
-            $namafile = 'unggahprofilsdm-' . date('YmdHis') . '.xlsx';
+            $namafile = 'unggahprofilsdm-'.date('YmdHis').'.xlsx';
 
             Berkas::simpanBerkasImporExcelSementara($file, $namafile);
 
@@ -375,7 +375,7 @@ class Umum
             'dokumenPengurusCabang' => match ($pengguna->sdm_hak_akses) {
                 'SDM-PENGURUS', 'SDM-MANAJEMEN' => $storage->directories('sdm/panduan-pengurus-cabang'),
                 default => null
-            }
+            },
         ];
 
         $HtmlPenuh = $app->view->make('sdm.dokumen-resmi', $data);

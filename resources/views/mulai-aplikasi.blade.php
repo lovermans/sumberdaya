@@ -6,8 +6,8 @@
             <div class="isian normal">
                 <label for="idAbsen">Nomor Absen</label>
 
-                <input id="idAbsen" name="sdm_no_absen" type="text"
-                    value="{{ $app->request->old('sdm_no_absen') }}" pattern="^[0-9]{8}$" inputmode="numeric" required>
+                <input id="idAbsen" name="sdm_no_absen" type="text" value="{{ $app->request->old('sdm_no_absen') }}" pattern="^[0-9]{8}$"
+                    inputmode="numeric" required>
 
                 <span class="t-bantu">8 digit nomor absen</span>
             </div>
@@ -46,20 +46,14 @@
         </p>
 
         <div class="pesan-internal-tindaklanjut">
-            <a class="sekunder" href="#"
-                onclick="event.preventDefault();
-            localStorage.setItem('mengerti-mulai-aplikasi', true);
-            this.parentElement.parentElement.remove()">
-                JANGAN TAMPILKAN LAGI
-            </a>
+            <a class="sekunder jtl" href="#">JANGAN TAMPILKAN LAGI</a>
         </div>
 
         <div class="bersih"></div>
     </div>
 
-    <script>
-        if (localStorage.getItem('mengerti-mulai-aplikasi') == 'true' === true) document.getElementById(
-            'mengerti-mulai-aplikasi').remove();
+    <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
+        if (localStorage.getItem('mengerti-mulai-aplikasi') == 'true' === true) document.getElementById('mengerti-mulai-aplikasi').remove();
     </script>
 @endif
 

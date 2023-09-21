@@ -113,14 +113,14 @@ class SDMDBQuery
         extract(Rangka::obyekPermintaanRangka());
 
         return $app->db->query()
-            ->addSelect('tsdm.*')
+            ->selectRaw('MAX(tsdm.tambahsdm_no) as maxno, COUNT(tsdm.tambahsdm_no) as countno')
             ->fromSub(static::ambilDBPermintaanTambahSDM(), 'tsdm')
             ->where(function ($group) {
                 $group->whereYear('tsdm.tambahsdm_dibuat', date('Y'))
                     ->whereMonth('tsdm.tambahsdm_dibuat', date('m'));
             })
             ->orWhere('tsdm.tambahsdm_no', 'like', date('Y').date('m').'%')
-            ->count();
+            ->first();
     }
 
     public static function ambilDBPengingatPermintaanTambahSDM()

@@ -18,11 +18,11 @@
                         filemtime($app->storagePath('app/sdm/foto-profil/' . $app->request->user()->sdm_no_absen . '.webp')),
                 ])
                 : $app->url->asset($app->make('Illuminate\Foundation\Mix')('/images/blank.webp')) }}"
-            title="{{ $app->request->user()->sdm_nama ?? 'foto akun' }}"
-            alt="{{ $app->request->user()->sdm_nama ?? 'foto akun' }}" @class([
+            title="{{ $app->request->user()->sdm_nama ?? 'foto akun' }}" alt="{{ $app->request->user()->sdm_nama ?? 'foto akun' }}" @class([
                 'svg' => !$app->filesystem->exists(
                     'sdm/foto-profil/' . $app->request->user()->sdm_no_absen . '.webp'),
-            ]) loading="lazy">
+            ])
+            loading="lazy">
     @endif
 @endfragment
 
@@ -46,13 +46,7 @@
             <form class="form-xhr" method="POST" action="{{ $app->url->route('logout') }}">
                 <input name="_token" type="hidden" value="{{ $app->request->session()->token() }}">
                 <button id="keluar-aplikasi" type="submit" sembunyikan></button>
-                <a href="{{ $app->url->route('logout') }}"
-                    onclick="event.preventDefault();
-                document.getElementById('sematan_umum').replaceChildren();
-                document.getElementById('nav').checked = false;
-                document.getElementById('menu').checked = false;
-                document.getElementById('pilih-aplikasi').checked = false;
-                document.getElementById('keluar-aplikasi').click()">
+                <a id="tombol-keluar-aplikasi" href="{{ $app->url->route('logout') }}">
                     <svg viewBox="0 0 24 24">
                         <use href="#ikonkeluar"></use>
                     </svg>
@@ -61,7 +55,7 @@
             </form>
         </div>
 
-        <script>
+        <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
             if (location.href.includes("{{ $app->url->route('sdm.akun', ['uuid' => $app->request->user()->sdm_uuid]) }}"))
                 cariElemen(
                     ".menu-akun a[href='{{ $app->url->route('sdm.akun', ['uuid' => $app->request->user()->sdm_uuid]) }}']")
@@ -105,7 +99,7 @@
             @endif
         </div>
 
-        <script>
+        <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
             if (location.href == "{{ $app->url->route('mulai') . '/' }}")
                 cariElemen(".menu-akun a[href='{{ $app->url->route('mulai') . '/' }}']")
                 .then((el) => {
