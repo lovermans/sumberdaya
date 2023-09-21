@@ -14,7 +14,7 @@ class RingkasHTML
         if ((strtolower(strtok($response->headers->get('Content-Type'), ';')) === 'text/html')) {
             $html = $response->getContent();
 
-            $cspHeader = "default-src 'self';style-src 'self' 'sha256-dqBsqjGdRxpoUKczu4jMO60qqbU00ssW14SzomoBs78=';script-src 'self' 'unsafe-hashes' 'unsafe-eval' 'sha256-18gd7wHgIeacD0TOmyzrY/Ixn+v2aTVEe7Qf+knExWw=' 'nonce-{$request->session()->get('sesiNonce')}' 'strict-dynamic';img-src * data:";
+            $cspHeader = "default-src 'self';style-src 'self' 'sha256-dqBsqjGdRxpoUKczu4jMO60qqbU00ssW14SzomoBs78=';script-src 'self' 'unsafe-hashes' 'sha256-18gd7wHgIeacD0TOmyzrY/Ixn+v2aTVEe7Qf+knExWw=' 'nonce-{$request->session()->get('sesiNonce')}' 'strict-dynamic';img-src * data:";
 
             if (strpos($html, '<pre>') !== false) {
                 $replace = [

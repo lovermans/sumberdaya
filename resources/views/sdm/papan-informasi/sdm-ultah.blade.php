@@ -71,11 +71,11 @@
                 </table>
             </div>
 
-            <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
+            <button class="sekunder tcetak ringkas-tabel">Panjang/Pendekkan Tampilan Tabel</button>
         </div>
     </details>
 
-    <script>
+    <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
         (async () => {
             while (!window.aplikasiSiap) {
                 await new Promise((resolve, reject) =>

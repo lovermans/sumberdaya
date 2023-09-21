@@ -46,7 +46,7 @@
         </p>
 
         <div class="pesan-internal-tindaklanjut">
-            <a class="sekunder" href="#">JANGAN TAMPILKAN LAGI</a>
+            <a class="sekunder jtl" href="#">JANGAN TAMPILKAN LAGI</a>
         </div>
 
         <div class="bersih"></div>

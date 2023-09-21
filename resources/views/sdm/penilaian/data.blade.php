@@ -297,7 +297,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan
+                    <button class="sekunder tcetak ringkas-tabel">Panjang/Pendekkan
                         Tampilan Tabel</button>
 
                     <script>
@@ -323,7 +323,7 @@
         @endisset
 
         <div class="pintasan tcetak">
-            <a href="#" title="Kembali Ke Atas" onclick="event.preventDefault();window.scrollTo(0,0)">
+            <a class="tbl-btt" href="#" title="Kembali Ke Atas">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonpanahatas"></use>
                 </svg>

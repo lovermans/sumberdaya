@@ -13,18 +13,15 @@
 
         @isset($tabels)
             <div class="cari-data tcetak">
-                <form class="form-xhr kartu" id="form_atur_data_cari" data-tujuan="#atur_tabels" data-frag="true" method="GET"
-                    action="{{ $app->url->current() }}">
+                <form class="form-xhr kartu" id="form_atur_data_cari" data-tujuan="#atur_tabels" data-frag="true" method="GET" action="{{ $app->url->current() }}">
 
                     <input name="fragment" type="hidden" value="atur_tabels">
 
-                    <details class="gspan-4"
-                        {{ $app->request->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : '' }}>
+                    <details class="gspan-4" {{ $app->request->anyFilled(['atur_jenis', 'atur_butir', 'atur_status']) ? 'open' : '' }}>
 
                         <summary class="cari">
                             <div class="isian gspan-4">
-                                <input id="kata_kunci_pengaturan" name="kata_kunci" type="text"
-                                    value="{{ $app->request->kata_kunci }}" aria-label="Cari Kata Kunci">
+                                <input id="kata_kunci_pengaturan" name="kata_kunci" type="text" value="{{ $app->request->kata_kunci }}" aria-label="Cari Kata Kunci">
 
                                 <button class="cari-cepat" id="tombol_cari_atur" type="submit" title="Cari Data">
                                     <svg viewbox="0 0 24 24">
@@ -39,8 +36,7 @@
                             <div class="isian">
                                 <label for="atur_data_cariStatus">Saring Status</label>
 
-                                <select class="pil-dasar" id="atur_data_cariStatus" name="atur_status[]" multiple
-                                    onchange="getElementById('tombol_cari_atur').click()">
+                                <select class="pil-dasar" id="atur_data_cariStatus" name="atur_status[]" multiple onchange="getElementById('tombol_cari_atur').click()">
                                     @foreach ($statuses as $status)
                                         <option @selected(in_array($status, (array) $app->request->atur_status))>
                                             {{ $status }}
@@ -54,8 +50,8 @@
                             <div class="isian">
                                 <label for="atur_data_cariJenis">1 Saring Jenis</label>
 
-                                <select class="pil-cari" id="atur_data_cariJenis" name="atur_jenis[]"
-                                    @disabled($jenises->count() < 1) multiple onchange="getElementById('tombol_cari_atur').click()">
+                                <select class="pil-cari" id="atur_data_cariJenis" name="atur_jenis[]" @disabled($jenises->count() < 1) multiple
+                                    onchange="getElementById('tombol_cari_atur').click()">
                                     @foreach ($jenises as $jenis)
                                         <option @selected(in_array($jenis, (array) $app->request->atur_jenis))>
                                             {{ $jenis }}
@@ -69,8 +65,8 @@
                             <div class="isian">
                                 <label for="atur_data_cariButir">2 Saring Butir</label>
 
-                                <select class="pil-cari" id="atur_data_cariButir" name="atur_butir[]"
-                                    @disabled($butirs->count() < 1) multiple onchange="getElementById('tombol_cari_atur').click()">
+                                <select class="pil-cari" id="atur_data_cariButir" name="atur_butir[]" @disabled($butirs->count() < 1) multiple
+                                    onchange="getElementById('tombol_cari_atur').click()">
                                     @foreach ($butirs as $butir)
                                         <option @selected(in_array($butir, (array) $app->request->atur_butir))>
                                             {{ $butir }}
@@ -120,8 +116,7 @@
                         @if ($tabels->hasPages())
                             <span class="trek">
                                 @if ($tabels->currentPage() > 1)
-                                    <a class="isi-xhr" data-tujuan="#atur_tabels" data-frag="true" href="{{ $tabels->url(1) }}"
-                                        title="Awal">
+                                    <a class="isi-xhr" data-tujuan="#atur_tabels" data-frag="true" href="{{ $tabels->url(1) }}" title="Awal">
                                         <svg viewbox="0 0 24 24">
                                             <use href="#ikonawal"></use>
                                         </svg>
@@ -129,8 +124,7 @@
                                 @endif
 
                                 @if ($tabels->previousPageUrl())
-                                    <a class="isi-xhr" data-tujuan="#atur_tabels" data-frag="true"
-                                        href="{{ $tabels->previousPageUrl() }}" title="Sebelumnya">
+                                    <a class="isi-xhr" data-tujuan="#atur_tabels" data-frag="true" href="{{ $tabels->previousPageUrl() }}" title="Sebelumnya">
                                         <svg viewbox="0 0 24 24">
                                             <use href="#ikonmundur"></use>
                                         </svg>
@@ -138,15 +132,13 @@
                                 @endif
 
                                 @if ($tabels->nextPageUrl())
-                                    <a class="isi-xhr" data-tujuan="#atur_tabels" data-frag="true"
-                                        href="{{ $tabels->nextPageUrl() }}" title="Berikutnya">
+                                    <a class="isi-xhr" data-tujuan="#atur_tabels" data-frag="true" href="{{ $tabels->nextPageUrl() }}" title="Berikutnya">
                                         <svg viewbox="0 0 24 24">
                                             <use href="#ikonmaju"></use>
                                         </svg>
                                     </a>
 
-                                    <a class="isi-xhr" data-tujuan="#atur_tabels" data-frag="true"
-                                        href="{{ $tabels->url($tabels->lastPage()) }}" title="Akhir">
+                                    <a class="isi-xhr" data-tujuan="#atur_tabels" data-frag="true" href="{{ $tabels->url($tabels->lastPage()) }}" title="Akhir">
                                         <svg viewbox="0 0 24 24">
                                             <use href="#ikonakhir"></use>
                                         </svg>
@@ -163,8 +155,8 @@
                                     <label for="atur_data_cariUrutJenis">{{ $urutJenis ? $indexJenis . '. ' : '' }}Urut
                                         Jenis</label>
 
-                                    <select class="pil-dasar" id="atur_data_cariUrutJenis" name="urut[]"
-                                        form="form_atur_data_cari" onchange="getElementById('tombol_cari_atur').click()">
+                                    <select class="pil-dasar" id="atur_data_cariUrutJenis" name="urut[]" form="form_atur_data_cari"
+                                        onchange="getElementById('tombol_cari_atur').click()">
                                         <option selected disabled></option>
 
                                         <option value="atur_jenis ASC" @selected(in_array('atur_jenis ASC', (array) $app->request->urut))>
@@ -183,8 +175,8 @@
                                     <label for="atur_data_cariUrutButir">{{ $urutButir ? $indexButir . '. ' : '' }}Urut
                                         Butir</label>
 
-                                    <select class="pil-dasar" id="atur_data_cariUrutButir" name="urut[]"
-                                        form="form_atur_data_cari" onchange="getElementById('tombol_cari_atur').click()">
+                                    <select class="pil-dasar" id="atur_data_cariUrutButir" name="urut[]" form="form_atur_data_cari"
+                                        onchange="getElementById('tombol_cari_atur').click()">
                                         <option selected disabled></option>
 
                                         <option value="atur_butir ASC" @selected(in_array('atur_butir ASC', (array) $app->request->urut))>
@@ -203,8 +195,8 @@
                                     <label for="atur_data_cariUrutStatus">{{ $urutStatus ? $indexStatus . '. ' : '' }}Urut
                                         Status</label>
 
-                                    <select class="pil-dasar" id="atur_data_cariUrutStatus" name="urut[]"
-                                        form="form_atur_data_cari" onchange="getElementById('tombol_cari_atur').click()">
+                                    <select class="pil-dasar" id="atur_data_cariUrutStatus" name="urut[]" form="form_atur_data_cari"
+                                        onchange="getElementById('tombol_cari_atur').click()">
                                         <option selected disabled></option>
 
                                         <option value="atur_status ASC" @selected(in_array('atur_status ASC', (array) $app->request->urut))>
@@ -240,8 +232,7 @@
                                     <tr @class(['merah' => $tabel->atur_status == 'NON-AKTIF'])>
                                         <th>
                                             <div class="pil-aksi">
-                                                <button id="{{ 'aksi_penempatan_baris_' . $tabels->firstItem() + $nomor }}"
-                                                    title="Pilih Tindakan">
+                                                <button id="{{ 'aksi_penempatan_baris_' . $tabels->firstItem() + $nomor }}" title="Pilih Tindakan">
                                                     <svg viewbox="0 0 24 24">
                                                         <use href="#ikonmenuvert">
                                                         </use>
@@ -250,14 +241,12 @@
 
                                                 <div class="aksi">
                                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan"
-                                                        href="{{ $app->url->route('atur.lihat', ['uuid' => $tabel->atur_uuid]) }}"
-                                                        title="Lihat Data">
+                                                        href="{{ $app->url->route('atur.lihat', ['uuid' => $tabel->atur_uuid]) }}" title="Lihat Data">
                                                         Lihat Data
                                                     </a>
 
                                                     <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan"
-                                                        href="{{ $app->url->route('atur.ubah', ['uuid' => $tabel->atur_uuid]) }}"
-                                                        title="Ubah Data">
+                                                        href="{{ $app->url->route('atur.ubah', ['uuid' => $tabel->atur_uuid]) }}" title="Ubah Data">
                                                         Ubah Data
                                                     </a>
 
@@ -285,7 +274,7 @@
                         </table>
                     </div>
 
-                    <button class="sekunder tcetak" onclick="ringkasTabel(this)">Panjang/Pendekkan Tampilan Tabel</button>
+                    <button class="sekunder tcetak ringkas-tabel">Panjang/Pendekkan Tampilan Tabel</button>
 
                     <script>
                         (async () => {
@@ -310,14 +299,13 @@
         @endisset
 
         <div class="pintasan tcetak">
-            <a href="#" title="Kembali Ke Atas" onclick="event.preventDefault();window.scrollTo(0,0)">
+            <a class="tbl-btt" href="#" title="Kembali Ke Atas">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonpanahatas"></use>
                 </svg>
             </a>
 
-            <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan"
-                href="{{ $app->url->route('atur.unggah') }}" title="Unggah Data">
+            <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $app->url->route('atur.unggah') }}" title="Unggah Data">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonunggah"></use>
                 </svg>
@@ -330,8 +318,7 @@
                 </svg>
             </a>
 
-            <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan"
-                href="{{ $app->url->route('atur.tambah') }}" title="Tambah Data">
+            <a class="isi-xhr" data-rekam="false" data-tujuan="#atur_sematan" href="{{ $app->url->route('atur.tambah') }}" title="Tambah Data">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikontambah"></use>
                 </svg>

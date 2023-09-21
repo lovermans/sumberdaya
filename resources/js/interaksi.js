@@ -85,11 +85,30 @@ document.addEventListener('click', function (e) {
         e.stopImmediatePropagation();
         return e.target.closest('a.tutup-i').parentNode.parentNode.parentNode.remove();
     }
-    if (e.target.closest('.pesan-internal-tindaklanjut a')) {
+    if (e.target.closest('.pesan-internal-tindaklanjut a.jtl')) {
         e.stopImmediatePropagation();
         e.preventDefault();
         localStorage.setItem('mengerti-mulai-aplikasi', true);
-        e.target.closest('.pesan-internal-tindaklanjut a').parentElement.parentElement.remove();
+        e.target.closest('.pesan-internal-tindaklanjut a.jtl').parentElement.parentElement.remove();
+    }
+    if (e.target.closest('#tombol-keluar-aplikasi')) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        document.getElementById('sematan_umum').replaceChildren();
+        document.getElementById('nav').checked = false;
+        document.getElementById('menu').checked = false;
+        document.getElementById('pilih-aplikasi').checked = false;
+        document.getElementById('keluar-aplikasi').click();
+    }
+    if (e.target.closest('.tbl-btt')) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        window.scrollTo(0, 0);
+    }
+    if (e.target.closest('button.ringkas-tabel')) {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        e.previousElementSibling.classList.toggle('ringkas');
     }
 });
 
