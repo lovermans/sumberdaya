@@ -633,6 +633,7 @@ class SDMDBQuery
     public static function ambilStatistikPenempatanSDM($lingkupIjin)
     {
         return static::dasarPenempatanSDM()
+            ->whereNotNull('sdm_uuid')
             ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 $query->whereIn('penempatan_lokasi', $lingkupIjin);
             })
