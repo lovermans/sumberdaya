@@ -122,7 +122,7 @@
         </div>
 
         <div class="pintasan tcetak">
-            <a href="#" title="Kembali Ke Atas" class="tbl-btt">
+            <a class="tbl-btt" href="#" title="Kembali Ke Atas">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonpanahatas"></use>
                 </svg>

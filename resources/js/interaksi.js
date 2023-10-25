@@ -89,7 +89,7 @@ document.addEventListener('click', function (e) {
         e.stopImmediatePropagation();
         e.preventDefault();
         localStorage.setItem('mengerti-mulai-aplikasi', true);
-        e.target.closest('.pesan-internal-tindaklanjut a.jtl').parentElement.parentElement.remove();
+        return e.target.closest('.pesan-internal-tindaklanjut a.jtl').parentElement.parentElement.remove();
     }
     if (e.target.closest('#tombol-keluar-aplikasi')) {
         e.stopImmediatePropagation();
@@ -98,17 +98,17 @@ document.addEventListener('click', function (e) {
         document.getElementById('nav').checked = false;
         document.getElementById('menu').checked = false;
         document.getElementById('pilih-aplikasi').checked = false;
-        document.getElementById('keluar-aplikasi').click();
+        return document.getElementById('keluar-aplikasi').click();
     }
     if (e.target.closest('.tbl-btt')) {
         e.stopImmediatePropagation();
         e.preventDefault();
-        window.scrollTo(0, 0);
+        return window.scrollTo(0, 0);
     }
     if (e.target.closest('button.ringkas-tabel')) {
         e.stopImmediatePropagation();
         e.preventDefault();
-        e.target.closest('button.ringkas-tabel').previousElementSibling.classList.toggle('ringkas');
+        return e.target.closest('button.ringkas-tabel').previousElementSibling.classList.toggle('ringkas');
     }
 });
 
@@ -137,6 +137,7 @@ document.addEventListener('submit', function (e) {
             ke += '?' + new URLSearchParams(data).toString();
             var rekam = a.dataset.rekam,
                 simpan = rekam == 'false' ? false : true;
+
             return lemparXHR({
                 rekam: simpan,
                 tujuan: alamat,
@@ -155,6 +156,7 @@ document.addEventListener('submit', function (e) {
         if (metode == 'POST') {
             var rekam = a.dataset.rekam,
                 simpan = rekam == 'true' ? true : false;
+
             return lemparXHR({
                 rekam: simpan,
                 tujuan: alamat,
@@ -318,8 +320,7 @@ function responUmum(data) {
         if (data.responHtml) {
             rekamTautan({ tautan: data.responUrl });
         } else {
-            location = data.responUrl;
-            return true;
+            return location.replace(data.responUrl);
         }
     };
 
@@ -343,14 +344,9 @@ function responUmum(data) {
                     : data.isi.replaceChildren(range.createContextualFragment(data.responXHR))
             );
 
-        data.muat.classList.add('mati');
-
-        return true;
-
+        return data.muat.classList.add('mati');
     } else {
-        data.muat.classList.add('mati');
-
-        return;
+        return data.muat.classList.add('mati');
     };
 };
 
@@ -361,7 +357,8 @@ function rekamTautan(data) {
     var segmen = new URL(data.tautan).pathname.split('/');
     var judul = segmen[1] ? judulHal + ' - ' + segmen.join(' ') : judulHal;
     document.title = judul;
-    history.pushState({
+
+    return history.pushState({
         'tujuan': data.tujuan ?? null,
         'rute': data.tautan,
         'metode': data.method ?? 'GET',
@@ -375,7 +372,7 @@ function rekamTautan(data) {
 
 window.onpopstate = function (p) {
     if (p.state?.rute) {
-        lemparXHR({
+        return lemparXHR({
             tujuan: p.state.tujuan,
             tautan: p.state.rute,
             method: p.state.metode,
@@ -385,16 +382,14 @@ window.onpopstate = function (p) {
             normalview: p.state.normalview,
             tanam: p.state.tanam
         });
-    } else {
-        location.reload();
-    };
+    }
 };
 
 window.isiPemberitahuan = function (a, b) {
     var f = document.getElementById(a);
     if (f) {
         b ? f.append(range.createContextualFragment(b)) : f.replaceChildren(range.createContextualFragment(b));
-        f.scrollIntoView();
+        return f.scrollIntoView();
     }
 };
 

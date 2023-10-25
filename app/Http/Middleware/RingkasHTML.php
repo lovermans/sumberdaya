@@ -16,7 +16,7 @@ class RingkasHTML
 
             $cspHeaderBasic = "default-src 'self' 'unsafe-inline';img-src 'self' * data:";
 
-            // $cspHeaderStrict = "default-src 'self';style-src 'self' 'sha256-dqBsqjGdRxpoUKczu4jMO60qqbU00ssW14SzomoBs78=';script-src 'self' 'unsafe-eval' 'unsafe-hashes' 'sha256-18gd7wHgIeacD0TOmyzrY/Ixn+v2aTVEe7Qf+knExWw=' 'nonce-{$request->session()->get('sesiNonce')}' 'strict-dynamic';img-src * data:";
+            // $cspHeaderStrict = "default-src 'self';style-src 'self' 'sha256-dqBsqjGdRxpoUKczu4jMO60qqbU00ssW14SzomoBs78=';script-src 'self' 'unsafe-hashes' 'sha256-18gd7wHgIeacD0TOmyzrY/Ixn+v2aTVEe7Qf+knExWw=' 'nonce-{$request->session()->get('sesiNonce')}' 'strict-dynamic' 'unsafe-inline' http: https:; object-src 'self'; base-uri 'none';img-src * data:";
 
             if (strpos($html, '<pre>') !== false) {
                 $replace = [
