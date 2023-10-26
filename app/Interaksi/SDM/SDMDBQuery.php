@@ -1716,12 +1716,13 @@ class SDMDBQuery
         extract(Rangka::obyekPermintaanRangka());
 
         return static::ambilLaporanPelanggaranSDM()
+            ->selectRaw('MAX(langgar_lap_no) as maxno, COUNT(langgar_lap_no) as countno')
             ->where(function ($group) {
                 $group->whereYear('langgar_dibuat', date('Y'))
                     ->whereMonth('langgar_dibuat', date('m'));
             })
             ->orWhere('langgar_lap_no', 'like', date('Y').date('m').'%')
-            ->count();
+            ->first();
     }
 
     public static function ambilIDTambahPenempatanSDM($lingkupIjin, $uuid)

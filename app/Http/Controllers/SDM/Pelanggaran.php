@@ -6,11 +6,11 @@ use App\Interaksi\Cache;
 use App\Interaksi\Rangka;
 use App\Interaksi\SDM\SDMBerkas;
 use App\Interaksi\SDM\SDMCache;
-use Illuminate\Support\Arr;
-use App\Interaksi\SDM\SDMValidasi;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMExcel;
+use App\Interaksi\SDM\SDMValidasi;
 use App\Interaksi\Websoket;
+use Illuminate\Support\Arr;
 
 class Pelanggaran
 {
@@ -26,7 +26,7 @@ class Pelanggaran
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.pelanggaran.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $kataKunci = $reqs->kata_kunci;
         $urutArray = $reqs->urut;
@@ -54,17 +54,17 @@ class Pelanggaran
             'indexNomor' => (head(array_keys($kunciUrut, 'langgar_lap_no ASC')) + head(array_keys($kunciUrut, 'langgar_lap_no DESC')) + 1),
             'halamanAkun' => $uuid ?? '',
             'jumlahOS' => $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'like', 'OS-%')->count(),
-            'jumlahOrganik' => $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'not like', 'OS-%')->count()
+            'jumlahOrganik' => $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'not like', 'OS-%')->count(),
         ];
 
-        if (!isset($uuid)) {
+        if (! isset($uuid)) {
             $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
         }
 
         $HtmlPenuh = $app->view->make('sdm.pelanggaran.data', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
 
-        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        return $reqs->pjax() && (! $reqs->filled('fragment') || ! $reqs->header('X-Frag', false))
             ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
             : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
@@ -99,13 +99,19 @@ class Pelanggaran
 
             $hitungNomor = SDMDBQuery::ambilUrutanPelanggaranSDM();
 
-            $urutanLaporan = $hitungNomor + 1;
+            $maxno = $hitungNomor->maxno ? (intval($hitungNomor->maxno) - (intval(date('Y').date('m')) * 10000)) : 0;
 
-            $jmlTerlapor = count($reqs->langgar_no_absen) + $hitungNomor;
+            $urutMax = max($maxno, $hitungNomor->countno);
+
+            $urutanLaporan = $urutMax + 1;
+
+            $jmlSDMTerlapor = count($reqs->langgar_no_absen);
+
+            $jmlTerlapor = $jmlSDMTerlapor + $urutMax;
 
             $dataMap = array_map(function ($x, $y) use ($reqs) {
                 return ['langgar_no_absen' => $x]
-                    + ['langgar_lap_no' => date('Y') . date('m') . str($y)->padLeft(4, '0')]
+                    + ['langgar_lap_no' => date('Y').date('m').str($y)->padLeft(4, '0')]
                     + ['langgar_pelapor' => $reqs->langgar_pelapor]
                     + ['langgar_tanggal' => $reqs->langgar_tanggal]
                     + ['langgar_status' => 'DIPROSES']
@@ -113,6 +119,8 @@ class Pelanggaran
                     + ['langgar_keterangan' => $reqs->langgar_keterangan]
                     + ['langgar_id_pembuat' => $reqs->user()->sdm_no_absen];
             }, $reqs->langgar_no_absen, range($urutanLaporan, $jmlTerlapor));
+
+            dd($dataMap);
 
             $validasi = SDMValidasi::validasiTambahDataLapPelanggaranSDM($dataMap);
 
@@ -134,7 +142,7 @@ class Pelanggaran
 
             SDMCache::hapusCachePelanggaranSDMTerkini();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah menambah ' . $jmlTerlapor . ' laporan pelanggaran SDM baru pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah menambah '.$jmlSDMTerlapor.' laporan pelanggaran SDM baru pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -211,7 +219,7 @@ class Pelanggaran
             SDMDBQuery::ubahDataLapPelanggaranSDM($valid, $uuid);
 
             $nomorLaporan = $langgar->langgar_lap_no;
-            $berkas =  $validasiBerkas->validated()['berkas_laporan'] ?? false;
+            $berkas = $validasiBerkas->validated()['berkas_laporan'] ?? false;
 
             if ($berkas) {
                 SDMBerkas::simpanBerkasLapPelanggaranSDM($berkas, $nomorLaporan);
@@ -219,7 +227,7 @@ class Pelanggaran
 
             SDMCache::hapusCachePelanggaranSDMTerkini();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah laporan pelanggaran SDM nomor ' . $nomorLaporan . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah mengubah laporan pelanggaran SDM nomor '.$nomorLaporan.' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -227,6 +235,7 @@ class Pelanggaran
 
             if ($reqs->header('X-Minta-Javascript', false)) {
                 $session->now('pesan', $pesan);
+
                 return view('pemberitahuan');
             }
 
