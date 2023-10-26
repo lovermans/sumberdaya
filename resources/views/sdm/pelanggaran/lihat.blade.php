@@ -82,7 +82,12 @@
                 @unless ($langgar->final_sanksi_jenis)
                     <a class="utama isi-xhr" data-rekam="false" data-tujuan="#pelanggaran_sdm_lihat_sematan"
                         href="{{ $app->url->route('sdm.pelanggaran.ubah', ['uuid' => $langgar->langgar_uuid]) }}">
-                        UBAH LAPORAN PELANGGARAN
+                        UBAH LAPORAN
+                    </a>
+
+                    <a class="sekunder isi-xhr" data-rekam="false" data-tujuan="#pelanggaran_sdm_lihat_sematan"
+                        href="{{ $app->url->route('sdm.pelanggaran.hapus', ['uuid' => $langgar->langgar_uuid]) }}">
+                        HAPUS LAPORAN
                     </a>
                 @endunless
 

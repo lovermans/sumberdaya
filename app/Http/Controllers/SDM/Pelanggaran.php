@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\SDM;
 
 use App\Interaksi\Cache;
+use App\Interaksi\Excel;
 use App\Interaksi\Rangka;
 use App\Interaksi\SDM\SDMBerkas;
 use App\Interaksi\SDM\SDMCache;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMExcel;
 use App\Interaksi\SDM\SDMValidasi;
+use App\Interaksi\Validasi;
 use App\Interaksi\Websoket;
 use Illuminate\Support\Arr;
 
@@ -119,8 +121,6 @@ class Pelanggaran
                     + ['langgar_keterangan' => $reqs->langgar_keterangan]
                     + ['langgar_id_pembuat' => $reqs->user()->sdm_no_absen];
             }, $reqs->langgar_no_absen, range($urutanLaporan, $jmlTerlapor));
-
-            dd($dataMap);
 
             $validasi = SDMValidasi::validasiTambahDataLapPelanggaranSDM($dataMap);
 
@@ -252,6 +252,64 @@ class Pelanggaran
         ];
 
         $HtmlPenuh = $app->view->make('sdm.pelanggaran.tambah-ubah', $data);
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
+    }
+
+    public function hapus($uuid = null)
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+
+        $langgar = SDMDBQuery::ambilPelanggaran_SanksiSDM($uuid, $lingkupIjin);
+
+        abort_unless($langgar, 404, 'Data Laporan Pelanggaran SDM tidak ditemukan.');
+
+        if ($reqs->isMethod('post')) {
+            abort_unless($app->filesystem->exists('contoh/data-dihapus.xlsx'), 404, 'Berkas riwayat penghapusan tidak ditemukan.');
+
+            $reqs->merge(['id_penghapus' => $pengguna->sdm_no_absen, 'waktu_dihapus' => $app->date->now()]);
+
+            $validasi = Validasi::validasiHapusDataDB($reqs->all());
+
+            $validasi->validate();
+
+            $dataValid = $validasi->validated();
+
+            Excel::cadangkanPenghapusanDatabase([
+                'Laporan Pelanggaran SDM',
+                collect($langgar)->toJson(),
+                $dataValid['id_penghapus'],
+                $dataValid['waktu_dihapus']->format('Y-m-d H:i:s'),
+                $dataValid['alasan'],
+            ]);
+
+            SDMDBQuery::hapusDataPermintaanTambahSDM($uuid);
+
+            SDMBerkas::hapusBerkasPermintaanTambahSDM($langgar->langgar_lap_no);
+
+            SDMCache::hapusCachePelanggaranSDMTerkini();
+
+            $pesanSoket = $pengguna?->sdm_nama.' telah menghapus data Laporan Pelanggaran SDM nomor '.$langgar->langgar_lap_no.' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
+
+            $perujuk = $reqs->session()->get('tautan_perujuk');
+            $pesan = 'Data berhasil dihapus';
+            $redirect = $app->redirect;
+
+            return $perujuk
+                ? $redirect->to($perujuk)->with('pesan', $pesan)
+                : $redirect->route('sdm.pelanggaran.data')->with('pesan', $pesan);
+        }
+
+        $HtmlPenuh = $app->view->make('sdm.pelanggaran.hapus', compact('langgar'));
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
 
         return $reqs->pjax()

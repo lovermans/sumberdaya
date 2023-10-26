@@ -220,6 +220,13 @@ class SDMDBQuery
         $app->db->table('tambahsdms')->where('tambahsdm_uuid', $uuid)->delete();
     }
 
+    public static function hapusDataLapPelanggaranSDM($uuid)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('pelanggaransdms')->where('langgar_uuid', $uuid)->delete();
+    }
+
     public static function hapusDataSanksiSDM($uuid)
     {
         extract(Rangka::obyekPermintaanRangka());
