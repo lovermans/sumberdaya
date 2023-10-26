@@ -290,7 +290,7 @@ class Pelanggaran
                 $dataValid['alasan'],
             ]);
 
-            SDMDBQuery::hapusDataPermintaanTambahSDM($uuid);
+            SDMDBQuery::hapusDataLapPelanggaranSDM($uuid);
 
             SDMBerkas::hapusBerkasPermintaanTambahSDM($langgar->langgar_lap_no);
 
