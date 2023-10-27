@@ -62,6 +62,15 @@
         </a>
     </div>
 
+    <div class="menu-t">
+        <a class="nav-xhr" href="{{ $app->url->route('sdm.penilaian.data') }}">
+            <svg viewBox="0 0 24 24">
+                <use href="#ikonpenilaianberkala"></use>
+            </svg>
+            Kepuasan SDM
+        </a>
+    </div>
+
     <div class="menu-j pelanggaran-sdm">
         <svg viewBox="0 0 24 24">
             <use href="#ikonpelanggaran"></use>

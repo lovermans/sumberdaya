@@ -1,4 +1,5 @@
 <?php
+
 $route = app('router');
 
 $route->get('/', 'Umum@mulai')->name('mulai');
@@ -18,10 +19,10 @@ $route->get('/formulir-ttinventaris/{uuid?}', 'Umum@formulirTTInventaris')->name
 $route->get('/formulir-pelepasan-sdm/{uuid?}', 'Umum@formulirPelepasanSDM')->name('formulir-pelepasan-sdm');
 $route->get('/surat-keterangan-sdm/{uuid?}', 'Umum@suratKeteranganSDM')->name('surat-keterangan-sdm');
 
-
 $route->group(['prefix' => 'permintaan-tambah-sdm', 'as' => 'permintaan-tambah-sdm.'], base_path('routes/sdm/permintaan-tambah-sdm.php'));
 $route->group(['prefix' => 'posisi', 'as' => 'posisi.'], base_path('routes/sdm/posisi.php'));
 $route->group(['prefix' => 'penempatan', 'as' => 'penempatan.'], base_path('routes/sdm/penempatan.php'));
 $route->group(['prefix' => 'sanksi', 'as' => 'sanksi.'], base_path('routes/sdm/sanksi.php'));
 $route->group(['prefix' => 'pelanggaran', 'as' => 'pelanggaran.'], base_path('routes/sdm/pelanggaran.php'));
 $route->group(['prefix' => 'penilaian', 'as' => 'penilaian.'], base_path('routes/sdm/penilaian.php'));
+$route->group(['prefix' => 'kepuasan', 'as' => 'kepuasan.'], base_path('routes/sdm/kepuasan.php'));
