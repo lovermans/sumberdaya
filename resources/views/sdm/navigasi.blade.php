@@ -63,9 +63,9 @@
     </div>
 
     <div class="menu-t">
-        <a class="nav-xhr" href="{{ $app->url->route('sdm.penilaian.data') }}">
+        <a class="nav-xhr" href="{{ $app->url->route('sdm.kepuasan.data') }}">
             <svg viewBox="0 0 24 24">
-                <use href="#ikonpenilaianberkala"></use>
+                <use href="#ikonsenyum"></use>
             </svg>
             Kepuasan SDM
         </a>
