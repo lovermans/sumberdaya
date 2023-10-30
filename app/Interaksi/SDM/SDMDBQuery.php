@@ -1803,4 +1803,91 @@ class SDMDBQuery
             ->where('sdm_uuid', $uuid)
             ->first();
     }
+
+    public static function ambilKepuasanSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->db->query()
+            ->select(
+                'surveysdm_uuid',
+                'surveysdm_no_absen',
+                'surveysdm_tahun',
+                'surveysdm_1',
+                'surveysdm_2',
+                'surveysdm_3',
+                'surveysdm_4',
+                'surveysdm_5',
+                'surveysdm_6',
+                'surveysdm_7',
+                'surveysdm_8',
+                'surveysdm_9',
+                'surveysdm_10',
+                'surveysdm_skor',
+                'surveysdm_saran',
+                'surveysdm_keterangan'
+            )
+            ->from('kepuasansdms');
+    }
+
+    public static function ambilDBKepuasanSDM()
+    {
+        return static::ambilPenilaianSDM()
+            ->addSelect(
+                'sdm_uuid',
+                'sdm_nama',
+                'sdm_tgl_berhenti',
+                'penempatan_posisi',
+                'penempatan_lokasi',
+                'penempatan_kontrak',
+            )
+            ->leftJoin('sdms', 'surveysdm_no_absen', '=', 'sdm_no_absen')
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
+                $join->on('surveysdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            });
+    }
+
+    public static function cariKepuasanSDM($permintaan, $kataKunci, $uuid, $lingkupIjin, $uruts)
+    {
+        return static::ambilDBKepuasanSDM()
+            ->when($permintaan->surveysdm_penempatan, function ($query) use ($permintaan) {
+                $query->where(function ($group) use ($permintaan) {
+                    $group->whereIn('kontrak.penempatan_lokasi', (array) $permintaan->surveysdm_penempatan);
+                });
+            })
+            ->when($permintaan->surveysdm_kontrak, function ($query) use ($permintaan) {
+                $query->where(function ($group) use ($permintaan) {
+                    $group->whereIn('kontrak.penempatan_kontrak', (array) $permintaan->surveysdm_kontrak);
+                });
+            })
+            ->when($permintaan->surveysdm_tahun, function ($query) use ($permintaan) {
+                $query->where(function ($group) use ($permintaan) {
+                    $group->whereIn('surveysdm_tahun', (array) $permintaan->surveysdm_tahun);
+                });
+            })
+            ->when($kataKunci, function ($query, $kataKunci) {
+                $query->where(function ($group) use ($kataKunci) {
+                    $group->where('surveysdm_no_absen', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('sdm_nama', 'like', '%'.$kataKunci.'%')
+                        ->orWhere('surveysdm_keterangan', 'like', '%'.$kataKunci.'%');
+                });
+            })
+            ->when($uuid, function ($query) use ($uuid) {
+                $query->where('sdm_uuid', $uuid);
+            })
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('kontrak.penempatan_lokasi', $lingkupIjin);
+                });
+            })
+            ->when(
+                $uruts,
+                function ($query, $uruts) {
+                    $query->orderByRaw($uruts);
+                },
+                function ($query) {
+                    $query->orderBy('kepuasansdms.id', 'desc');
+                }
+            );
+    }
 }

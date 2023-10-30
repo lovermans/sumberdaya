@@ -17,7 +17,7 @@ class SDMValidasi
                 '*.sdm_no_absen' => ['required', 'string', 'max:10', 'unique:sdms,sdm_no_absen'],
                 '*.password' => ['required', 'string'],
                 '*.sdm_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...Arr::except(static::dasarValidasiSDM(), ['*.sdm_tgl_berhenti', '*.sdm_jenis_berhenti', '*.sdm_ket_berhenti'])
+                ...Arr::except(static::dasarValidasiSDM(), ['*.sdm_tgl_berhenti', '*.sdm_jenis_berhenti', '*.sdm_ket_berhenti']),
             ],
             static::pesanKesalahanValidasiSDM()
         );
@@ -32,7 +32,7 @@ class SDMValidasi
                 '*.sdm_hak_akses' => ['sometimes', 'nullable', 'string'],
                 '*.sdm_ijin_akses' => ['sometimes', 'nullable', 'string'],
                 '*.sdm_id_pengubah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...static::dasarValidasiSDM()
+                ...static::dasarValidasiSDM(),
             ],
             static::pesanKesalahanValidasiSDM()
         );
@@ -61,7 +61,7 @@ class SDMValidasi
                 '*.sdm_no_absen' => ['required', 'string', 'max:10'],
                 '*.sdm_diunggah' => ['required', 'date'],
                 '*.sdm_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...Arr::except(static::dasarValidasiSDM(), ['*.foto_profil', '*.sdm_berkas'])
+                ...Arr::except(static::dasarValidasiSDM(), ['*.foto_profil', '*.sdm_berkas']),
             ],
             static::pesanKesalahanValidasiSDM()
         );
@@ -72,10 +72,10 @@ class SDMValidasi
         return Validasi::validasiUmum(
             $permintaan,
             [
-                'unggah_profil_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+                'unggah_profil_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
             ],
             [
-                'unggah_profil_sdm.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).'
+                'unggah_profil_sdm.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).',
             ]
         );
     }
@@ -227,7 +227,7 @@ class SDMValidasi
             '*.kata_kunci.*' => 'Kata Kunci Pencarian wajib berupa karakter.',
             '*.bph.*' => 'Baris Per halaman wajib sesuai daftar.',
             '*.urut.*' => 'Butir Pengaturan urutan ke-:position wajib berupa karakter.',
-            '*.unduh.*' => 'Parameter Pencarian Unduhan urutan ke-:position tidak sesuai daftar.'
+            '*.unduh.*' => 'Parameter Pencarian Unduhan urutan ke-:position tidak sesuai daftar.',
         ];
     }
 
@@ -253,7 +253,7 @@ class SDMValidasi
             '*.posisi_wlkp.*' => 'Kode WLKP Jabatan urutan ke-:position wajib berupa karakter panjang maksimal 40 karakter.',
             '*.posisi_keterangan.*' => 'Keterangan Jabatan urutan ke-:position wajib berupa karakter panjang maksimal 40 karakter.',
             '*.posisi_status.*' => 'Status Jabatan urutan ke-:position wajib berupa karakter terdaftar.',
-            '*.posisi_diunggah.*' => 'Waktu Unggah baris ke-:position wajib berupa tanggal.'
+            '*.posisi_diunggah.*' => 'Waktu Unggah baris ke-:position wajib berupa tanggal.',
         ];
     }
 
@@ -265,7 +265,7 @@ class SDMValidasi
                 ...static::dasarValidasiPencarianSDM(),
                 '*.posisi_status.*' => ['sometimes', 'nullable', 'string', Rule::in(['AKTIF', 'NON-AKTIF'])],
                 '*.penempatan_lokasi.*' => ['sometimes', 'nullable', 'string'],
-                '*.penempatan_kontrak.*' => ['sometimes', 'nullable', 'string']
+                '*.penempatan_kontrak.*' => ['sometimes', 'nullable', 'string'],
             ],
             [
                 ...static::pesanKesalahanValidasiPencarianSDM(),
@@ -283,7 +283,7 @@ class SDMValidasi
             [
                 '*.posisi_nama' => ['required', 'string', 'unique:posisis,posisi_nama'],
                 '*.posisi_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...static::dasarValidasiPosisiSDM()
+                ...static::dasarValidasiPosisiSDM(),
             ],
             static::pesanKesalahanValidasiPosisiSDM()
         );
@@ -296,7 +296,7 @@ class SDMValidasi
             [
                 '*.posisi_nama' => ['required', 'string', 'max:40', Rule::unique('posisis')->where(fn ($query) => $query->whereNot('posisi_uuid', $uuid))],
                 '*.posisi_id_pengubah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...static::dasarValidasiPosisiSDM()
+                ...static::dasarValidasiPosisiSDM(),
             ],
             static::pesanKesalahanValidasiPosisiSDM()
         );
@@ -307,10 +307,10 @@ class SDMValidasi
         return Validasi::validasiUmum(
             $permintaan,
             [
-                'posisi_unggah' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+                'posisi_unggah' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
             ],
             [
-                'posisi_unggah.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).'
+                'posisi_unggah.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).',
             ]
         );
     }
@@ -320,10 +320,10 @@ class SDMValidasi
         return Validasi::validasiUmum(
             $permintaan,
             [
-                'unggah_sanksi_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+                'unggah_sanksi_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
             ],
             [
-                'unggah_sanksi_sdm.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).'
+                'unggah_sanksi_sdm.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).',
             ]
         );
     }
@@ -333,10 +333,10 @@ class SDMValidasi
         return Validasi::validasiUmum(
             $permintaan,
             [
-                'unggah_nilai_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+                'unggah_nilai_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
             ],
             [
-                'unggah_nilai_sdm.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).'
+                'unggah_nilai_sdm.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).',
             ]
         );
     }
@@ -346,10 +346,10 @@ class SDMValidasi
         return Validasi::validasiUmum(
             $permintaan,
             [
-                'unggah_penempatan_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+                'unggah_penempatan_sdm' => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
             ],
             [
-                'unggah_penempatan_sdm.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).'
+                'unggah_penempatan_sdm.*' => 'Berkas yang diunggah wajib berupa file excel (.xlsx).',
             ]
         );
     }
@@ -362,7 +362,7 @@ class SDMValidasi
                 '*.posisi_nama' => ['required', 'string', 'max:40'],
                 '*.posisi_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 '*.posisi_diunggah' => ['sometimes', 'nullable', 'date'],
-                ...static::dasarValidasiPosisiSDM()
+                ...static::dasarValidasiPosisiSDM(),
             ],
             static::pesanKesalahanValidasiPosisiSDM()
         );
@@ -436,7 +436,7 @@ class SDMValidasi
             [
                 '*.tambahsdm_no' => ['required', 'string', 'max:20', 'unique:tambahsdms,tambahsdm_no'],
                 '*.tambahsdm_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...static::dasarValidasiPermintaanTambahSDM()
+                ...static::dasarValidasiPermintaanTambahSDM(),
             ],
             static::pesanKesalahanValidasiPermintaanTambahSDM()
         );
@@ -498,7 +498,7 @@ class SDMValidasi
             ],
             [
                 ...static::pesanKesalahanValidasiPencarianSDM(),
-                ...static::pesanKesalahanValidasiLapPelanggaranSDM()
+                ...static::pesanKesalahanValidasiLapPelanggaranSDM(),
             ]
         );
     }
@@ -582,7 +582,7 @@ class SDMValidasi
             [
                 '*.sanksi_id_pengubah' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 '*.sanksi_lap_no' => ['sometimes', 'string', 'max:20', 'unique:sanksisdms,sanksi_lap_no'],
-                ...static::dasarValidasiSanksiSDM()
+                ...static::dasarValidasiSanksiSDM(),
             ],
             static::pesanKesalahanValidasiSanksiSDM()
         );
@@ -596,7 +596,7 @@ class SDMValidasi
                 '*.sanksi_lap_no' => ['required', 'string', 'max:20', 'unique:sanksisdms,sanksi_lap_no'],
                 '*.sanksi_id_pembuat' => ['sometimes', 'nullable', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 '*.sanksi_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...static::dasarValidasiSanksiSDM()
+                ...static::dasarValidasiSanksiSDM(),
             ],
             static::pesanKesalahanValidasiSanksiSDM()
         );
@@ -619,7 +619,7 @@ class SDMValidasi
             ],
             [
                 ...static::pesanKesalahanValidasiPencarianSDM(),
-                ...static::pesanKesalahanValidasiSanksiSDM()
+                ...static::pesanKesalahanValidasiSanksiSDM(),
             ]
         );
     }
@@ -632,7 +632,7 @@ class SDMValidasi
                 '*.sanksi_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 '*.sanksi_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 '*.sanksi_diunggah' => ['sometimes', 'nullable', 'date'],
-                ...Arr::except(static::dasarValidasiSanksiSDM(), ['*.sanksi_berkas'])
+                ...Arr::except(static::dasarValidasiSanksiSDM(), ['*.sanksi_berkas']),
             ],
             static::pesanKesalahanValidasiSanksiSDM()
         );
@@ -669,7 +669,7 @@ class SDMValidasi
             '*.nilaisdm_id_pengunggah.*' => 'ID Pengunggah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.nilaisdm_kontrak.*' => 'Jenis Kontrak urutan ke-:position wajib berupa karakter.',
             '*.nilaisdm_penempatan.*' => 'Lokasi urutan ke-:position wajib berupa karakter.',
-            '*.nilaisdm_diunggah.*' => 'Tanggal Unggah Sanksi urutan ke-:position wajib berupa tanggal.'
+            '*.nilaisdm_diunggah.*' => 'Tanggal Unggah Sanksi urutan ke-:position wajib berupa tanggal.',
         ];
     }
 
@@ -679,7 +679,7 @@ class SDMValidasi
             $permintaan,
             [
                 '*.nilaisdm_id_pengubah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...static::dasarValidasiNilaiSDM()
+                ...static::dasarValidasiNilaiSDM(),
             ],
             static::pesanKesalahanValidasiNilaiSDM()
         );
@@ -692,7 +692,7 @@ class SDMValidasi
             [
                 '*.nilaisdm_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 '*.nilaisdm_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...static::dasarValidasiNilaiSDM()
+                ...static::dasarValidasiNilaiSDM(),
             ],
             static::pesanKesalahanValidasiNilaiSDM()
         );
@@ -706,12 +706,12 @@ class SDMValidasi
                 ...static::dasarValidasiPencarianSDM(),
                 '*.nilaisdm_tahun.*' => ['sometimes', 'nullable', 'date_format:Y'],
                 '*.nilaisdm_periode.*' => ['sometimes', 'nullable', 'string'],
-                '*.nilaisdm_kontrak.*' =>  ['sometimes', 'nullable', 'string'],
+                '*.nilaisdm_kontrak.*' => ['sometimes', 'nullable', 'string'],
                 '*.nilaisdm_penempatan.*' => ['sometimes', 'nullable', 'string'],
             ],
             [
                 ...static::pesanKesalahanValidasiPencarianSDM(),
-                ...static::pesanKesalahanValidasiNilaiSDM()
+                ...static::pesanKesalahanValidasiNilaiSDM(),
             ]
         );
     }
@@ -724,7 +724,7 @@ class SDMValidasi
                 '*.nilaisdm_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 '*.nilaisdm_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 '*.nilaisdm_diunggah' => ['required', 'nullable', 'date'],
-                ...static::dasarValidasiNilaiSDM()
+                ...static::dasarValidasiNilaiSDM(),
             ],
             static::pesanKesalahanValidasiNilaiSDM()
         );
@@ -808,7 +808,7 @@ class SDMValidasi
             '*.penempatan_keterangan.*' => 'Keterangan Penempatan urutan ke-:position wajib berupa karakter.',
             '*.penempatan_berkas.*' => 'Berkas Penempatan urutan ke-:position wajib berupa berkas format PDF.',
             '*.penempatan_diunggah.*' => 'Tanggal Unggah Penempatan urutan ke-:position wajib berupa tanggal.',
-            ...static::pesanKesalahanValidasiPencarianSDM()
+            ...static::pesanKesalahanValidasiPencarianSDM(),
         ];
     }
 
@@ -830,7 +830,7 @@ class SDMValidasi
                     $query->where('penempatan_no_absen', $permintaan[0]['penempatan_no_absen']);
                 })],
                 '*.penempatan_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...static::dasarValidasiPenempatanSDM($permintaan)
+                ...static::dasarValidasiPenempatanSDM($permintaan),
             ],
             static::pesanKesalahanPencarianPenempatanSDM()
         );
@@ -845,7 +845,7 @@ class SDMValidasi
                     $query->where('penempatan_no_absen', $permintaan[0]['penempatan_no_absen'])->whereNot('penempatan_uuid', $uuid);
                 })],
                 '*.penempatan_id_pengubah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
-                ...static::dasarValidasiPenempatanSDM($permintaan)
+                ...static::dasarValidasiPenempatanSDM($permintaan),
             ],
             static::pesanKesalahanPencarianPenempatanSDM()
         );
@@ -859,9 +859,42 @@ class SDMValidasi
                 '*.penempatan_mulai' => ['required', 'date'],
                 '*.penempatan_id_pengunggah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
                 '*.penempatan_diunggah' => ['required', 'nullable', 'date'],
-                ...static::dasarValidasiPenempatanSDM($permintaan)
+                ...static::dasarValidasiPenempatanSDM($permintaan),
             ],
             static::pesanKesalahanPencarianPenempatanSDM()
         );
+    }
+
+    public static function validasiPencarianKepuasanSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                ...static::dasarValidasiPencarianSDM(),
+                '*.surveysdm_tahun.*' => ['sometimes', 'nullable', 'date_format:Y'],
+                '*.surveysdm_kontrak.*' => ['sometimes', 'nullable', 'string'],
+                '*.surveysdm_penempatan.*' => ['sometimes', 'nullable', 'string'],
+            ],
+            [
+                ...static::pesanKesalahanValidasiPencarianSDM(),
+                ...static::pesanKesalahanValidasiKepuasanSDM(),
+            ]
+        );
+    }
+
+    public static function pesanKesalahanValidasiKepuasanSDM()
+    {
+        return [
+            '*.surveysdm_no_absen.*' => 'Nomor Absen urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.surveysdm_tahun.*' => 'Tahun Penilaian SDM urutan ke-:position wajib berupa Tahun.',
+            '*.surveysdm_keterangan.*' => 'Keterangan Penilaian SDM Penilaian SDM urutan ke-:position wajib berupa karakter.',
+            '*.nilai_berkas.*' => 'Berkas Penilaian urutan ke-:position wajib berupa berkas format PDF.',
+            '*.surveysdm_id_pengubah.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.surveysdm_id_pembuat.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.surveysdm_id_pengunggah.*' => 'ID Pengunggah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
+            '*.surveysdm_kontrak.*' => 'Jenis Kontrak urutan ke-:position wajib berupa karakter.',
+            '*.surveysdm_penempatan.*' => 'Lokasi urutan ke-:position wajib berupa karakter.',
+            '*.surveysdm_diunggah.*' => 'Tanggal Unggah Sanksi urutan ke-:position wajib berupa tanggal.',
+        ];
     }
 }

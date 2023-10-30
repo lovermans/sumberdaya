@@ -2,12 +2,12 @@
 
 namespace App\Interaksi\SDM;
 
-use App\Interaksi\Rangka;
 use App\Interaksi\EksporExcel;
+use App\Interaksi\Rangka;
 use App\Pendukung\Office\CustomValueBinder;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\StringValueBinder;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ExcelReader;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class SDMExcel
 {
@@ -24,7 +24,7 @@ class SDMExcel
             'rute' => 'sdm.mulai',
             'kolomPengunggah' => 'sdm_id_pengunggah',
             'waktuUnggah' => 'sdm_diunggah',
-            'pesanSoket' => $pengguna?->sdm_nama . ' telah mengimpor data SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'))
+            'pesanSoket' => $pengguna?->sdm_nama.' telah mengimpor data SDM pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s')),
         ];
 
         return SDMImporExcel::imporExcelStream(...$argumen);
@@ -43,7 +43,7 @@ class SDMExcel
             'rute' => 'sdm.posisi.data',
             'kolomPengunggah' => 'posisi_id_pengunggah',
             'waktuUnggah' => 'posisi_diunggah',
-            'pesanSoket' => $pengguna?->sdm_nama . ' telah mengimpor data pengaturan Jabatan SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'))
+            'pesanSoket' => $pengguna?->sdm_nama.' telah mengimpor data pengaturan Jabatan SDM pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s')),
         ];
 
         return SDMImporExcel::imporExcelStream(...$argumen);
@@ -62,7 +62,7 @@ class SDMExcel
             'rute' => 'sdm.sanksi.data',
             'kolomPengunggah' => 'sanksi_id_pengunggah',
             'waktuUnggah' => 'sanksi_diunggah',
-            'pesanSoket' => $pengguna?->sdm_nama . ' telah mengimpor data Sanksi SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'))
+            'pesanSoket' => $pengguna?->sdm_nama.' telah mengimpor data Sanksi SDM pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s')),
         ];
 
         return SDMImporExcel::imporExcelStream(...$argumen);
@@ -81,7 +81,7 @@ class SDMExcel
             'rute' => 'sdm.penilaian.data',
             'kolomPengunggah' => 'nilaisdm_id_pengunggah',
             'waktuUnggah' => 'nilaisdm_diunggah',
-            'pesanSoket' => $pengguna?->sdm_nama . ' telah mengimpor data Penilaian SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'))
+            'pesanSoket' => $pengguna?->sdm_nama.' telah mengimpor data Penilaian SDM pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s')),
         ];
 
         return SDMImporExcel::imporExcelStream(...$argumen);
@@ -100,7 +100,7 @@ class SDMExcel
             'rute' => 'sdm.penempatan.data-aktif',
             'kolomPengunggah' => 'penempatan_id_pengunggah',
             'waktuUnggah' => 'penempatan_diunggah',
-            'pesanSoket' => $pengguna?->sdm_nama . ' telah mengimpor data Penempatan SDM pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'))
+            'pesanSoket' => $pengguna?->sdm_nama.' telah mengimpor data Penempatan SDM pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s')),
         ];
 
         return SDMImporExcel::imporExcelStream(...$argumen);
@@ -121,7 +121,7 @@ class SDMExcel
             'pesanData' => ' data profil SDM',
             'binder' => new StringValueBinder(),
             'spreadsheet' => $spreadsheet,
-            'worksheet' => $worksheet
+            'worksheet' => $worksheet,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -139,7 +139,7 @@ class SDMExcel
             'pesanData' => ' data jabatan SDM',
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
-            'worksheet' => $worksheet
+            'worksheet' => $worksheet,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -157,7 +157,7 @@ class SDMExcel
             'pesanData' => ' data permintaan tambah SDM',
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
-            'worksheet' => $worksheet
+            'worksheet' => $worksheet,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -178,7 +178,7 @@ class SDMExcel
             'pesanData' => ' data jabatan SDM',
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
-            'worksheet' => $worksheet
+            'worksheet' => $worksheet,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -196,12 +196,12 @@ class SDMExcel
                 'langgar_uuid',
                 'langgar_tsdm_uuid',
                 'langgar_psdm_uuid',
-                'final_sanksi_uuid'
+                'final_sanksi_uuid',
             ],
             'pesanData' => ' data laporan pelanggaran SDM',
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
-            'worksheet' => $worksheet
+            'worksheet' => $worksheet,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -218,13 +218,13 @@ class SDMExcel
             'pengecualian' => [
                 'sanksi_uuid',
                 'langgar_tsdm_uuid',
-                'langgar_psdm_uuid'
+                'langgar_psdm_uuid',
             ],
             'pesanData' => ' data sanksi SDM',
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
-            'chunk' => 100
+            'chunk' => 100,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -246,7 +246,7 @@ class SDMExcel
             'binder' => new StringValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
-            'chunk' => 100
+            'chunk' => 100,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -265,7 +265,7 @@ class SDMExcel
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
-            'chunk' => 100
+            'chunk' => 100,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -284,7 +284,7 @@ class SDMExcel
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
-            'chunk' => 500
+            'chunk' => 500,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -303,7 +303,7 @@ class SDMExcel
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
-            'chunk' => 500
+            'chunk' => 500,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -322,7 +322,7 @@ class SDMExcel
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
-            'chunk' => 500
+            'chunk' => 500,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -341,7 +341,7 @@ class SDMExcel
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
-            'chunk' => 500
+            'chunk' => 500,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -360,7 +360,7 @@ class SDMExcel
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
-            'chunk' => 500
+            'chunk' => 500,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -379,7 +379,7 @@ class SDMExcel
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
-            'chunk' => 500
+            'chunk' => 500,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -398,7 +398,7 @@ class SDMExcel
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
-            'chunk' => 500
+            'chunk' => 500,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -417,7 +417,7 @@ class SDMExcel
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
-            'chunk' => 500
+            'chunk' => 500,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -436,14 +436,14 @@ class SDMExcel
             'namaBerkas' => 'statistik-sdm-',
             'dataEkspor' => $data,
             'pengecualian' => ['id', 'sdm_uuid', 'penempatan_uuid'],
-            'pesanData' =>  ' data statistik penempatan SDM',
+            'pesanData' => ' data statistik penempatan SDM',
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
             'chunk' => 500,
             'tabelStart' => 'A1:',
             'namaTabel' => 'Penempatan',
-            'spreadsheet2' => $spreadsheet2
+            'spreadsheet2' => $spreadsheet2,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -469,13 +469,13 @@ class SDMExcel
                 'sdm_nama',
                 'penempatan_posisi',
                 'penempatan_lokasi',
-                'penempatan_kontrak'
+                'penempatan_kontrak',
             ],
             'pesanData' => ' data penilaian SDM',
             'binder' => new CustomValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
-            'chunk' => 100
+            'chunk' => 100,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
@@ -497,7 +497,26 @@ class SDMExcel
             'binder' => new StringValueBinder(),
             'spreadsheet' => $spreadsheet,
             'worksheet' => $worksheet,
-            'chunk' => 500
+            'chunk' => 500,
+        ];
+
+        return EksporExcel::eksporExcelStream(...$argumen);
+    }
+
+    public static function eksporExcelPencarianKepuasanSDM($data)
+    {
+        $spreadsheet = new Spreadsheet();
+        $worksheet = $spreadsheet->getActiveSheet();
+
+        $argumen = [
+            'namaBerkas' => 'eksporpenilaiansdm-',
+            'dataEkspor' => $data,
+            'pengecualian' => ['surveysdm_uuid', 'sdm_uuid'],
+            'pesanData' => ' data Kepuasan SDM',
+            'binder' => new CustomValueBinder(),
+            'spreadsheet' => $spreadsheet,
+            'worksheet' => $worksheet,
+            'chunk' => 100,
         ];
 
         return EksporExcel::eksporExcelStream(...$argumen);
