@@ -44,6 +44,8 @@ return new class extends Migration
             $table->tinyInteger('surveysdm_8');
             $table->tinyInteger('surveysdm_9');
             $table->tinyInteger('surveysdm_10');
+            $table->float('surveysdm_skor')
+                ->virtualAs('((surveysdm_1 + surveysdm_2 + surveysdm_3 + surveysdm_4 + surveysdm_5 + surveysdm_6 + surveysdm_7 + surveysdm_8 + surveysdm_9 + surveysdm_10)/10)');
             $table->text('surveysdm_saran')->nullable();
             $table->text('surveysdm_keterangan')->nullable();
             $table->string('surveysdm_id_pengunggah', 10)->nullable();
