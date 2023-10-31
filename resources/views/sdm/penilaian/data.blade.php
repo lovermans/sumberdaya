@@ -30,7 +30,7 @@
 
                                 <select class="pil-cari" id="sdm_nilai_cariTahun" name="nilaisdm_tahun[]" multiple>
                                     @foreach (range(2020, date('Y')) as $tahun)
-                                        <option @selected(in_array($tahun, (array) $app->request->sanksi_jenis))>
+                                        <option @selected(in_array($tahun, (array) $app->request->nilaisdm_tahun))>
                                             {{ $tahun }}
                                         </option>
                                     @endforeach
