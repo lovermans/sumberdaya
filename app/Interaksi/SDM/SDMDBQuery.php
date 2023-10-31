@@ -1832,7 +1832,7 @@ class SDMDBQuery
 
     public static function ambilDBKepuasanSDM()
     {
-        return static::ambilPenilaianSDM()
+        return static::ambilKepuasanSDM()
             ->addSelect(
                 'sdm_uuid',
                 'sdm_nama',

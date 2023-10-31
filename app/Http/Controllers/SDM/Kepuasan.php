@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\SDM;
 
+use App\Interaksi\Cache;
 use App\Interaksi\Rangka;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMExcel;
@@ -43,5 +44,51 @@ class Kepuasan
         if ($reqs->unduh == 'excel') {
             return SDMExcel::eksporExcelPencarianKepuasanSDM($cari);
         }
+
+        $cacheAtur = Cache::ambilCacheAtur();
+
+        $data = [
+            'tabels' => $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'kepuasan-sdm_tabels', 'uuid' => $uuid ?? '']),
+            'lokasis' => $cacheAtur->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                return $query->whereIn('atur_butir', $lingkupIjin)->sortBy(['atur_butir', 'asc']);
+            }),
+            'statusSDMs' => $cacheAtur->where('atur_jenis', 'STATUS KONTRAK')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'asc']),
+            'urutTahun' => $str->contains($uruts, 'surveysdm_tahun'),
+            'indexTahun' => (head(array_keys($kunciUrut, 'surveysdm_tahun ASC')) + head(array_keys($kunciUrut, 'surveysdm_tahun DESC')) + 1),
+            'halamanAkun' => $uuid ?? '',
+            'jumlahOS' => $cari->clone()->whereNotNull('kontrak.penempatan_kontrak')->where('kontrak.penempatan_kontrak', 'like', 'OS-%')->count(),
+            'jumlahOrganik' => $cari->clone()->whereNotNull('kontrak.penempatan_kontrak')->where('kontrak.penempatan_kontrak', 'not like', 'OS-%')->count(),
+        ];
+
+        if (! isset($uuid)) {
+            $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
+        }
+
+        $HtmlPenuh = $app->view->make('sdm.kepuasan.data', $data);
+        $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
+
+        return $reqs->pjax() && (! $reqs->filled('fragment') || ! $reqs->header('X-Frag', false))
+            ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
+            : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
+    }
+
+    public function lihat($uuid = null)
+    {
+
+    }
+
+    public function tambah()
+    {
+
+    }
+
+    public function unggahKepuasanSDM()
+    {
+
+    }
+
+    public function contohUnggahKepuasanSDM()
+    {
+
     }
 }

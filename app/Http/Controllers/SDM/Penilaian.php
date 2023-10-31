@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\SDM;
 
-use App\Interaksi\Cache;
 use App\Interaksi\Berkas;
+use App\Interaksi\Cache;
 use App\Interaksi\Rangka;
+use App\Interaksi\SDM\SDMBerkas;
+use App\Interaksi\SDM\SDMCache;
+use App\Interaksi\SDM\SDMDBQuery;
+use App\Interaksi\SDM\SDMExcel;
+use App\Interaksi\SDM\SDMValidasi;
 use App\Interaksi\Websoket;
 use Illuminate\Support\Arr;
-use App\Interaksi\SDM\SDMCache;
-use App\Interaksi\SDM\SDMExcel;
-use App\Interaksi\SDM\SDMBerkas;
-use App\Interaksi\SDM\SDMDBQuery;
-use App\Interaksi\SDM\SDMValidasi;
 
 class Penilaian
 {
@@ -36,7 +36,7 @@ class Penilaian
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penilaian.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
 
@@ -66,17 +66,17 @@ class Penilaian
             'indexNilai' => (head(array_keys($kunciUrut, 'nilaisdm_total ASC')) + head(array_keys($kunciUrut, 'nilaisdm_total DESC')) + 1),
             'halamanAkun' => $uuid ?? '',
             'jumlahOS' => $cari->clone()->whereNotNull('kontrak.penempatan_kontrak')->where('kontrak.penempatan_kontrak', 'like', 'OS-%')->count(),
-            'jumlahOrganik' => $cari->clone()->whereNotNull('kontrak.penempatan_kontrak')->where('kontrak.penempatan_kontrak', 'not like', 'OS-%')->count()
+            'jumlahOrganik' => $cari->clone()->whereNotNull('kontrak.penempatan_kontrak')->where('kontrak.penempatan_kontrak', 'not like', 'OS-%')->count(),
         ];
 
-        if (!isset($uuid)) {
+        if (! isset($uuid)) {
             $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
         }
 
         $HtmlPenuh = $app->view->make('sdm.penilaian.data', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
 
-        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        return $reqs->pjax() && (! $reqs->filled('fragment') || ! $reqs->header('X-Frag', false))
             ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
             : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
@@ -124,16 +124,16 @@ class Penilaian
             $berkas = Arr::only($valid, ['nilai_berkas'])['nilai_berkas'] ?? false;
 
             if ($berkas) {
-                $namaBerkas = Arr::only($valid, ['nilaisdm_no_absen'])['nilaisdm_no_absen'] . ' - '  . Arr::only($valid, ['nilaisdm_tahun'])['nilaisdm_tahun'] . ' - ' . Arr::only($valid, ['nilaisdm_periode'])['nilaisdm_periode'] . '.pdf';
+                $namaBerkas = Arr::only($valid, ['nilaisdm_no_absen'])['nilaisdm_no_absen'].' - '.Arr::only($valid, ['nilaisdm_tahun'])['nilaisdm_tahun'].' - '.Arr::only($valid, ['nilaisdm_periode'])['nilaisdm_periode'].'.pdf';
 
                 SDMBerkas::simpanBerkasNilaiSDM($berkas, $namaBerkas);
             }
 
             SDMCache::hapusCacheNilaiSDM();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah menambah data Penilaian SDM nomor absen '
-                . Arr::only($valid, ['nilaisdm_no_absen'])['nilaisdm_no_absen'] . ' Tahun/Periode ' . Arr::only($valid, ['nilaisdm_tahun'])['nilaisdm_tahun'] . '/' . Arr::only($valid, ['nilaisdm_periode'])['nilaisdm_periode']
-                . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah menambah data Penilaian SDM nomor absen '
+                .Arr::only($valid, ['nilaisdm_no_absen'])['nilaisdm_no_absen'].' Tahun/Periode '.Arr::only($valid, ['nilaisdm_tahun'])['nilaisdm_tahun'].'/'.Arr::only($valid, ['nilaisdm_periode'])['nilaisdm_periode']
+                .' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -185,16 +185,16 @@ class Penilaian
             $berkas = Arr::only($valid, ['nilai_berkas'])['nilai_berkas'] ?? false;
 
             if ($berkas) {
-                $namaBerkas = $nilai->nilaisdm_no_absen . ' - '  . Arr::only($valid, ['nilaisdm_tahun'])['nilaisdm_tahun'] . ' - ' . Arr::only($valid, ['nilaisdm_periode'])['nilaisdm_periode'] . '.pdf';
+                $namaBerkas = $nilai->nilaisdm_no_absen.' - '.Arr::only($valid, ['nilaisdm_tahun'])['nilaisdm_tahun'].' - '.Arr::only($valid, ['nilaisdm_periode'])['nilaisdm_periode'].'.pdf';
 
                 SDMBerkas::simpanBerkasNilaiSDM($berkas, $namaBerkas);
             }
 
             SDMCache::hapusCacheNilaiSDM();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah data Penilaian SDM nomor absen '
-                . $nilai->nilaisdm_no_absen . ' Tahun/Periode ' . Arr::only($valid, ['nilaisdm_tahun'])['nilaisdm_tahun'] . '/' . Arr::only($valid, ['nilaisdm_periode'])['nilaisdm_periode']
-                . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah mengubah data Penilaian SDM nomor absen '
+                .$nilai->nilaisdm_no_absen.' Tahun/Periode '.Arr::only($valid, ['nilaisdm_tahun'])['nilaisdm_tahun'].'/'.Arr::only($valid, ['nilaisdm_periode'])['nilaisdm_periode']
+                .' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -221,7 +221,7 @@ class Penilaian
 
         abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-        abort_unless($app->filesystem->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
+        abort_unless($app->filesystem->exists('contoh/unggah-umum.xlsx'), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
 
         $cari = SDMDBQuery::contohImporSanksiSDM(array_filter(explode(',', $pengguna->sdm_ijin_akses)));
 
@@ -240,14 +240,14 @@ class Penilaian
             $validasifile->validate();
 
             $file = $validasifile->safe()->only('unggah_nilai_sdm')['unggah_nilai_sdm'];
-            $namafile = 'unggahnilaisdm-' . date('YmdHis') . '.xlsx';
+            $namafile = 'unggahnilaisdm-'.date('YmdHis').'.xlsx';
 
             Berkas::simpanBerkasImporExcelSementara($file, $namafile);
 
             $fileexcel = Berkas::ambilBerkasImporExcelSementara($namafile);
 
             return SDMExcel::imporExcelDataNilaiSDM($fileexcel);
-        };
+        }
 
         $HtmlPenuh = $app->view->make('sdm.penilaian.unggah');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
