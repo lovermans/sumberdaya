@@ -43,8 +43,8 @@
                                 <label for="sdm_nilai_cariPeriode">Saring Periode</label>
 
                                 <select class="pil-cari" id="sdm_nilai_cariPeriode" name="nilaisdm_periode[]" multiple>
-                                    <option @selected($app->request->nilaisdm_periode == 'SEMESTER-I')>SEMESTER-I</option>
-                                    <option @selected($app->request->nilaisdm_periode == 'SEMESTER-II')>SEMESTER-II</option>
+                                    <option @selected(in_array('SEMESTER-I', (array) $app->request->nilaisdm_periode))>SEMESTER-I</option>
+                                    <option @selected(in_array('SEMESTER-II', (array) $app->request->nilaisdm_periode))>SEMESTER-II</option>
                                 </select>
 
                                 <span class="t-bantu">Pilih satu atau lebih</span>
