@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SDM;
 
 use App\Interaksi\Cache;
 use App\Interaksi\Rangka;
+use App\Interaksi\SDM\SDMCache;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMExcel;
 use App\Interaksi\SDM\SDMValidasi;
@@ -79,7 +80,30 @@ class Kepuasan
 
     public function tambah()
     {
+        extract(Rangka::obyekPermintaanRangka(true));
 
+        abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+
+        $HtmlPenuh = $app->view->make('sdm.kepuasan.tambah-ubah', [
+            'sdms' => SDMCache::ambilCacheSDM()->when($lingkupIjin, function ($c) use ($lingkupIjin) {
+                return $c->whereIn('penempatan_lokasi', [null, ...$lingkupIjin]);
+            }),
+            'jawabans' => [
+                ['value' => 1, 'text' => 'Sangat Tidak Setuju'],
+                ['value' => 2, 'text' => 'Tidak Setuju'],
+                ['value' => 3, 'text' => 'Ragu'],
+                ['value' => 4, 'text' => 'Setuju'],
+                ['value' => 5, 'text' => 'Sangat Setuju'],
+            ],
+        ]);
+
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 
     public function unggahKepuasanSDM()
