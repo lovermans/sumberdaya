@@ -1,4 +1,4 @@
-<script nonce="{{ $app->request->session()->get('sesiNonce') }}">
+<script>
     async function cariElemen(el) {
         while (document.querySelector(el) === null) {
             await new Promise(resolve => requestAnimationFrame(resolve));

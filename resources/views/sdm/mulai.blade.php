@@ -109,7 +109,7 @@
             <p class="kartu">Mengambil data hari lahir SDM...</p>
         </div>
 
-        <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
+        <script>
             (async () => {
                 while (!window.aplikasiSiap) {
                     await new Promise((resolve, reject) =>
@@ -154,7 +154,7 @@
         </div>
 
         @if ($app->request->user() && $app->request->pjax())
-            <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
+            <script>
                 cariElemen("#navigasi-sdm a[href='{{ $app->url->route('sdm.mulai') }}']")
                     .then((el) => {
                         el.classList.add("aktif");

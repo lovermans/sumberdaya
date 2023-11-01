@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\SDM;
 
+use App\Interaksi\Berkas;
 use App\Interaksi\Cache;
 use App\Interaksi\Excel;
-use App\Interaksi\Berkas;
 use App\Interaksi\Rangka;
+use App\Interaksi\SDM\SDMBerkas;
+use App\Interaksi\SDM\SDMCache;
+use App\Interaksi\SDM\SDMDBQuery;
+use App\Interaksi\SDM\SDMExcel;
+use App\Interaksi\SDM\SDMValidasi;
 use App\Interaksi\Validasi;
 use App\Interaksi\Websoket;
 use Illuminate\Support\Arr;
-use App\Interaksi\SDM\SDMCache;
-use App\Interaksi\SDM\SDMExcel;
-use App\Interaksi\SDM\SDMBerkas;
-use App\Interaksi\SDM\SDMDBQuery;
-use App\Interaksi\SDM\SDMValidasi;
 
 class Sanksi
 {
@@ -27,9 +27,10 @@ class Sanksi
 
         abort_unless(
             $pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN'])
-                || ($pengguna?->sdm_uuid == $uuid && $pengguna?->sdm_uuid !== null)
-                || ($pengguna?->sdm_id_atasan == $aksesAkun?->sdm_no_absen)
-                || ($pengguna?->sdm_id_atasan == $aksesAkun?->sdm_id_atasan),
+            || ($pengguna->sdm_uuid == $uuid && $pengguna->sdm_uuid !== null)
+            || ($aksesAkun && $pengguna->sdm_id_atasan == $aksesAkun?->sdm_no_absen)
+            || ($aksesAkun && $pengguna->sdm_no_absen == $aksesAkun?->sdm_id_atasan)
+            || ($aksesAkun && $pengguna->sdm_id_atasan == $aksesAkun?->sdm_id_atasan),
             403,
             'Akses dibatasi hanya untuk Pemangku SDM.'
         );
@@ -38,7 +39,7 @@ class Sanksi
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.sanksi.data')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
         $urutArray = $reqs->urut;
@@ -73,17 +74,17 @@ class Sanksi
             'indexTanggalSelesai' => (head(array_keys($kunciUrut, 'sanksi_selesai ASC')) + head(array_keys($kunciUrut, 'sanksi_selesai DESC')) + 1),
             'halamanAkun' => $uuid ?? '',
             'jumlahOS' => $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'like', 'OS-%')->count(),
-            'jumlahOrganik' => $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'not like', 'OS-%')->count()
+            'jumlahOrganik' => $cari->clone()->whereNotNull('kontrak_t.penempatan_kontrak')->where('kontrak_t.penempatan_kontrak', 'not like', 'OS-%')->count(),
         ];
 
-        if (!isset($uuid)) {
+        if (! isset($uuid)) {
             $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
         }
 
         $HtmlPenuh = $app->view->make('sdm.sanksi.data', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
 
-        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        return $reqs->pjax() && (! $reqs->filled('fragment') || ! $reqs->header('X-Frag', false))
             ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
             : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
@@ -122,7 +123,7 @@ class Sanksi
                 [
                     'sanksi_id_pembuat' => $pengguna->sdm_no_absen,
                     'sanksi_lap_no' => $laporan->langgar_lap_no,
-                    'sanksi_no_absen' => $laporan->langgar_no_absen
+                    'sanksi_no_absen' => $laporan->langgar_no_absen,
                 ]
             );
 
@@ -149,7 +150,7 @@ class Sanksi
             $berkas = Arr::only($valid, ['sanksi_berkas'])['sanksi_berkas'] ?? false;
 
             if ($berkas) {
-                $namaBerkas = Arr::only($valid, ['sanksi_no_absen'])['sanksi_no_absen'] . ' - '  . Arr::only($valid, ['sanksi_jenis'])['sanksi_jenis'] . ' - ' . Arr::only($valid, ['sanksi_mulai'])['sanksi_mulai'] . '.pdf';
+                $namaBerkas = Arr::only($valid, ['sanksi_no_absen'])['sanksi_no_absen'].' - '.Arr::only($valid, ['sanksi_jenis'])['sanksi_jenis'].' - '.Arr::only($valid, ['sanksi_mulai'])['sanksi_mulai'].'.pdf';
 
                 SDMBerkas::simpanBerkasSanksiSDM($berkas, $namaBerkas);
             }
@@ -157,9 +158,9 @@ class Sanksi
             SDMCache::hapusCachePelanggaranSDM();
             SDMCache::hapusCacheSanksiSDM();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah menambah data Sanksi SDM nomor absen '
-                . Arr::only($valid, ['sanksi_no_absen'])['sanksi_no_absen'] . ' tanggal ' . Arr::only($valid, ['sanksi_mulai'])['sanksi_mulai']
-                . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah menambah data Sanksi SDM nomor absen '
+                .Arr::only($valid, ['sanksi_no_absen'])['sanksi_no_absen'].' tanggal '.Arr::only($valid, ['sanksi_mulai'])['sanksi_mulai']
+                .' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -221,7 +222,7 @@ class Sanksi
             $berkas = Arr::only($valid, ['sanksi_berkas'])['sanksi_berkas'] ?? false;
 
             if ($berkas) {
-                $namaBerkas = $sanksiLama->sanksi_no_absen . ' - '  . Arr::only($valid, ['sanksi_jenis'])['sanksi_jenis'] . ' - ' . Arr::only($valid, ['sanksi_mulai'])['sanksi_mulai'] . '.pdf';
+                $namaBerkas = $sanksiLama->sanksi_no_absen.' - '.Arr::only($valid, ['sanksi_jenis'])['sanksi_jenis'].' - '.Arr::only($valid, ['sanksi_mulai'])['sanksi_mulai'].'.pdf';
 
                 SDMBerkas::simpanBerkasSanksiSDM($berkas, $namaBerkas);
             }
@@ -229,9 +230,9 @@ class Sanksi
             SDMCache::hapusCachePelanggaranSDM();
             SDMCache::hapusCacheSanksiSDM();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah data Sanksi SDM nomor absen '
-                . $sanksiLama->sanksi_no_absen . ' tanggal ' . Arr::only($valid, ['sanksi_mulai'])['sanksi_mulai']
-                . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah mengubah data Sanksi SDM nomor absen '
+                .$sanksiLama->sanksi_no_absen.' tanggal '.Arr::only($valid, ['sanksi_mulai'])['sanksi_mulai']
+                .' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -245,7 +246,7 @@ class Sanksi
         $data = [
             'sanksiLama' => $sanksiLama,
             'sanksis' => Cache::ambilCacheAtur()->where('atur_jenis', 'SANKSI SDM')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'desc']),
-            'lapPelanggaran' => SDMDBQuery::ambilPelanggaranSDMTerkini()->where('langgar_no_absen', $sanksiLama->sanksi_no_absen)->get()
+            'lapPelanggaran' => SDMDBQuery::ambilPelanggaranSDMTerkini()->where('langgar_no_absen', $sanksiLama->sanksi_no_absen)->get(),
         ];
 
         $HtmlPenuh = $app->view->make('sdm.sanksi.tambah-ubah', $data);
@@ -262,7 +263,7 @@ class Sanksi
 
         abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-        abort_unless($app->filesystem->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
+        abort_unless($app->filesystem->exists('contoh/unggah-umum.xlsx'), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
 
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
 
@@ -294,14 +295,14 @@ class Sanksi
             $validasifile->validate();
 
             $file = $validasifile->safe()->only('unggah_sanksi_sdm')['unggah_sanksi_sdm'];
-            $namafile = 'unggahsanksisdm-' . date('YmdHis') . '.xlsx';
+            $namafile = 'unggahsanksisdm-'.date('YmdHis').'.xlsx';
 
             Berkas::simpanBerkasImporExcelSementara($file, $namafile);
 
             $fileexcel = Berkas::ambilBerkasImporExcelSementara($namafile);
 
             return SDMExcel::imporExcelDataSanksiSDM($fileexcel);
-        };
+        }
 
         $HtmlPenuh = $app->view->make('sdm.sanksi.unggah');
         $HtmlIsi = implode('', $HtmlPenuh->renderSections());
@@ -339,19 +340,19 @@ class Sanksi
                 collect($sanksi)->toJson(),
                 $dataValid['id_penghapus'],
                 $dataValid['waktu_dihapus']->format('Y-m-d H:i:s'),
-                $dataValid['alasan']
+                $dataValid['alasan'],
             ]);
 
             SDMDBQuery::hapusDataSanksiSDM($uuid);
 
-            $namaBerkas = $sanksi->sanksi_no_absen . ' - '  . $sanksi->sanksi_jenis . ' - ' . $sanksi->sanksi_mulai . '.pdf';
+            $namaBerkas = $sanksi->sanksi_no_absen.' - '.$sanksi->sanksi_jenis.' - '.$sanksi->sanksi_mulai.'.pdf';
 
             SDMBerkas::hapusBerkasSanksiSDM($namaBerkas);
 
             SDMCache::hapusCachePelanggaranSDM();
             SDMCache::hapusCacheSanksiSDM();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah menghapus data Sanksi SDM ' . $sanksi->sanksi_no_absen . ' - '  . $sanksi->sanksi_jenis . ' - ' . $sanksi->sanksi_mulai . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah menghapus data Sanksi SDM '.$sanksi->sanksi_no_absen.' - '.$sanksi->sanksi_jenis.' - '.$sanksi->sanksi_mulai.' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 

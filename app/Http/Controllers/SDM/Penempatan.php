@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\SDM;
 
+use App\Interaksi\Berkas;
 use App\Interaksi\Cache;
 use App\Interaksi\Excel;
-use App\Interaksi\Berkas;
 use App\Interaksi\Rangka;
+use App\Interaksi\SDM\SDMBerkas;
+use App\Interaksi\SDM\SDMCache;
+use App\Interaksi\SDM\SDMDBQuery;
+use App\Interaksi\SDM\SDMExcel;
+use App\Interaksi\SDM\SDMValidasi;
+use App\Interaksi\SDM\SDMWord;
 use App\Interaksi\Validasi;
 use App\Interaksi\Websoket;
 use Illuminate\Support\Arr;
-use App\Interaksi\SDM\SDMWord;
-use App\Interaksi\SDM\SDMCache;
-use App\Interaksi\SDM\SDMExcel;
-use App\Interaksi\SDM\SDMBerkas;
-use App\Interaksi\SDM\SDMDBQuery;
-use App\Interaksi\SDM\SDMValidasi;
 
 class Penempatan
 {
@@ -26,9 +26,10 @@ class Penempatan
 
         abort_unless(
             $pengguna && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN'])
-                || ($pengguna?->sdm_uuid == $uuid && $pengguna?->sdm_uuid !== null)
-                || ($pengguna?->sdm_id_atasan == $aksesAkun?->sdm_no_absen)
-                || ($pengguna?->sdm_id_atasan == $aksesAkun?->sdm_id_atasan),
+                || ($pengguna->sdm_uuid == $uuid && $pengguna->sdm_uuid !== null)
+                || ($aksesAkun && $pengguna->sdm_id_atasan == $aksesAkun?->sdm_no_absen)
+                || ($aksesAkun && $pengguna->sdm_no_absen == $aksesAkun?->sdm_id_atasan)
+                || ($aksesAkun && $pengguna->sdm_id_atasan == $aksesAkun?->sdm_id_atasan),
             403,
             'Akses dibatasi hanya untuk Pemangku SDM.'
         );
@@ -37,7 +38,7 @@ class Penempatan
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.riwayat')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
         $urutArray = $reqs->urut;
@@ -53,7 +54,7 @@ class Penempatan
         $data = [
             'tabels' => $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels', 'uuid' => $uuid ?? '']),
             'halamanAkun' => $uuid ?? '',
-            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
+            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari),
         ];
 
         return $this->tampilkanDataPenempatanSDM($data, $uuid);
@@ -69,7 +70,7 @@ class Penempatan
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.riwayat-nyata')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
         $urutArray = $reqs->urut;
@@ -84,7 +85,7 @@ class Penempatan
 
         $data = [
             'tabels' => $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']),
-            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
+            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari),
         ];
 
         return $this->tampilkanDataPenempatanSDM($data);
@@ -100,7 +101,7 @@ class Penempatan
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.riwayat-nyata-aktif')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
         $urutArray = $reqs->urut;
@@ -115,7 +116,7 @@ class Penempatan
 
         $data = [
             'tabels' => $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']),
-            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
+            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari),
         ];
 
         return $this->tampilkanDataPenempatanSDM($data);
@@ -131,7 +132,7 @@ class Penempatan
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.riwayat-nyata-nonaktif')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
         $urutArray = $reqs->urut;
@@ -146,7 +147,7 @@ class Penempatan
 
         $data = [
             'tabels' => $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']),
-            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
+            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari),
         ];
 
         return $this->tampilkanDataPenempatanSDM($data);
@@ -162,7 +163,7 @@ class Penempatan
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.data-aktif')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
         $urutArray = $reqs->urut;
@@ -177,7 +178,7 @@ class Penempatan
 
         $data = [
             'tabels' => $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']),
-            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
+            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari),
         ];
 
         return $this->tampilkanDataPenempatanSDM($data);
@@ -193,7 +194,7 @@ class Penempatan
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.data-nonaktif')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
         $urutArray = $reqs->urut;
@@ -208,7 +209,7 @@ class Penempatan
 
         $data = [
             'tabels' => $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']),
-            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
+            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari),
         ];
 
         return $this->tampilkanDataPenempatanSDM($data);
@@ -224,14 +225,13 @@ class Penempatan
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.data-akanhabis')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
         $urutArray = $reqs->urut;
         $kunciUrut = array_filter((array) $urutArray);
         $uruts = $urutArray ? implode(',', $kunciUrut) : null;
         $date = $app->date;
-
 
         $cari = SDMDBQuery::ambilPKWTAkanHabisSDM($reqs, $reqs->kata_kunci, $lingkupIjin, $uruts, [$date->today()->toDateString(), $date->today()->addDays(40)->toDateString()]);
 
@@ -241,7 +241,7 @@ class Penempatan
 
         $data = [
             'tabels' => $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']),
-            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
+            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari),
         ];
 
         return $this->tampilkanDataPenempatanSDM($data);
@@ -257,7 +257,7 @@ class Penempatan
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.data-kadaluarsa')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
         $urutArray = $reqs->urut;
@@ -272,7 +272,7 @@ class Penempatan
 
         $data = [
             'tabels' => $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']),
-            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
+            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari),
         ];
 
         return $this->tampilkanDataPenempatanSDM($data);
@@ -288,7 +288,7 @@ class Penempatan
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.data-baru')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
         $urutArray = $reqs->urut;
@@ -303,7 +303,7 @@ class Penempatan
 
         $data = [
             'tabels' => $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']),
-            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
+            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari),
         ];
 
         return $this->tampilkanDataPenempatanSDM($data);
@@ -319,7 +319,7 @@ class Penempatan
 
         if ($validator->fails()) {
             return $app->redirect->route('sdm.penempatan.data-batal')->withErrors($validator)->withInput()->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi']);
-        };
+        }
 
         $lingkupIjin = array_filter(explode(',', $pengguna?->sdm_ijin_akses));
         $urutArray = $reqs->urut;
@@ -334,7 +334,7 @@ class Penempatan
 
         $data = [
             'tabels' => $cari->clone()->paginate($reqs->bph ?: 100)->withQueryString()->appends(['fragment' => 'riwa-penem-sdm_tabels']),
-            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari)
+            ...$this->kirimData($lingkupIjin, $uruts, $kunciUrut, $cari),
         ];
 
         return $this->tampilkanDataPenempatanSDM($data);
@@ -395,18 +395,17 @@ class Penempatan
 
             $berkas = Arr::only($valid, ['penempatan_berkas'])['penempatan_berkas'] ?? false;
 
-
             if ($berkas) {
 
-                $namaBerkas = Arr::only($valid, ['penempatan_no_absen'])['penempatan_no_absen'] . ' - '  . Arr::only($valid, ['penempatan_mulai'])['penempatan_mulai'] . '.pdf';
+                $namaBerkas = Arr::only($valid, ['penempatan_no_absen'])['penempatan_no_absen'].' - '.Arr::only($valid, ['penempatan_mulai'])['penempatan_mulai'].'.pdf';
 
                 SDMBerkas::simpanBerkasPenempatanSDM($berkas, $namaBerkas);
             }
 
             SDMCache::hapusCacheSDMUmum();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah menambah data Penempatan SDM nomor absen '
-                . Arr::only($valid, ['penempatan_no_absen'])['penempatan_no_absen'] . ' tanggal penempatan ' . Arr::only($valid, ['penempatan_mulai'])['penempatan_mulai'] . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah menambah data Penempatan SDM nomor absen '
+                .Arr::only($valid, ['penempatan_no_absen'])['penempatan_no_absen'].' tanggal penempatan '.Arr::only($valid, ['penempatan_mulai'])['penempatan_mulai'].' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -430,7 +429,7 @@ class Penempatan
             'pangkats' => $aturs->where('atur_jenis', 'PANGKAT')->sortBy(['atur_butir', 'asc']),
             'golongans' => $aturs->where('atur_jenis', 'GOLONGAN')->sortBy(['atur_butir', 'asc']),
             'posisis' => SDMCache::ambilCachePosisiSDM(),
-            'penem' => $penem
+            'penem' => $penem,
         ];
 
         $HtmlPenuh = $app->view->make('sdm.penempatan.tambah-ubah', $data);
@@ -473,15 +472,15 @@ class Penempatan
             $berkas = Arr::only($valid, ['penempatan_berkas'])['penempatan_berkas'] ?? false;
 
             if ($berkas) {
-                $namaBerkas = Arr::only($valid, ['penempatan_no_absen'])['penempatan_no_absen'] . ' - '  . Arr::only($valid, ['penempatan_mulai'])['penempatan_mulai'] . '.pdf';
+                $namaBerkas = Arr::only($valid, ['penempatan_no_absen'])['penempatan_no_absen'].' - '.Arr::only($valid, ['penempatan_mulai'])['penempatan_mulai'].'.pdf';
 
                 SDMBerkas::simpanBerkasPenempatanSDM($berkas, $namaBerkas);
             }
 
             SDMCache::hapusCacheSDMUmum();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah mengubah data Penempatan SDM nomor absen '
-                . Arr::only($valid, ['penempatan_no_absen'])['penempatan_no_absen'] . ' tanggal penempatan ' . Arr::only($valid, ['penempatan_mulai'])['penempatan_mulai'] . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah mengubah data Penempatan SDM nomor absen '
+                .Arr::only($valid, ['penempatan_no_absen'])['penempatan_no_absen'].' tanggal penempatan '.Arr::only($valid, ['penempatan_mulai'])['penempatan_mulai'].' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -505,7 +504,7 @@ class Penempatan
             'pangkats' => $aturs->where('atur_jenis', 'PANGKAT')->sortBy(['atur_butir', 'asc']),
             'golongans' => $aturs->where('atur_jenis', 'GOLONGAN')->sortBy(['atur_butir', 'asc']),
             'posisis' => SDMCache::ambilCachePosisiSDM(),
-            'penem' => $penem
+            'penem' => $penem,
         ];
 
         $HtmlPenuh = $app->view->make('sdm.penempatan.tambah-ubah', $data);
@@ -550,19 +549,19 @@ class Penempatan
                 collect($penem)->toJson(),
                 $dataValid['id_penghapus'],
                 $dataValid['waktu_dihapus']->format('Y-m-d H:i:s'),
-                $dataValid['alasan']
+                $dataValid['alasan'],
             ]);
 
             SDMDBQuery::hapusDataPenempatanSDM($uuid);
 
-            $namaBerkas = $penem->sdm_no_absen . ' - ' . $penem->penempatan_mulai . '.pdf';
+            $namaBerkas = $penem->sdm_no_absen.' - '.$penem->penempatan_mulai.'.pdf';
 
             SDMBerkas::hapusBerkasPenempatanSDM($namaBerkas);
 
             SDMCache::hapusCacheSDMUmum();
 
-            $pesanSoket = $pengguna?->sdm_nama . ' telah menghapus data Penempatan SDM nomor absen '
-                . $penem->sdm_no_absen . ' tanggal penempatan ' . $penem->penempatan_mulai . ' pada ' . strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+            $pesanSoket = $pengguna?->sdm_nama.' telah menghapus data Penempatan SDM nomor absen '
+                .$penem->sdm_no_absen.' tanggal penempatan '.$penem->penempatan_mulai.' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
 
             Websoket::siaranUmum($pesanSoket);
 
@@ -619,14 +618,14 @@ class Penempatan
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        if (!isset($uuid)) {
+        if (! isset($uuid)) {
             $reqs->session()->put(['tautan_perujuk' => $reqs->fullUrlWithoutQuery('fragment')]);
         }
 
         $HtmlPenuh = $app->view->make('sdm.penempatan.riwayat', $data);
         $tanggapan = $app->make('Illuminate\Contracts\Routing\ResponseFactory');
 
-        return $reqs->pjax() && (!$reqs->filled('fragment') || !$reqs->header('X-Frag', false))
+        return $reqs->pjax() && (! $reqs->filled('fragment') || ! $reqs->header('X-Frag', false))
             ? $tanggapan->make(implode('', $HtmlPenuh->renderSections()))->withHeaders(['Vary' => 'Accept', 'X-Tujuan' => 'isi'])
             : $tanggapan->make($HtmlPenuh->fragmentIf($reqs->filled('fragment') && $reqs->pjax() && $reqs->header('X-Frag', false), $reqs->fragment))->withHeaders(['Vary' => 'Accept']);
     }
@@ -651,7 +650,7 @@ class Penempatan
 
         abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
-        abort_unless($app->filesystem->exists("contoh/unggah-umum.xlsx"), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
+        abort_unless($app->filesystem->exists('contoh/unggah-umum.xlsx'), 404, 'Berkas Contoh Ekspor Tidak Ditemukan.');
 
         $cari = SDMDBQuery::contohImporPenempatanSDM(array_filter(explode(',', $pengguna->sdm_ijin_akses)));
 
@@ -670,7 +669,7 @@ class Penempatan
             $validasifile->validate();
 
             $file = $validasifile->safe()->only('unggah_penempatan_sdm')['unggah_penempatan_sdm'];
-            $namafile = 'unggahpenempatansdm-' . date('YmdHis') . '.xlsx';
+            $namafile = 'unggahpenempatansdm-'.date('YmdHis').'.xlsx';
 
             Berkas::simpanBerkasImporExcelSementara($file, $namafile);
 

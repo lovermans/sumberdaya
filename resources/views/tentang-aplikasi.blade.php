@@ -135,7 +135,7 @@
             </a>
         </div>
 
-        <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
+        <script>
             document.querySelector("nav a[href='{{ $app->url->route('tentang-aplikasi') }}']").classList.add("aktif");
         </script>
 

@@ -55,7 +55,7 @@
             </form>
         </div>
 
-        <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
+        <script>
             if (location.href.includes("{{ $app->url->route('sdm.akun', ['uuid' => $app->request->user()->sdm_uuid]) }}"))
                 cariElemen(
                     ".menu-akun a[href='{{ $app->url->route('sdm.akun', ['uuid' => $app->request->user()->sdm_uuid]) }}']")
@@ -99,7 +99,7 @@
             @endif
         </div>
 
-        <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
+        <script>
             if (location.href == "{{ $app->url->route('mulai') . '/' }}")
                 cariElemen(".menu-akun a[href='{{ $app->url->route('mulai') . '/' }}']")
                 .then((el) => {

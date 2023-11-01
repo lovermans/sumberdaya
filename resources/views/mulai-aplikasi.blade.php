@@ -52,7 +52,7 @@
         <div class="bersih"></div>
     </div>
 
-    <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
+    <script>
         if (localStorage.getItem('mengerti-mulai-aplikasi') == 'true' === true) document.getElementById('mengerti-mulai-aplikasi').remove();
     </script>
 @endif

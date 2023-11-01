@@ -149,7 +149,7 @@
         </div>
     </details>
 
-    <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
+    <script>
         (async () => {
             while (!window.aplikasiSiap) {
                 await new Promise((resolve, reject) =>

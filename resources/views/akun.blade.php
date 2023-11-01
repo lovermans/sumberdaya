@@ -412,7 +412,8 @@
                     @if (str()->contains($app->request->user()->sdm_hak_akses, 'SDM-PENGURUS'))
                         <div class="isian tcetak" id="akun-cetakFormulir">
                             <h3>Cetak Formulir</h3>
-                            <select class="pil-saja tombol" id="akun-pilihFormulir">
+                            <select class="pil-saja tombol" id="akun-pilihFormulir"
+                                onchange="if (this.value !== '') lemparXHR({tujuan: '#akun-cetakFormulirStatus',tautan: this.value,strim: true})">
                                 <option value="">---</option>
 
                                 <option value="{{ $app->url->route('sdm.formulir-serah-terima-sdm-baru', ['uuid' => $akun->sdm_uuid]) }}">
@@ -483,7 +484,7 @@
             </a>
         </div>
 
-        <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
+        <script>
             (async () => {
                 while (!window.aplikasiSiap) {
                     await new Promise((resolve, reject) =>
@@ -491,14 +492,6 @@
                 }
 
                 pilSaja('#akun-cetakFormulir .pil-saja');
-
-                document.getElementById("akun-pilihFormulir").onchange = function() {
-                    if (this.value !== '') lemparXHR({
-                        tujuan: '#akun-cetakFormulirStatus',
-                        tautan: this.value,
-                        strim: true
-                    });
-                };
 
                 lemparXHR({
                     tujuan: "#riwa-penem-sdm_tabels",

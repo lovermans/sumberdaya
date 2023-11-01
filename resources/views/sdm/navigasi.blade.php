@@ -19,7 +19,7 @@
         </a>
     </div>
 
-    <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
+    <script>
         if (location.href.includes("{{ $app->url->route('sdm.mulai') }}"))
             cariElemen("#navigasi-sdm a[href='{{ $app->url->route('sdm.mulai') }}']")
             .then((el) => {
@@ -97,7 +97,7 @@
         </a>
     </div>
 
-    <script nonce="{{ $app->request->session()->get('sesiNonce') }}">
+    <script>
         if (location.href.includes("{{ $app->url->route('sdm.permintaan-tambah-sdm.data') }}"))
             cariElemen("#navigasi-sdm a[href='{{ $app->url->route('sdm.permintaan-tambah-sdm.data') }}']")
             .then((el) => {
