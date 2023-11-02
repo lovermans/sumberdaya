@@ -92,11 +92,11 @@ class Kepuasan
                 return $c->whereIn('penempatan_lokasi', [null, ...$lingkupIjin]);
             }),
             'jawabans' => [
-                ['value' => 1, 'text' => 'Sangat Tidak Setuju'],
-                ['value' => 2, 'text' => 'Tidak Setuju'],
-                ['value' => 3, 'text' => 'Ragu'],
-                ['value' => 4, 'text' => 'Setuju'],
-                ['value' => 5, 'text' => 'Sangat Setuju'],
+                ['value' => 5, 'text' => 'SANGAT SETUJU'],
+                ['value' => 4, 'text' => 'SETUJU'],
+                ['value' => 3, 'text' => 'RAGU'],
+                ['value' => 2, 'text' => 'KURANG SETUJU'],
+                ['value' => 1, 'text' => 'TIDAK SETUJU'],
             ],
         ]);
 

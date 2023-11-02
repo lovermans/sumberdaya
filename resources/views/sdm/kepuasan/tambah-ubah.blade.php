@@ -127,6 +127,134 @@
                 </div>
             </fieldset>
 
+            <fieldset class="gspan-4">
+                <legend>
+                    <i><u>Survey 5</u></i> : Saya bekerja dengan peralatan/perlengkapan/atribut kerja yang aman dan memadai.
+                </legend>
+
+                <div class="isian normal">
+                    <label for="surveysdm_5">Jawaban</label>
+
+                    <select class="pil-saja" id="surveysdm_5" name="surveysdm_5" required>
+                        <option selected disabled></option>
+
+                        @foreach ($jawabans as $jawaban)
+                            <option value="{{ $jawaban['value'] }}" @selected($jawaban['value'] == $app->request->old('surveysdm_5', $kepuasan->surveysdm_5 ?? null))>{{ $jawaban['text'] }}</option>
+                        @endforeach
+                    </select>
+
+                    <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
+                </div>
+            </fieldset>
+
+            <fieldset class="gspan-4">
+                <legend>
+                    <i><u>Survey 6</u></i> : Perlindungan untuk saya bekerja memadai (BPJS Kesehatan & Ketenagakerjaan).
+                </legend>
+
+                <div class="isian normal">
+                    <label for="surveysdm_6">Jawaban</label>
+
+                    <select class="pil-saja" id="surveysdm_6" name="surveysdm_6" required>
+                        <option selected disabled></option>
+
+                        @foreach ($jawabans as $jawaban)
+                            <option value="{{ $jawaban['value'] }}" @selected($jawaban['value'] == $app->request->old('surveysdm_6', $kepuasan->surveysdm_6 ?? null))>{{ $jawaban['text'] }}</option>
+                        @endforeach
+                    </select>
+
+                    <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
+                </div>
+            </fieldset>
+
+            <fieldset class="gspan-4">
+                <legend>
+                    <i><u>Survey 7</u></i> : Lingkungan kerja saya bebas dari intimidasi dan diskriminasi.
+                </legend>
+
+                <div class="isian normal">
+                    <label for="surveysdm_7">Jawaban</label>
+
+                    <select class="pil-saja" id="surveysdm_7" name="surveysdm_7" required>
+                        <option selected disabled></option>
+
+                        @foreach ($jawabans as $jawaban)
+                            <option value="{{ $jawaban['value'] }}" @selected($jawaban['value'] == $app->request->old('surveysdm_7', $kepuasan->surveysdm_7 ?? null))>{{ $jawaban['text'] }}</option>
+                        @endforeach
+                    </select>
+
+                    <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
+                </div>
+            </fieldset>
+
+            <fieldset class="gspan-4">
+                <legend>
+                    <i><u>Survey 8</u></i> : Lingkungan kerja saya aman dan sehat (semua resiko bahaya telah diidentifikasi dan dikendalikan).
+                </legend>
+
+                <div class="isian normal">
+                    <label for="surveysdm_8">Jawaban</label>
+
+                    <select class="pil-saja" id="surveysdm_8" name="surveysdm_8" required>
+                        <option selected disabled></option>
+
+                        @foreach ($jawabans as $jawaban)
+                            <option value="{{ $jawaban['value'] }}" @selected($jawaban['value'] == $app->request->old('surveysdm_8', $kepuasan->surveysdm_8 ?? null))>{{ $jawaban['text'] }}</option>
+                        @endforeach
+                    </select>
+
+                    <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
+                </div>
+            </fieldset>
+
+            <fieldset class="gspan-4">
+                <legend>
+                    <i><u>Survey 9</u></i> : Fasilitas umum di tempat kerja memadai dan terawat dengan baik.
+                </legend>
+
+                <div class="isian normal">
+                    <label for="surveysdm_9">Jawaban</label>
+
+                    <select class="pil-saja" id="surveysdm_9" name="surveysdm_9" required>
+                        <option selected disabled></option>
+
+                        @foreach ($jawabans as $jawaban)
+                            <option value="{{ $jawaban['value'] }}" @selected($jawaban['value'] == $app->request->old('surveysdm_9', $kepuasan->surveysdm_9 ?? null))>{{ $jawaban['text'] }}</option>
+                        @endforeach
+                    </select>
+
+                    <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
+                </div>
+            </fieldset>
+
+            <fieldset class="gspan-4">
+                <legend>
+                    <i><u>Survey 10</u></i> : Saya puas dengan kontribusi saya terhadap kinerja Perusahaan.
+                </legend>
+
+                <div class="isian normal">
+                    <label for="surveysdm_10">Jawaban</label>
+
+                    <select class="pil-saja" id="surveysdm_10" name="surveysdm_10" required>
+                        <option selected disabled></option>
+
+                        @foreach ($jawabans as $jawaban)
+                            <option value="{{ $jawaban['value'] }}" @selected($jawaban['value'] == $app->request->old('surveysdm_10', $kepuasan->surveysdm_10 ?? null))>{{ $jawaban['text'] }}</option>
+                        @endforeach
+                    </select>
+
+                    <span class="t-bantu">Disarankan tidak memilih pilihan berwarna merah</span>
+                </div>
+            </fieldset>
+
+            <div class="isian gspan-4">
+                <label for="surveysdm_saran">Saran</label>
+
+                <textarea id="surveysdm_saran" name="surveysdm_saran" rows="3">{{ $app->request->old('surveysdm_saran', $kepuasan->surveysdm_saran ?? null) }}</textarea>
+
+                <span class="t-bantu">Isikan saran/kritik untuk peningkatan kinerja Perusahaan</span>
+            </div>
+
             <div class="isian gspan-4">
                 <label for="surveysdm_keterangan">Keterangan</label>
 
