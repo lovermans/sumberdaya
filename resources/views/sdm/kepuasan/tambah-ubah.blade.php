@@ -264,9 +264,9 @@
             </div>
 
             <div class="isian normal">
-                <label for="kepuasan_berkas">Unggah Dokumen Survey</label>
+                <label for="surveysdm_berkas">Unggah Dokumen Survey</label>
 
-                <input id="kepuasan_berkas" name="kepuasan_berkas" type="file" accept=".pdf,application/pdf">
+                <input id="surveysdm_berkas" name="surveysdm_berkas" type="file" accept=".pdf,application/pdf">
 
                 <span class="t-bantu">Scan PDF formulir survey kepuasan SDM
                     {{ $app->filesystem->exists(

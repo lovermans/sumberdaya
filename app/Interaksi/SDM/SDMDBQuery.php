@@ -1841,6 +1841,7 @@ class SDMDBQuery
                 'penempatan_lokasi',
                 'penempatan_kontrak',
             )
+            ->selectRaw("(IF (surveysdm_skor = 5, 'SANGAT PUAS', IF (surveysdm_skor >= 4, 'PUAS', IF (surveysdm_skor >= 3, 'RAGU', IF (surveysdm_skor >= 2, 'KURANG PUAS', 'TIDAK PUAS'))))) as surveysdm_klasifikasi")
             ->leftJoin('sdms', 'surveysdm_no_absen', '=', 'sdm_no_absen')
             ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
                 $join->on('surveysdm_no_absen', '=', 'kontrak.penempatan_no_absen');
@@ -1889,5 +1890,12 @@ class SDMDBQuery
                     $query->orderBy('kepuasansdms.id', 'desc');
                 }
             );
+    }
+
+    public static function tambahDataKepuasanSDM($data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('kepuasansdms')->insert($data);
     }
 }

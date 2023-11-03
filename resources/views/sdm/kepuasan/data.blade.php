@@ -180,8 +180,8 @@
                                     @unless ($halamanAkun ?? null)
                                         <th>Identitas</th>
                                     @endunless
-                                    <th>Tahun</th>
-                                    <th>Tingkat Kepuasan</th>
+                                    <th>Kepuasan</th>
+                                    <th>Saran</th>
                                     <th>Keterangan</th>
                                 </tr>
                             </thead>
@@ -232,10 +232,10 @@
                                             </td>
                                         @endunless
                                         <td>
-                                            {{ $tabel->surveysdm_tahun }}
+                                            Tahun {{ $tabel->surveysdm_tahun }} = {{ $tabel->surveysdm_skor }} ({{ $tabel->surveysdm_klasifikasi }})
                                         </td>
                                         <td>
-                                            {{ $tabel->surveysdm_skor }}
+                                            {!! nl2br($tabel->surveysdm_saran) !!}
                                         </td>
                                         <td>
                                             {!! nl2br($tabel->surveysdm_keterangan) !!}

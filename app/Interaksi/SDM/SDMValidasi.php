@@ -669,7 +669,7 @@ class SDMValidasi
             '*.nilaisdm_id_pengunggah.*' => 'ID Pengunggah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.nilaisdm_kontrak.*' => 'Jenis Kontrak urutan ke-:position wajib berupa karakter.',
             '*.nilaisdm_penempatan.*' => 'Lokasi urutan ke-:position wajib berupa karakter.',
-            '*.nilaisdm_diunggah.*' => 'Tanggal Unggah Sanksi urutan ke-:position wajib berupa tanggal.',
+            '*.nilaisdm_diunggah.*' => 'Tanggal Unggah Nilai SDM urutan ke-:position wajib berupa tanggal.',
         ];
     }
 
@@ -886,15 +886,59 @@ class SDMValidasi
     {
         return [
             '*.surveysdm_no_absen.*' => 'Nomor Absen urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
-            '*.surveysdm_tahun.*' => 'Tahun Penilaian SDM urutan ke-:position wajib berupa Tahun.',
-            '*.surveysdm_keterangan.*' => 'Keterangan Penilaian SDM Penilaian SDM urutan ke-:position wajib berupa karakter.',
-            '*.nilai_berkas.*' => 'Berkas Penilaian urutan ke-:position wajib berupa berkas format PDF.',
+            '*.surveysdm_tahun.*' => 'Tahun Survey SDM urutan ke-:position wajib berupa Tahun.',
+            '*.surveysdm_1.*' => 'Survey No 1 urutan ke-:position wajib berupa angka.',
+            '*.surveysdm_2.*' => 'Survey No 2 urutan ke-:position wajib berupa angka.',
+            '*.surveysdm_3.*' => 'Survey No 3 urutan ke-:position wajib berupa angka.',
+            '*.surveysdm_4.*' => 'Survey No 4 urutan ke-:position wajib berupa angka.',
+            '*.surveysdm_5.*' => 'Survey No 5 urutan ke-:position wajib berupa angka.',
+            '*.surveysdm_6.*' => 'Survey No 6 urutan ke-:position wajib berupa angka.',
+            '*.surveysdm_7.*' => 'Survey No 7 urutan ke-:position wajib berupa angka.',
+            '*.surveysdm_8.*' => 'Survey No 8 urutan ke-:position wajib berupa angka.',
+            '*.surveysdm_9.*' => 'Survey No 9 urutan ke-:position wajib berupa angka.',
+            '*.surveysdm_10.*' => 'Survey No 10 urutan ke-:position wajib berupa angka.',
+            '*.surveysdm_saran.*' => 'Saran Survey SDM urutan ke-:position wajib berupa karakter.',
+            '*.surveysdm_keterangan.*' => 'Keterangan Survey SDM urutan ke-:position wajib berupa karakter.',
+            '*.surveysdm_berkas.*' => 'Berkas Survey SDM urutan ke-:position wajib berupa berkas format PDF.',
             '*.surveysdm_id_pengubah.*' => 'ID Pengubah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.surveysdm_id_pembuat.*' => 'ID Pembuat urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.surveysdm_id_pengunggah.*' => 'ID Pengunggah urutan ke-:position maksimal 10 karakter dan terdaftar di data SDM.',
             '*.surveysdm_kontrak.*' => 'Jenis Kontrak urutan ke-:position wajib berupa karakter.',
             '*.surveysdm_penempatan.*' => 'Lokasi urutan ke-:position wajib berupa karakter.',
-            '*.surveysdm_diunggah.*' => 'Tanggal Unggah Sanksi urutan ke-:position wajib berupa tanggal.',
+            '*.surveysdm_diunggah.*' => 'Tanggal Unggah Survey SDM urutan ke-:position wajib berupa tanggal.',
+        ];
+    }
+
+    public static function validasiTambahDataKepuasanSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                '*.surveysdm_id_pembuat' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                '*.surveysdm_no_absen' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                ...static::dasarValidasiKepuasanSDM(),
+            ],
+            static::pesanKesalahanValidasiKepuasanSDM()
+        );
+    }
+
+    public static function dasarValidasiKepuasanSDM()
+    {
+        return [
+            '*.surveysdm_tahun' => ['required', 'date_format:Y'],
+            '*.surveysdm_1' => ['required', 'numeric'],
+            '*.surveysdm_2' => ['required', 'numeric'],
+            '*.surveysdm_3' => ['required', 'numeric'],
+            '*.surveysdm_4' => ['required', 'numeric'],
+            '*.surveysdm_5' => ['required', 'numeric'],
+            '*.surveysdm_6' => ['required', 'numeric'],
+            '*.surveysdm_7' => ['required', 'numeric'],
+            '*.surveysdm_8' => ['required', 'numeric'],
+            '*.surveysdm_9' => ['required', 'numeric'],
+            '*.surveysdm_10' => ['required', 'numeric'],
+            '*.surveysdm_saran' => ['sometimes', 'nullable', 'string'],
+            '*.surveysdm_keterangan' => ['sometimes', 'nullable', 'string'],
+            '*.surveysdm_berkas' => ['sometimes', 'file', 'mimetypes:application/pdf'],
         ];
     }
 }

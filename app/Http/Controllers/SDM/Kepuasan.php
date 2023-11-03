@@ -4,10 +4,13 @@ namespace App\Http\Controllers\SDM;
 
 use App\Interaksi\Cache;
 use App\Interaksi\Rangka;
+use App\Interaksi\SDM\SDMBerkas;
 use App\Interaksi\SDM\SDMCache;
 use App\Interaksi\SDM\SDMDBQuery;
 use App\Interaksi\SDM\SDMExcel;
 use App\Interaksi\SDM\SDMValidasi;
+use App\Interaksi\Websoket;
+use Illuminate\Support\Arr;
 
 class Kepuasan
 {
@@ -86,6 +89,44 @@ class Kepuasan
         abort_unless($pengguna && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
 
         $lingkupIjin = array_filter(explode(',', $pengguna->sdm_ijin_akses));
+
+        if ($reqs->isMethod('post')) {
+
+            $reqs->merge(['surveysdm_id_pembuat' => $pengguna->sdm_no_absen]);
+
+            $validasi = SDMValidasi::validasiTambahDataKepuasanSDM([$reqs->all()]);
+
+            $validasi->validate();
+
+            $valid = $validasi->safe()->all()[0];
+
+            $data = Arr::except($valid, ['surveysdm_berkas']);
+
+            SDMDBQuery::tambahDataKepuasanSDM($data);
+
+            $berkas = Arr::only($valid, ['surveysdm_berkas'])['surveysdm_berkas'] ?? false;
+
+            if ($berkas) {
+                $namaBerkas = Arr::only($valid, ['surveysdm_no_absen'])['surveysdm_no_absen'].' - '.Arr::only($valid, ['surveysdm_tahun'])['surveysdm_tahun'].'.pdf';
+
+                SDMBerkas::simpanBerkasKepuasanSDM($berkas, $namaBerkas);
+            }
+
+            // SDMCache::hapusCacheNilaiSDM();
+
+            $pesanSoket = $pengguna?->sdm_nama.' telah menambah data Survey Kepuasan SDM nomor absen '
+                .Arr::only($valid, ['surveysdm_no_absen'])['surveysdm_no_absen'].' Tahun '.Arr::only($valid, ['surveysdm_tahun'])['surveysdm_tahun'].' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
+
+            $perujuk = $reqs->session()->get('tautan_perujuk');
+            $redirect = $app->redirect;
+            $pesan = Rangka::statusBerhasil();
+
+            return $perujuk
+                ? $redirect->to($perujuk)->with('pesan', $pesan)
+                : $redirect->route('sdm.kepuasan.data')->with('pesan', $pesan);
+        }
 
         $HtmlPenuh = $app->view->make('sdm.kepuasan.tambah-ubah', [
             'sdms' => SDMCache::ambilCacheSDM()->when($lingkupIjin, function ($c) use ($lingkupIjin) {
