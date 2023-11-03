@@ -470,6 +470,11 @@
             Memuat Riwayat Sanksi...
         </div>
 
+        <h2>Riwayat Kepuasan</h2>
+        <div class="kartu scroll-margin" id="kepuasan-sdm_tabels">
+            Memuat Riwayat Kepuasan...
+        </div>
+
         <div class="pintasan tcetak">
             <a class="tbl-btt" href="#" title="Kembali Ke Atas">
                 <svg viewBox="0 0 24 24">
@@ -510,6 +515,13 @@
                 lemparXHR({
                     tujuan: "#sanksi-sdm_tabels",
                     tautan: "{{ $app->url->route('sdm.sanksi.data', ['uuid' => $akun->sdm_uuid, 'fragment' => 'sanksi-sdm_tabels']) }}",
+                    normalview: true,
+                    fragmen: true
+                });
+
+                lemparXHR({
+                    tujuan: "#kepuasan-sdm_tabels",
+                    tautan: "{{ $app->url->route('sdm.kepuasan.data', ['uuid' => $akun->sdm_uuid, 'fragment' => 'kepuasan-sdm_tabels']) }}",
                     normalview: true,
                     fragmen: true
                 });
