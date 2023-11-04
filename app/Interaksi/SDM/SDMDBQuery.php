@@ -1898,4 +1898,15 @@ class SDMDBQuery
 
         $app->db->table('kepuasansdms')->insert($data);
     }
+
+    public static function ambilDataKepuasanSDM($uuid, $lingkupIjin)
+    {
+        return static::ambilDBKepuasanSDM()
+            ->when($lingkupIjin, function ($query) use ($lingkupIjin) {
+                $query->where(function ($group) use ($lingkupIjin) {
+                    $group->whereIn('kontrak.penempatan_lokasi', $lingkupIjin);
+                });
+            })
+            ->where('surveysdm_uuid', $uuid)->first();
+    }
 }

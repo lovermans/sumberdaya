@@ -180,7 +180,7 @@
                                     @unless ($halamanAkun ?? null)
                                         <th>Identitas</th>
                                     @endunless
-                                    <th>Kepuasan</th>
+                                    <th>Tingkat Kepuasan</th>
                                     <th>Saran</th>
                                     <th>Keterangan</th>
                                 </tr>

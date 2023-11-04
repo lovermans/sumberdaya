@@ -89,7 +89,7 @@
 
             <fieldset class="gspan-4">
                 <legend>
-                    <i><u>Survey 3</u></i> : Jobdesc/beban kerja + jadwal kerja saya cukup jelas dan telah sesuai dengan posisi/jabatan saya.
+                    <i><u>Survey 3</u></i> : <i>Jobdesc</i>/beban kerja + jadwal kerja saya cukup jelas dan telah sesuai dengan posisi/jabatan saya.
                 </legend>
 
                 <div class="isian normal">

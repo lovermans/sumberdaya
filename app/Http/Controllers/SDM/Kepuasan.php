@@ -79,7 +79,20 @@ class Kepuasan
 
     public function lihat($uuid = null)
     {
+        extract(Rangka::obyekPermintaanRangka(true));
 
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+
+        $kepuasan = SDMDBQuery::ambilDataKepuasanSDM($uuid, array_filter(explode(',', $pengguna->sdm_ijin_akses)));
+
+        abort_unless($kepuasan, 404, 'Data Penialain SDM tidak ditemukan.');
+
+        $HtmlPenuh = $app->view->make('sdm.kepuasan.lihat', compact('kepuasan'));
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 
     public function tambah()
@@ -154,6 +167,11 @@ class Kepuasan
     }
 
     public function contohUnggahKepuasanSDM()
+    {
+
+    }
+
+    public function ubah()
     {
 
     }
