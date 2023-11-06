@@ -24,10 +24,10 @@ class Kepuasan
 
         abort_unless(
             $pengguna && $str->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN'])
-                || ($pengguna->sdm_uuid == $uuid && $pengguna->sdm_uuid !== null)
-                || ($aksesAkun && $pengguna->sdm_id_atasan == $aksesAkun?->sdm_no_absen)
-                || ($aksesAkun && $pengguna->sdm_no_absen == $aksesAkun?->sdm_id_atasan)
-                || ($aksesAkun && $pengguna->sdm_id_atasan == $aksesAkun?->sdm_id_atasan),
+            || ($pengguna && $pengguna?->sdm_uuid == $uuid && $pengguna?->sdm_uuid !== null)
+            || ($aksesAkun && $pengguna?->sdm_id_atasan == $aksesAkun?->sdm_no_absen)
+            || ($aksesAkun && $pengguna?->sdm_no_absen == $aksesAkun?->sdm_id_atasan)
+            || ($aksesAkun && $pengguna?->sdm_id_atasan == $aksesAkun?->sdm_id_atasan),
             403,
             'Akses dibatasi hanya untuk Pemangku SDM.'
         );
