@@ -281,12 +281,12 @@
                     <use href="#ikonpanahatas"></use>
                 </svg>
             </a>
-            <a class="isi-xhr" data-rekam="false" data-tujuan="#kepuasan-sdm_sematan" href="{{ $app->url->route('sdm.kepuasan.unggah') }}"
+            {{-- <a class="isi-xhr" data-rekam="false" data-tujuan="#kepuasan-sdm_sematan" href="{{ $app->url->route('sdm.kepuasan.unggah') }}"
                 title="Unggah Data Penilaian SDM">
                 <svg viewBox="0 0 24 24">
                     <use href="#ikonunggah"></use>
                 </svg>
-            </a>
+            </a> --}}
             <a href="#" title="Unduh Data"
                 onclick="event.preventDefault();lemparXHR({tujuan : '#kepuasan-sdm_sematan', tautan : window.location.search ? window.location.pathname + window.location.search + '&unduh=excel' : window.location.pathname + '?unduh=excel', strim : true})">
                 <svg viewBox="0 0 24 24">

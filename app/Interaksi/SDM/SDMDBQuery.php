@@ -1909,4 +1909,11 @@ class SDMDBQuery
             })
             ->where('surveysdm_uuid', $uuid)->first();
     }
+
+    public static function ubahDataKepuasanSDM($uuid, $data)
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->db->table('kepuasansdms')->where('surveysdm_uuid', $uuid)->update($data);
+    }
 }

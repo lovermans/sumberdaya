@@ -171,8 +171,68 @@ class Kepuasan
 
     }
 
-    public function ubah()
+    public function ubah($uuid = null)
     {
+        extract(Rangka::obyekPermintaanRangka(true));
 
+        abort_unless($pengguna && $uuid && str()->contains($pengguna?->sdm_hak_akses, 'SDM-PENGURUS'), 403, 'Akses dibatasi hanya untuk Pengurus SDM.');
+
+        $kepuasan = SDMDBQuery::ambilDataKepuasanSDM($uuid, array_filter(explode(',', $pengguna->sdm_ijin_akses)));
+
+        abort_unless($kepuasan, 404, 'Data Penilaian tidak ditemukan.');
+
+        if ($reqs->isMethod('post')) {
+
+            $reqs->merge(['surveysdm_id_pengubah' => $pengguna->sdm_no_absen]);
+
+            $validasi = SDMValidasi::validasiUbahDataKepuasanSDM([$reqs->all()]);
+
+            $validasi->validate();
+
+            $valid = $validasi->safe()->all()[0];
+
+            $data = Arr::except($valid, ['surveysdm_berkas']);
+
+            SDMDBQuery::ubahDataKepuasanSDM($uuid, $data);
+
+            $berkas = Arr::only($valid, ['surveysdm_berkas'])['surveysdm_berkas'] ?? false;
+
+            if ($berkas) {
+                $namaBerkas = $kepuasan->surveysdm_no_absen.' - '.Arr::only($valid, ['surveysdm_tahun'])['surveysdm_tahun'].'.pdf';
+
+                SDMBerkas::simpanBerkasKepuasanSDM($berkas, $namaBerkas);
+            }
+
+            // SDMCache::hapusCacheNilaiSDM();
+
+            $pesanSoket = $pengguna?->sdm_nama.' telah mengubah data Kepuasan SDM nomor absen '
+                .$kepuasan->surveysdm_no_absen.' Tahun '.Arr::only($valid, ['surveysdm_tahun'])['surveysdm_tahun'].' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
+
+            Websoket::siaranUmum($pesanSoket);
+
+            $perujuk = $reqs->session()->get('tautan_perujuk');
+            $redirect = $app->redirect;
+            $pesan = Rangka::statusBerhasil();
+
+            return $perujuk
+                ? $redirect->to($perujuk)->with('pesan', $pesan)
+                : $redirect->route('sdm.kepuasan.data')->with('pesan', $pesan);
+        }
+
+        $HtmlPenuh = $app->view->make('sdm.kepuasan.tambah-ubah', [
+            'kepuasan' => $kepuasan,
+            'jawabans' => [
+                ['value' => 5, 'text' => 'SANGAT SETUJU'],
+                ['value' => 4, 'text' => 'SETUJU'],
+                ['value' => 3, 'text' => 'RAGU'],
+                ['value' => 2, 'text' => 'KURANG SETUJU'],
+                ['value' => 1, 'text' => 'TIDAK SETUJU'],
+            ],
+        ]);
+        $HtmlIsi = implode('', $HtmlPenuh->renderSections());
+
+        return $reqs->pjax()
+            ? $app->make('Illuminate\Contracts\Routing\ResponseFactory')->make($HtmlIsi)->withHeaders(['Vary' => 'Accept'])
+            : $HtmlPenuh;
     }
 }

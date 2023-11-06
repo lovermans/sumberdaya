@@ -941,4 +941,16 @@ class SDMValidasi
             '*.surveysdm_berkas' => ['sometimes', 'file', 'mimetypes:application/pdf'],
         ];
     }
+
+    public static function validasiUbahDataKepuasanSDM($permintaan)
+    {
+        return Validasi::validasiUmum(
+            $permintaan,
+            [
+                '*.surveysdm_id_pengubah' => ['required', 'string', 'max:10', 'exists:sdms,sdm_no_absen'],
+                ...static::dasarValidasiKepuasanSDM(),
+            ],
+            static::pesanKesalahanValidasiKepuasanSDM()
+        );
+    }
 }
