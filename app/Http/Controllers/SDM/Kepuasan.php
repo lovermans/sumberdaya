@@ -125,7 +125,7 @@ class Kepuasan
                 SDMBerkas::simpanBerkasKepuasanSDM($berkas, $namaBerkas);
             }
 
-            // SDMCache::hapusCacheNilaiSDM();
+            SDMCache::hapusCacheKepuasanSDM();
 
             $pesanSoket = $pengguna?->sdm_nama.' telah menambah data Survey Kepuasan SDM nomor absen '
                 .Arr::only($valid, ['surveysdm_no_absen'])['surveysdm_no_absen'].' Tahun '.Arr::only($valid, ['surveysdm_tahun'])['surveysdm_tahun'].' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));
@@ -203,7 +203,7 @@ class Kepuasan
                 SDMBerkas::simpanBerkasKepuasanSDM($berkas, $namaBerkas);
             }
 
-            // SDMCache::hapusCacheNilaiSDM();
+            SDMCache::hapusCacheKepuasanSDM();
 
             $pesanSoket = $pengguna?->sdm_nama.' telah mengubah data Kepuasan SDM nomor absen '
                 .$kepuasan->surveysdm_no_absen.' Tahun '.Arr::only($valid, ['surveysdm_tahun'])['surveysdm_tahun'].' pada '.strtoupper($app->date->now()->translatedFormat('d F Y H:i:s'));

@@ -33,28 +33,28 @@ class SDMCache
         $cache->forget('NamaNIKSDM');
         $cache->forget('PermintaanTambahSDM');
         $cache->forget('PosisiSDM');
-        $cache->forget('SDMUlangTahun - ' . $hariIni->format('Y-m'));
-        $cache->forget('PengingatKontrak - ' . $hariIni->format('Y-m-d'));
-        $cache->forget('PengingatNon-Aktif - ' . $hariIni->format('Y-m-d'));
-        $cache->forget('PengingatAkunBaru - ' . $hariIni->format('Y-m-d'));
-        $cache->forget('PerubahanStatus - ' . $hariIni->format('Y-m-d'));
+        $cache->forget('SDMUlangTahun - '.$hariIni->format('Y-m'));
+        $cache->forget('PengingatKontrak - '.$hariIni->format('Y-m-d'));
+        $cache->forget('PengingatNon-Aktif - '.$hariIni->format('Y-m-d'));
+        $cache->forget('PengingatAkunBaru - '.$hariIni->format('Y-m-d'));
+        $cache->forget('PerubahanStatus - '.$hariIni->format('Y-m-d'));
         $cache->forget('PengingatPelanggaran');
-        $cache->forget('PengingatSanksi - ' . $hariIni->format('Y-m-d'));
-        $cache->forget('PengingatNilai - ' . $hariIni->format('Y'));
+        $cache->forget('PengingatSanksi - '.$hariIni->format('Y-m-d'));
+        $cache->forget('PengingatNilai - '.$hariIni->format('Y'));
     }
 
     public static function hapusCacheSDMUltah()
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $app->cache->forget('SDMUlangTahun - ' . $app->date->today()->subMonth()->format('Y-m'));
+        $app->cache->forget('SDMUlangTahun - '.$app->date->today()->subMonth()->format('Y-m'));
     }
 
     public static function ambilCacheSDMUltah()
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        return $app->cache->rememberForever('SDMUlangTahun - ' . $app->date->today()->format('Y-m'), function () {
+        return $app->cache->rememberForever('SDMUlangTahun - '.$app->date->today()->format('Y-m'), function () {
             return SDMDBQuery::ambilDBSDMUltah()->get();
         });
     }
@@ -63,14 +63,14 @@ class SDMCache
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $app->cache->forget('PengingatKontrak - ' . $app->date->today()->subDay()->format('Y-m-d'));
+        $app->cache->forget('PengingatKontrak - '.$app->date->today()->subDay()->format('Y-m-d'));
     }
 
     public static function ambilCachePKWTHabis()
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        return $app->cache->rememberForever('PengingatKontrak - ' . $app->date->today()->format('Y-m-d'), function () {
+        return $app->cache->rememberForever('PengingatKontrak - '.$app->date->today()->format('Y-m-d'), function () {
             return SDMDBQuery::ambilPKWTAkanHabis()->get();
         });
     }
@@ -79,14 +79,14 @@ class SDMCache
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $app->cache->forget('PerubahanStatus - ' . $app->date->today()->subDay()->format('Y-m-d'));
+        $app->cache->forget('PerubahanStatus - '.$app->date->today()->subDay()->format('Y-m-d'));
     }
 
     public static function ambilCachePerubahanStatusKontrakTerbaru()
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        return $app->cache->rememberForever('PerubahanStatus - ' . $app->date->today()->format('Y-m-d'), function () {
+        return $app->cache->rememberForever('PerubahanStatus - '.$app->date->today()->format('Y-m-d'), function () {
             return SDMDBQuery::ambilPerubahanStatusKontrakTerbaru()->get();
         });
     }
@@ -95,14 +95,14 @@ class SDMCache
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $app->cache->forget('PengingatAkunBaru - ' . $app->date->today()->subDay()->format('Y-m-d'));
+        $app->cache->forget('PengingatAkunBaru - '.$app->date->today()->subDay()->format('Y-m-d'));
     }
 
     public static function ambilCacheSDMBaru()
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        return $app->cache->rememberForever('PengingatAkunBaru - ' . $app->date->today()->format('Y-m-d'), function () {
+        return $app->cache->rememberForever('PengingatAkunBaru - '.$app->date->today()->format('Y-m-d'), function () {
             return SDMDBQuery::ambilSDMBaruGabung()->get();
         });
     }
@@ -111,14 +111,14 @@ class SDMCache
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $app->cache->forget('PengingatNon-Aktif - ' . $app->date->today()->subDay()->format('Y-m-d'));
+        $app->cache->forget('PengingatNon-Aktif - '.$app->date->today()->subDay()->format('Y-m-d'));
     }
 
     public static function ambilCacheSDMKeluarTerkini()
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        return $app->cache->rememberForever('PengingatNon-Aktif - ' . $app->date->today()->format('Y-m-d'), function () {
+        return $app->cache->rememberForever('PengingatNon-Aktif - '.$app->date->today()->format('Y-m-d'), function () {
             return SDMDBQuery::ambilSDMKeluarTerkini()->get();
         });
     }
@@ -143,14 +143,14 @@ class SDMCache
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $app->cache->forget('PengingatSanksi - ' . $app->date->today()->subDay()->format('Y-m-d'));
+        $app->cache->forget('PengingatSanksi - '.$app->date->today()->subDay()->format('Y-m-d'));
     }
 
     public static function ambilCacheSanksiSDMTerkini()
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        return $app->cache->rememberForever('PengingatSanksi - ' . $app->date->today()->format('Y-m-d'), function () {
+        return $app->cache->rememberForever('PengingatSanksi - '.$app->date->today()->format('Y-m-d'), function () {
             return SDMDBQuery::ambilPengingatSanksiSDMTerkini()->get();
         });
     }
@@ -159,15 +159,38 @@ class SDMCache
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $app->cache->forget('PengingatNilai - ' . $app->date->today()->subYear()->format('Y'));
+        $app->cache->forget('PengingatNilai - '.$app->date->today()->subYear()->format('Y'));
+    }
+
+    public static function hapusCacheKepuasanSDM()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('PengingatKepuasan - '.$app->date->today()->format('Y'));
+    }
+
+    public static function hapusCacheKepuasanSDMTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $app->cache->forget('PengingatKepuasan - '.$app->date->today()->subYear()->format('Y'));
     }
 
     public static function ambilCachePenilaianSDMTerkini()
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        return $app->cache->rememberForever('PengingatNilai - ' . $app->date->today()->format('Y'), function () {
+        return $app->cache->rememberForever('PengingatNilai - '.$app->date->today()->format('Y'), function () {
             return SDMDBQuery::ambilPengingatPenilaianSDMTerkini()->get();
+        });
+    }
+
+    public static function ambilCacheKepuasanSDMTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        return $app->cache->rememberForever('PengingatKepuasan - '.$app->date->today()->format('Y'), function () {
+            return SDMDBQuery::ambilPengingatKepuasanSDMTerkini()->get();
         });
     }
 
@@ -191,7 +214,7 @@ class SDMCache
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $app->cache->forget('PengingatSanksi - ' . $app->date->today()->format('Y-m-d'));
+        $app->cache->forget('PengingatSanksi - '.$app->date->today()->format('Y-m-d'));
     }
 
     public static function hapusCachePelanggaran_SanksiSDM()
@@ -200,7 +223,7 @@ class SDMCache
 
         $cache = $app->cache;
 
-        $cache->forget('PengingatSanksi - ' . $app->date->today()->format('Y-m-d'));
+        $cache->forget('PengingatSanksi - '.$app->date->today()->format('Y-m-d'));
         $cache->forget('PengingatPelanggaran');
     }
 
@@ -208,6 +231,6 @@ class SDMCache
     {
         extract(Rangka::obyekPermintaanRangka());
 
-        $app->cache->forget('PengingatNilai - ' . $app->date->today()->format('Y'));
+        $app->cache->forget('PengingatNilai - '.$app->date->today()->format('Y'));
     }
 }

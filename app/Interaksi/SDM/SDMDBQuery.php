@@ -1916,4 +1916,21 @@ class SDMDBQuery
 
         $app->db->table('kepuasansdms')->where('surveysdm_uuid', $uuid)->update($data);
     }
+
+    public static function ambilPengingatKepuasanSDMTerkini()
+    {
+        extract(Rangka::obyekPermintaanRangka());
+
+        $date = $app->date;
+
+        return static::ambilKepuasanSDM()
+            ->addSelect(
+                'penempatan_lokasi',
+                'penempatan_kontrak'
+            )
+            ->leftJoinSub(static::ambilDBPenempatanSDMTerkini(), 'kontrak', function ($join) {
+                $join->on('surveysdm_no_absen', '=', 'kontrak.penempatan_no_absen');
+            })
+            ->whereIn('surveysdm_tahun', [$date->today()->format('Y'), $date->today()->subYear()->format('Y')]);
+    }
 }

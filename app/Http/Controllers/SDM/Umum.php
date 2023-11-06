@@ -39,6 +39,7 @@ class Umum
             $pengurus && $fragmen == 'sdmIngatPelanggaran' => SDMPapanInformasi::pengingatPelanggaran(),
             $pengurus && $fragmen == 'sdmIngatSanksi' => SDMPapanInformasi::pengingatSanksi(),
             $pengurus && $fragmen == 'sdmIngatNilai' => SDMPapanInformasi::pengingatNilai(),
+            $pengurus && $fragmen == 'sdmIngatKepuasan' => SDMPapanInformasi::pengingatKepuasan(),
             default => $this->rangkaHalamanSDM(),
         };
 

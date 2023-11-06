@@ -3,8 +3,6 @@
 namespace App\Interaksi\SDM;
 
 use App\Interaksi\Rangka;
-use App\Interaksi\SDM\SDMCache;
-use App\Interaksi\SDM\SDMDBQuery;
 
 class SDMPapanInformasi
 {
@@ -31,11 +29,11 @@ class SDMPapanInformasi
         $data = [
             'ulangTahuns' => $ulangTahuns ?? null,
             'jumlahOS' => $ulangTahuns->whereNotNull('penempatan_kontrak')->filter(function ($item) {
-                return false !== stristr($item->penempatan_kontrak, 'OS-');
+                return stristr($item->penempatan_kontrak, 'OS-') !== false;
             })->count(),
             'jumlahOrganik' => $ulangTahuns->whereNotNull('penempatan_kontrak')->filter(function ($item) {
-                return false === stristr($item->penempatan_kontrak, 'OS-');
-            })->count()
+                return stristr($item->penempatan_kontrak, 'OS-') === false;
+            })->count(),
         ];
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
@@ -90,7 +88,7 @@ class SDMPapanInformasi
             })->count(),
             'jmlKadaluarsa' => $kontraks->filter(function ($v, $k) use ($date) {
                 return $date->make($v->penempatan_selesai)->diffInDays($date->today(), false) >= 0;
-            })->count()
+            })->count(),
         ];
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
@@ -118,11 +116,11 @@ class SDMPapanInformasi
         $data = [
             'statuses' => $statuses ?? null,
             'jumlahOS' => $statuses->filter(function ($item) {
-                return false !== stristr($item->penempatan_kontrak, 'OS-');
+                return stristr($item->penempatan_kontrak, 'OS-') !== false;
             })->count(),
             'jumlahOrganik' => $statuses->filter(function ($item) {
-                return false === stristr($item->penempatan_kontrak, 'OS-');
-            })->count()
+                return stristr($item->penempatan_kontrak, 'OS-') === false;
+            })->count(),
         ];
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
@@ -150,12 +148,12 @@ class SDMPapanInformasi
         $data = [
             'barus' => $barus ?? null,
             'jumlahOS' => $barus->whereNotNull('penempatan_kontrak')->filter(function ($item) {
-                return false !== stristr($item->penempatan_kontrak, 'OS-');
+                return stristr($item->penempatan_kontrak, 'OS-') !== false;
             })->count(),
             'jumlahOrganik' => $barus->whereNotNull('penempatan_kontrak')->filter(function ($item) {
-                return false === stristr($item->penempatan_kontrak, 'OS-');
+                return stristr($item->penempatan_kontrak, 'OS-') === false;
             })->count(),
-            'belumDitempatkan' => $barus->whereNull('penempatan_kontrak')->count()
+            'belumDitempatkan' => $barus->whereNull('penempatan_kontrak')->count(),
         ];
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
@@ -183,11 +181,11 @@ class SDMPapanInformasi
         $data = [
             'berhentis' => $berhentis ?? null,
             'jumlahOS' => $berhentis->whereNotNull('penempatan_kontrak')->filter(function ($item) {
-                return false !== stristr($item->penempatan_kontrak, 'OS-');
+                return stristr($item->penempatan_kontrak, 'OS-') !== false;
             })->count(),
             'jumlahOrganik' => $berhentis->whereNotNull('penempatan_kontrak')->filter(function ($item) {
-                return false === stristr($item->penempatan_kontrak, 'OS-');
-            })->count()
+                return stristr($item->penempatan_kontrak, 'OS-') === false;
+            })->count(),
         ];
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
@@ -215,11 +213,11 @@ class SDMPapanInformasi
         $data = [
             'pelanggarans' => $pelanggarans ?? null,
             'jumlahOS' => $pelanggarans->filter(function ($item) {
-                return false !== stristr($item->langgar_tkontrak, 'OS-');
+                return stristr($item->langgar_tkontrak, 'OS-') !== false;
             })->count(),
             'jumlahOrganik' => $pelanggarans->filter(function ($item) {
-                return false === stristr($item->langgar_tkontrak, 'OS-');
-            })->count()
+                return stristr($item->langgar_tkontrak, 'OS-') === false;
+            })->count(),
         ];
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
@@ -246,12 +244,12 @@ class SDMPapanInformasi
 
         $data = [
             'sanksis' => $sanksis ?? null,
-            'jumlahOS' =>  $sanksis->filter(function ($item) {
-                return false !== stristr($item->langgar_tkontrak, 'OS-');
+            'jumlahOS' => $sanksis->filter(function ($item) {
+                return stristr($item->langgar_tkontrak, 'OS-') !== false;
             })->count(),
             'jumlahOrganik' => $sanksis->filter(function ($item) {
-                return false === stristr($item->langgar_tkontrak, 'OS-');
-            })->count()
+                return stristr($item->langgar_tkontrak, 'OS-') === false;
+            })->count(),
         ];
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
@@ -276,16 +274,48 @@ class SDMPapanInformasi
         $cache_nilais = SDMCache::ambilCachePenilaianSDMTerkini();
 
         $nilais = $cache_nilais->when($linkupIjin, function ($c) use ($lingkup) {
-            return $c->whereIn('langgar_tlokasi', [null, ...$lingkup]);
+            return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
         });
 
         $data = [
             'rataTahunLalu' => $nilais->where('nilaisdm_tahun', $tahunLalu)->avg('nilaisdm_total') ?? 0,
-            'rataTahunIni' => $nilais->where('nilaisdm_tahun', $tahunIni)->avg('nilaisdm_total') ?? 0
+            'rataTahunIni' => $nilais->where('nilaisdm_tahun', $tahunIni)->avg('nilaisdm_total') ?? 0,
         ];
 
         return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
             ->make($app->view->make('sdm.papan-informasi.nilai', $data))
+            ->withHeaders(['Vary' => 'Accept']);
+    }
+
+    public static function pengingatKepuasan()
+    {
+        extract(Rangka::obyekPermintaanRangka(true));
+
+        abort_unless(str()->contains($pengguna?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']), 403, 'Akses dibatasi hanya untuk Pemangku SDM.');
+
+        $linkupIjin = $pengguna->sdm_ijin_akses;
+        $lingkup = array_filter(explode(',', $linkupIjin));
+
+        $tahunIni = $app->date->today()->format('Y');
+        $tahunLalu = $app->date->today()->subYear()->format('Y');
+
+        SDMCache::hapusCacheKepuasanSDMTerkini();
+
+        $cache_surveys = SDMCache::ambilCacheKepuasanSDMTerkini();
+
+        $survey = $cache_surveys->when($linkupIjin, function ($c) use ($lingkup) {
+            return $c->whereIn('penempatan_lokasi', [null, ...$lingkup]);
+        });
+
+        $data = [
+            'pesertaTahunLalu' => $survey->where('surveysdm_tahun', $tahunLalu)->count() ?? 0,
+            'puasTahunLalu' => $survey->where('surveysdm_tahun', $tahunLalu)->where('surveysdm_skor', '>=', 4)->count() ?? 0,
+            'pesertaTahunIni' => $survey->where('surveysdm_tahun', $tahunIni)->count() ?? 0,
+            'puasTahunIni' => $survey->where('surveysdm_tahun', $tahunIni)->where('surveysdm_skor', '>=', 4)->count() ?? 0,
+        ];
+
+        return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
+            ->make($app->view->make('sdm.papan-informasi.survey', $data))
             ->withHeaders(['Vary' => 'Accept']);
     }
 }

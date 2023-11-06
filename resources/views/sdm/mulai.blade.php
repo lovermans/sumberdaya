@@ -7,6 +7,10 @@
         <div class="scroll-margin" id="sdm_unggah_sematan"></div>
 
         @if (str()->contains($app->request->user()?->sdm_hak_akses, ['SDM-PENGURUS', 'SDM-MANAJEMEN']))
+            <div id="sdmIngatKepuasan">
+                <p class="kartu">Mengambil data kepuasan SDM...</p>
+            </div>
+
             <div id="sdmIngatPtsb">
                 <p class="kartu">Mengambil data permintaan tambah SDM...</p>
             </div>
@@ -98,6 +102,13 @@
                     lemparXHR({
                         tujuan: "#sdmIngatSanksi",
                         tautan: "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatSanksi']) }}",
+                        normalview: true,
+                        fragmen: true
+                    });
+
+                    lemparXHR({
+                        tujuan: "#sdmIngatKepuasan",
+                        tautan: "{{ $app->url->route('sdm.mulai', ['fragment' => 'sdmIngatKepuasan']) }}",
                         normalview: true,
                         fragmen: true
                     });
