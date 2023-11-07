@@ -1,10 +1,9 @@
 <details class="kartu">
     <summary>
         Tahun {{ $app->date->today()->subYear()->format('Y') }} =
-        {{ $pesertaTahunLalu > 0 ? number_format(($puasTahunLalu / $pesertaTahunLalu) * 100, 2, ',', '.') : 0 }}% dari total
-        {{ number_format($pesertaTahunLalu, 0, ',', '.') }} responden merasa puas | Tahun {{ $app->date->today()->format('Y') }} =
-        {{ $pesertaTahunIni > 0 ? number_format(($puasTahunIni / $pesertaTahunIni) * 100, 2, ',', '.') : 0 }}% dari total
-        {{ number_format($pesertaTahunIni, 0, ',', '.') }}
+        {{ $pesertaTahunLalu > 0 ? number_format(($puasTahunLalu / $pesertaTahunLalu) * 100, 2, ',', '.') : 0 }}%
+        responden merasa puas | Tahun {{ $app->date->today()->format('Y') }} =
+        {{ $pesertaTahunIni > 0 ? number_format(($puasTahunIni / $pesertaTahunIni) * 100, 2, ',', '.') : 0 }}%
         responden merasa puas.
         {{-- Rata-rata Penilaian Berkala SDM : Tahun {{ $app->date->today()->subYear()->format('Y') }} =
         {{ number_format($rataTahunLalu, 2, ',', '.') }} | Tahun {{ $app->date->today()->format('Y') }} =
@@ -58,7 +57,8 @@
                                 </li>
                             </ol>
 
-                            <b><u><i>Skor rata-rata total : {{ $dataTahunLalu->avg('surveysdm_skor') ?? 0 }}</i></u></b>
+                            <b><u><i>Skor rata-rata total : {{ $dataTahunLalu->avg('surveysdm_skor') ?? 0 }}</i></u></b><br>
+                            Jumlah responden : {{ number_format($pesertaTahunLalu, 0, ',', '.') }} SDM.
                         </td>
                         <td>
                             <ol>
@@ -94,7 +94,8 @@
                                 </li>
                             </ol>
 
-                            <b><u><i>Skor rata-rata total : {{ $dataTahunIni->avg('surveysdm_skor') ?? 0 }}</i></u></b>
+                            <b><u><i>Skor rata-rata total : {{ $dataTahunIni->avg('surveysdm_skor') ?? 0 }}</i></u></b><br>
+                            Jumlah responden : {{ number_format($pesertaTahunIni, 0, ',', '.') }} SDM.
                         </td>
                     </tr>
                 </tbody>
