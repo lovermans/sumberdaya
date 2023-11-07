@@ -308,6 +308,8 @@ class SDMPapanInformasi
         });
 
         $data = [
+            'dataTahunLalu' => $survey->where('surveysdm_tahun', $tahunLalu),
+            'dataTahunIni' => $survey->where('surveysdm_tahun', $tahunIni),
             'pesertaTahunLalu' => $survey->where('surveysdm_tahun', $tahunLalu)->count() ?? 0,
             'puasTahunLalu' => $survey->where('surveysdm_tahun', $tahunLalu)->where('surveysdm_skor', '>=', 4)->count() ?? 0,
             'pesertaTahunIni' => $survey->where('surveysdm_tahun', $tahunIni)->count() ?? 0,
