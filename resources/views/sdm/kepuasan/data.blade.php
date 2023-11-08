@@ -85,10 +85,12 @@
                         <b>
                             <i>
                                 <small>
-                                    Jumlah SDM
+                                    Jumlah SDM disurvey
                                     ({{ $app->request->anyFilled(['surveysdm_tahun', 'surveysdm_penempatan', 'surveysdm_kontrak']) ? 'sesuai data penyaringan' : 'global' }})
                                     : Organik = {{ number_format($jumlahOrganik, 0, ',', '.') }} Personil | Outsource =
                                     {{ number_format($jumlahOS, 0, ',', '.') }} Personil.
+                                    Sebanyak {{ $tabels->total() > 0 ? number_format(($jumlahPuas / $tabels->total()) * 100, 2, ',', '.') : 0 }}% Personil rata-rata merasa
+                                    puas.
                                 </small>
                             </i>
                         </b>

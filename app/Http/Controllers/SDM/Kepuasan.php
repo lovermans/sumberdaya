@@ -63,6 +63,7 @@ class Kepuasan
             'halamanAkun' => $uuid ?? '',
             'jumlahOS' => $cari->clone()->whereNotNull('kontrak.penempatan_kontrak')->where('kontrak.penempatan_kontrak', 'like', 'OS-%')->count(),
             'jumlahOrganik' => $cari->clone()->whereNotNull('kontrak.penempatan_kontrak')->where('kontrak.penempatan_kontrak', 'not like', 'OS-%')->count(),
+            'jumlahPuas' => $cari->clone()->where('surveysdm_skor', '>=', 4)->count(),
         ];
 
         if (! isset($uuid)) {
