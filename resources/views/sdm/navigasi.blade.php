@@ -53,6 +53,23 @@
         </a>
     </div>
 
+    <div class="menu-j pelanggaran-sdm">
+        <svg viewBox="0 0 24 24">
+            <use href="#ikonpelanggaran"></use>
+        </svg>
+        Pelanggaran SDM
+    </div>
+
+    <ul class="submenu">
+        <li>
+            <a class="nav-xhr" href="{{ $app->url->route('sdm.pelanggaran.data') }}">Laporan Pelanggaran</a>
+        </li>
+
+        <li>
+            <a class="nav-xhr" href="{{ $app->url->route('sdm.sanksi.data') }}">Riwayat Sanksi</a>
+        </li>
+    </ul>
+
     <div class="menu-t">
         <a class="nav-xhr" href="{{ $app->url->route('sdm.penilaian.data') }}">
             <svg viewBox="0 0 24 24">
@@ -70,23 +87,6 @@
             Kepuasan SDM
         </a>
     </div>
-
-    <div class="menu-j pelanggaran-sdm">
-        <svg viewBox="0 0 24 24">
-            <use href="#ikonpelanggaran"></use>
-        </svg>
-        Pelanggaran SDM
-    </div>
-
-    <ul class="submenu">
-        <li>
-            <a class="nav-xhr" href="{{ $app->url->route('sdm.pelanggaran.data') }}">Laporan Pelanggaran</a>
-        </li>
-
-        <li>
-            <a class="nav-xhr" href="{{ $app->url->route('sdm.sanksi.data') }}">Riwayat Sanksi</a>
-        </li>
-    </ul>
 
     <div class="menu-t">
         <a class="nav-xhr" href="{{ $app->url->route('sdm.posisi.data') }}">
