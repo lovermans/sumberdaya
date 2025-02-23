@@ -8,6 +8,7 @@ use Whoops\Exception\ErrorException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -49,6 +50,20 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (MethodNotAllowedHttpException $e) {
+
+            $app = app();
+            $request = $app->request;
+
+            if ($request->isMethod('GET') && $request->path() == '/') {
+                return response()->view('rangka');
+            }
+
+            return $app->make('Illuminate\Contracts\Routing\ResponseFactory')
+            ->make($app->view->make('rangka'))
+            ->withHeaders(['Vary' => 'Accept']);
         });
 
         $this->renderable(function (ErrorException $e) {

@@ -66,8 +66,8 @@ class Sanksi
             'lokasis' => $cacheAtur->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 return $query->whereIn('atur_butir', $lingkupIjin)->sortBy(['atur_butir', 'asc']);
             }),
-            'statusSDMs' => $cacheAtur->where('atur_jenis', 'STATUS KONTRAK')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'asc']),
-            'jenisSanksis' => $cacheAtur->where('atur_jenis', 'SANKSI SDM')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'desc']),
+            'statusSDMs' => $cacheAtur->where('atur_jenis', 'STATUS KONTRAK')->sortBy([['atur_jenis', 'asc'], ['atur_butir', 'asc']]),
+            'jenisSanksis' => $cacheAtur->where('atur_jenis', 'SANKSI SDM')->sortBy([['atur_jenis', 'asc'], ['atur_butir', 'desc']]),
             'urutTanggalMulai' => $str->contains($uruts, 'sanksi_mulai'),
             'indexTanggalMulai' => (head(array_keys($kunciUrut, 'sanksi_mulai ASC')) + head(array_keys($kunciUrut, 'sanksi_mulai DESC')) + 1),
             'urutTanggalSelesai' => $str->contains($uruts, 'sanksi_selesai'),
@@ -174,7 +174,7 @@ class Sanksi
         $HtmlPenuh = $app->view->make(
             'sdm.sanksi.tambah-ubah',
             [
-                'sanksis' => Cache::ambilCacheAtur()->where('atur_jenis', 'SANKSI SDM')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'desc']),
+                'sanksis' => Cache::ambilCacheAtur()->where('atur_jenis', 'SANKSI SDM')->sortBy([['atur_jenis', 'asc'], ['atur_butir', 'desc']]),
             ]
         );
 
@@ -245,7 +245,7 @@ class Sanksi
 
         $data = [
             'sanksiLama' => $sanksiLama,
-            'sanksis' => Cache::ambilCacheAtur()->where('atur_jenis', 'SANKSI SDM')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'desc']),
+            'sanksis' => Cache::ambilCacheAtur()->where('atur_jenis', 'SANKSI SDM')->sortBy([['atur_jenis', 'asc'], ['atur_butir', 'desc']]),
             'lapPelanggaran' => SDMDBQuery::ambilPelanggaranSDMTerkini()->where('langgar_no_absen', $sanksiLama->sanksi_no_absen)->get(),
         ];
 

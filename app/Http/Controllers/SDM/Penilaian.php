@@ -58,7 +58,7 @@ class Penilaian
             'lokasis' => $cacheAtur->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
                 return $query->whereIn('atur_butir', $lingkupIjin)->sortBy(['atur_butir', 'asc']);
             }),
-            'statusSDMs' => $cacheAtur->where('atur_jenis', 'STATUS KONTRAK')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'asc']),
+            'statusSDMs' => $cacheAtur->where('atur_jenis', 'STATUS KONTRAK')->sortBy([['atur_jenis', 'asc'], ['atur_butir', 'asc']]),
             'urutTahun' => $str->contains($uruts, 'nilaisdm_tahun'),
             'indexTahun' => (head(array_keys($kunciUrut, 'nilaisdm_tahun ASC')) + head(array_keys($kunciUrut, 'nilaisdm_tahun DESC')) + 1),
             'urutPeriode' => $str->contains($uruts, 'nilaisdm_periode'),

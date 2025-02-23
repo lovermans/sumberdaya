@@ -47,9 +47,9 @@ class Pelanggaran
         $data = [
             'tabels' => $cari->clone()->paginate($reqs->bph ?: 25)->withQueryString()->appends(['fragment' => 'pelanggaran-sdm_tabels', 'uuid' => $uuid ?? '']),
             'lokasis' => $cacheAtur->where('atur_jenis', 'PENEMPATAN')->when($lingkupIjin, function ($query) use ($lingkupIjin) {
-                return $query->whereIn('atur_butir', $lingkupIjin)->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'asc']);
+                return $query->whereIn('atur_butir', $lingkupIjin)->sortBy([['atur_jenis', 'asc'], ['atur_butir', 'asc']]);
             }),
-            'statusSDMs' => $cacheAtur->where('atur_jenis', 'STATUS KONTRAK')->sortBy(['atur_jenis', 'asc'], ['atur_butir', 'asc']),
+            'statusSDMs' => $cacheAtur->where('atur_jenis', 'STATUS KONTRAK')->sortBy([['atur_jenis', 'asc'], ['atur_butir', 'asc']]),
             'urutTanggal' => $str->contains($uruts, 'langgar_tanggal'),
             'indexTanggal' => (head(array_keys($kunciUrut, 'langgar_tanggal ASC')) + head(array_keys($kunciUrut, 'langgar_tanggal DESC')) + 1),
             'urutNomor' => $str->contains($uruts, 'langgar_lap_no'),

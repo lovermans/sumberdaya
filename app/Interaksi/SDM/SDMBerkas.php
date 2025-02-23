@@ -76,30 +76,35 @@ class SDMBerkas
         $kontak .= 'END:VCARD';
         $outerFrame = 4;
 
-        $frame = KodeQR::buatKontakQRSDM($kontak);
+        // $frame = KodeQR::buatKontakQRSDM($kontak);
+        $frame2 = KodeQR::buatKontakQRSDM2($kontak);
 
-        $h = count($frame);
-        $w = strlen($frame[0]);
-        $imgW = $w + 2 * $outerFrame;
-        $imgH = $h + 2 * $outerFrame;
-        $base_image = imagecreate($imgW, $imgH);
-        $col[0] = imagecolorallocate($base_image, 255, 255, 255);
-        $col[1] = imagecolorallocate($base_image, 0, 0, 0);
+        // dd($frame);
+        // dd($frame2);
 
-        imagefill($base_image, 0, 0, $col[0]);
+        // $h = count($frame);
+        // $w = strlen($frame[0]);
+        // $imgW = $w + 2 * $outerFrame;
+        // $imgH = $h + 2 * $outerFrame;
+        // $base_image = imagecreate($imgW, $imgH);
+        // $col[0] = imagecolorallocate($base_image, 255, 255, 255);
+        // $col[1] = imagecolorallocate($base_image, 0, 0, 0);
 
-        for ($y = 0; $y < $h; $y++) {
-            for ($x = 0; $x < $w; $x++) {
-                if ($frame[$y][$x] == '1') {
-                    imagesetpixel($base_image, $x + $outerFrame, $y + $outerFrame, $col[1]);
-                }
-            }
-        }
+        // imagefill($base_image, 0, 0, $col[0]);
+
+        // for ($y = 0; $y < $h; $y++) {
+        //     for ($x = 0; $x < $w; $x++) {
+        //         if ($frame[$y][$x] == '1') {
+        //             imagesetpixel($base_image, $x + $outerFrame, $y + $outerFrame, $col[1]);
+        //         }
+        //     }
+        // }
 
         $target_image = imagecreate(246, 246);
 
-        imagecopyresized($target_image, $base_image, 0, 0, 0, 0, 246, 246, $imgW, $imgH);
-        imagedestroy($base_image);
+        imagecopyresized($target_image, $frame2, 0, 0, 0, 0, 246, 246, 980, 980);
+        // imagedestroy($base_image);
+        imagedestroy($frame2);
 
         $storage = $app->filesystem;
         $no_absen = $akun->sdm_no_absen;
