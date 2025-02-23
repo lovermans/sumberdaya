@@ -2,22 +2,13 @@
 
 namespace App\Interaksi;
 
-use PHPQRCode\Constants;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
-use PHPQRCode\QRcode as QRCodeOld;
-use chillerlan\QRCode\Data\QRMatrix;
-use chillerlan\QRCode\Output\QRStringText;
 use chillerlan\QRCode\Output\QROutputInterface;
 
 class KodeQR
 {
     public static function buatKontakQRSDM($kontak)
-    {
-        return QRCodeOld::text($kontak, false, Constants::QR_ECLEVEL_M);
-    }
-
-    public static function buatKontakQRSDM2($kontak)
     {
         $options = new QROptions;
 
