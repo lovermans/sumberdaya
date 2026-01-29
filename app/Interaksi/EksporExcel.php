@@ -61,7 +61,7 @@ class EksporExcel
 
             echo '<p>Status : Menyiapkan sheet Perhitungan.</p>';
 
-            $clonedWorksheet = clone $spreadsheet2->getSheetByName('Sum');
+            $clonedWorksheet = $spreadsheet2->getSheetByName('Sum');
             $spreadsheet->addExternalSheet($clonedWorksheet);
         }
 
