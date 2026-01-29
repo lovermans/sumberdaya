@@ -6,11 +6,6 @@
         return document.querySelector(el);
     };
 
-    function muatIkonSVG(el) {
-        el.parentElement.id = 'ikonSVG';
-        el.outerHTML = el.contentDocument.documentElement.outerHTML;
-    };
-
     function ringkasTabel(el) {
         el.previousElementSibling.classList.toggle('ringkas');
     };
