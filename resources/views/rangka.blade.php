@@ -9,7 +9,7 @@
 <body id="badan-dokumen" data-tematerang="">
 
     <div>
-        <object type="image/svg+xml" data="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/ikon.svg')) }}" onload="muatIkonSVG(this)"></object>
+        <object type="image/svg+xml" data="{{ $app->url->asset($app->make('Illuminate\Foundation\Mix')('/ikon.svg')) }}" onload="this.parentElement.id = 'ikonSVG';var svgIcon=this.contentDocument.documentElement;svgIcon.querySelector('style').remove();this.outerHTML=svgIcon.outerHTML;"></object>
     </div>
 
     <div id="sambutan">
